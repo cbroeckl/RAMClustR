@@ -9,8 +9,7 @@
 #' @author Corey Broeckling
 #' @export
 
-
-idMS_writefun <-
-function (l) {
-	ion<- paste(round(mz[l], digits=4), " ", round(wm[l]), ";", sep="")
-	write(ion, file=libName, append= TRUE) }
+idMS_writefun <- function (l) {
+    ion <- paste(round(mz[l], digits=4), " ", round(wm[l]), ";", sep="")
+    write(ion, file=libName, append= TRUE)
+}

@@ -1,0 +1,9 @@
+Package: RAMClustR
+Type: Package
+Title: Assigning precursor-product ion relationships in indiscriminant MS/MS data
+Version: 0.1
+Date: 2013-10-23
+Author: Corey D. Broeckling, Adam L. Heuberger, Jonathan A. Prince, E. Ingelsson, Jessica E. Prenni
+Maintainer: "Broeckling,Corey" <Corey.Broeckling@ColoState.EDU>
+Description: Assigning precursor-product ion relationships in indiscriminant MS/MS  data A concise (1-5 lines) description of the package
+License: GPL (>= 2)

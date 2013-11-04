@@ -41,16 +41,7 @@ ramclustR<- function(  ms=MSdata,
   require(ff)
   require(fastcluster)
   require(dynamicTreeCut)
-  require(fortunes)
-  
-  
-  cat('\n')
-  cat("while you wait, your R fortune...")
-  cat('\n')
-  print(fortune())
-  
-  
-  
+
   ##remove MSdata sets and save data matrix alone
   a<-Sys.time()
   if(is.na(sampNameCol)) {featcol<-1:ncol(MSdata)} else {
@@ -306,14 +297,7 @@ ramclustR<- function(  ms=MSdata,
             paste(specdat), '\n', '\n', sep="", file=libName, append= TRUE)
         }
     }
-           
     cat(paste('\n', "msp file complete", '\n')) 
-    
-    
   }  
-  
   return(RC)
-
-
-  
 }

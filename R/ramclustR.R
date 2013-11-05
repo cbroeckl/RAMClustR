@@ -20,7 +20,7 @@
 #' @return A vector with the numeric values of the processed data
 #' @author Corey Broeckling
 #' @export
-
+  
 ramclustR<- function(  ms=MSdata, 
                        idmsms=ms, 
                        idMSMStag="02.cdf", 

@@ -1,5 +1,5 @@
 library(xcms, quietly=TRUE)
-load("inst/exampledata/xset4.Rdata")
+load("C:/Users/cbroeckl/Documents/GitHub/backup_RAMClustR/inst/exampledata/xset4.Rdata")
 
 source("R/Params.R")
 source("R/ramclustR.R")

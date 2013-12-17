@@ -22,7 +22,7 @@
 #' @export
 
 ramclustR<- function(  xcmsObj=NULL,
-                        ms=NULL, 
+                       ms=NULL, 
                        idmsms=NULL,
                        #xcmsObj=NULL,
                        taglocation="filepaths",
@@ -77,7 +77,7 @@ ramclustR<- function(  xcmsObj=NULL,
     data1<-as.matrix(MSdata[,featcol])
     data2<-as.matrix(MSMSdata[,featcol])
     if(dimnames(data1)!=dimnames(data2)) 
-    {stop("row and column names for ms and idMSMS data must be identical")}
+    {stop("the dimensions of your MS and idMSMS data are not identical")}
     
     rtmz<-matrix(
       unlist(
@@ -111,7 +111,7 @@ ramclustR<- function(  xcmsObj=NULL,
       data1<-t(data12[,msfiles])
       row.names(data1)<-sampnames[msfiles]
       data2<-t(data12[,msmsfiles])
-      row.names(data1)<-sampnames[msmsfiles]  ##this may need to be changed to dimnames..
+      row.names(data2)<-sampnames[msmsfiles]  ##this may need to be changed to dimnames..
        times<-round(xcmsObj@groups[,"rtmed"], digits=3)
       mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)
     }

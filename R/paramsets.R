@@ -1,0 +1,34 @@
+paramsets<-list(
+  newLC=data.frame(c(chrominst="",
+                     msinst="",
+                     column="",
+                     solvA="",
+                     solvB="",
+                     CE1="",
+                     CE2="",
+                     mstype="",
+                     msmode="",
+                     ionization="",
+                     colgas="",
+                     msscanrange="",
+                     conevolt="",
+                     saveAs="")),
+  
+  newGC=data.frame(c(Experiment="",
+                     chrominst="",
+                     msinst="",
+                     column="",
+                     InletTemp="",
+                     TransferTemp="",
+                     mstype="",
+                     msmode="",
+                     ionization="",
+                     msscanrange="",
+                     scantime="",
+                     conevolt="",
+                     deriv="",
+                     saveAs=""))
+)
+
+names(paramsets$newLC)<-"value"
+names(paramsets$newGC)<-"value"

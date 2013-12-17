@@ -1,14 +1,12 @@
-#small dataset for devel
-load("inst/exampledata/MSdata.Rdata")
-load("inst/exampledata/MSMSdata.Rdata")
+library(xcms, quietly=TRUE)
+load("inst/exampledata/xset4.Rdata")
 
-#bigger datasets for testing
-#load("CSFMSdata.Rdata")
-#load("CSFMSMSdata.Rdata")
-
+source("R/Params.R")
 source("R/ramclustR.R")
-#source("UPLC_C18params.R")
-#source("mspout.R")
-
-RC<-ramclustR(ms=MSdata, idmsms=MSMSdata, sr=0.2, st=2, hmax=1.05, mspout=TRUE)
+RC<-ramclustR(xcmsObj=xset4, mspout=TRUE, MStag="01.cdf", idMSMStag="02.cdf")
 gc()
+
+##test functionality on xcms object
+#load("inst/exampledata/MSdata.Rdata")
+#load("inst/exampledata/MSMSdata.Rdata")
+#RC<-ramclustR(xcmsObj=xset4, MStag="01.cdf", idMSMStag="02.cdf")

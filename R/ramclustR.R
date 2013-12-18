@@ -252,7 +252,7 @@ ramclustR<- function(  xcmsObj=NULL,
   cat(paste("fastcluster based clustering complete:", 
             round(difftime(d, c, units="mins"), digits=1), "minutes"))
   
-  clus<-cutreeDynamicTree(RC, maxTreeHeight=0.25, deepSplit=deepSplit, minModuleSize=2)
+  clus<-cutreeDynamicTree(RC, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=2)
   gc()
   
   

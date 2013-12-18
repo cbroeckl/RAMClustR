@@ -36,7 +36,7 @@ ramclustR<- function(  xcmsObj=NULL,
                        deepSplit=FALSE, 
                        blocksize=2000,
                        mult=5,
-                       hmax=0.35,
+                       hmax=NULL,
                        sampNameCol=NULL,
                        collapse=TRUE,
                        mspout=TRUE, 
@@ -63,6 +63,7 @@ ramclustR<- function(  xcmsObj=NULL,
   }
   a<-Sys.time()   
   
+  if(is.null(hmax)) {hmax<-0.3}
   ##in using non-xcms data as input
   ##remove MSdata sets and save data matrix alone
   if(!is.null(ms)){

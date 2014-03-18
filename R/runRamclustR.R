@@ -1,8 +1,9 @@
 library(xcms, quietly=TRUE)
-load("C:/Users/cbroeckl/Documents/GitHub/backup_RAMClustR/inst/exampledata/xset4.Rdata")
+#load("C:/Users/cbroeckl/Documents/GitHub/backup_RAMClustR/inst/exampledata/xset4.Rdata")
+load("K:/pivus_75_subset/datasets/xcmsFillPeaks.Rdata")
 
-source("R/Params.R")
-source("R/ramclustR.R")
+source("C:/Users/cbroeckl/Documents/GitHub/RAMClustR/R/Params.R")
+source("C:/Users/cbroeckl/Documents/GitHub/RAMClustR/R/ramclustR.R")
 RC<-ramclustR(xcmsObj=xset4, mspout=TRUE, MStag="01.cdf", idMSMStag="02.cdf")
 gc()
 

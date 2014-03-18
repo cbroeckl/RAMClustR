@@ -6,7 +6,7 @@
 #'
 #' @param filename character Filename of the nmrML to check
 #' @param ms MS1 intensities =MSdata, 
-#' @param idmsms =ms, 
+#' @param idmsms =ms,  
 #' @param idMSMStag character e.g. "02.cdf"
 #' @param featdelim character e.g. ="_"
 #' @param timepos numeric 2

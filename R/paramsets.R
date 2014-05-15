@@ -12,6 +12,7 @@ paramsets<-list(
                      colgas="",
                      msscanrange="",
                      conevolt="",
+			   MSlevs="",
                      saveAs="")),
   
   newGC=data.frame(c(Experiment="",
@@ -27,6 +28,7 @@ paramsets<-list(
                      scantime="",
                      conevolt="",
                      deriv="",
+			   MSlevs=1,
                      saveAs=""))
 )
 

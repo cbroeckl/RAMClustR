@@ -1,4 +1,3 @@
-##merge this with the pmfxcms function to integrate the systems
 
 defineExperiment<-function()
 {

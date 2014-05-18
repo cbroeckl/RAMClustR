@@ -1,9 +1,8 @@
 Package: RAMClustR
 Type: Package
-Title: Assigning precursor-product ion relationships in indiscriminant MS/MS data
+Title: RAMClust: a novel feature clustering method enables spectral-matching based annotation for metabolomics data
 Version: 0.1
-Date: 2013-10-23
-Author: Corey D. Broeckling, Adam L. Heuberger, Jonathan A. Prince, E. Ingelsson, Jessica E. Prenni
+Date: 2014-05-17
+Author: Corey D. Broeckling, Fayyaz Afsar, Steffan Neumann, Asa Ben-Hur,  Jessica Prenni.
 Maintainer: "Broeckling,Corey" <Corey.Broeckling@ColoState.EDU>
-Description: Assigning precursor-product ion relationships in indiscriminant MS/MS  data A concise (1-5 lines) description of the package
-License: GPL (>= 2)
+Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics data.

@@ -3,7 +3,7 @@
 \alias{RAMClustR}
 \docType{package}
 \title{
-RAMClustR: Feature clustering for metabolomics data enabling spectral matching
+RAMClust: a novel feature clustering method enables spectral-matching based annotation for metabolomics data
 }
 \description{
 RAMClustR generates custom similiarity scores between metabolomics features, with XCMS output or properly formatted data matrices available as input.  Output consists of a new ramclust object, with feature cluster membership, a reduced dimensionality dataset, and msp formatted spectra file suitable for database searching.
@@ -29,7 +29,7 @@ Maintainer: "Broeckling,Corey" <Corey.Broeckling@ColoState.EDU>, "Steffen Neuman
 \references{
 Broeckling CD, Heuberger AL, Prince JA, Ingelsson E, Prenni JE (2013) Assigning precursor-product ion relationships in indiscriminant MS/MS data from non-targeted metabolite profiling studies. Metabolomics 9: 33-43. doi: 10.1038/nrg2344
 }
-\keyword{ metabolomics mass-spectrometry clustering}
+\keyword{ metabolomics mass-spectrometry mass-spectrum spectral-searching}
 \seealso{
 \code{\link[<pkg>:xcms-package]{xcms}} \code{\link[<pkg>:CAMERA-package]{CAMERA}}
 }

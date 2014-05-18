@@ -24,7 +24,6 @@
 ramclustR<- function(  xcmsObj=NULL,
                        ms=NULL, 
                        idmsms=NULL,
-                       #xcmsObj=NULL,
                        taglocation="filepaths",
                        MStag=NULL,
                        idMSMStag=NULL, 
@@ -41,19 +40,23 @@ ramclustR<- function(  xcmsObj=NULL,
                        collapse=TRUE,
                        mspout=TRUE, 
                        mslev=2,
-                       ExpDes=NULL) {
+		       ExpDes=NULL,
+		       normalize="TIC"
+		       minModuleSize=2,
+                       linkage="average") {
   
   require(xcms, quietly=TRUE)
   require(ff, quietly=TRUE)
   require(fastcluster, quietly=TRUE)
   require(dynamicTreeCut, quietly=TRUE)
   
-  if(is.null(xcmsObj) & is.null(ms)) 
-  {stop("you must select either 
+  if(is.null(xcmsObj) & is.null(ms))  {
+	  stop("you must select either 
           1: an MS dataset with features as columns 
              (__)one column may contain sample names, defined by sampNameCol) 
           2: an xcmsObj. If you choose an xcms object, set taglocation: 'filepaths' by default
             and both MStag and idMSMStag")}
+
   if(!is.null(xcmsObj) & mslev==2 & any(is.null(MStag), is.null(idMSMStag), is.null(taglocation)))
   {stop("you must specify the the MStag, idMSMStag, and the taglocations")}
   
@@ -61,6 +64,10 @@ ramclustR<- function(  xcmsObj=NULL,
   cat("please enter experiment description (see popup window)")
   ExpDes<-defineExperiment()
   }
+
+  if( normalize!="none"  & normalize!="TIC" & normalize!="quantile") {
+	stop("please selected either 'none', 'TIC', or 'quantile' for the normalize setting")}
+
   a<-Sys.time()   
   
   if(is.null(hmax)) {hmax<-0.3}
@@ -117,6 +124,27 @@ ramclustR<- function(  xcmsObj=NULL,
       mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)
     }
   }
+
+
+##replace na and NaN with min dataset value
+    data1[which(is.na(data1))]<-min(data1, na.rm=TRUE)
+    data2[which(is.na(data2))]<-min(data2, na.rm=TRUE)
+    data1[which(is.nan(data1))]<-min(data1, na.rm=TRUE)
+    data2[which(is.nan(data2))]<-min(data2, na.rm=TRUE)
+    
+##Optional normalization of data, either Total ion signal or quantile
+  
+  if(normalize=="TIC") {
+	data1<-(data1/rowSums(data1))*mean(rowSums(data1), na.rm=TRUE)
+	data2<-(data2/rowSums(data2))*mean(rowSums(data2), na.rm=TRUE)
+	}
+  if(normalize=="quantile") {
+	library(preprocessCore)
+	data1<-t(preprocessCore::normalize.quantiles(t(data1)))
+	data2<-t(preprocessCore::normalize.quantiles(t(data2)))	
+	}
+
+
   ##retention times and mzs vectors
   
   ##sort rt vector and data by retention time
@@ -244,17 +272,23 @@ ramclustR<- function(  xcmsObj=NULL,
   gc()
   
   
-  ##cluster using fastcluster package, average method
-  system.time(RC<-hclust(RC, method="average"))
+  ##cluster using fastcluster package,
+  system.time(RC<-hclust(RC, method=linkage))
   gc()
   d<-Sys.time()    
   cat('\n', '\n')    
   cat(paste("fastcluster based clustering complete:", 
             round(difftime(d, c, units="mins"), digits=1), "minutes"))
-  
-  clus<-cutreeDynamicTree(RC, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=2)
+  if(minModuleSize==1) {
+	clus<-cutreeDynamicTree(RC, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=2)
+	sing<-which(clus==0)
+	clus[sing]<-max(clus)+1:length(sing)
+	}
+  if(minModuleSize>1) {
+ 	clus<-cutreeDynamicTree(RC, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=minModuleSize)
+	}
   gc()
-  
+ 
   
   RC$featclus<-clus
   RC$frt<-times

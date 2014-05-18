@@ -52,9 +52,7 @@
 
   \item{collapse}{logical, default=TRUE; controls whether RAMClustR should collapse feature intensities into spectral intensities after cluster membership for all features has been determined.}
 
-
   \item{mspout}{logical, default=TRUE; controls whether RAMClustR writes an msp formatted spectral file containing spectra for all compounds with more than minModuleSize features}
-
 
   \item{normalize}{One of "TIC", "quantile", or "none" currently.  Controls how the xcms data is normilized before clustering into spectra.  Normalization is important when MS sensitivity drift over the experiment might artificially induce correlation between features derived from two compounds that coelute.}
 
@@ -62,8 +60,7 @@
 
   \item{ExpDes}{The experimental design information for the experiment.  Will be filled by the user using the edit() function.  THe editor used by this function will vary based on the platform.  On a windows platform, a popup spreadsheet-style editor will appear, allowing users to enter the descritions for the experimental parameters.  If you wish to save these parameters, enter a new parameter set name in the 'saveAs' cell of the second sheet.  The values input will be used during msp spectrum export.} 
 
-\value{
-  an S3 RAMClustR object. THe base object structure is that of an hclust object, thus the plot methods available for other R objects of hlcust format are available.  In addition, several slots are added:
+\value{an S3 RAMClustR object. THe base object structure is that of an hclust object, thus the plot methods available for other R objects of hlcust format are available.  In addition, several slots are added:
   featclus: the cluster to which each feature belongs. zero values indicate singletons when minModuleSize is set to a value > 1. 
   frt: feature retention time used in clustering
   fmz: feature m/z value used to draw spectrum
@@ -77,8 +74,7 @@
   cmpd: a cluster name: by default, all clusters are assigned the label C1... Cn, where n is the number of clusters with at least minModuleSize features
   ann: a place holder for compound annotations.  by default, all clusters are annotated with the label C1... Cn, where n is the number of clusters with at least minModuleSize features
   annconf: a placeholder for a numerical annotation confidence for each annotation (see Metabolomics Standards initiative for more information)
-  annnotes: a placeholder for a vector of annotation notes: in the event of an ambiguous annotation, notes can be used to document the evidence and/or caveats associated with the annotation.
-}
+  annnotes: a placeholder for a vector of annotation notes: in the event of an ambiguous annotation, notes can be used to document the evidence and/or caveats associated with the annotation.}
 \description{
   RAMClustR: a feature clustering algorithm designed to groupd features into compounds in an unsupervised manner. 
 }

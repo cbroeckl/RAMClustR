@@ -1,4 +1,5 @@
 \name{RAMClustR-package}
+\alias{RAMClustR-package}
 \alias{RAMClustR}
 \docType{package}
 \title{
@@ -6,7 +7,6 @@ RAMClust: a novel feature clustering method enables spectral-matching based anno
 }
 \description{
 RAMClustR generates custom similiarity scores between metabolomics features, with XCMS output or properly formatted data matrices available as input.  Output consists of a new ramclust object, with feature cluster membership, a reduced dimensionality dataset, and msp formatted spectra file suitable for database searching.
-
 }
 \details{
 \tabular{ll}{
@@ -19,8 +19,7 @@ License: \tab GPL (>= 2)\cr
 
 }
 \author{
-Corey D. Broeckling, Fayyaz ul Amir Afsar Minhas, Steffen Neumann,
-Asa Ben-Hur, Jessica E. Prenni
+Corey D. Broeckling, Fayyaz ul Amir Afsar Minhas, Steffen Neumann, Asa Ben-Hur, Jessica E. Prenni
 
 Maintainer: "Broeckling,Corey" <Corey.Broeckling@ColoState.EDU>, "Steffen Neumann" <sneumann@ipb-halle.de>,
 }

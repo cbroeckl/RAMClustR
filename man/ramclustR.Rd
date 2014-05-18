@@ -1,5 +1,5 @@
 \name{ramclustR}
-\alias{RAMClustR}
+\alias{ramclustR}
 \title{ramclustR}
 \usage{
   ramclustR (xcmsObj = NULL, ms = NULL, idmsms = NULL, taglocation = "filepaths", 
@@ -56,8 +56,8 @@
 
   \item{linkage}{The linkage method used to perform heirarchical fastcluster-based heirarchical clustering.  default="average"}
 
-  \item{ExpDes}{The experimental design information for the experiment.  Will be filled by the user using the edit function.  THe editor used by this function will vary based on the platform.  On a windows platform, a popup spreadsheet-style editor will appear, allowing users to enter the descritions for the experimental parameters.  If you wish to save these parameters, enter a new parameter set name in the 'saveAs' cell of the second sheet.  The values input will be used during msp spectrum export.} 
-  }
+  \item{ExpDes}{The experimental design information for the experiment.  Will be filled by the user using the edit function.  The editor used by this function will vary based on the platform.  On a windows platform, a popup spreadsheet-style editor will appear, allowing users to enter the descritions for the experimental parameters.  If you wish to save these parameters, enter a new parameter set name in the 'saveAs' cell of the second sheet.  The values input will be used during msp spectrum export.} 
+}
 \value{
 an S3 RAMClustR object. THe base object structure is that of an hclust object, thus the plot methods available for other R objects of hlcust format are available.  In addition, several slots are added:
   featclus: the cluster to which each feature belongs. zero values indicate singletons when minModuleSize is set to a value > 1. 
@@ -74,10 +74,7 @@ an S3 RAMClustR object. THe base object structure is that of an hclust object, t
   ann: a place holder for compound annotations.  by default, all clusters are annotated with the label C1... Cn, where n is the number of clusters with at least minModuleSize features
   annconf: a placeholder for a numerical annotation confidence for each annotation (see Metabolomics Standards initiative for more information)
   annnotes: a placeholder for a vector of annotation notes: in the event of an ambiguous annotation, notes can be used to document the evidence and/or caveats associated with the annotation.
-
-Spectra groups are then used for two purposes.  1. to guide the condenstation of the low collision energy dataset from features to spectral abundances, whereby the weighted mean of each feature in the group is taken for each sample, such that a spectral intensity is calculated for each compound (cluster, spectra) in each sample. 2. to redraw spectra.  Spectra can be exported in .msp format, allowing for further spectral searching using NIST MSsearch or PepSearch, or to be uploaded to the MassBank batch search tool.  
-
-Upon annotation of compounds, users are encouraged to store their annotations, Metabolomics Standards Initiative confidence scores, and annotation notes or observations in the ramclust object, slots $ann, $anncof, and $annnotes, respectively. 
+Spectra groups are then used for two purposes.  1. to guide the condenstation of the low collision energy dataset from features to spectral abundances, whereby the weighted mean of each feature in the group is taken for each sample, such that a spectral intensity is calculated for each compound (cluster, spectra) in each sample. 2. to redraw spectra.  Spectra can be exported in .msp format, allowing for further spectral searching using NIST MSsearch or PepSearch, or to be uploaded to the MassBank batch search tool.  Upon annotation of compounds, users are encouraged to store their annotations, Metabolomics Standards Initiative confidence scores, and annotation notes or observations in the ramclust object, slots $ann, $anncof, and $annnotes, respectively. 
 }
 
 \description{
@@ -86,17 +83,11 @@ Upon annotation of compounds, users are encouraged to store their annotations, M
 
 \details{
   The RAMClustR package implements a feature grouping method which determines retention time and correlational similarity of all features in a metabolomics dataset.  These scores are induced to decay using independently tuned sigmoid functions (st and sr for time and correlation, respectively).  A total similarity score is then calculated as the product of the time and correlational similarities.  This numerical similarity score is calculated for all features in the dataset within maxt of each other (20 seconds by default), thereby generating a full similarity matrix reflecting high similarity scores between features only when the two features (approximately) coelute and are correlated with each other across the dataset.  for datasets with many features, memory is managed by processed in blocksize^2 'chunks', reducing the risk of memory limitation induced failures.  
-
 This similarity matrix is used as input to heirarchical clustering via the fastcluster package, using (by default) average linkage.  The output of the clustering is then cut using the dynamicTreeCut package, which prunes complex trees, rather than by branch height, but the relative 'shape' of the clusters, as determined by local branch height patterns.  The cutting process generates discrete spectral grouping assignments for each feature of the dataset.  A RAMClustR object is returned.
-
 There are a few practical considerations to keep in mind while processing your data.  
-
 1. In-source spectra will contain signals above the expected molecular ions, and many compounds generate significan in-source fragments.  Do not be alarmed.  This is observation is what drove us to build RAMClustR.  If you are quite sure that the clusters contain signals from multiple compounds, first reduce sr (from the default value of 0.5), then change deepSpilt to TRUE, and if all else fails, reduce the st value (by default, have the median peak width (when taken from xcms, the median of the peak stop time minus peak start time of all detected peaks).    
-
 2. Since we are using in-source spectra, RAMClustR spectra will often contain masses above the precursor ions typically targeted by generators of MS/MS libraries.  This lack of a perfect match reflects differences in acquisition methods, more than evidence of a poor match. 
-
 3. The RAMClustR spectra can only be as good as the peak detection.  Ensure that you have set XCMS (or any other peak picking software) appropriately.  We generally recommend setting signal to noise levels relatively low (3 or 5) so as to enable detection (and hence clustering) of as many potentially diagnostic signals as possible for more accurate and rich spectra.  In addition, consider that if you have performed peak detection on MS and idMS/MS raw data, and a given feature is present in all the samples, but only at the MS level, the resulting XCMS object will only observe that feature in 50% of the files.  To recover more features in the final dataset, set minfrac rather low, i.e. 10%.  
-
 4. Since good quantitative peak detection is dependent on good separation, minimally by one of mass or retention time, features with a common mass and retention time that are derived from two compounds will naturally not represent the quantitative abundance of either of the two compounds well.  Features such as this may either cluster with the contributing compound that has higher intensity, or may not cluster with either of the two compounds, thereby generating a singleton feature.  A good example of this is the phosphotidyl cholines by reversed phase LC-MS, which generate a common 184 ion, or monosaccharides by GC-MS which generate common 73 and 147 ions.  
 }
 \author{

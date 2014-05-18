@@ -48,7 +48,6 @@
   \item{minModuleSize}{the number of features required for a cluster to be reported. That is, if a feature is clustered in a group with less than minModuleSize features, it will not be exported as a SpecAbund or SpecAbundAve column. If you wish to analyze singletons, set minModuleSize=1}
 
   \item{mult}{constant for reshaping blocksize during custom similarity matrix generation, generally unecessary to set manually.  If memory demands become apparent later in processing, reduce the value.}
-}
 
   \item{collapse}{logical, default=TRUE; controls whether RAMClustR should collapse feature intensities into spectral intensities after cluster membership for all features has been determined.}
 

@@ -19,17 +19,17 @@
 
   \item{taglocation}{The location for the tag in the xcms object in which to look for the idMSMStag (see below)default is "filepaths", either "filepaths" or "phenoData".}
 
-  \item{MStag}{character e.g. "01.cdf".  THe character string in the taglocation by which to tag files as indiscriminant MS/MS data}
+  \item{MStag}{character e.g. "01.cdf".  THe character string in the taglocation by which to tag files as indiscriminant MSMS data}
 
-  \item{idMSMStag}{character e.g. "02.cdf".  THe character string in the taglocation by which to tag files as indiscriminant MS/MS data}
+  \item{idMSMStag}{character e.g. "02.cdf".  The character string in the taglocation by which to tag files as indiscriminant MSMS data}
 
-  \item{ms}{alternate input format for low collision energy data.  If peak detection is perfomred by other software, csv formatted data is requred, and the file name (with full path, if not in working directory) is specified here}
+  \item{ms}{alternate input format for low collision energy data.  If peak detection is performed by other software, csv formatted data is requred, and the file name (with full path, if not in working directory) is specified here}
 
   \item{idmsms}{alternate input format for high collision energy data (MS^e, idMS/MS).  If peak detection is perfomred by other software, csv formatted data is requred, and the file name (with full path, if not in working directory) is specified here. feature and sample names must be identical to those in the ms data format.  If using only high collision energy data (or GC-MS, electron impact), use the ms data option instead.}
 
   \item{featdelim}{alternate input format option: if ms is specified instead of xcmsObj, feature names must contain mass and retention time.  The featdelim parameter sets the delimiter used to separate mass and time components of the feature name.  character e.g. ="_".}
 
-  \{sampNameCol}{The numeric position of the column in the ms and or idmsms datasets that contains the sample names. i.e. sampNameCol=1.}
+  \item{sampNameCol}{The numeric position of the column in the ms and or idmsms datasets that contains the sample names. i.e. sampNameCol=1.}
 
   \item{timepos}{alternate input format option: If importing data from another peak detection tool, feature names must contain mass and retention time. The position of the time component of the feature name (numeric, either 1 or 2) is defined here.}
 
@@ -50,15 +50,15 @@
   \item{mult}{constant for reshaping blocksize during custom similarity matrix generation, generally unecessary to set manually.  If memory demands become apparent later in processing, reduce the value.}
 }
 
-  \{collapse}{logical, default=TRUE; controls whether RAMClustR should collapse feature intensities into spectral intensities after cluster membership for all features has been determined.}
+  \item{collapse}{logical, default=TRUE; controls whether RAMClustR should collapse feature intensities into spectral intensities after cluster membership for all features has been determined.}
 
 
-  \{mspout}{logical, default=TRUE; controls whether RAMClustR writes an msp formatted spectral file containing spectra for all compounds with more than minModuleSize features}
+  \item{mspout}{logical, default=TRUE; controls whether RAMClustR writes an msp formatted spectral file containing spectra for all compounds with more than minModuleSize features}
 
 
-  \{normalize}{One of "TIC", "quantile", or "none" currently.  Controls how the xcms data is normilized before clustering into spectra.  Normalization is important when MS sensitivity drift over the experiment might artificially induce correlation between features derived from two compounds that coelute.}
+  \item{normalize}{One of "TIC", "quantile", or "none" currently.  Controls how the xcms data is normilized before clustering into spectra.  Normalization is important when MS sensitivity drift over the experiment might artificially induce correlation between features derived from two compounds that coelute.}
 
-  \{linkage}{The linkage method used to perform heirarchical fastcluster-based heirarchical clustering.  default="average"}
+  \item{linkage}{The linkage method used to perform heirarchical fastcluster-based heirarchical clustering.  default="average"}
 
   \item{ExpDes}{The experimental design information for the experiment.  Will be filled by the user using the edit() function.  THe editor used by this function will vary based on the platform.  On a windows platform, a popup spreadsheet-style editor will appear, allowing users to enter the descritions for the experimental parameters.  If you wish to save these parameters, enter a new parameter set name in the 'saveAs' cell of the second sheet.  The values input will be used during msp spectrum export.} 
 

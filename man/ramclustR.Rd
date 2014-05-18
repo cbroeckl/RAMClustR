@@ -57,7 +57,7 @@
 
   \item{linkage}{The linkage method used to perform heirarchical fastcluster-based heirarchical clustering.  default="average"}
 
-  \item{ExpDes}{The experimental design information for the experiment.  Will be filled by the user using the edit() function.  THe editor used by this function will vary based on the platform.  On a windows platform, a popup spreadsheet-style editor will appear, allowing users to enter the descritions for the experimental parameters.  If you wish to save these parameters, enter a new parameter set name in the 'saveAs' cell of the second sheet.  The values input will be used during msp spectrum export.} 
+  \item{ExpDes}{The experimental design information for the experiment.  Will be filled by the user using the edit function.  THe editor used by this function will vary based on the platform.  On a windows platform, a popup spreadsheet-style editor will appear, allowing users to enter the descritions for the experimental parameters.  If you wish to save these parameters, enter a new parameter set name in the 'saveAs' cell of the second sheet.  The values input will be used during msp spectrum export.} 
 
 \value{
 an S3 RAMClustR object. THe base object structure is that of an hclust object, thus the plot methods available for other R objects of hlcust format are available.  In addition, several slots are added:

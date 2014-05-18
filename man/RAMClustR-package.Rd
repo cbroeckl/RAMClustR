@@ -1,4 +1,5 @@
-\name{RAMClustR}
+\name{RAMClustR-package}
+\alias{RAMClustR}
 \docType{package}
 \title{
 RAMClust: a novel feature clustering method enables spectral-matching based annotation for metabolomics data

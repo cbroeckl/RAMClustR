@@ -27,7 +27,7 @@ Maintainer: "Broeckling,Corey" <Corey.Broeckling@ColoState.EDU>, "Steffen Neuman
 \references{
 Broeckling CD, Heuberger AL, Prince JA, Ingelsson E, Prenni JE (2013) Assigning precursor-product ion relationships in indiscriminant MS/MS data from non-targeted metabolite profiling studies. Metabolomics 9: 33-43. doi: 10.1038/nrg2344
 }
-\keyword{ metabolomics mass-spectrometry mass-spectrum spectral-searching}
+\keyword{metabolomics}
 \seealso{
 \code{\link[<pkg>:xcms-package]{xcms}} \code{\link[<pkg>:CAMERA-package]{CAMERA}}
 }

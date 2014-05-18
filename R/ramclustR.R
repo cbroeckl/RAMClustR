@@ -41,7 +41,7 @@ ramclustR<- function(  xcmsObj=NULL,
                        mspout=TRUE, 
                        mslev=2,
 		       ExpDes=NULL,
-		       normalize="TIC"
+		       normalize="TIC",
 		       minModuleSize=2,
                        linkage="average") {
   

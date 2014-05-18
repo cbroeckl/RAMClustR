@@ -1,5 +1,4 @@
 \name{ramclustR}
-\alias{RAMClustR}
 \title{ramclustR}
 \usage{
   ramclustR (xcmsObj = NULL, ms = NULL, idmsms = NULL, taglocation = "filepaths", 

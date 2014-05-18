@@ -1,6 +1,4 @@
-\name{RAMClustR-package}
-\alias{RAMClustR-package}
-\alias{RAMClustR}
+\name{RAMClustR}
 \docType{package}
 \title{
 RAMClust: a novel feature clustering method enables spectral-matching based annotation for metabolomics data
@@ -17,8 +15,7 @@ Version: \tab 0.1\cr
 Date: \tab 2014-03-18\cr
 License: \tab GPL (>= 2)\cr
 }
-~~ An overview of how to use the package, including the most important ~~
-~~ functions ~~
+
 }
 \author{
 Corey D. Broeckling, Fayyaz ul Amir Afsar Minhas, Steffen Neumann,

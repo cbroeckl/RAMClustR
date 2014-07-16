@@ -2,7 +2,7 @@
 defineExperiment<-function()
 {
   if(file.exists("R/paramsets.Rdata")) {
-    load(paste(.libPaths(), "/RAMClustR/inst/params/paramsets.Rdata", sep=""))} else {load(paste(.libPaths(), "/RAMClustR/inst/params/defparamsets.Rdata", sep=""))
+    load("/RAMClustR/params/paramsets.Rdata", envir=.libPaths() )} else {load(paste(.libPaths(), "/RAMClustR/params/defparamsets.Rdata", sep=""))
     }
   
   platforms<-names(paramsets) 
@@ -31,7 +31,7 @@ defineExperiment<-function()
                                   {newParamset<-list(instrument)
                                   names(newParamset)<-instrument["saveAs",1]
                                   paramsets<-c(paramsets, newParamset)
-                                  save(paramsets, file=paste(libPaths(), "/RAMClustR/inst/params/paramsets.Rdata", sep=""))
+                                  save(paramsets, file=paste(libPaths(), "/RAMClustR/params/paramsets.Rdata", sep=""))
                                   }
   names(instrument)<-"InstVals"
   exp.pars<-list(design, instrument)

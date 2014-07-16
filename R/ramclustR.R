@@ -94,8 +94,8 @@ ramclustR<- function(  xcmsObj=NULL,
     data2<-as.matrix(MSMSdata[,featcol])
 	dimnames(data2)[[1]]<-MSMSdata[,sampNameCol]
 	dimnames(data2)[[2]]<-names(MSMSdata[,featcol])
-    if(dimnames(data1)!=dimnames(data2)) 
-    {stop("the dimensions of your MS and idMSMS data are not identical")}
+    if(!all(dimnames(data1)[[2]]==dimnames(data2)[[2]])) 
+    {stop("the feature names of your MS and idMSMS data are not identical")}
     
     rtmz<-matrix(
       unlist(

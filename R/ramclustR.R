@@ -89,7 +89,11 @@ ramclustR<- function(  xcmsObj=NULL,
       featcol<-setdiff(1:(ncol(MSdata)), sampNameCol)}
     sampnames<-MSdata[,sampNameCol]
     data1<-as.matrix(MSdata[,featcol])
+	dimnames(data1)[[1]]<-MSdata[,sampNameCol]
+	dimnames(data1)[[2]]<-names(MSdata[,featcol])
     data2<-as.matrix(MSMSdata[,featcol])
+	dimnames(data2)[[1]]<-MSMSdata[,sampNameCol]
+	dimnames(data2)[[2]]<-names(MSMSdata[,featcol])
     if(dimnames(data1)!=dimnames(data2)) 
     {stop("the dimensions of your MS and idMSMS data are not identical")}
     

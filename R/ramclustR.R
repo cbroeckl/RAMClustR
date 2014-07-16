@@ -79,6 +79,12 @@ ramclustR<- function(  xcmsObj=NULL,
       your average chromatographic peak width at half max (seconds)")
     if(is.null(sr)) sr<-0.15
     if(is.null(maxt)) maxt<-60
+    MSdata<-read.csv(ms, header=TRUE, check.names=FALSE)
+	if(!is.null(idmsms)){
+    MSMSdata<-read.csv(idmsms, header=TRUE, check.names=FALSE)}
+	if(is.null(idmsms)) { MSMSdata<-MSdata}
+    if(is.null(sampNameCol)) {featcol<-1:ncol(MSdata)} else {
+      featcol<-setdiff(1:(ncol(MSdata)), sampNameCol)}
     if(is.null(sampNameCol)) {featcol<-1:ncol(MSdata)} else {
       featcol<-setdiff(1:(ncol(MSdata)), sampNameCol)}
     sampnames<-MSdata[,sampNameCol]
@@ -94,8 +100,7 @@ ramclustR<- function(  xcmsObj=NULL,
       byrow=TRUE, ncol=2)
     times<-as.numeric(rtmz[,2])
     mzs<-as.numeric(rtmz[,1])
-    rm(rtmz)  
-    
+    rm(rtmz)     
   }
   
   ##if xcms object is selected instead of an R dataframe/matrix

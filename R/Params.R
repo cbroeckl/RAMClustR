@@ -2,7 +2,7 @@
 defineExperiment<-function()
 {
   if(file.exists("R/paramsets.Rdata")) {
-    load("R/paramsets.Rdata")} else {load("R/defparamsets.Rdata")
+    load(paste(.libPaths(), "/R/paramsets.Rdata", sep=""))} else {load(paste(.libPaths(), "/R/defparamsets.Rdata", sep=""))
     }
   
   platforms<-names(paramsets) 
@@ -31,7 +31,7 @@ defineExperiment<-function()
                                   {newParamset<-list(instrument)
                                   names(newParamset)<-instrument["saveAs",1]
                                   paramsets<-c(paramsets, newParamset)
-                                  save(paramsets, file="R/paramsets.Rdata")
+                                  save(paramsets, file=paste(libPaths(), "R/paramsets.Rdata", sep=""))
                                   }
   names(instrument)<-"InstVals"
   exp.pars<-list(design, instrument)

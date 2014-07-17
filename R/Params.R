@@ -1,8 +1,14 @@
 
 defineExperiment<-function()
 {
-  load(system.file('params/defparamsets.Rdata', package = "RAMClustR"))
-  
+
+  if(file.exists(system.file('params/paramsets.Rdata', package = "RAMClustR"))) {
+    
+	load(system.file('params/paramsets.Rdata', package = "RAMClustR"))} else {
+	load(system.file('params/defparamsets.Rdata', package = "RAMClustR"))   }
+ 
+
+ 
   platforms<-names(paramsets) 
   
   ExpVals<-c(Experiment="",

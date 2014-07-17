@@ -1,9 +1,7 @@
 
 defineExperiment<-function()
 {
-  if(file.exists("R/paramsets.Rdata")) {
-    load("/RAMClustR/params/paramsets.Rdata", envir=.libPaths() )} else {load(paste(.libPaths(), "/RAMClustR/params/defparamsets.Rdata", sep=""))
-    }
+  load(system.file('params/defparamsets.Rdata', package = "RAMClustR"))
   
   platforms<-names(paramsets) 
   

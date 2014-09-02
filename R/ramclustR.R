@@ -105,8 +105,8 @@ ramclustR<- function(  xcmsObj=NULL,
         strsplit(dimnames(data1)[[2]], featdelim)
       ), 
       byrow=TRUE, ncol=2)
-    times<-as.numeric(rtmz[,2])
-    mzs<-as.numeric(rtmz[,1])
+    times<-as.numeric(rtmz[,timepos])
+    mzs<-as.numeric(rtmz[,which(c(1:2)!=timepos)])
     rm(rtmz)     
   }
   

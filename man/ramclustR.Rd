@@ -3,8 +3,8 @@
 \title{ramclustR}
 \usage{
   ramclustR (xcmsObj = NULL, ms = NULL, idmsms = NULL, taglocation = "filepaths", 
-    MStag = NULL, idMSMStag = NULL, featdelim = "_", timepos = 2, 
-    mzpos = 1, st = NULL, sr = NULL, maxt = NULL, deepSplit = FALSE, 
+    MStag = NULL, idMSMStag = NULL, featdelim = "_", mzpos = 1, timepos = 2, 
+    st = NULL, sr = NULL, maxt = NULL, deepSplit = FALSE, 
     blocksize = 2000, mult = 5, hmax = NULL, sampNameCol = NULL, 
     collapse = TRUE, mspout = TRUE, mslev = 2, ExpDes = NULL, 
     normalize = "TIC", minModuleSize = 2, linkage="average")
@@ -13,8 +13,6 @@
   \item{xcmsObj}{the xcms object to be used as input for clustering}
 
   \item{mslev}{the number of full scan collision energies used for the data in the xcms object. If only low collision energy is used, set this parameter equal to 1. If indiscriminant MS/MS is used, set to 2}
-
-  \item{normalize}{Method used to normalize the xcms peak intensities.  Method options currently include 'TIC' (default), 'quantile', or 'none'}
 
   \item{taglocation}{The location for the tag in the xcms object in which to look for the idMSMStag (see below) default is "filepaths", either "filepaths" or "phenoData".}
 
@@ -31,6 +29,8 @@
   \item{sampNameCol}{The numeric (integer) position of the column in the ms and or idmsms datasets that contains the sample names.}
 
   \item{timepos}{alternate input format option: If importing data from another peak detection tool, feature names must contain mass and retention time. The position of the time component of the feature name (numeric, either 1 or 2) is defined here.}
+
+  \item{mzpos}{alternate input format option: If importing data from another peak detection tool, feature names must contain mass and retention time. The position of the mz component of the feature name (numeric, either 1 or 2) is defined here.}
 
   \item{st}{Sigma t value controlling the rate at which feature similarity decays with respect to differences in retention times between feature pairs. When an xcms object is used as input, this parameter is by default set to half the peak width of all the peaks in the xcmsSet.  Can be manually overridden to tune performance when necessary.  Larger values are less selective, smaller values are more selective.}
 

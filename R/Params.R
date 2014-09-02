@@ -35,7 +35,7 @@ defineExperiment<-function()
                                   {newParamset<-list(instrument)
                                   names(newParamset)<-instrument["saveAs",1]
                                   paramsets<-c(paramsets, newParamset)
-                                  save(paramsets, file=paste(libPaths(), "/RAMClustR/params/paramsets.Rdata", sep=""))
+                                  save(paramsets, file=paste(system.file('params', package = "RAMClustR"), "/paramsets.Rdata", sep=""))
                                   }
   names(instrument)<-"InstVals"
   exp.pars<-list(design, instrument)

@@ -1,0 +1,4 @@
+2014-09-02  Steffen Neumann  <sneumann@ipb-halle.de>
+
+	* Fix some minor stuff to make R CMD check happy
+

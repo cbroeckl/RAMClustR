@@ -28,6 +28,7 @@ ramclustR<- function(  xcmsObj=NULL,
                        MStag=NULL,
                        idMSMStag=NULL, 
                        featdelim="_", 
+                       mzpos=1, 
                        timepos=2, 
                        st=NULL, 
                        sr=NULL, 
@@ -44,12 +45,7 @@ ramclustR<- function(  xcmsObj=NULL,
 		       normalize="TIC",
 		       minModuleSize=2,
                        linkage="average") {
-  
-  require(xcms, quietly=TRUE)
-  require(ff, quietly=TRUE)
-  require(fastcluster, quietly=TRUE)
-  require(dynamicTreeCut, quietly=TRUE)
-  
+    
   if(is.null(xcmsObj) & is.null(ms))  {
 	  stop("you must select either 
           1: an MS dataset with features as columns 
@@ -151,7 +147,6 @@ ramclustR<- function(  xcmsObj=NULL,
 	data2<-(data2/rowSums(data2))*mean(rowSums(data2), na.rm=TRUE)
 	}
   if(normalize=="quantile") {
-	library(preprocessCore)
 	data1<-t(preprocessCore::normalize.quantiles(t(data1)))
 	data2<-t(preprocessCore::normalize.quantiles(t(data2)))	
 	}
@@ -181,7 +176,7 @@ ramclustR<- function(  xcmsObj=NULL,
   #gc()
   #ffrt<-ff(vmode="double", dim=c(n, n), init=0)
   #gc()
-  ffmat<-ff(vmode="double", dim=c(n, n), init=0) ##reset to 1 if necessary
+  ffmat<-ff(vmode="double", dim=c(n, n), initdata = 0) ##reset to 1 if necessary
   gc()
   #Sys.sleep((n^2)/10000000)
   #gc()

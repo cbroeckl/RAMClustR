@@ -61,9 +61,15 @@ ramclustR<- function(  xcmsObj=NULL,
   {stop("you must specify the the MStag, idMSMStag, and the taglocations")}
   
   if(is.null(ExpDes) & mspout==TRUE){
-  cat("please enter experiment description (see popup window)")
+  cat("please enter experiment description (see popup window), or set 'mspout=FALSE'")
   ExpDes<-defineExperiment()
   }
+	
+  if(is.null(ExpDes) & mspout==FALSE){
+  warning("using undefined instrumental settings")
+  ExpDes<-paramsets$undefined
+  }
+
 
   if( normalize!="none"  & normalize!="TIC" & normalize!="quantile") {
 	stop("please selected either 'none', 'TIC', or 'quantile' for the normalize setting")}

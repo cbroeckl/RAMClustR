@@ -11,11 +11,11 @@ defineExperiment<-function()
  
   platforms<-names(paramsets) 
   
-  ExpVals<-c(Experiment="",
-             Species="",
-             Sample="",
-             Contributor="",
-             platform="")
+  ExpVals<-c(Experiment=".",
+             Species=".",
+             Sample=".",
+             Contributor=".",
+             platform="undefined")
   
   VarDesc<-c("experiment name, no spaces",
              "species name",

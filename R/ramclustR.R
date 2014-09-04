@@ -40,7 +40,7 @@ ramclustR<- function(  xcmsObj=NULL,
                        sampNameCol=NULL,
                        collapse=TRUE,
                        mspout=TRUE, 
-                       mslev=2,
+                       mslev=1,
 		       ExpDes=NULL,
 		       normalize="TIC",
 		       minModuleSize=2,
@@ -57,9 +57,15 @@ ramclustR<- function(  xcmsObj=NULL,
   {stop("you must specify the the MStag, idMSMStag, and the taglocations")}
   
   if(is.null(ExpDes) & mspout==TRUE){
-  cat("please enter experiment description (see popup window)")
+  cat("please enter experiment description (see popup window), or set 'mspout=FALSE'")
   ExpDes<-defineExperiment()
   }
+	
+  if(is.null(ExpDes) & mspout==FALSE){
+  warning("using undefined instrumental settings")
+  ExpDes<-paramsets$undefined
+  }
+
 
   if( normalize!="none"  & normalize!="TIC" & normalize!="quantile") {
 	stop("please selected either 'none', 'TIC', or 'quantile' for the normalize setting")}
@@ -101,8 +107,8 @@ ramclustR<- function(  xcmsObj=NULL,
         strsplit(dimnames(data1)[[2]], featdelim)
       ), 
       byrow=TRUE, ncol=2)
-    times<-as.numeric(rtmz[,2])
-    mzs<-as.numeric(rtmz[,1])
+    times<-as.numeric(rtmz[,timepos])
+    mzs<-as.numeric(rtmz[,which(c(1:2)!=timepos)])
     rm(rtmz)     
   }
   
@@ -117,7 +123,7 @@ ramclustR<- function(  xcmsObj=NULL,
     
     sampnames<-row.names(xcmsObj@phenoData)
     data12<-groupval(xcmsObj, value="into")
-    if(taglocation=="filepaths") 
+    if(taglocation=="filepaths" & !is.null(MStag)) 
     { msfiles<-grep(MStag, xcmsObj@filepaths, ignore.case=TRUE)
       msmsfiles<-grep(idMSMStag, xcmsObj@filepaths, ignore.case=TRUE)
       if(length(intersect(msfiles, msmsfiles)>0)) 
@@ -130,7 +136,12 @@ ramclustR<- function(  xcmsObj=NULL,
       row.names(data2)<-sampnames[msmsfiles]  ##this may need to be changed to dimnames..
        times<-round(xcmsObj@groups[,"rtmed"], digits=3)
       mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)
-    }
+    } else {
+      data1<-t(data12)
+      data2<-t(data12)
+      times<-round(xcmsObj@groups[,"rtmed"], digits=3)
+      mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)      
+      }
   }
 
 

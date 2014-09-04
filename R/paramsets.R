@@ -1,4 +1,20 @@
 paramsets<-list(
+  undefined=data.frame(c(chrominst=".",
+                     msinst=".",
+                     column=".",
+                     solvA=".",
+                     solvB=".",
+                     CE1=".",
+                     CE2=".",
+                     mstype=".",
+                     msmode=".",
+                     ionization=".",
+                     colgas=".",
+                     msscanrange=".",
+                     conevolt=".",
+			   MSlevs=".",
+                     saveAs="")),
+
   newLC=data.frame(c(chrominst="",
                      msinst="",
                      column="",
@@ -34,3 +50,4 @@ paramsets<-list(
 
 names(paramsets$newLC)<-"value"
 names(paramsets$newGC)<-"value"
+names(paramsets$undefined)<-"value"

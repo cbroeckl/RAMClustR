@@ -39,7 +39,7 @@ ramclustR<- function(  xcmsObj=NULL,
                        sampNameCol=NULL,
                        collapse=TRUE,
                        mspout=TRUE, 
-                       mslev=2,
+                       mslev=1,
 		       ExpDes=NULL,
 		       normalize="TIC",
 		       minModuleSize=2,
@@ -127,7 +127,7 @@ ramclustR<- function(  xcmsObj=NULL,
     
     sampnames<-row.names(xcmsObj@phenoData)
     data12<-groupval(xcmsObj, value="into")
-    if(taglocation=="filepaths") 
+    if(taglocation=="filepaths" & !is.null(MStag)) 
     { msfiles<-grep(MStag, xcmsObj@filepaths, ignore.case=TRUE)
       msmsfiles<-grep(idMSMStag, xcmsObj@filepaths, ignore.case=TRUE)
       if(length(intersect(msfiles, msmsfiles)>0)) 
@@ -140,7 +140,12 @@ ramclustR<- function(  xcmsObj=NULL,
       row.names(data2)<-sampnames[msmsfiles]  ##this may need to be changed to dimnames..
        times<-round(xcmsObj@groups[,"rtmed"], digits=3)
       mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)
-    }
+    } else {
+      data1<-t(data12)
+      data2<-t(data12)
+      times<-round(xcmsObj@groups[,"rtmed"], digits=3)
+      mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)      
+      }
   }
 
 

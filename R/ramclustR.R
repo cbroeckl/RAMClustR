@@ -327,7 +327,11 @@ ramclustR<- function(  xcmsObj=NULL,
   f<-Sys.time()
   cat('\n', '\n')
   cat(paste("RAMClust has condensed", n, "features into",  max(clus), "spectra in", round(difftime(f, a, units="mins"), digits=1), "minutes", '\n'))
-  
+
+  RC$ExpDes<-ExpDes
+  RC$MSdata<-data1
+  if(mslev==2) RC$MSMSdata<-data2  
+
   if(collapse=="TRUE") {
     cat('\n', '\n', "... collapsing features into spectra")
     wts<-colSums(data1[])
@@ -345,9 +349,6 @@ ramclustR<- function(  xcmsObj=NULL,
              into spectral quantities:", round(difftime(g, f, units="mins"), digits=1), "minutes", '\n'))
   }
   
-  RC$ExpDes<-ExpDes
-  RC$MSdata<-data1
-  RC$MSMSdata<-data2
   rm(data1)
   rm(data2)
   

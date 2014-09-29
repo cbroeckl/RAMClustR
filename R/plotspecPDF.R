@@ -1,4 +1,18 @@
 
+#' ramclustR
+#'
+#' Main clustering function 
+#'
+#' This is the Details section
+#'
+#' @param ramclustObj=RC,
+#' @param spec=NULL, 
+#' @param mslev=as.numeric(as.character(RC$ExpDes[[2]]["MSlevs", 1])),  
+#' @param mzdiff=2.5
+#'
+#' @return NULL
+#' @author Corey Broeckling
+
 plotspecPDF<-function(
 	ramclustObj=RC,
 	spec=NULL, 

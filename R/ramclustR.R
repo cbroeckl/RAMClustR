@@ -329,6 +329,10 @@ ramclustR<- function(  xcmsObj=NULL,
   cat(paste("RAMClust has condensed", n, "features into",  max(clus), "spectra in", round(difftime(f, a, units="mins"), digits=1), "minutes", '\n'))
 
   RC$ExpDes<-ExpDes
+  RC$cmpd<-paste("C", 1:length(RC$clrt), sep="")
+  RC$ann<-RC$cmpd
+  RC$annconf<-rep("", length(RC$clrt))
+  RC$annnotes<-rep("", length(RC$clrt))
   RC$MSdata<-data1
   if(mslev==2) RC$MSMSdata<-data2  
 

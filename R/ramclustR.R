@@ -316,6 +316,24 @@ ramclustR<- function(  xcmsObj=NULL,
   RC$featclus<-clus
   RC$frt<-times
   RC$fmz<-mzs
+  msint<-rep(0, length(RC$fmz))
+  for(i in 1:ncol(data1)){
+	msint[i]<-weighted.mean(data1[,i], data1[,i])
+	}
+  RC$msint<-msint
+
+  if(ExpDes[[2]]["MSlevs",1]==2) {
+    msmsint<-rep(0, length(RC$fmz))	
+       for(i in 1:ncol(data1)){	
+		msmsint[i]<-weighted.mean(data2[,i], data2[,i])
+		}
+       RC$msmsint<-msmsint
+  }
+  clrt<-aggregate(RC$frt, by=list(RC$featclus), FUN="mean")
+  RC$clrt<-clrt[which(clrt[,1]!=0),2]
+  clrtsd<-aggregate(RC$frt, by=list(RC$featclus), FUN="sd")
+  RC$clrtsd<-clrtsd[which(clrtsd[,1]!=0),2]
+
   RC$nfeat<-as.vector(table(RC$featclus)[2:max(RC$featclus)])
   RC$nsing<-length(which(RC$featclus==0))
   

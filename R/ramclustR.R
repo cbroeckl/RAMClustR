@@ -150,12 +150,12 @@ ramclustR<- function(  xcmsObj=NULL,
 
 
 ##replace na and NaN with min dataset value
-    data1[which(is.na(data1))]<-jitter(rep(min(data1, na.rm=TRUE), length(which(is.na(data1)))))
-    data2[which(is.na(data2))]<-jitter(rep(min(data2, na.rm=TRUE), length(which(is.na(data2)))))
-    data1[which(is.nan(data1))]<-jitter(rep(min(data1, na.rm=TRUE), length(which(is.nan(data1)))))
-    data2[which(is.nan(data2))]<-jitter(rep(min(data2, na.rm=TRUE), length(which(is.nan(data2)))))
-    data1[which(is.infinite(data1))]<-jitter(rep(min(data1, na.rm=TRUE), length(which(is.infinite(data1)))))
-    data2[which(is.infinite(data2))]<-jitter(rep(min(data2, na.rm=TRUE), length(which(is.infinite(data2)))))
+    data1[which(is.na(data1))]<-min(data1, na.rm=TRUE)
+    data2[which(is.na(data2))]<-min(data2, na.rm=TRUE)
+    data1[which(is.nan(data1))]<-min(data1, na.rm=TRUE)
+    data2[which(is.nan(data2))]<-min(data2, na.rm=TRUE)
+    data1[which(is.infinite(data1))]<-min(data1, na.rm=TRUE)
+    data2[which(is.infinite(data2))]<-min(data2, na.rm=TRUE)
     
 ##Optional normalization of data, either Total ion signal or quantile
   
@@ -230,6 +230,9 @@ ramclustR<- function(  xcmsObj=NULL,
                                       cor(data2[,startr:stopr], data2[,startc:stopc])  )))^2)/(2*(sr^2))), digits=20 )		
         #ffcor[startr:stopr, startc:stopc]<-temp
         temp<- 1-(temp1*temp2)
+        temp[which(is.nan(temp))]<-1
+        temp[which(is.na(temp))]<-1
+        temp[which(is.infinite(temp))]<-1
         ffmat[startr:stopr, startc:stopc]<-temp
         rm(temp1); rm(temp2); rm(temp)
         gc()} 

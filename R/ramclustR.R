@@ -150,12 +150,12 @@ ramclustR<- function(  xcmsObj=NULL,
 
 
 ##replace na and NaN with min dataset value
-    data1[which(is.na(data1))]<-min(data1, na.rm=TRUE)
-    data2[which(is.na(data2))]<-min(data2, na.rm=TRUE)
-    data1[which(is.nan(data1))]<-min(data1, na.rm=TRUE)
-    data2[which(is.nan(data2))]<-min(data2, na.rm=TRUE)
-    data1[which(is.infinite(data1))]<-min(data1, na.rm=TRUE)
-    data2[which(is.infinite(data2))]<-min(data2, na.rm=TRUE)
+    data1[which(is.na(data1))]<-jitter(rep(min(data1, na.rm=TRUE), length(which(is.na(data1)))))
+    data2[which(is.na(data2))]<-jitter(rep(min(data2, na.rm=TRUE), length(which(is.na(data2)))))
+    data1[which(is.nan(data1))]<-jitter(rep(min(data1, na.rm=TRUE), length(which(is.nan(data1)))))
+    data2[which(is.nan(data2))]<-jitter(rep(min(data2, na.rm=TRUE), length(which(is.nan(data2)))))
+    data1[which(is.infinite(data1))]<-jitter(rep(min(data1, na.rm=TRUE), length(which(is.infinite(data1)))))
+    data2[which(is.infinite(data2))]<-jitter(rep(min(data2, na.rm=TRUE), length(which(is.infinite(data2)))))
     
 ##Optional normalization of data, either Total ion signal or quantile
   

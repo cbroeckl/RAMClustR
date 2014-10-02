@@ -367,8 +367,8 @@ ramclustR<- function(  xcmsObj=NULL,
         RC$SpecAbund[ro,co]<- weighted.mean(data1[ro,which(RC$featclus==co)], wts[which(RC$featclus==co)])
       }
     }
-    #dimnames(RC$SpecAbund)[[2]]<-paste("C", 1:ncol(RC$SpecAbund), sep="")
-    #dimnames(RC$SpecAbund)[[1]]<-xcmsObj@phenoData[,1]	
+    dimnames(RC$SpecAbund)[[2]]<-paste("C", 1:ncol(RC$SpecAbund), sep="")
+    dimnames(RC$SpecAbund)[[1]]<-xcmsObj@phenoData[,1]	
     g<-Sys.time()
     cat('\n', '\n')
     cat(paste("RAMClustR has collapsed feature quantities

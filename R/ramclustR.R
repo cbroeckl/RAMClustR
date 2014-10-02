@@ -149,15 +149,12 @@ ramclustR<- function(  xcmsObj=NULL,
   }
 
 
-##replace na and NaN with min dataset value
-    data1[which(is.na(data1))]<-jitter(rep(min(data1, na.rm=TRUE), length(which(is.na(data1)))), amount=min(data1, na.rm=TRUE))
-    data2[which(is.na(data2))]<-jitter(rep(min(data2, na.rm=TRUE), length(which(is.na(data2)))), amount=min(data1, na.rm=TRUE))
-    data1[which(is.nan(data1))]<-jitter(rep(min(data1, na.rm=TRUE), length(which(is.nan(data1)))), amount=min(data1, na.rm=TRUE))
-    data2[which(is.nan(data2))]<-jitter(rep(min(data2, na.rm=TRUE), length(which(is.nan(data2)))), amount=min(data1, na.rm=TRUE))
-    data1[which(is.infinite(data1))]<-jitter(rep(min(data1, na.rm=TRUE), length(which(is.infinite(data1)))), amount=min(data1, na.rm=TRUE))
-    data2[which(is.infinite(data2))]<-jitter(rep(min(data2, na.rm=TRUE), length(which(is.infinite(data2)))), amount=min(data1, na.rm=TRUE))
-    data1[which(data1==0)]<-jitter(rep(min(data1, na.rm=TRUE), length(which(is.infinite(data1)))), amount=min(data1, na.rm=TRUE))
-    data2[which(data2==0)]<-jitter(rep(min(data2, na.rm=TRUE), length(which(is.infinite(data2)))), amount=min(data1, na.rm=TRUE))
+##replace na, inf, 0, and NaN with jittered min dataset value
+    rpl1<-unique(c(which(is.na(data1)), which(is.nan(data1)), which(is.infinite(data1)), which(data1==0)))
+    rpl2<-unique(c(which(is.na(data2)), which(is.nan(data2)), which(is.infinite(data2)), which(data2==0)))
+    if(length(rpl1)>0) {data1[rpl1]<-jitter(rep(min(data1, na.rm=TRUE), length(rpl1) ), amount=min(data1, na.rm=TRUE))
+    if(length(rpl2)>0) {data2[rpl2]<-jitter(rep(min(data2, na.rm=TRUE), length(rpl2) ), amount=min(data2, na.rm=TRUE))
+
 
 ##Optional normalization of data, either Total ion signal or quantile
   

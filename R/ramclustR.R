@@ -156,7 +156,9 @@ ramclustR<- function(  xcmsObj=NULL,
     data2[which(is.nan(data2))]<-jitter(rep(min(data2, na.rm=TRUE), length(which(is.nan(data2)))), amount=min(data1, na.rm=TRUE))
     data1[which(is.infinite(data1))]<-jitter(rep(min(data1, na.rm=TRUE), length(which(is.infinite(data1)))), amount=min(data1, na.rm=TRUE))
     data2[which(is.infinite(data2))]<-jitter(rep(min(data2, na.rm=TRUE), length(which(is.infinite(data2)))), amount=min(data1, na.rm=TRUE))
-    
+    data1[which(data1==0)]<-jitter(rep(min(data1, na.rm=TRUE), length(which(is.infinite(data1)))), amount=min(data1, na.rm=TRUE))
+    data2[which(data2==0)]<-jitter(rep(min(data2, na.rm=TRUE), length(which(is.infinite(data2)))), amount=min(data1, na.rm=TRUE))
+
 ##Optional normalization of data, either Total ion signal or quantile
   
   if(normalize=="TIC") {
@@ -220,7 +222,7 @@ ramclustR<- function(  xcmsObj=NULL,
       stopr<-n} else {
         stopr<-(k+1)*blocksize}
     if(startc<=startr) { 
-      mint<-min(outer(times[startr:stopr], times[startc:stopc], FUN="-"))
+      mint<-min(abs(outer(range(times[startr:stopr]), range(times[startc:stopc]), FUN="-")))
       if(mint<=maxt) {
         temp1<-round(exp(-(( (abs(outer(times[startr:stopr], times[startc:stopc], FUN="-"))))^2)/(2*(st^2))), digits=20 )
         #stopifnot(max(temp)!=0)

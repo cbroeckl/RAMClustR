@@ -1,1 +1,1 @@
-export(ramclustR)
+export(c(ramclustR, plotspecPDF))

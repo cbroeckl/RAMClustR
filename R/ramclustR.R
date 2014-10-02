@@ -38,6 +38,7 @@ ramclustR<- function(  xcmsObj=NULL,
                        hmax=NULL,
                        sampNameCol=NULL,
                        collapse=TRUE,
+                       usePheno=TRUE,
                        mspout=TRUE, 
                        mslev=1,
 		       ExpDes=NULL,
@@ -368,7 +369,9 @@ ramclustR<- function(  xcmsObj=NULL,
       }
     }
     dimnames(RC$SpecAbund)[[2]]<-paste("C", 1:ncol(RC$SpecAbund), sep="")
-    dimnames(RC$SpecAbund)[[1]]<-dimnames(RC$MSdata)[[1]]	
+    if(!usePheno) {dimnames(RC$SpecAbund)[[1]]<-dimnames(RC$MSdata)[[1]]}
+    if(usePheno &!is.null(msfiles)) {dimnames(RC$SpecAbund)[[1]]<-xset@phenoData[,1][msfiles]}
+    if(usePheno & is.null(msfiles)) {dimnames(RC$SpecAbund)[[1]]<-xset@phenoData[,1]}
     g<-Sys.time()
     cat('\n', '\n')
     cat(paste("RAMClustR has collapsed feature quantities

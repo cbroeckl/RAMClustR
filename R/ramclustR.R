@@ -143,6 +143,7 @@ ramclustR<- function(  xcmsObj=NULL,
       mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)
     } else {
       data1<-t(data12)
+      msfiles<-1:nrow(data1)
       data2<-t(data12)
       times<-round(xcmsObj@groups[,"rtmed"], digits=3)
       mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)      
@@ -369,9 +370,8 @@ ramclustR<- function(  xcmsObj=NULL,
       }
     }
     dimnames(RC$SpecAbund)[[2]]<-paste("C", 1:ncol(RC$SpecAbund), sep="")
-    if(!usePheno) {dimnames(RC$SpecAbund)[[1]]<-dimnames(RC$MSdata)[[1]]}
-    if(usePheno &!is.null(msfiles)) {dimnames(RC$SpecAbund)[[1]]<-xset@phenoData[,1][msfiles]}
-    if(usePheno & is.null(msfiles)) {dimnames(RC$SpecAbund)[[1]]<-xset@phenoData[,1]}
+    if(!usePheno) {dimnames(RC$SpecAbund)[[1]]<-dimnames(RC$MSdata)[[1]]} 
+    if(usePheno) {dimnames(RC$SpecAbund)[[1]]<-xset@phenoData[,1][msfiles]}
     g<-Sys.time()
     cat('\n', '\n')
     cat(paste("RAMClustR has collapsed feature quantities

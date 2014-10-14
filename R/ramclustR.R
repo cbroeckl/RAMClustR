@@ -380,6 +380,7 @@ ramclustR<- function(  xcmsObj=NULL,
   
   rm(data1)
   rm(data2)
+  if(!is.null(RC$SpecAbund)) {
     if(length(dimnames(RC$SpecAbund)[[1]])> length(unique(dimnames(RC$SpecAbund)[[1]]))) {
   	RC$SpecAbundAve<-aggregate(RC$SpecAbund[,1:ncol(RC$SpecAbund)], 
                              by=list(dimnames(RC$SpecAbund)[[1]]), 
@@ -388,6 +389,7 @@ ramclustR<- function(  xcmsObj=NULL,
   	RC$SpecAbundAve<-as.matrix(RC$SpecAbundAve[,2:ncol(RC$SpecAbundAve)])
   	dimnames(RC$SpecAbundAve)[[2]]<-dimnames(RC$SpecAbund)[[2]]
   	gc()
+  	}
   	}
   gc()
   

@@ -44,8 +44,7 @@ ramclustR<- function(  xcmsObj=NULL,
 		       ExpDes=NULL,
 		       normalize="TIC",
 		       minModuleSize=2,
-                       linkage="average",
-                       mzdec=4) {
+                       linkage="average") {
   
   require(xcms, quietly=TRUE)
   require(ff, quietly=TRUE)
@@ -411,13 +410,13 @@ ramclustR<- function(  xcmsObj=NULL,
                   for (k in 1:length(sl)) {    
                     wm[k]<-weighted.mean(RC$MSMSdata[,sl[k]], wts)
                   }}
-        mz<-round(RC$fmz[sl][order(wm, decreasing=TRUE)], ditigs=mzdec)
+        mz<-RC$fmz[sl][order(wm, decreasing=TRUE)]
         rt<-RC$frt[sl][order(wm, decreasing=TRUE)]
-        wm<-round(wm[order(wm, decreasing=TRUE)])
+        wm<-wm[order(wm, decreasing=TRUE)]
         mrt<-mean(rt)
         npeaks<-length(mz)
         for (l in 1:length(mz)) {
-          ion<- paste(mz[l], wm[l])
+          ion<- paste(round(mz[l], digits=4), round(wm[l]))
           if(l==1) {specdat<-ion} 
           if(l>1)  {specdat<-c(specdat, " ", ion)}
         }

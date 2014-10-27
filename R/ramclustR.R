@@ -41,10 +41,12 @@ ramclustR<- function(  xcmsObj=NULL,
                        usePheno=TRUE,
                        mspout=TRUE, 
                        mslev=1,
-		       ExpDes=NULL,
-		       normalize="TIC",
-		       minModuleSize=2,
-                       linkage="average") {
+                       ExpDes=NULL,
+                       normalize="TIC",
+                       minModuleSize=2,
+                       linkage="average",
+                       mzdec=4,
+                       rmFilled=TRUE) {
   
   require(xcms, quietly=TRUE)
   require(ff, quietly=TRUE)
@@ -52,29 +54,29 @@ ramclustR<- function(  xcmsObj=NULL,
   require(dynamicTreeCut, quietly=TRUE)
   
   if(is.null(xcmsObj) & is.null(ms))  {
-	  stop("you must select either 
+    stop("you must select either 
           1: an MS dataset with features as columns 
              (__)one column may contain sample names, defined by sampNameCol) 
           2: an xcmsObj. If you choose an xcms object, set taglocation: 'filepaths' by default
             and both MStag and idMSMStag")}
-
+  
   if(!is.null(xcmsObj) & mslev==2 & any(is.null(MStag), is.null(idMSMStag), is.null(taglocation)))
   {stop("you must specify the the MStag, idMSMStag, and the taglocations")}
   
   if(is.null(ExpDes) & mspout==TRUE){
-  cat("please enter experiment description (see popup window), or set 'mspout=FALSE'")
-  ExpDes<-defineExperiment()
+    cat("please enter experiment description (see popup window), or set 'mspout=FALSE'")
+    ExpDes<-defineExperiment()
   }
-	
+  
   if(is.null(ExpDes) & mspout==FALSE){
-  warning("using undefined instrumental settings")
-  ExpDes<-paramsets$undefined
+    warning("using undefined instrumental settings")
+    ExpDes<-paramsets$undefined
   }
-
-
+  
+  
   if( normalize!="none"  & normalize!="TIC" & normalize!="quantile") {
-	stop("please selected either 'none', 'TIC', or 'quantile' for the normalize setting")}
-
+    stop("please selected either 'none', 'TIC', or 'quantile' for the normalize setting")}
+  
   a<-Sys.time()   
   
   if(is.null(hmax)) {hmax<-0.3}
@@ -87,20 +89,20 @@ ramclustR<- function(  xcmsObj=NULL,
     if(is.null(sr)) sr<-0.5
     if(is.null(maxt)) maxt<-60
     MSdata<-read.csv(ms, header=TRUE, check.names=FALSE)
-	if(!is.null(idmsms)){
-    MSMSdata<-read.csv(idmsms, header=TRUE, check.names=FALSE)}
-	if(is.null(idmsms)) { MSMSdata<-MSdata}
+    if(!is.null(idmsms)){
+      MSMSdata<-read.csv(idmsms, header=TRUE, check.names=FALSE)}
+    if(is.null(idmsms)) { MSMSdata<-MSdata}
     if(is.null(sampNameCol)) {featcol<-1:ncol(MSdata)} else {
       featcol<-setdiff(1:(ncol(MSdata)), sampNameCol)}
     if(is.null(sampNameCol)) {featcol<-1:ncol(MSdata)} else {
       featcol<-setdiff(1:(ncol(MSdata)), sampNameCol)}
     sampnames<-MSdata[,sampNameCol]
     data1<-as.matrix(MSdata[,featcol])
-	dimnames(data1)[[1]]<-MSdata[,sampNameCol]
-	dimnames(data1)[[2]]<-names(MSdata[,featcol])
+    dimnames(data1)[[1]]<-MSdata[,sampNameCol]
+    dimnames(data1)[[2]]<-names(MSdata[,featcol])
     data2<-as.matrix(MSMSdata[,featcol])
-	dimnames(data2)[[1]]<-MSMSdata[,sampNameCol]
-	dimnames(data2)[[2]]<-names(MSMSdata[,featcol])
+    dimnames(data2)[[1]]<-MSMSdata[,sampNameCol]
+    dimnames(data2)[[2]]<-names(MSMSdata[,featcol])
     if(!all(dimnames(data1)[[2]]==dimnames(data2)[[2]])) 
     {stop("the feature names of your MS and idMSMS data are not identical")}
     
@@ -127,7 +129,13 @@ ramclustR<- function(  xcmsObj=NULL,
     if(is.null(maxt)) maxt<-st*20
     
     sampnames<-row.names(xcmsObj@phenoData)
+
+    if(rmFilled) {
+      fillAreas<-xcmsObj@peaks[xcmsObj@filled, "into"]
+      fillHolders<-c(-1:-length(fillAreas))
+      xcmsObj@peaks[xcmsObj@filled, "into"]<-fillHolders}
     data12<-groupval(xcmsObj, value="into")
+    }
     if(taglocation=="filepaths" & !is.null(MStag)) 
     { msfiles<-grep(MStag, xcmsObj@filepaths, ignore.case=TRUE)
       msmsfiles<-grep(idMSMStag, xcmsObj@filepaths, ignore.case=TRUE)
@@ -139,7 +147,7 @@ ramclustR<- function(  xcmsObj=NULL,
       row.names(data1)<-sampnames[msfiles]
       data2<-t(data12[,msmsfiles])
       row.names(data2)<-sampnames[msmsfiles]  ##this may need to be changed to dimnames..
-       times<-round(xcmsObj@groups[,"rtmed"], digits=3)
+      times<-round(xcmsObj@groups[,"rtmed"], digits=3)
       mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)
     } else {
       data1<-t(data12)
@@ -147,30 +155,30 @@ ramclustR<- function(  xcmsObj=NULL,
       data2<-t(data12)
       times<-round(xcmsObj@groups[,"rtmed"], digits=3)
       mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)      
-      }
+    }
   }
-
-
-##replace na, inf, 0, and NaN with jittered min dataset value
-    rpl1<-unique(c(which(is.na(data1)), which(is.nan(data1)), which(is.infinite(data1)), which(data1==0)))
-    rpl2<-unique(c(which(is.na(data2)), which(is.nan(data2)), which(is.infinite(data2)), which(data2==0)))
-    if(length(rpl1)>0) {data1[rpl1]<-jitter(rep(min(data1, na.rm=TRUE), length(rpl1) ), amount=min(data1, na.rm=TRUE))}
-    if(length(rpl2)>0) {data2[rpl2]<-jitter(rep(min(data2, na.rm=TRUE), length(rpl2) ), amount=min(data2, na.rm=TRUE))}
-
-
-##Optional normalization of data, either Total ion signal or quantile
+  
+  
+  ##replace na, inf, 0, and NaN with jittered min dataset value
+  rpl1<-unique(c(which(is.na(data1)), which(is.nan(data1)), which(is.infinite(data1)), which(data1==0)))
+  rpl2<-unique(c(which(is.na(data2)), which(is.nan(data2)), which(is.infinite(data2)), which(data2==0)))
+  if(length(rpl1)>0) {data1[rpl1]<-jitter(rep(min(data1, na.rm=TRUE), length(rpl1) ), amount=min(data1, na.rm=TRUE))}
+  if(length(rpl2)>0) {data2[rpl2]<-jitter(rep(min(data2, na.rm=TRUE), length(rpl2) ), amount=min(data2, na.rm=TRUE))}
+  
+  
+  ##Optional normalization of data, either Total ion signal or quantile
   
   if(normalize=="TIC") {
-	data1<-(data1/rowSums(data1))*mean(rowSums(data1), na.rm=TRUE)
-	data2<-(data2/rowSums(data2))*mean(rowSums(data2), na.rm=TRUE)
-	}
+    data1<-(data1/rowSums(data1))*mean(rowSums(data1), na.rm=TRUE)
+    data2<-(data2/rowSums(data2))*mean(rowSums(data2), na.rm=TRUE)
+  }
   if(normalize=="quantile") {
-	library(preprocessCore)
-	data1<-t(preprocessCore::normalize.quantiles(t(data1)))
-	data2<-t(preprocessCore::normalize.quantiles(t(data2)))	
-	}
-
-
+    library(preprocessCore)
+    data1<-t(preprocessCore::normalize.quantiles(t(data1)))
+    data2<-t(preprocessCore::normalize.quantiles(t(data2)))	
+  }
+  
+  
   ##retention times and mzs vectors
   
   ##sort rt vector and data by retention time
@@ -227,8 +235,8 @@ ramclustR<- function(  xcmsObj=NULL,
         #stopifnot(max(temp)!=0)
         #ffrt[startr:stopr, startc:stopc]<- temp
         temp2<-round (exp(-((1-(pmax(  cor(data1[,startr:stopr], data1[,startc:stopc]),
-                                      cor(data1[,startr:stopr], data2[,startc:stopc]),
-                                      cor(data2[,startr:stopr], data2[,startc:stopc])  )))^2)/(2*(sr^2))), digits=20 )		
+                                       cor(data1[,startr:stopr], data2[,startc:stopc]),
+                                       cor(data2[,startr:stopr], data2[,startc:stopc])  )))^2)/(2*(sr^2))), digits=20 )		
         #ffcor[startr:stopr, startc:stopc]<-temp
         temp<- 1-(temp1*temp2)
         temp[which(is.nan(temp))]<-1
@@ -240,7 +248,7 @@ ramclustR<- function(  xcmsObj=NULL,
       if(mint>maxt) {ffmat[startr:stopr, startc:stopc]<- 1}
     }
     gc()}
- # ffmat[995:1002,995:1002]
+  # ffmat[995:1002,995:1002]
   
   ##Call the similarity scoring function
   system.time(sapply(1:bl, RCsim))
@@ -309,37 +317,37 @@ ramclustR<- function(  xcmsObj=NULL,
   cat(paste("fastcluster based clustering complete:", 
             round(difftime(d, c, units="mins"), digits=1), "minutes"))
   if(minModuleSize==1) {
-	clus<-cutreeDynamicTree(RC, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=2)
-	sing<-which(clus==0)
-	clus[sing]<-max(clus)+1:length(sing)
-	}
+    clus<-cutreeDynamicTree(RC, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=2)
+    sing<-which(clus==0)
+    clus[sing]<-max(clus)+1:length(sing)
+  }
   if(minModuleSize>1) {
- 	clus<-cutreeDynamicTree(RC, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=minModuleSize)
-	}
+    clus<-cutreeDynamicTree(RC, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=minModuleSize)
+  }
   gc()
- 
+  
   
   RC$featclus<-clus
   RC$frt<-times
   RC$fmz<-mzs
   msint<-rep(0, length(RC$fmz))
   for(i in 1:ncol(data1)){
-	msint[i]<-weighted.mean(data1[,i], data1[,i])
-	}
+    msint[i]<-weighted.mean(data1[,i], data1[,i])
+  }
   RC$msint<-msint
-
+  
   if(ExpDes[[2]]["MSlevs",1]==2) {
     msmsint<-rep(0, length(RC$fmz))	
-       for(i in 1:ncol(data1)){	
-		msmsint[i]<-weighted.mean(data2[,i], data2[,i])
-		}
-       RC$msmsint<-msmsint
+    for(i in 1:ncol(data1)){	
+      msmsint[i]<-weighted.mean(data2[,i], data2[,i])
+    }
+    RC$msmsint<-msmsint
   }
   clrt<-aggregate(RC$frt, by=list(RC$featclus), FUN="mean")
   RC$clrt<-clrt[which(clrt[,1]!=0),2]
   clrtsd<-aggregate(RC$frt, by=list(RC$featclus), FUN="sd")
   RC$clrtsd<-clrtsd[which(clrtsd[,1]!=0),2]
-
+  
   RC$nfeat<-as.vector(table(RC$featclus)[2:max(RC$featclus)])
   RC$nsing<-length(which(RC$featclus==0))
   
@@ -351,7 +359,7 @@ ramclustR<- function(  xcmsObj=NULL,
   f<-Sys.time()
   cat('\n', '\n')
   cat(paste("RAMClust has condensed", n, "features into",  max(clus), "spectra in", round(difftime(f, a, units="mins"), digits=1), "minutes", '\n'))
-
+  
   RC$ExpDes<-ExpDes
   RC$cmpd<-paste("C", 1:length(RC$clrt), sep="")
   RC$ann<-RC$cmpd
@@ -359,7 +367,7 @@ ramclustR<- function(  xcmsObj=NULL,
   RC$annnotes<-rep("", length(RC$clrt))
   RC$MSdata<-data1
   if(mslev==2) RC$MSMSdata<-data2  
-
+  
   if(collapse=="TRUE") {
     cat('\n', '\n', "... collapsing features into spectra")
     wts<-colSums(data1[])
@@ -382,18 +390,18 @@ ramclustR<- function(  xcmsObj=NULL,
   rm(data2)
   if(!is.null(RC$SpecAbund)) {
     if(length(dimnames(RC$SpecAbund)[[1]])> length(unique(dimnames(RC$SpecAbund)[[1]]))) {
-  	RC$SpecAbundAve<-aggregate(RC$SpecAbund[,1:ncol(RC$SpecAbund)], 
-                             by=list(dimnames(RC$SpecAbund)[[1]]), 
-                             FUN="mean", simplify=TRUE)
-  	dimnames(RC$SpecAbundAve)[[1]]<-RC$SpecAbundAve[,1]
-  	RC$SpecAbundAve<-as.matrix(RC$SpecAbundAve[,2:ncol(RC$SpecAbundAve)])
-  	dimnames(RC$SpecAbundAve)[[2]]<-dimnames(RC$SpecAbund)[[2]]
-  	gc()
-  	}
-  	}
+      RC$SpecAbundAve<-aggregate(RC$SpecAbund[,1:ncol(RC$SpecAbund)], 
+                                 by=list(dimnames(RC$SpecAbund)[[1]]), 
+                                 FUN="mean", simplify=TRUE)
+      dimnames(RC$SpecAbundAve)[[1]]<-RC$SpecAbundAve[,1]
+      RC$SpecAbundAve<-as.matrix(RC$SpecAbundAve[,2:ncol(RC$SpecAbundAve)])
+      dimnames(RC$SpecAbundAve)[[2]]<-dimnames(RC$SpecAbund)[[2]]
+      gc()
+    }
+  }
   gc()
   
- if(mspout==TRUE){ 
+  if(mspout==TRUE){ 
     cat(paste("writing msp formatted spectra...", '\n'))
     
     libName<-paste(ExpDes$design["Experiment", "ExpVals"], ".mspLib", sep="")
@@ -410,13 +418,13 @@ ramclustR<- function(  xcmsObj=NULL,
                   for (k in 1:length(sl)) {    
                     wm[k]<-weighted.mean(RC$MSMSdata[,sl[k]], wts)
                   }}
-        mz<-RC$fmz[sl][order(wm, decreasing=TRUE)]
+        mz<-round(RC$fmz[sl][order(wm, decreasing=TRUE)], ditigs=mzdec)
         rt<-RC$frt[sl][order(wm, decreasing=TRUE)]
-        wm<-wm[order(wm, decreasing=TRUE)]
+        wm<-round(wm[order(wm, decreasing=TRUE)])
         mrt<-mean(rt)
         npeaks<-length(mz)
         for (l in 1:length(mz)) {
-          ion<- paste(round(mz[l], digits=4), round(wm[l]))
+          ion<- paste(mz[l], wm[l])
           if(l==1) {specdat<-ion} 
           if(l>1)  {specdat<-c(specdat, " ", ion)}
         }

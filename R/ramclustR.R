@@ -135,7 +135,7 @@ ramclustR<- function(  xcmsObj=NULL,
       fillHolders<-c(-1:-length(fillAreas))
       xcmsObj@peaks[xcmsObj@filled, "into"]<-fillHolders}
     data12<-groupval(xcmsObj, value="into")
-    }
+    
     if(taglocation=="filepaths" & !is.null(MStag)) 
     { msfiles<-grep(MStag, xcmsObj@filepaths, ignore.case=TRUE)
       msmsfiles<-grep(idMSMStag, xcmsObj@filepaths, ignore.case=TRUE)

@@ -46,7 +46,7 @@ ramclustR<- function(  xcmsObj=NULL,
                        minModuleSize=2,
                        linkage="average",
                        mzdec=4,
-                       rmFilled=TRUE) {
+                       rmFilled=FALSE) {
   
   require(xcms, quietly=TRUE)
   require(ff, quietly=TRUE)

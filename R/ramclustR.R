@@ -418,7 +418,7 @@ ramclustR<- function(  xcmsObj=NULL,
                   for (k in 1:length(sl)) {    
                     wm[k]<-weighted.mean(RC$MSMSdata[,sl[k]], wts)
                   }}
-        mz<-round(RC$fmz[sl][order(wm, decreasing=TRUE)], ditigs=mzdec)
+        mz<-round(RC$fmz[sl][order(wm, decreasing=TRUE)], digits=mzdec)
         rt<-RC$frt[sl][order(wm, decreasing=TRUE)]
         wm<-round(wm[order(wm, decreasing=TRUE)])
         mrt<-mean(rt)

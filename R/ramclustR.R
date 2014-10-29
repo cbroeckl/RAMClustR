@@ -45,8 +45,7 @@ ramclustR<- function(  xcmsObj=NULL,
                        normalize="TIC",
                        minModuleSize=2,
                        linkage="average",
-                       mzdec=4,
-                       rmFilled=FALSE) {
+                       mzdec=4) {
   
   require(xcms, quietly=TRUE)
   require(ff, quietly=TRUE)
@@ -129,11 +128,6 @@ ramclustR<- function(  xcmsObj=NULL,
     if(is.null(maxt)) maxt<-st*20
     
     sampnames<-row.names(xcmsObj@phenoData)
-
-    if(rmFilled) {
-      fillAreas<-xcmsObj@peaks[xcmsObj@filled, "into"]
-      fillHolders<-c(-1:-length(fillAreas))
-      xcmsObj@peaks[xcmsObj@filled, "into"]<-fillHolders}
     data12<-groupval(xcmsObj, value="into")
     
     if(taglocation=="filepaths" & !is.null(MStag)) 
@@ -191,7 +185,6 @@ ramclustR<- function(  xcmsObj=NULL,
   featnames<-paste(mzs, "_", times, sep="")
   dimnames(data1)[[2]]<-featnames
   dimnames(data2)[[2]]<-featnames
-  
   
   ##establish some constants for downstream processing
   n<-ncol(data1)
@@ -403,8 +396,8 @@ ramclustR<- function(  xcmsObj=NULL,
   
   if(mspout==TRUE){ 
     cat(paste("writing msp formatted spectra...", '\n'))
-    
-    libName<-paste(ExpDes$design["Experiment", "ExpVals"], ".mspLib", sep="")
+    dir.create("spectra")
+    libName<-paste("spectra/", ExpDes[[1]]["Experiment", 1], ".mspLib", sep="")
     file.create(file=libName)
     for (m in 1:as.numeric(mslev)){
       for (j in 1:max(RC$featclus)) {
@@ -432,18 +425,18 @@ ramclustR<- function(  xcmsObj=NULL,
           paste("Name: C", j, sep=""), '\n',
           paste("SYNON: $:00in-source", sep=""), '\n',
           paste("SYNON: $:04", sep=""), '\n', 
-          paste("SYNON: $:05", if(m==1) {ExpDes$instrument["CE1", "InstVals"]} else {ExpDes$instrument["CE2", "InstVals"]}, sep=""), '\n',
-          paste("SYNON: $:06", ExpDes$instrument["mstype", "InstVals"], sep=""), '\n',           #mstype
-          paste("SYNON: $:07", ExpDes$instrument["msinst", "InstVals"], sep=""), '\n',           #msinst
-          paste("SYNON: $:09", ExpDes$instrument["chrominst", "InstVals"], sep=""), '\n',        #chrominst
-          paste("SYNON: $:10", ExpDes$instrument["ionization", "InstVals"], sep=""),  '\n',      #ionization method
-          paste("SYNON: $:11", ExpDes$instrument["msmode", "InstVals"], sep=""), '\n',           #msmode
-          paste("SYNON: $:12", ExpDes$instrument["colgas", "InstVals"], sep=""), '\n',           #collision gas
-          paste("SYNON: $:14", ExpDes$instrument["msscanrange", "InstVals"], sep=""), '\n',      #ms scanrange
-          paste("SYNON: $:16", ExpDes$instrument["conevolt", "InstVals"], sep=""), '\n',         #conevoltage
+          paste("SYNON: $:05", if(m==1) {ExpDes[[2]]["CE1", 1]} else {ExpDes$instrument["CE2", "InstVals"]}, sep=""), '\n',
+          paste("SYNON: $:06", ExpDes[[2]]["mstype", 1], sep=""), '\n',           #mstype
+          paste("SYNON: $:07", ExpDes[[2]]["msinst", 1], sep=""), '\n',           #msinst
+          paste("SYNON: $:09", ExpDes[[2]]["chrominst", 1], sep=""), '\n',        #chrominst
+          paste("SYNON: $:10", ExpDes[[2]]["ionization", 1], sep=""),  '\n',      #ionization method
+          paste("SYNON: $:11", ExpDes[[2]]["msmode", 1], sep=""), '\n',           #msmode
+          paste("SYNON: $:12", ExpDes[[2]]["colgas", 1], sep=""), '\n',           #collision gas
+          paste("SYNON: $:14", ExpDes[[2]]["msscanrange", 1], sep=""), '\n',      #ms scanrange
+          paste("SYNON: $:16", ExpDes[[2]]["conevolt", 1], sep=""), '\n',         #conevoltage
           paste("Comment: Rt=", round(mrt, digits=2), 
-                "  Contributor=", ExpDes$design["Contributor", "ExpVals"], 
-                "  Study=", ExpDes$design["Experiment", "ExpVals"], 
+                "  Contributor=", ExpDes[[1]]["Contributor", 1], 
+                "  Study=", ExpDes[[1]]["Experiment", 1], 
                 sep=""), '\n',
           paste("Num Peaks:", npeaks), '\n',
           paste(specdat), '\n', '\n', sep="", file=libName, append= TRUE)

@@ -401,7 +401,7 @@ ramclustR<- function(  xcmsObj=NULL,
     file.create(file=libName)
     for (m in 1:as.numeric(mslev)){
       for (j in 1:max(RC$featclus)) {
-      print(paste(j,"_", sep=""))
+      #print(paste(j,"_", sep=""))
         sl<-which(RC$featclus==j)
         wm<-vector(length=length(sl))
         if(m==1) {wts<-rowSums(RC$MSdata[,sl])

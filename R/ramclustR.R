@@ -176,6 +176,7 @@ ramclustR<- function(  xcmsObj=NULL,
   ##retention times and mzs vectors
   
   ##sort rt vector and data by retention time
+  xcmsOrd<-order(times)
   data1<-data1[,order(times)]
   data2<-data2[,order(times)]
   mzs<-mzs[order(times)]
@@ -323,6 +324,7 @@ ramclustR<- function(  xcmsObj=NULL,
   RC$featclus<-clus
   RC$frt<-times
   RC$fmz<-mzs
+  RC$xcmsOrd<-xcmsOrd
   msint<-rep(0, length(RC$fmz))
   for(i in 1:ncol(data1)){
     msint[i]<-weighted.mean(data1[,i], data1[,i])

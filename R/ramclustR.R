@@ -142,12 +142,12 @@ ramclustR<- function(  xcmsObj=NULL,
       data2<-t(data12[,msmsfiles])
       row.names(data2)<-sampnames[msmsfiles]  ##this may need to be changed to dimnames..
       times<-round(xcmsObj@groups[,"rtmed"], digits=3)
-      	if(any(is.na(times))) {
-      		do<-which(is.na(times))
-        	 for(x in 1:length(do)) {
-		      times[do[x]]<-  as.numeric((xcmsObj@groups[do[x],"rtmin"]+ xcmsObj@groups[do[x],"rtmax"])/2)
-			    }
-			    }
+      #	if(any(is.na(times))) {
+      #		do<-which(is.na(times))
+       # 	 for(x in 1:length(do)) {
+#		      times[do[x]]<-  as.numeric((xcmsObj@groups[do[x],"rtmin"]+ xcmsObj@groups[do[x],"rtmax"])/2)
+	#		    }
+	#		    }
       mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)
     } else {
       data1<-t(data12)

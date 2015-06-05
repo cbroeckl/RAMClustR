@@ -165,7 +165,8 @@ ramclustR<- function(  xcmsObj=NULL,
   rpl2<-unique(c(which(is.na(data2)), which(is.nan(data2)), which(is.infinite(data2)), which(data2==0)))
   if(length(rpl1)>0) {data1[rpl1]<-jitter(rep(min(data1, na.rm=TRUE), length(rpl1) ), amount=min(data1/100, na.rm=TRUE))}
   if(length(rpl2)>0) {data2[rpl2]<-jitter(rep(min(data2, na.rm=TRUE), length(rpl2) ), amount=min(data2/100, na.rm=TRUE))}
-  
+  data1[which(data1)<0]<-abs(data1[which(data1)<0])
+  data2[which(data2)<0]<-abs(data2[which(data2)<0])
   
   ##Optional normalization of data, either Total ion signal or quantile
   

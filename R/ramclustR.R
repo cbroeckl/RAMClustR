@@ -145,8 +145,8 @@ ramclustR<- function(  xcmsObj=NULL,
       	if(any(is.na(times))) {
       		do<-which(is.na(times))
       		 for(x in 1:length(do)) {
-		      times[do[i]]<-  (xcmsObj@groups[which(is.na(times)),"rtmin"]+ 
-			    xcmsObj@groups[which(is.na(times)),"rtmax"])/2
+		      times[do[x]]<-  (xcmsObj@groups[do[x],"rtmin"]+ 
+			    xcmsObj@groups[do[x],"rtmax"])/2
 			    }
 			    }
       mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)

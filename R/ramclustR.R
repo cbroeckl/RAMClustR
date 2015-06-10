@@ -148,7 +148,7 @@ ramclustR<- function(  xcmsObj=NULL,
 		      times[do[x]]<-  as.numeric((xcmsObj@groups[do[x],"rtmin"]+ xcmsObj@groups[do[x],"rtmax"])/2)
 			    }
 			    }
-			    if(any(is.na(times))) {stop("na values still present")} else {print("NAs removed")}
+			   # if(any(is.na(times))) {stop("na values still present")} else {print("NAs removed")}
       mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)
     } else {
       data1<-t(data12)
@@ -162,7 +162,7 @@ ramclustR<- function(  xcmsObj=NULL,
 		      times[do[x]]<-  as.numeric((xcmsObj@groups[do[x],"rtmin"]+ xcmsObj@groups[do[x],"rtmax"])/2)
 			    }
 			    }
-			    if(any(is.na(times))) {stop("na values still present")} else {print("NAs removed")}
+			    #if(any(is.na(times))) {stop("na values still present")} else {print("NAs removed")}
     }
   }
   

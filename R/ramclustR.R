@@ -389,7 +389,7 @@ ramclustR<- function(  xcmsObj=NULL,
     }
     dimnames(RC$SpecAbund)[[2]]<-paste("C", 1:ncol(RC$SpecAbund), sep="")
     if(!usePheno) {dimnames(RC$SpecAbund)[[1]]<-dimnames(RC$MSdata)[[1]]} 
-    if(usePheno) {dimnames(RC$SpecAbund)[[1]]<-xset@phenoData[,1][msfiles]}
+    if(usePheno) {dimnames(RC$SpecAbund)[[1]]<-xcmsObj@phenoData[,1][msfiles]}
     g<-Sys.time()
     cat('\n', '\n')
     cat(paste("RAMClustR has collapsed feature quantities

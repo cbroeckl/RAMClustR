@@ -45,7 +45,9 @@ ramclustR<- function(  xcmsObj=NULL,
                        normalize="TIC",
                        minModuleSize=2,
                        linkage="average",
-                       mzdec=4) {
+                       mzdec=4,
+                       cleanup=TRUE
+                       ) {
   
   require(xcms, quietly=TRUE)
   require(ff, quietly=TRUE)
@@ -170,8 +172,12 @@ ramclustR<- function(  xcmsObj=NULL,
   ##replace na, inf, 0, and NaN with jittered min dataset value
   rpl1<-unique(c(which(is.na(data1)), which(is.nan(data1)), which(is.infinite(data1)), which(data1==0)))
   rpl2<-unique(c(which(is.na(data2)), which(is.nan(data2)), which(is.infinite(data2)), which(data2==0)))
-  if(length(rpl1)>0) {data1[rpl1]<-abs(jitter(rep(min(data1, na.rm=TRUE), length(rpl1) ), amount=min(data1/100, na.rm=TRUE)))}
-  if(length(rpl2)>0) {data2[rpl2]<-abs(jitter(rep(min(data2, na.rm=TRUE), length(rpl2) ), amount=min(data2/100, na.rm=TRUE)))}
+  if(length(rpl1)>0) {data1[rpl1]<-abs(jitter(rep(min(data1, na.rm=TRUE), length(rpl1) ), amount=min(data1/100, 
+
+na.rm=TRUE)))}
+  if(length(rpl2)>0) {data2[rpl2]<-abs(jitter(rep(min(data2, na.rm=TRUE), length(rpl2) ), amount=min(data2/100, 
+
+na.rm=TRUE)))}
   data1[which(data1<0)]<-abs(data1[which(data1<0)])
   data2[which(data2<0)]<-abs(data2[which(data2<0)])
   
@@ -240,12 +246,16 @@ ramclustR<- function(  xcmsObj=NULL,
     if(startc<=startr) { 
       mint<-min(abs(outer(range(times[startr:stopr]), range(times[startc:stopc]), FUN="-")))
       if(mint<=maxt) {
-        temp1<-round(exp(-(( (abs(outer(times[startr:stopr], times[startc:stopc], FUN="-"))))^2)/(2*(st^2))), digits=20 )
+        temp1<-round(exp(-(( (abs(outer(times[startr:stopr], times[startc:stopc], FUN="-"))))^2)/(2*(st^2))), 
+
+digits=20 )
         #stopifnot(max(temp)!=0)
         #ffrt[startr:stopr, startc:stopc]<- temp
         temp2<-round (exp(-((1-(pmax(  cor(data1[,startr:stopr], data1[,startc:stopc]),
                                        cor(data1[,startr:stopr], data2[,startc:stopc]),
-                                       cor(data2[,startr:stopr], data2[,startc:stopc])  )))^2)/(2*(sr^2))), digits=20 )		
+                                       cor(data2[,startr:stopr], data2[,startc:stopc])  )))^2)/(2*(sr^2))), 
+
+digits=20 )		
         #ffcor[startr:stopr, startc:stopc]<-temp
         temp<- 1-(temp1*temp2)
         temp[which(is.nan(temp))]<-1
@@ -346,13 +356,42 @@ ramclustR<- function(  xcmsObj=NULL,
   }
   RC$msint<-msint
   
-  if(ExpDes[[2]]["MSlevs",1]==2) {
+  if(mslev==2) {
     msmsint<-rep(0, length(RC$fmz))	
     for(i in 1:ncol(data1)){	
       msmsint[i]<-weighted.mean(data2[,i], data2[,i])
     }
     RC$msmsint<-msmsint
   }
+
+  ##new cleanup section to collapse reduntant clusters groups into a single cluster
+  ##currently only reporting redundancy, need to next modify the original cluster 'clrt' with the new cluster data
+  
+#   if(cleanup) {
+#     cat('\n', "... checking for potential split feature groups")
+#     wts<-colSums(data1[])
+#     tmp<-matrix(nrow=nrow(data1), ncol=max(clus))
+#     was<-1:max(clus)
+#     for (ro in 1:nrow(tmp)) { 
+#       for (co in 1:ncol(tmp)) {
+#         tmp[ro,co]<- weighted.mean(data1[ro,which(tmp==co)], wts[which(tmp==co)])
+#       }
+#     }
+#     clrt<-aggregate(RC$frt, by=list(RC$featclus), FUN="mean")
+#     for(x in 1:max(clus)){
+#       check<-x-1+which(clrt[x:length(clrt)]>=(clrt[x]-(0.5*st))  &  clrt[x:length(clrt)]<=(clrt[x]+(0.5*st)))
+#       check<-check[-1]
+#       if(length(check)>1) {
+#         rs<-cor(tmp[,x], tmp[,check])
+#         if(length(which(rs>0.7))>0) {
+#           paste("cl", x, "is likely redundant with cl", check[which(rs>0.7)])
+#         }
+#       }
+#     }
+#     cat('\n', '\n')
+#     cat(paste("done checking...", '\n'))
+#   }
+#   
   clrt<-aggregate(RC$frt, by=list(RC$featclus), FUN="mean")
   RC$clrt<-clrt[which(clrt[,1]!=0),2]
   clrtsd<-aggregate(RC$frt, by=list(RC$featclus), FUN="sd")
@@ -368,7 +407,9 @@ ramclustR<- function(  xcmsObj=NULL,
   
   f<-Sys.time()
   cat('\n', '\n')
-  cat(paste("RAMClust has condensed", n, "features into",  max(clus), "spectra in", round(difftime(f, a, units="mins"), digits=1), "minutes", '\n'))
+  cat(paste("RAMClust has condensed", n, "features into",  max(clus), "spectra in", round(difftime(f, a, 
+
+units="mins"), digits=1), "minutes", '\n'))
   
   RC$ExpDes<-ExpDes
   RC$cmpd<-paste("C", 1:length(RC$clrt), sep="")
@@ -388,8 +429,13 @@ ramclustR<- function(  xcmsObj=NULL,
       }
     }
     dimnames(RC$SpecAbund)[[2]]<-paste("C", 1:ncol(RC$SpecAbund), sep="")
+<<<<<<< HEAD
+    if(!usePheno | is.null(xcmsObj)) {dimnames(RC$SpecAbund)[[1]]<-dimnames(ramclustObj$MSdata)[[1]]} 
+    if(usePheno & !is.null(xcmsObj)) {dimnames(RC$SpecAbund)[[1]]<-as.vector(xcmsObj@phenoData[,1])[msfiles]}
+=======
     if(!usePheno) {dimnames(RC$SpecAbund)[[1]]<-dimnames(RC$MSdata)[[1]]} 
     if(usePheno) {dimnames(RC$SpecAbund)[[1]]<-xcmsObj@phenoData[,1][msfiles]}
+>>>>>>> origin/master
     g<-Sys.time()
     cat('\n', '\n')
     cat(paste("RAMClustR has collapsed feature quantities
@@ -443,7 +489,9 @@ ramclustR<- function(  xcmsObj=NULL,
           paste("Name: C", j, sep=""), '\n',
           paste("SYNON: $:00in-source", sep=""), '\n',
           paste("SYNON: $:04", sep=""), '\n', 
-          paste("SYNON: $:05", if(m==1) {ExpDes[[2]]["CE1", 1]} else {ExpDes$instrument["CE2", "InstVals"]}, sep=""), '\n',
+          paste("SYNON: $:05", if(m==1) {ExpDes[[2]]["CE1", 1]} else {ExpDes$instrument["CE2", "InstVals"]}, 
+
+sep=""), '\n',
           paste("SYNON: $:06", ExpDes[[2]]["mstype", 1], sep=""), '\n',           #mstype
           paste("SYNON: $:07", ExpDes[[2]]["msinst", 1], sep=""), '\n',           #msinst
           paste("SYNON: $:09", ExpDes[[2]]["chrominst", 1], sep=""), '\n',        #chrominst

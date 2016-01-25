@@ -1,2 +1,2 @@
 export("ramclustR",
-        "plotspecPDF")
+	"ramclustR2)

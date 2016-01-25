@@ -172,12 +172,17 @@ ramclustR<- function(  xcmsObj=NULL,
   ##replace na, inf, 0, and NaN with jittered min dataset value
   rpl1<-unique(c(which(is.na(data1)), which(is.nan(data1)), which(is.infinite(data1)), which(data1==0)))
   rpl2<-unique(c(which(is.na(data2)), which(is.nan(data2)), which(is.infinite(data2)), which(data2==0)))
+<<<<<<< HEAD
+  if(length(rpl1)>0) {data1[rpl1]<-abs(jitter(rep(min(data1, na.rm=TRUE), length(rpl1) ), amount=min(data1/100, na.rm=TRUE)))}
+  if(length(rpl2)>0) {data2[rpl2]<-abs(jitter(rep(min(data2, na.rm=TRUE), length(rpl2) ), amount=min(data2/100, na.rm=TRUE)))}
+=======
   if(length(rpl1)>0) {data1[rpl1]<-abs(jitter(rep(min(data1, na.rm=TRUE), length(rpl1) ), amount=min(data1/100, 
 
 na.rm=TRUE)))}
   if(length(rpl2)>0) {data2[rpl2]<-abs(jitter(rep(min(data2, na.rm=TRUE), length(rpl2) ), amount=min(data2/100, 
 
 na.rm=TRUE)))}
+>>>>>>> origin/master
   data1[which(data1<0)]<-abs(data1[which(data1<0)])
   data2[which(data2<0)]<-abs(data2[which(data2<0)])
   
@@ -430,11 +435,25 @@ units="mins"), digits=1), "minutes", '\n'))
     }
     dimnames(RC$SpecAbund)[[2]]<-paste("C", 1:ncol(RC$SpecAbund), sep="")
 <<<<<<< HEAD
+<<<<<<< HEAD
+    if(!usePheno | is.null(xcmsObj)) {dimnames(RC$SpecAbund)[[1]]<-dimnames(RC$MSdata)[[1]]} 
+=======
     if(!usePheno | is.null(xcmsObj)) {dimnames(RC$SpecAbund)[[1]]<-dimnames(ramclustObj$MSdata)[[1]]} 
+>>>>>>> origin/master
     if(usePheno & !is.null(xcmsObj)) {dimnames(RC$SpecAbund)[[1]]<-as.vector(xcmsObj@phenoData[,1])[msfiles]}
 =======
     if(!usePheno) {dimnames(RC$SpecAbund)[[1]]<-dimnames(RC$MSdata)[[1]]} 
     if(usePheno) {dimnames(RC$SpecAbund)[[1]]<-xcmsObj@phenoData[,1][msfiles]}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
+>>>>>>> origin/master
+=======
+>>>>>>> ea68215b7dd2b230c48f2dac0ad3dd7e7fcc5da2
+=======
+>>>>>>> origin/master
 >>>>>>> origin/master
     g<-Sys.time()
     cat('\n', '\n')

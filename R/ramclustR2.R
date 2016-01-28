@@ -304,6 +304,7 @@ ramclustR2<- function(  xcmsObj=NULL,
       
       ## rtadj IS TO BE USED BELOW: The EIC values will be merged to create a collective EIC chromatogram matrix - with the rt slots adjusted using this value for each peak!
       rtadj<-unlist(sapply(1:length(grp), FUN=rtcorfun))
+      rtadj[which(is.na(rtadj))]<-0
       cat("rtadj range", range(rtadj))
       
       eicrtrange<-c(floor(min(pks[,"rtmin"])), ceiling(max(pks[,"rtmax"])))

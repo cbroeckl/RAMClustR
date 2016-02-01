@@ -22,41 +22,41 @@
 #' @export
 
 ramclustR2<- function(  xcmsObj=NULL,
-                       ms=NULL, 
-                       idmsms=NULL,
-                       taglocation="filepaths",
-                       MStag=NULL,
-                       idMSMStag=NULL, 
-                       featdelim="_", 
-                       timepos=2, 
-                       pkshape=FALSE,
-                       sr=NULL, 
-                       ss=NULL,
-                       st=NULL, 
-                       maxt=NULL, 
-                       deepSplit=FALSE, 
-                       blocksize=2000,
-                       mult=5,
-                       hmax=NULL,
-                       sampNameCol=NULL,
-                       collapse=TRUE,
-                       usePheno=TRUE,
-                       mspout=TRUE, 
-                       mslev=1,
-                       ExpDes=NULL,
-                       normalize="TIC",
-                       minModuleSize=2,
-                       linkage="average",
-                       mzdec=4,
-                       #ffEIC=NULL,
-                       #ffR=NULL,
-                       #ffS=NULL,
-                       #ffT=NULL,
-                       saveFF=TRUE,
-                       plots=TRUE,
-                       cor.use="everything",
-                       method="spearman",
-                       min.scans=NULL) {
+                        ms=NULL, 
+                        idmsms=NULL,
+                        taglocation="filepaths",
+                        MStag=NULL,
+                        idMSMStag=NULL, 
+                        featdelim="_", 
+                        timepos=2, 
+                        pkshape=FALSE,
+                        sr=NULL, 
+                        ss=NULL,
+                        st=NULL, 
+                        maxt=NULL, 
+                        deepSplit=FALSE, 
+                        blocksize=2000,
+                        mult=5,
+                        hmax=NULL,
+                        sampNameCol=NULL,
+                        collapse=TRUE,
+                        usePheno=TRUE,
+                        mspout=TRUE, 
+                        mslev=1,
+                        ExpDes=NULL,
+                        normalize="TIC",
+                        minModuleSize=2,
+                        linkage="average",
+                        mzdec=4,
+                        #ffEIC=NULL,
+                        #ffR=NULL,
+                        #ffS=NULL,
+                        #ffT=NULL,
+                        saveFF=TRUE,
+                        plots=TRUE,
+                        cor.use="everything",
+                        method="spearman",
+                        min.scans=NULL) {
   
   require(xcms, quietly=TRUE)
   require(ff, quietly=TRUE)
@@ -82,7 +82,29 @@ ramclustR2<- function(  xcmsObj=NULL,
   
   if(is.null(ExpDes) & mspout==FALSE){
     warning("using undefined instrumental settings")
-    ExpDes<-paramsets$undefined
+    ExpDes<-structure(list(design = structure(list(ExpVars = c("", "", "", 
+                                                               "", "", "-", "sn", "diet", "time", "tissue", "pos", "", "", "", 
+                                                               "", ""), VarDesc = c("experiment name, no spaces", "lab and or user name", 
+                                                                                    "species name (binomial latin name)", "sample type", "newLC newGC", 
+                                                                                    "factor delimitor in your sample names", "Assign a name for your factors", 
+                                                                                    "", "", "", "", "", "", "", "", "")), .Names = c("ExpVars", "VarDesc"
+                                                                                    ), row.names = c("Experiment", "Contributor", "Species", "Sample", 
+                                                                                                     "platform", "delim", "fact1name", "fact2name", "fact3name", "fact4name", 
+                                                                                                     "fact5name", "fact6name", "fact7name", "fact8name", "fact9name", 
+                                                                                                     "fact10name"), class = "data.frame"), instrument = structure(list(
+                                                                                                       c.chrominst....Waters.UPLC..ACN.Gradient...msinst....Waters.Xevo.G2.QTOF... = structure(c(15L, 
+                                                                                                                                                                                                 16L, 14L, 13L, 8L, 3L, 7L, 2L, 12L, 1L, 11L, 10L, 4L, 9L, 
+                                                                                                                                                                                                 6L, 5L), .Label = c("0.05", "15-30", "2", "2200", "30", "50-2000", 
+                                                                                                                                                                                                                     "6", "ACN, 0.1% formic acid", "Ar", "ESI", "P", "TOF", "Water", 
+                                                                                                                                                                                                                     "Waters, 1 x 100 mm, 1.7 uM", "Waters UPLC: ACN Gradient", 
+                                                                                                                                                                                                                     "Waters Xevo G2 QTOF"), class = "factor")), .Names = "c.chrominst....Waters.UPLC..ACN.Gradient...msinst....Waters.Xevo.G2.QTOF...", row.names = c("chrominst", 
+                                                                                                                                                                                                                                                                                                                                                                       "msinst", "column", "solvA", "solvB", "MSlevs", "CE1", "CE2", 
+                                                                                                                                                                                                                                                                                                                                                                       "mstype", "mzdifftof", "msmode", "ionization", "ESIvoltage", 
+                                                                                                                                                                                                                                                                                                                                                                       "colgas", "msscanrange", "conevolt"), class = "data.frame")), .Names = c("design", 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                "instrument"))
+    
+    
+    
   }
   
   dir.create("ramclustR_out")
@@ -147,19 +169,19 @@ ramclustR2<- function(  xcmsObj=NULL,
     
     if(taglocation=="filepaths" & !is.null(MStag) & mslev!=1) 
     { msfiles<-grep(MStag, xcmsObj@filepaths, ignore.case=TRUE)
-      msmsfiles<-grep(idMSMStag, xcmsObj@filepaths, ignore.case=TRUE)
-      if(length(intersect(msfiles, msmsfiles)>0)) 
-      {stop("your MS and idMSMStag values do not generate unique file lists")}
-      if(length(msfiles)!=length(msmsfiles)) 
-      {stop("the number of MS files must equal the number of MSMS files")}
-      if((length(msfiles)<1) | (length(msmsfiles)<1)) 
-      {stop("your MStag and/or idMSMStag values return no files with matching strings")}
-      data1<-t(data12[,msfiles])
-      row.names(data1)<-sampnames[msfiles]
-      data2<-t(data12[,msmsfiles])
-      row.names(data2)<-sampnames[msmsfiles]  ##this may need to be changed to dimnames..
-      times<-round(xcmsObj@groups[,"rtmed"], digits=3)
-      mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)
+    msmsfiles<-grep(idMSMStag, xcmsObj@filepaths, ignore.case=TRUE)
+    if(length(intersect(msfiles, msmsfiles)>0)) 
+    {stop("your MS and idMSMStag values do not generate unique file lists")}
+    if(length(msfiles)!=length(msmsfiles)) 
+    {stop("the number of MS files must equal the number of MSMS files")}
+    if((length(msfiles)<1) | (length(msmsfiles)<1)) 
+    {stop("your MStag and/or idMSMStag values return no files with matching strings")}
+    data1<-t(data12[,msfiles])
+    row.names(data1)<-sampnames[msfiles]
+    data2<-t(data12[,msmsfiles])
+    row.names(data2)<-sampnames[msmsfiles]  ##this may need to be changed to dimnames..
+    times<-round(xcmsObj@groups[,"rtmed"], digits=3)
+    mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)
     } else {
       data1<-t(data12)
       msfiles<-1:nrow(data1)
@@ -254,7 +276,7 @@ ramclustR2<- function(  xcmsObj=NULL,
   bl<-nrow(eval1)
   row.names(eval1)<-c(1:bl)
   
-
+  
   ##PEAK SHAPE START
   if(pkshape) {
     if(file.exists("ramclustR_out/ffeic.Rdata")) {
@@ -293,7 +315,7 @@ ramclustR2<- function(  xcmsObj=NULL,
       rtrange<-c(min(xcmsObj@rt$raw[[1]]), max(xcmsObj@rt$raw[[1]]))
       rtlen<-length(xcmsObj@rt$raw[[1]])
       rtstep<-(rtrange[2]-rtrange[1])/rtlen
-
+      
       ind<-round((pks[, "rt"]-rtrange[1])/rtstep)
       samp<-pks[,"sample"]
       rtcorfun<-function(x) {
@@ -315,8 +337,8 @@ ramclustR2<- function(  xcmsObj=NULL,
       for(j in 1:max(samp)) {
         do<-which(samp==j)
         #if(any(ls()=="xseic")){t1<-xseic[[j]]; cat('\n', paste(j)) } else {
-          t1<-getEIC(xcmsObj, as.matrix(pks[do,c("mzmin", "mzmax")]), as.matrix(pks[do,c("rtmin", "rtmax")]), sampleidx=j) #
-      #}
+        t1<-getEIC(xcmsObj, as.matrix(pks[do,c("mzmin", "mzmax")]), as.matrix(pks[do,c("rtmin", "rtmax")]), sampleidx=j) #
+        #}
         rtadjdo<-rtadj[do]
         grpdo<-grp[do]  #grpdo<-fford[grp[do]]
         for(i in 1:length(do)) {
@@ -324,18 +346,20 @@ ramclustR2<- function(  xcmsObj=NULL,
           aint<-t1@eic[[1]][[i]][,"intensity"]+rtadjdo[i]
           aint<-aint-min(aint)
           from<-which(eictimes-min(art)> 0 )[1]-1
-          if(is.na(from)) cat("from is NA")
-          if(from<1){cat("from ", j," ", i, "\n")}
-          to<- which(eictimes-max(art)> 0 )[1]
-          if(to>ncol(ffeic)){cat("to ", j," ", i, "\n")}
-          subtime<-eictimes[from:to]
-          is<-ffeic[fford[grpdo[i]],from:to] 
-          is[which(is.na(is))]<-0
-          spl<-(round(spline(art, aint, n=length(subtime), method="fmm")$y))
-          spl[which(is.na(spl))]<-0
-          spl[which(spl<0)]<-0
-          #spl<-spl-min(spl)
-          ffeic[fford[grpdo[i]] ,from:to]<- is+spl	
+          if(!is.na(from)){
+            #cat("from =", from, '\n')
+            if(from<1){cat("from ", j," ", i, "\n")}
+            to<- which(eictimes-max(art)> 0 )[1]
+            if(to>ncol(ffeic)){cat("to ", j," ", i, "\n")}
+            subtime<-eictimes[from:to]
+            is<-ffeic[fford[grpdo[i]],from:to] 
+            is[which(is.na(is))]<-0
+            spl<-(round(spline(art, aint, n=length(subtime), method="fmm")$y))
+            spl[which(is.na(spl))]<-0
+            spl[which(spl<0)]<-0
+            #spl<-spl-min(spl)
+            ffeic[fford[grpdo[i]] ,from:to]<- is+spl
+          }	
         }
         ffeic[which(ffeic[]<0)]<-0
       }
@@ -406,7 +430,7 @@ ramclustR2<- function(  xcmsObj=NULL,
       }
       gc()} 
   }
-
+  
   if(!file.exists("ramclustR_out/ffr.Rdata") & !file.exists("ramclustR_out/fft.Rdata")) {system.time(sapply(1:bl, makeFF))}
   #save ff objects, if not already used
   if(!file.exists("ramclustR_out/ffeic.Rdata") & saveFF) {
@@ -460,7 +484,7 @@ ramclustR2<- function(  xcmsObj=NULL,
   #RCsim(bl=1:bl)
   
   b<-Sys.time()
-
+  
   if(!file.exists("ramclustR_out/ffr.Rdata") & saveFF) {
     ffsave(ffr, file="ramclustR_out/ffr")
   }
@@ -508,7 +532,7 @@ ramclustR2<- function(  xcmsObj=NULL,
   ##convert vector to distance formatted object
   RCd<-structure(RCd, Size=(n), Diag=FALSE, Upper=FALSE, method="RAMClustR", Labels=featnames, class="dist")
   gc()
-
+  
   c<-Sys.time()    
   cat('\n', '\n')
   cat(paste("RAMClust distances converted to distance object:", 
@@ -525,12 +549,12 @@ ramclustR2<- function(  xcmsObj=NULL,
   cat('\n', '\n')    
   cat(paste("fastcluster based clustering complete:", 
             round(difftime(d, c, units="mins"), digits=1), "minutes"))
-    clus<-as.vector(cutreeHybrid(dendro=RC, distM=as.matrix(RCd), minClusterSize = max(minModuleSize, 2), deepSplit = deepSplit, cutHeight=hmax)$labels)
-    #clus<-cutreeDynamicTree(RC, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=max(minModuleSize, 2))
-    if(minModuleSize==1) {
-      sing<-which(clus==0)
-      clus[sing]<-max(clus)+1:length(sing)
-    }
+  clus<-as.vector(cutreeHybrid(dendro=RC, distM=as.matrix(RCd), minClusterSize = max(minModuleSize, 2), deepSplit = deepSplit, cutHeight=hmax)$labels)
+  #clus<-cutreeDynamicTree(RC, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=max(minModuleSize, 2))
+  if(minModuleSize==1) {
+    sing<-which(clus==0)
+    clus[sing]<-max(clus)+1:length(sing)
+  }
   gc()
   
   
@@ -620,13 +644,13 @@ ramclustR2<- function(  xcmsObj=NULL,
         sl<-which(RC$featclus==j)
         wm<-vector(length=length(sl))
         if(m==1) {wts<-rowSums(RC$MSdata[,sl])
-                  for (k in 1:length(sl)) {     
-                    wm[k]<-weighted.mean(RC$MSdata[,sl[k]], wts)
-                  }}
+        for (k in 1:length(sl)) {     
+          wm[k]<-weighted.mean(RC$MSdata[,sl[k]], wts)
+        }}
         if(m==2) {wts<-rowSums(RC$MSMSdata[,sl])
-                  for (k in 1:length(sl)) {    
-                    wm[k]<-weighted.mean(RC$MSMSdata[,sl[k]], wts)
-                  }}
+        for (k in 1:length(sl)) {    
+          wm[k]<-weighted.mean(RC$MSMSdata[,sl[k]], wts)
+        }}
         mz<-round(RC$fmz[sl][order(wm, decreasing=TRUE)], digits=mzdec)
         rt<-RC$frt[sl][order(wm, decreasing=TRUE)]
         wm<-round(wm[order(wm, decreasing=TRUE)])
@@ -683,9 +707,9 @@ ramclustR2<- function(  xcmsObj=NULL,
       expon<-0.2
       #cat(paste("made it ", x, startt, stopt))
       #cat(tmpeic[1,])
-#       plot(eictimes[startt:stopt], tmpeic[1,startt:stopt]/max(tmpeic[1,startt:stopt], na.rm=TRUE), type="l",  
-#            main=paste("cl", x, "  rt =", round(RC$clrt[x], digits=2)), xlab="rt", ylab="intensity", ylim=c(0,1.4))
-#       text((eictimes[startt:stopt][which.max(tmpeic[1,startt:stopt])]), 1.2, round(RC$fmz[which(RC$featclus==x)][1], digits=3), cex=0.5 )
+      #       plot(eictimes[startt:stopt], tmpeic[1,startt:stopt]/max(tmpeic[1,startt:stopt], na.rm=TRUE), type="l",  
+      #            main=paste("cl", x, "  rt =", round(RC$clrt[x], digits=2)), xlab="rt", ylab="intensity", ylim=c(0,1.4))
+      #       text((eictimes[startt:stopt][which.max(tmpeic[1,startt:stopt])]), 1.2, round(RC$fmz[which(RC$featclus==x)][1], digits=3), cex=0.5 )
       plot(eictimes[startt:stopt], (tmpeic[1,startt:stopt])^expon, type="l",  
            main=paste("cl", x, "  rt =", round(RC$clrt[x], digits=2)), xlab="rt", ylab="intensity", ylim=c(0, (maxy*1.4)^expon ))
       text((eictimes[startt:stopt][which.max(tmpeic[1,startt:stopt])]), (maxy*1.2)^expon, round(RC$fmz[which(RC$featclus==x)][1], digits=3), cex=0.5 )
@@ -698,7 +722,7 @@ ramclustR2<- function(  xcmsObj=NULL,
     }
     dev.off()
   }
-
+  
   #cleanup
   delete.ff(ffr)
   rm(ffr)

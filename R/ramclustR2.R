@@ -306,7 +306,7 @@ ramclustR2<- function(  xcmsObj=NULL,
       rtadj<-unlist(sapply(1:length(grp), FUN=rtcorfun))
       rtadj[which(is.na(rtadj))]<-0
       
-      eicrtrange<-c(floor(min(pks[,"rtmin"])), ceiling(max(pks[,"rtmax"])))
+      eicrtrange<-c(floor(min(pks[,"rtmin"])), ceiling(max(pks[,"rtmax"], na.rm=TRUE)))
       npts<-5*eicrtrange[2]-eicrtrange[1]
       eictimes<-seq(from=eicrtrange[1], to=eicrtrange[2], by=((eicrtrange[2]-eicrtrange[1])/(npts-1)))
       fford<-order(rtOrd)

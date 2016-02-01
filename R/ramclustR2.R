@@ -306,7 +306,7 @@ ramclustR2<- function(  xcmsObj=NULL,
       rtadj<-unlist(sapply(1:length(grp), FUN=rtcorfun))
       rtadj[which(is.na(rtadj))]<-0
       
-      eicrtrange<-c(floor(min(pks[,"rtmin"])), ceiling(max(pks[,"rtmax"], na.rm=TRUE)))
+      eicrtrange<-c(floor(min(pks[,"rtmin"])), ceiling(max(pks[,"rtmax"])))
       npts<-5*eicrtrange[2]-eicrtrange[1]
       eictimes<-seq(from=eicrtrange[1], to=eicrtrange[2], by=((eicrtrange[2]-eicrtrange[1])/(npts-1)))
       fford<-order(rtOrd)
@@ -324,6 +324,7 @@ ramclustR2<- function(  xcmsObj=NULL,
           aint<-t1@eic[[1]][[i]][,"intensity"]+rtadjdo[i]
           aint<-aint-min(aint)
           from<-which(eictimes-min(art)> 0 )[1]-1
+          if(is.na(from)) cat("from is NA")
           if(from<1){cat("from ", j," ", i, "\n")}
           to<- which(eictimes-max(art)> 0 )[1]
           if(to>ncol(ffeic)){cat("to ", j," ", i, "\n")}

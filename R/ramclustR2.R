@@ -191,7 +191,7 @@ ramclustR2<- function(  xcmsObj=NULL,
     }
   }
   
-  
+  if((nrow(data1)/blocksize)-round(nrow(data1)/blocksize)<0.1) {blocksize=round(0.9*blocksize, digits=1)}
   ##replace na, inf, 0, and NaN with jittered min dataset value
   rpl1<-unique(c(which(is.na(data1)), which(is.nan(data1)), which(is.infinite(data1)), which(data1==0)))
   rpl2<-unique(c(which(is.na(data2)), which(is.nan(data2)), which(is.infinite(data2)), which(data2==0)))

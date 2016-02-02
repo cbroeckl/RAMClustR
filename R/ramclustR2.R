@@ -347,8 +347,8 @@ ramclustR2<- function(  xcmsObj=NULL,
           aint<-aint-min(aint)
           from<-which(eictimes-min(art)> 0 )[1]-1
           if(!is.na(from)){
-            cat("from =", from, '\n')
-            if(from<1){cat("from ", j," ", i, "\n")}
+            #cat("from =", from, '\n')
+            #if(from<1){cat("from ", j," ", i, "\n")}
             to<- which(eictimes-max(art)> 0 )[1]
             if(to>ncol(ffeic)){cat("to ", j," ", i, "\n")}
             subtime<-eictimes[from:to]

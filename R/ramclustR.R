@@ -267,7 +267,7 @@ ramclustR<- function(  xcmsObj=NULL,
     gc()}
   # ffmat[995:1002,995:1002]
   
-  ##Call the similarity scoring function
+  ##Call the similarity scoring function  #  
   system.time(sapply(1:bl, RCsim))
   #RCsim(bl=1:bl)
   

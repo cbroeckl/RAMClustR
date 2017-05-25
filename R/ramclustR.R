@@ -462,11 +462,11 @@ ramclustR<- function(  xcmsObj=NULL,
         #print(paste(j,"_", sep=""))
         sl<-which(RC$featclus==j)
         wm<-vector(length=length(sl))
-        if(m==1) {wts<-rowSums(RC$MSdata[,sl])
+        if(m==1) {wts<-rowSums(RC$MSdata[,sl, drop=FALSE])
                   for (k in 1:length(sl)) {     
                     wm[k]<-weighted.mean(RC$MSdata[,sl[k]], wts)
                   }}
-        if(m==2) {wts<-rowSums(RC$MSMSdata[,sl])
+        if(m==2) {wts<-rowSums(RC$MSMSdata[,sl, drop=FALSE])
                   for (k in 1:length(sl)) {    
                     wm[k]<-weighted.mean(RC$MSMSdata[,sl[k]], wts)
                   }}

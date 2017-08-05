@@ -48,13 +48,7 @@ ramclustR<- function(  xcmsObj=NULL,
                        linkage="average",
                        mzdec=4,
                        cleanup=TRUE
-) {
-  
-  require(xcms, quietly=TRUE)
-  require(ff, quietly=TRUE)
-  require(fastcluster, quietly=TRUE)
-  require(dynamicTreeCut, quietly=TRUE)
-  
+) {    
   if(is.null(xcmsObj) & is.null(ms))  {
     stop("you must select either 
           1: an MS dataset with features as columns 
@@ -187,7 +181,6 @@ ramclustR<- function(  xcmsObj=NULL,
     data2<-(data2/rowSums(data2))*mean(rowSums(data2), na.rm=TRUE)
   }
   if(normalize=="quantile") {
-    library(preprocessCore)
     data1<-t(preprocessCore::normalize.quantiles(t(data1)))
     data2<-t(preprocessCore::normalize.quantiles(t(data2)))	
   }

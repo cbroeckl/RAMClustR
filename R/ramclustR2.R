@@ -1,4 +1,4 @@
-#' ramclustR
+#' ramclustR2
 #'
 #' Main clustering function 
 #'
@@ -57,14 +57,7 @@ ramclustR2<- function(  xcmsObj=NULL,
                         cor.use="everything",
                         method="spearman",
                         min.scans=NULL) {
-  
-  require(xcms, quietly=TRUE)
-  require(ff, quietly=TRUE)
-  require(fastcluster, quietly=TRUE)
-  require(dynamicTreeCut, quietly=TRUE)
-  require(fastmatch, quietly=TRUE)
-  if(plots) {require(ape, quietly=TRUE)}
-  
+    
   if(is.null(xcmsObj) & is.null(ms))  {
     stop("you must select either 
           1: an MS dataset with features as columns 
@@ -206,7 +199,6 @@ ramclustR2<- function(  xcmsObj=NULL,
     data2<-(data2/rowSums(data2))*mean(rowSums(data2), na.rm=TRUE)
   }
   if(normalize=="quantile") {
-    library(preprocessCore)
     data1<-t(preprocessCore::normalize.quantiles(t(data1)))
     data2<-t(preprocessCore::normalize.quantiles(t(data2)))	
   }
@@ -244,19 +236,19 @@ ramclustR2<- function(  xcmsObj=NULL,
   ##the rt (ffT) matrix,  the peak shape matrix(ffS), and the product matrix (ffP)
   ##if the files already exist, simply load them instead (except product matrix)
   
-  if(!file.exists("ramclustR_out/ffr.Rdata")) {ffr<-ff(vmode="double", dim=c(n, n), init=0)} else {
+  if(!file.exists("ramclustR_out/ffr.Rdata")) {ffr<-ff(vmode="double", dim=c(n, n), initdata = 0)} else {
     cat("loading existing ffr")
     cat('/n')
     suppressWarnings(ffload(file="ramclustR_out/ffr", overwrite=TRUE))
     if(dim(xcmsObj@groups)[1]!=nrow(ffr)) {stop("dimensions of feature groups not equal to dimensions of ffr")}
   }
-  if(!file.exists("ramclustR_out/fft.Rdata")) {fft<-ff(vmode="double", dim=c(n, n), init=0)} else {
+  if(!file.exists("ramclustR_out/fft.Rdata")) {fft<-ff(vmode="double", dim=c(n, n), initdata=0)} else {
     cat("loading existing fft")
     cat('/n')
     suppressWarnings(ffload(file="ramclustR_out/fft", overwrite=TRUE))
     if(dim(xcmsObj@groups)[1]!=nrow(fft)) {stop("dimensions of feature groups not equal to dimensions of fft")} 
   }
-  if(pkshape & !file.exists("ramclustR_out/ffs.Rdata")) {ffs<-ff(vmode="double", dim=c(n, n), init=0)} else {
+  if(pkshape & !file.exists("ramclustR_out/ffs.Rdata")) {ffs<-ff(vmode="double", dim=c(n, n), initdata=0)} else {
     if(file.exists("ramclustR_out/ffs.Rdata")) {
       cat("loading existing ffs")
       cat('/n')
@@ -264,7 +256,7 @@ ramclustR2<- function(  xcmsObj=NULL,
       if(dim(xcmsObj@groups)[1]!=nrow(ffs)) {stop("dimensions of feature groups not equal to dimensions of ffs")}
     }
   }
-  ffp<-ff(vmode="double", dim=c(n, n), init=0)
+  ffp<-ff(vmode="double", dim=c(n, n), initdata=0)
   gc()
   #Sys.sleep((n^2)/10000000)
   #gc()
@@ -333,7 +325,7 @@ ramclustR2<- function(  xcmsObj=NULL,
       eictimes<-seq(from=eicrtrange[1], to=eicrtrange[2], by=((eicrtrange[2]-eicrtrange[1])/(npts-1)))
       fford<-order(rtOrd)
       
-      ffeic <- ff(vmode = "double", dim = c(dim(xcmsObj@groups)[1], npts), init = 0)
+      ffeic <- ff(vmode = "double", dim = c(dim(xcmsObj@groups)[1], npts), initdata = 0)
       for(j in 1:max(samp)) {
         do<-which(samp==j)
         #if(any(ls()=="xseic")){t1<-xseic[[j]]; cat('\n', paste(j)) } else {

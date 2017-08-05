@@ -1,11 +1,11 @@
 Package: RAMClustR
 Type: Package
 Title: RAMClust: a novel feature clustering method enables spectral-matching based annotation for metabolomics data
-Version: 0.3
-Date: 2014-09-02
+Version: 0.4
+Date: 2017-08-05
 Author: Corey D. Broeckling, Fayyaz Afsar, Steffan Neumann, Asa Ben-Hur,  Jessica Prenni.
 Maintainer: "Broeckling,Corey" <Corey.Broeckling@ColoState.EDU>
-Depends: dynamicTreeCut, fastcluster, ff, preprocessCore, xcms
+Imports: ape, dynamicTreeCut, fastcluster, ff, fastmatch, preprocessCore, xcms
 License: GPL (>= 2)
 Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics
              data, where feature detection is performed on both MS and idMS/MS

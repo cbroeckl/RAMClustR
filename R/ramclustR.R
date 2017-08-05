@@ -28,6 +28,7 @@ ramclustR<- function(  xcmsObj=NULL,
                        MStag=NULL,
                        idMSMStag=NULL, 
                        featdelim="_", 
+                       mzpos=1, 
                        timepos=2, 
                        st=NULL, 
                        sr=NULL, 
@@ -191,7 +192,6 @@ ramclustR<- function(  xcmsObj=NULL,
     data2<-t(preprocessCore::normalize.quantiles(t(data2)))	
   }
   
-  
   ##retention times and mzs vectors
   
   ##sort rt vector and data by retention time
@@ -216,7 +216,7 @@ ramclustR<- function(  xcmsObj=NULL,
   #gc()
   #ffrt<-ff(vmode="double", dim=c(n, n), init=0)
   #gc()
-  ffmat<-ff(vmode="double", dim=c(n, n), init=0) ##reset to 1 if necessary
+  ffmat<-ff(vmode="double", dim=c(n, n), initdata = 0) ##reset to 1 if necessary
   gc()
   #Sys.sleep((n^2)/10000000)
   #gc()

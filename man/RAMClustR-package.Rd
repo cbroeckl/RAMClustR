@@ -28,5 +28,5 @@ Broeckling CD, Heuberger AL, Prince JA, Ingelsson E, Prenni JE (2013) Assigning 
 }
 \keyword{metabolomics}
 \seealso{
-\code{\link[<pkg>:xcms-package]{xcms}} \code{\link[<pkg>:CAMERA-package]{CAMERA}}
+\code{xcms}-package, \code{CAMERA} package
 }

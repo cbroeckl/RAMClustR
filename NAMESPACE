@@ -1,3 +1,8 @@
 export("ramclustR",
         "ramclustR2",
         "plotspecPDF")
+import("ff")
+import("xcms")
+import("dynamicTreeCut")
+import("fastcluster")
+import("preprocessCore")

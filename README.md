@@ -1,8 +1,19 @@
 RAMClustR
 =========
 
-A feature clustering algorithm for non-targeted mass spectrometric metabolomics data,
-as described in: 
+A feature clustering algorithm for non-targeted mass spectrometric metabolomics data.
+
+To Install from R console:
+
+install.packages("devtools", repos="http://cran.us.r-project.org", dependencies=TRUE)
+
+library(devtools) 
+
+install_github("cbroeckl/RAMClustR")
+
+library(RAMClustR) 
+
+Please cite:
 
 RAMClust: A Novel Feature Clustering Method Enables Spectral-Matching-Based Annotation for Metabolomics Data
 C. D. Broeckling, F. A. Afsar, S. Neumann , A. Ben-Hur, and J. E. Prenni

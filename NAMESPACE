@@ -1,4 +1,6 @@
-export(ramclustR)
+export("ramclustR",
+        "ramclustR2",
+        "plotspecPDF")
 import("ff")
 import("xcms")
 import("dynamicTreeCut")

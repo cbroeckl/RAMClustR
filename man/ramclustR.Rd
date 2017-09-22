@@ -9,9 +9,8 @@ ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
   featdelim = "_", mzpos = 1, timepos = 2, st = NULL, sr = NULL,
   maxt = NULL, deepSplit = FALSE, blocksize = 2000, mult = 5,
   hmax = NULL, sampNameCol = NULL, collapse = TRUE, usePheno = TRUE,
-  mspout = TRUE, mslev = 1, ExpDes = NULL, normalize = "TIC",
-  minModuleSize = 2, linkage = "average", mzdec = 4,
-  cor.method = "pearson")
+  mspout = TRUE, ExpDes = NULL, normalize = "TIC", minModuleSize = 2,
+  linkage = "average", mzdec = 4, cor.method = "pearson")
 }
 \arguments{
 \item{xcmsObj}{xcmsObject: containing grouped feature data for clustering by ramclustR}
@@ -50,9 +49,7 @@ ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
 
 \item{mspout}{logical: write msp formatted specta to file?}
 
-\item{mslev}{integer: set to 1 for ms only, 2 for xcms objects containing features from mse data}
-
-\item{ExpDes}{R ExpDes object: data used for record keeping and labelling msp spectral output}
+\item{ExpDes}{either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output}
 
 \item{normalize}{character: either "none", "TIC", or "quantile" normalization of feature intensities}
 

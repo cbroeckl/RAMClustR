@@ -14,10 +14,10 @@
 #' @param st numeric: sigma t - time similarity decay value 
 #' @param sr numeric: sigma r - correlational similarity decay value
 #' @param maxt numeric: maximum time difference to calculate retention similarity for - all values beyond this are assigned similarity of zero
-#' @param deepSplit logical: controls how agressively the HCA tree is cut.  see ?dynamicTreeCut
+#' @param deepSplit logical: controls how agressively the HCA tree is cut - see ?cutreeDynamicTree
 #' @param blocksize integer: number of features (scans?) processed in one block  =1000,
 #' @param mult numeric: internal value, can be used to influence processing speed/ram usage
-#' @param hmax numeric: precut the tree at this height, default 0.3
+#' @param hmax numeric: precut the tree at this height, default 0.3 - see ?cutreeDynamicTree
 #' @param sampNameCol integer: which column from the csv file contains sample names?
 #' @param collapse logical: reduce feature intensities to spectrum intensities?
 #' @param usePheno logical: tranfer phenotype data from XCMS object to SpecAbund dataset?
@@ -30,7 +30,7 @@
 #' @param mzdec integer: number of decimal places used in printing m/z values
 #' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
 #'
-#' @return A vector with the numeric values of the processed data
+#' @return a ranclustR object.  base structure is that of a standard R heirarchical clustering output
 #' @author Corey Broeckling
 #' @export
 
@@ -60,8 +60,7 @@ ramclustR<- function(  xcmsObj=NULL,
                        minModuleSize=2,
                        linkage="average",
                        mzdec=4,
-<<<<<<< HEAD
-					            cor.method="pearson"
+                       cor.method="pearson"
 ) {
   
   require(xcms, quietly=TRUE)
@@ -69,10 +68,6 @@ ramclustR<- function(  xcmsObj=NULL,
   require(fastcluster, quietly=TRUE)
   require(dynamicTreeCut, quietly=TRUE)
   
-=======
-                       cleanup=TRUE
-) {    
->>>>>>> refs/remotes/sneumann/master
   if(is.null(xcmsObj) & is.null(ms))  {
     stop("you must select either 
           1: an MS dataset with features as columns 
@@ -153,24 +148,24 @@ ramclustR<- function(  xcmsObj=NULL,
     
     if(taglocation=="filepaths" & !is.null(MStag)) 
     { msfiles<-grep(MStag, xcmsObj@filepaths, ignore.case=TRUE)
-      msmsfiles<-grep(idMSMStag, xcmsObj@filepaths, ignore.case=TRUE)
-      if(length(intersect(msfiles, msmsfiles)>0)) 
-      {stop("your MS and idMSMStag values do not generate unique file lists")}
-      if(length(msfiles)!=length(msmsfiles)) 
-      {stop("the number of MS files must equal the number of MSMS files")}
-      data1<-t(data12[,msfiles])
-      row.names(data1)<-sampnames[msfiles]
-      data2<-t(data12[,msmsfiles])
-      row.names(data2)<-sampnames[msmsfiles]  ##this may need to be changed to dimnames..
-      times<-round(xcmsObj@groups[,"rtmed"], digits=3)
-      if(any(is.na(times))) {
-        do<-which(is.na(times))
-        for(x in 1:length(do)) {
-          times[do[x]]<-  as.numeric((xcmsObj@groups[do[x],"rtmin"]+ xcmsObj@groups[do[x],"rtmax"])/2)
-        }
+    msmsfiles<-grep(idMSMStag, xcmsObj@filepaths, ignore.case=TRUE)
+    if(length(intersect(msfiles, msmsfiles)>0)) 
+    {stop("your MS and idMSMStag values do not generate unique file lists")}
+    if(length(msfiles)!=length(msmsfiles)) 
+    {stop("the number of MS files must equal the number of MSMS files")}
+    data1<-t(data12[,msfiles])
+    row.names(data1)<-sampnames[msfiles]
+    data2<-t(data12[,msmsfiles])
+    row.names(data2)<-sampnames[msmsfiles]  ##this may need to be changed to dimnames..
+    times<-round(xcmsObj@groups[,"rtmed"], digits=3)
+    if(any(is.na(times))) {
+      do<-which(is.na(times))
+      for(x in 1:length(do)) {
+        times[do[x]]<-  as.numeric((xcmsObj@groups[do[x],"rtmin"]+ xcmsObj@groups[do[x],"rtmax"])/2)
       }
-      # if(any(is.na(times))) {stop("na values still present")} else {print("NAs removed")}
-      mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)
+    }
+    # if(any(is.na(times))) {stop("na values still present")} else {print("NAs removed")}
+    mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)
     } else {
       data1<-t(data12)
       msfiles<-1:nrow(data1)
@@ -379,34 +374,6 @@ ramclustR<- function(  xcmsObj=NULL,
     RC$msmsint<-msmsint
   }
   
-  ##new cleanup section to collapse reduntant clusters groups into a single cluster
-  ##currently only reporting redundancy, need to next modify the original cluster 'clrt' with the new cluster data
-  
-  #   if(cleanup) {
-  #     cat('\n', "... checking for potential split feature groups")
-  #     wts<-colSums(data1[])
-  #     tmp<-matrix(nrow=nrow(data1), ncol=max(clus))
-  #     was<-1:max(clus)
-  #     for (ro in 1:nrow(tmp)) { 
-  #       for (co in 1:ncol(tmp)) {
-  #         tmp[ro,co]<- weighted.mean(data1[ro,which(tmp==co)], wts[which(tmp==co)])
-  #       }
-  #     }
-  #     clrt<-aggregate(RC$frt, by=list(RC$featclus), FUN="mean")
-  #     for(x in 1:max(clus)){
-  #       check<-x-1+which(clrt[x:length(clrt)]>=(clrt[x]-(0.5*st))  &  clrt[x:length(clrt)]<=(clrt[x]+(0.5*st)))
-  #       check<-check[-1]
-  #       if(length(check)>1) {
-  #         rs<-cor(tmp[,x], tmp[,check])
-  #         if(length(which(rs>0.7))>0) {
-  #           paste("cl", x, "is likely redundant with cl", check[which(rs>0.7)])
-  #         }
-  #       }
-  #     }
-  #     cat('\n', '\n')
-  #     cat(paste("done checking...", '\n'))
-  #   }
-  #   
   clrt<-aggregate(RC$frt, by=list(RC$featclus), FUN="mean")
   RC$clrt<-clrt[which(clrt[,1]!=0),2]
   clrtsd<-aggregate(RC$frt, by=list(RC$featclus), FUN="sd")
@@ -480,13 +447,13 @@ ramclustR<- function(  xcmsObj=NULL,
         sl<-which(RC$featclus==j)
         wm<-vector(length=length(sl))
         if(m==1) {wts<-rowSums(RC$MSdata[,sl, drop=FALSE])
-                  for (k in 1:length(sl)) {     
-                    wm[k]<-weighted.mean(RC$MSdata[,sl[k]], wts)
-                  }}
+        for (k in 1:length(sl)) {     
+          wm[k]<-weighted.mean(RC$MSdata[,sl[k]], wts)
+        }}
         if(m==2) {wts<-rowSums(RC$MSMSdata[,sl, drop=FALSE])
-                  for (k in 1:length(sl)) {    
-                    wm[k]<-weighted.mean(RC$MSMSdata[,sl[k]], wts)
-                  }}
+        for (k in 1:length(sl)) {    
+          wm[k]<-weighted.mean(RC$MSMSdata[,sl[k]], wts)
+        }}
         mz<-round(RC$fmz[sl][order(wm, decreasing=TRUE)], digits=mzdec)
         rt<-RC$frt[sl][order(wm, decreasing=TRUE)]
         wm<-round(wm[order(wm, decreasing=TRUE)])

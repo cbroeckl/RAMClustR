@@ -4,18 +4,31 @@
 #'
 #' This is the Details section
 #'
-#' @param filename character Filename of the nmrML to check
-#' @param ms MS1 intensities =MSdata, 
-#' @param idmsms =ms,  
-#' @param idMSMStag character e.g. "02.cdf"
-#' @param featdelim character e.g. ="_"
-#' @param timepos numeric 2
-#' @param st numeric no clue e.g. = 5, 
-#' @param sr numeric also no clue yet = 5, 
-#' @param maxt numeric again no clue =20, 
-#' @param deepSplit boolean e.g. =FALSE, 
-#' @param blocksize integer number of features (scans?) processed in one block  =1000,
-#' @param mult numeric =10
+#' @param xcmsObj xcmsObject: containing grouped feature data for clustering by ramclustR
+#' @param ms filepath: optional csv input. Features as columns, rows as samples. Column header mz_rt
+#' @param idmsms filepath: optional idMSMS / MSe csv data.  same dim and names as ms required
+#' @param idMSMStag character: character string in 'taglocation' to designat idMSMS / MSe files e.g. "02.cdf"
+#' @param taglocation character: "filepaths" by default, "phenoData[,1]" is another option. referse to xcms slot
+#' @param featdelim character: how feature mz and rt are delimited in csv import column header e.g. ="-"
+#' @param timepos integer: which position in delimited column header represents the retention time (csv only)
+#' @param st numeric: sigma t - time similarity decay value 
+#' @param sr numeric: sigma r - correlational similarity decay value
+#' @param maxt numeric: maximum time difference to calculate retention similarity for - all values beyond this are assigned similarity of zero
+#' @param deepSplit logical: controls how agressively the HCA tree is cut.  see ?dynamicTreeCut
+#' @param blocksize integer: number of features (scans?) processed in one block  =1000,
+#' @param mult numeric: internal value, can be used to influence processing speed/ram usage
+#' @param hmax numeric: precut the tree at this height, default 0.3
+#' @param sampNameCol integer: which column from the csv file contains sample names?
+#' @param collapse logical: reduce feature intensities to spectrum intensities?
+#' @param usePheno logical: tranfer phenotype data from XCMS object to SpecAbund dataset?
+#' @param mspout logical: write msp formatted specta to file?
+#' @param mslev integer: set to 1 for ms only, 2 for xcms objects containing features from mse data
+#' @param ExpDes R ExpDes object: data used for record keeping and labelling msp spectral output
+#' @param normalize character: either "none", "TIC", or "quantile" normalization of feature intensities
+#' @param minModuleSize integer: how many features must be part of a cluster to be returned? default = 2
+#' @param linkage character: heirarchical clustering linkage method - see ?hclust
+#' @param mzdec integer: number of decimal places used in printing m/z values
+#' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
 #'
 #' @return A vector with the numeric values of the processed data
 #' @author Corey Broeckling
@@ -47,8 +60,19 @@ ramclustR<- function(  xcmsObj=NULL,
                        minModuleSize=2,
                        linkage="average",
                        mzdec=4,
+<<<<<<< HEAD
+					            cor.method="pearson"
+) {
+  
+  require(xcms, quietly=TRUE)
+  require(ff, quietly=TRUE)
+  require(fastcluster, quietly=TRUE)
+  require(dynamicTreeCut, quietly=TRUE)
+  
+=======
                        cleanup=TRUE
 ) {    
+>>>>>>> refs/remotes/sneumann/master
   if(is.null(xcmsObj) & is.null(ms))  {
     stop("you must select either 
           1: an MS dataset with features as columns 
@@ -242,9 +266,9 @@ ramclustR<- function(  xcmsObj=NULL,
                      digits=20 )
         #stopifnot(max(temp)!=0)
         #ffrt[startr:stopr, startc:stopc]<- temp
-        temp2<-round (exp(-((1-(pmax(  cor(data1[,startr:stopr], data1[,startc:stopc]),
-                                       cor(data1[,startr:stopr], data2[,startc:stopc]),
-                                       cor(data2[,startr:stopr], data2[,startc:stopc])  )))^2)/(2*(sr^2))), 
+        temp2<-round (exp(-((1-(pmax(  cor(data1[,startr:stopr], data1[,startc:stopc], method=cor.method),
+                                       cor(data1[,startr:stopr], data2[,startc:stopc], method=cor.method),
+                                       cor(data2[,startr:stopr], data2[,startc:stopc], method=cor.method)  )))^2)/(2*(sr^2))), 
                       
                       digits=20 )		
         #ffcor[startr:stopr, startc:stopc]<-temp

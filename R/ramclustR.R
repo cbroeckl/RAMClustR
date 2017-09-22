@@ -22,7 +22,6 @@
 #' @param collapse logical: reduce feature intensities to spectrum intensities?
 #' @param usePheno logical: tranfer phenotype data from XCMS object to SpecAbund dataset?
 #' @param mspout logical: write msp formatted specta to file?
-#' @param mslev integer: set to 1 for ms only, 2 for xcms objects containing features from mse data
 #' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
 #' @param normalize character: either "none", "TIC", or "quantile" normalization of feature intensities
 #' @param minModuleSize integer: how many features must be part of a cluster to be returned? default = 2
@@ -54,7 +53,6 @@ ramclustR<- function(  xcmsObj=NULL,
                        collapse=TRUE,
                        usePheno=TRUE,
                        mspout=TRUE, 
-                       mslev=1,
                        ExpDes=NULL,
                        normalize="TIC",
                        minModuleSize=2,
@@ -81,6 +79,7 @@ ramclustR<- function(  xcmsObj=NULL,
   if( normalize!="none"  & normalize!="TIC" & normalize!="quantile") {
     stop("please selected either 'none', 'TIC', or 'quantile' for the normalize setting")}
   
+  mslev = ExpDes[[1]][5,1]
   a<-Sys.time()   
   
   if(is.null(hmax)) {hmax<-0.3}

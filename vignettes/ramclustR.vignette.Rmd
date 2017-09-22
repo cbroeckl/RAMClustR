@@ -69,6 +69,24 @@ Additionally, the RC R object contains a new dataset called "SpecAbund".  You ca
 write.csv(RC$SpecAbund, file="SpecAbund.csv", row.names=TRUE)
 ```
 
+### csv input:
+If you have processed your data using some other program, and can get your feature data out in csv format, ramclustR can process it. Your csv file should look like this: 
+
+ sample  | 123.456_45.3   |  232.423_94.1 | ...
+ --------|----------------|---------------|----
+ trt 1   | 19470          | 878274        | ...
+ trt 2   | 13420          | 818334        | ...
+ cnt 1   | 12440          | 872274        | ...
+ cnt 1   | 19421          | 563244        | ...
+ 
+Sample names in the first column.  Column names contain the mz value and the retention time in your units of choice, and these two values are separated by a delimiter, in this case and underscore "_".  If you also have data from an MSe experiment, you must input the data in the same format, and the column and row names must be identical.  
+
+```{r csv input, eval=FALSE, include=TRUE}
+experiment <- defineExperiment(csv = TRUE)
+RC <- ramclustR(ms = "mymsdata.csv", featdelim - "_", timepos = 2, st = 5, ExpDes=experiment)
+```
+
+
 
 ## Questions:
 Corey Broeckling  -  cbroeckl@colostate.edu

@@ -9,10 +9,11 @@ Imports: dynamicTreeCut, fastcluster, ff, fastmatch, preprocessCore, xcms
 License: GPL (>= 2)
 Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics
              data, where feature detection is performed on both MS and idMS/MS
-             (indiscriminant MS/MS) data, and feature–feature relationships are determined simultaneously 
+             (indiscriminant MS/MS) data, and feature?feature relationships are determined simultaneously 
              from the MS and idMS/MS data. 
 URL: https://github.com/sneumann/RAMClustR
 Encoding: UTF-8
 biocViews: MassSpectrometry, Metabolomics
 RoxygenNote: 6.0.1
 Suggests: knitr
+VignetteBuilder: knitr

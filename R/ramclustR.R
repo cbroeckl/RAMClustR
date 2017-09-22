@@ -23,7 +23,7 @@
 #' @param usePheno logical: tranfer phenotype data from XCMS object to SpecAbund dataset?
 #' @param mspout logical: write msp formatted specta to file?
 #' @param mslev integer: set to 1 for ms only, 2 for xcms objects containing features from mse data
-#' @param ExpDes R ExpDes object: data used for record keeping and labelling msp spectral output
+#' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
 #' @param normalize character: either "none", "TIC", or "quantile" normalization of feature intensities
 #' @param minModuleSize integer: how many features must be part of a cluster to be returned? default = 2
 #' @param linkage character: heirarchical clustering linkage method - see ?hclust
@@ -77,17 +77,6 @@ ramclustR<- function(  xcmsObj=NULL,
   
   if(!is.null(xcmsObj) & mslev==2 & any(is.null(MStag), is.null(idMSMStag), is.null(taglocation)))
   {stop("you must specify the the MStag, idMSMStag, and the taglocations")}
-  
-  if(is.null(ExpDes) & mspout==TRUE){
-    cat("please enter experiment description (see popup window), or set 'mspout=FALSE'")
-    ExpDes<-defineExperiment()
-  }
-  
-  if(is.null(ExpDes) & mspout==FALSE){
-    warning("using undefined instrumental settings")
-    ExpDes<-paramsets$undefined
-  }
-  
   
   if( normalize!="none"  & normalize!="TIC" & normalize!="quantile") {
     stop("please selected either 'none', 'TIC', or 'quantile' for the normalize setting")}
@@ -394,7 +383,8 @@ ramclustR<- function(  xcmsObj=NULL,
                                                                                                    units="mins"), digits=1), "minutes", '\n'))
   
   RC$ExpDes<-ExpDes
-  RC$cmpd<-paste("C", 1:length(RC$clrt), sep="")
+  strl<-nchar(max(RC$featclus)) - 1
+  RC$cmpd<-paste("C", formatC(1:length(RC$clrt), digits = strl, flag = 0 ) , sep="")
   RC$ann<-RC$cmpd
   RC$annconf<-rep("", length(RC$clrt))
   RC$annnotes<-rep("", length(RC$clrt))
@@ -468,17 +458,19 @@ ramclustR<- function(  xcmsObj=NULL,
           paste("Name: C", j, sep=""), '\n',
           paste("SYNON: $:00in-source", sep=""), '\n',
           paste("SYNON: $:04", sep=""), '\n', 
-          paste("SYNON: $:05", if(m==1) {ExpDes[[2]]["CE1", 1]} else {ExpDes$instrument["CE2", "InstVals"]}, 
-                
-                sep=""), '\n',
+          paste("SYNON: $:05", if(m==1) {ExpDes[[2]]["CE1", 1]} else {ExpDes$instrument["CE2", "InstVals"]}, sep=""), '\n',
           paste("SYNON: $:06", ExpDes[[2]]["mstype", 1], sep=""), '\n',           #mstype
           paste("SYNON: $:07", ExpDes[[2]]["msinst", 1], sep=""), '\n',           #msinst
           paste("SYNON: $:09", ExpDes[[2]]["chrominst", 1], sep=""), '\n',        #chrominst
           paste("SYNON: $:10", ExpDes[[2]]["ionization", 1], sep=""),  '\n',      #ionization method
           paste("SYNON: $:11", ExpDes[[2]]["msmode", 1], sep=""), '\n',           #msmode
-          paste("SYNON: $:12", ExpDes[[2]]["colgas", 1], sep=""), '\n',           #collision gas
+          if(any(row.names(ExpDes[[2]])=="colgas")) {
+            cat(paste("SYNON: $:12", ExpDes[[2]]["colgas", 1], sep=""), '\n')
+            },          #collision gas
           paste("SYNON: $:14", ExpDes[[2]]["msscanrange", 1], sep=""), '\n',      #ms scanrange
-          paste("SYNON: $:16", ExpDes[[2]]["conevolt", 1], sep=""), '\n',         #conevoltage
+          if(any(row.names(ExpDes[[2]])=="conevolt")) {
+            cat(paste("SYNON: $:16", ExpDes[[2]]["conevolt", 1], sep=""), '\n')
+            },         #conevoltage
           paste("Comment: Rt=", round(mrt, digits=2), 
                 "  Contributor=", ExpDes[[1]]["Contributor", 1], 
                 "  Study=", ExpDes[[1]]["Experiment", 1], 

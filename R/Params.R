@@ -1,44 +1,168 @@
+#' defineExperiment
+#'
+#' Create an Experimental Design R object for record-keeping and msp output
+#'
+#' @param csv logical or filepath.  If   csv = TRUE , csv template called "ExpDes.csv" will be written to your working directory.  you will fill this in manually, ensuring that when you save you retain csv format.  ramclustR will then read this file in and and format appropriately.  If csv = FALSE, a pop up window will appear (in windows, at leaset) asking for input.  If a character string with full path (and file name) to a csv file is given, this will allow you to read in a previously edited csv file. 
+#' @return an Exp Des R object which will be used for record keeping and writing spectra data.  
+#' @author Corey Broeckling
+#' @export
 
-defineExperiment<-function()
-{
 
-  if(file.exists(system.file('params/paramsets.Rdata', package = "RAMClustR"))) {
+defineExperiment<-function(csv = TRUE) {
+  LCMS <- data.frame("value" = c(chrominst="",
+                                 msinst="",
+                                 column="",
+                                 solvA="",
+                                 solvB="",
+                                 CE1="",
+                                 CE2="",
+                                 mstype="",
+                                 msmode="",
+                                 ionization="",
+                                 colgas="",
+                                 msscanrange="",
+                                 conevolt="",
+                                 MSlevs=1))
+  
+  GCMS <- data.frame("value" = c(chrominst="",
+                                 msinst="",
+                                 column="",
+                                 InletTemp="",
+                                 TransferTemp="",
+                                 mstype="",
+                                 msmode="",
+                                 ionization="",
+                                 msscanrange="",
+                                 scantime="",
+                                 deriv="",
+                                 MSlevs=1))
+  
+  Experiment<-data.frame("Value" = rep("", 5),
+                         "Description" = c("experiment name, no spaces",
+                                           "species name",
+                                           "sample type",
+                                           "individual and/or organizational affiliation",
+                                           "GC-MS or LC-MS"), 
+                         row.names = c("Experiment",
+                             "Species",
+                             "Sample",
+                             "Contributor",
+                             "platform"))
+  
+  
+  if (is.logical(csv)) {
+    if(csv) {
+      out<-read.csv(paste(find.package("RAMClustR"), "/params/params.csv", sep=""), header=TRUE, check.names=FALSE)
+      write.csv(out, file=paste(getwd(), "/ExpDes.csv", sep=""), row.names=FALSE)
+      readline(prompt=cat("A file called ExpDes.csv has been written to your working directorty:",
+                          '\n', '\n',
+                          getwd(), 
+                          '\n', '\n',
+                          "please replace platform appropriate 'fill' cells with instrument and experiment",
+                          '\n', "data and save file.  When complete, press [enter] to continue"
+      ))
+      csv.in<-read.csv(file=paste(getwd(), "/ExpDes.csv", sep=""), header=TRUE, check.names=FALSE)
+      design<-data.frame("value" = csv.in[3:7,2], row.names = csv.in[3:7,1])
+      
+      instrument <- NULL
+      plat<-as.character(design[5,1])
+      if(grepl("LC-MS", plat)) {
+        instrument<-"LC-MS"
+      }  
+      if( grepl("GC-MS", plat )) {
+        instrument<-"GC-MS"
+      }  
+      if(!grepl("LC-MS", plat ) & !grepl("GC-MS", plat ) ) {
+        if(grepl('[Gg]',  substring(plat,1,1))) {
+          instrument<-"GC-MS"
+        }
+        if(grepl('[Ll]',  substring(plat,1,1))) {
+          instrument<-"LC-MS"
+        }
+      }
+      if(is.null(instrument)) {
+        stop("do not regonize instrument platform, please use either 'GC-MS' or 'LC-MS' " )
+      }
+      
+      rowstart<-grep(instrument, csv.in[,1])+1
+      rowend<-grep("Mslevs", csv.in[,1])
+      rowend<-rowend[which(rowend > rowstart)]
+      if(length(rowend)>1) {
+        rowend<-rowend[which.min((rowend - rowstart))]
+      }
+      instrument <- data.frame('value' = csv.in[rowstart:rowend,2], row.names = csv.in[rowstart:rowend,1])
+      ExpDes <- list("design" = design, "instrument" = instrument)
+      
+    }  else {
+      
+      suppressWarnings( design<-edit(Experiment))
+      
+      plat<-as.character(design[5,1])
+      if(grepl("LC-MS", plat)) {
+        instrument<-"LC-MS"
+      }  
+      if( grepl("GC-MS", plat )) {
+        instrument<-"GC-MS"
+      }  
+      if(!grepl("LC-MS", plat ) & !grepl("GC-MS", plat ) ) {
+        if(grepl('[Gg]',  substring(plat,1,1))) {
+          instrument<-"GC-MS"
+        }
+        if(grepl('[Ll]',  substring(plat,1,1))) {
+          instrument<-"LC-MS"
+        }
+      }
+      if(is.null(instrument)) {
+        stop("do not regonize instrument platform, please use either 'GC-MS' or 'LC-MS' " )
+      }
+      
+      if(instrument == "LC-MS") platform<-LCMS
+      if(instrument == "GC-MS") platform<-GCMS
+      
+      instrument <- platform
+      
+      suppressWarnings( instrument<-edit(instrument))
+      
+      ExpDes<-list("design" = design, "instrument" = instrument)
+
+    }
     
-	load(system.file('params/paramsets.Rdata', package = "RAMClustR"))} else {
-	load(system.file('params/defparamsets.Rdata', package = "RAMClustR"))   }
- 
-
- 
-  platforms<-names(paramsets) 
+  } else  {
+    if(file.exists(csv)) {
+      csv.in <- read.csv(csv, header=TRUE, check.names=FALSE)
+      design<-data.frame("value" = csv.in[3:7,2], row.names = csv.in[3:7,1])
+      
+      instrument <- NULL
+      plat<-as.character(design[5,1])
+      if(grepl("LC-MS", plat)) {
+        instrument<-"LC-MS"
+      }  
+      if( grepl("GC-MS", plat )) {
+        instrument<-"GC-MS"
+      }  
+      if(!grepl("LC-MS", plat ) & !grepl("GC-MS", plat ) ) {
+        if(grepl('[Gg]',  substring(plat,1,1))) {
+          instrument<-"GC-MS"
+        }
+        if(grepl('[Ll]',  substring(plat,1,1))) {
+          instrument<-"LC-MS"
+        }
+      }
+      if(is.null(instrument)) {
+        stop("do not regonize instrument platform, please use either 'GC-MS' or 'LC-MS' " )
+      }
+      
+      rowstart<-grep(instrument, csv.in[,1])+1
+      rowend<-grep("Mslevs", csv.in[,1])
+      rowend<-rowend[which(rowend > rowstart)]
+      if(length(rowend)>1) {
+        rowend<-rowend[which.min((rowend - rowstart))]
+      }
+      instrument <- data.frame('value' = csv.in[rowstart:rowend,2], row.names = csv.in[rowstart:rowend,1])
+      ExpDes <- list("design" = design, "instrument" = instrument)
+      
+    }
+  }
   
-  ExpVals<-c(Experiment=".",
-             Species=".",
-             Sample=".",
-             Contributor=".",
-             platform="undefined")
-  
-  VarDesc<-c("experiment name, no spaces",
-             "species name",
-             "sample type",
-             "individual and/or organizational affiliation",
-             paste(platforms, sep=" ", collapse=" "))
-  
-  Experiment<-data.frame(ExpVals,VarDesc, stringsAsFactors=FALSE)
-  
-  suppressWarnings(design<-edit(Experiment))
-  
-  platform<-platforms[grep(as.character(design["platform",1]), platforms, ignore.case=TRUE)]
-
-  suppressWarnings(instrument<-edit(paramsets[[as.character(platform)]]))
-  
-  if(!(instrument["saveAs",1] %in% platforms) & instrument["saveAs",1] != "") 
-                                  {newParamset<-list(instrument)
-                                  names(newParamset)<-instrument["saveAs",1]
-                                  paramsets<-c(paramsets, newParamset)
-                                  save(paramsets, file=paste(system.file('params', package = "RAMClustR"), "/paramsets.Rdata", sep=""))
-                                  }
-  names(instrument)<-"InstVals"
-  exp.pars<-list(design, instrument)
-  names(exp.pars)<-c("design", "instrument")
-  return(exp.pars)
+  return(ExpDes)
 }

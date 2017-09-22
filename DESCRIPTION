@@ -5,12 +5,9 @@ Version: 0.4
 Date: 2017-08-05
 Author: Corey D. Broeckling, Fayyaz Afsar, Steffan Neumann, Asa Ben-Hur,  Jessica Prenni.
 Maintainer: "Broeckling,Corey" <Corey.Broeckling@ColoState.EDU>
-Imports: dynamicTreeCut, fastcluster, ff, fastmatch, preprocessCore, xcms
+Imports: dynamicTreeCut, fastcluster, ff, fastmatch, preprocessCore, xcms, InterpretMSSpectrum
 License: GPL (>= 2)
-Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics
-             data, where feature detection is performed on both MS and idMS/MS
-             (indiscriminant MS/MS) data, and feature?feature relationships are determined simultaneously 
-             from the MS and idMS/MS data. 
+Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics data, where feature detection is performed on both MS and idMS/MS(indiscriminant MS/MS) data, and feature relationships are determined simultaneously from the MS and idMS/MS data. 
 URL: https://github.com/sneumann/RAMClustR
 Encoding: UTF-8
 biocViews: MassSpectrometry, Metabolomics

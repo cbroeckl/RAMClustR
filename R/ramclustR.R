@@ -29,7 +29,24 @@
 #' @param mzdec integer: number of decimal places used in printing m/z values
 #' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
 #'
-#' @return a ranclustR object.  base structure is that of a standard R heirarchical clustering output
+#' @return a ramclustR object.  base structure is that of a standard R heirarchical clustering output. Additional slots (accessed with $) include:
+#' @return featclus: integer vector of cluster membership for each feature
+#' @return frt: feature retention time, in whatever units were fed in (xcms uses seconds, by default)
+#' @return fmz: feature retention time, reported in number of decimal points selected in ramclustR function
+#' @return xcmsOrd: the original XCMS (or csv) feature order for cross referencing, if need be
+#' @return clrt: cluster retention time
+#' @return clrtsd: retention time standard deviation of all the features that comprise that cluster
+#' @return nfeat: number of features in the cluster
+#' @return nsing: number of 'singletons' - that is the number of features which clustered with no other feature
+#' @return ExpDes: the experimental design object used when running ramclustR.  List of two dataframes. 
+#' @return cmpd: compound name.  C#### are assigned in order of output by dynamicTreeCut.  Compound with the most features is classified as C0001...
+#' @return ann: annotation.  By default, annotation names are identical to 'cmpd' names.  This slot is a placeholder for when annotations are provided
+#' @return MSdata:  the MSdataset provided by either xcms or csv input
+#' @return MSMSdata: the (optional) MSe/idMSMS dataset provided be either xcms or csv input
+#' @return SpecAbund: the cluster intensities after collapsing features to clusters
+#' @return SpecAbundAve: the cluster intensities after averaging all samples with identical sample names
+#' @return 'spectra' directory is created in the working directory.  In this directory a .msp is (optionally) created, which contains the spectra for all compounds in the dataset following clustering.  if MSe/idMSMS data are provided, they are listed witht he same compound name as the MS spectrum, with the collision energy provided in the ExpDes object provided to distinguish low from high CE spectra. 
+#'
 #' @author Corey Broeckling
 #' @export
 

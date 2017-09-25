@@ -16,7 +16,8 @@
 #' @param plot.findmain logical: should pdf polts be generated for evaluation?
 #' @param writeMat logical: should indidual .mat files (for MSFinder) be generated in a 'mat' subdirectory in the 'spectra' folder?
 
-#' @return an annotated ramclustR object.  base structure is that of a standard R heirarchical clustering output
+#' @return a partially annotated ramclustR object.  base structure is that of a standard R heirarchical clustering output, with additional slots described in ramclustR documentation (?ramclustR).  New slots added after using the interpretMSSpectrum functionality include:
+#' @return more slots to describe.  
 #' @author Corey Broeckling
 #' @export
 

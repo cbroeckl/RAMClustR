@@ -34,7 +34,7 @@
 #' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
 #' 
 #' @author Corey Broeckling
-#' @export
+#' @export 
 
 
 do.findmain<-function(ramclustObj = RC, 

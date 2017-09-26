@@ -7,14 +7,14 @@
     "folds" : "",
     "hash" : "645278152",
     "id" : "FEDA5CDC",
-    "lastKnownWriteTime" : 1506442635,
-    "last_content_update" : 1506442635843,
+    "lastKnownWriteTime" : 1506449948,
+    "last_content_update" : 1506449948952,
     "path" : "~/GitHub/RAMClustR/R/ramclustR.R",
     "project_path" : "R/ramclustR.R",
     "properties" : {
     },
     "relative_order" : 2,
-    "source_on_save" : false,
+    "source_on_save" : true,
     "source_window" : "",
     "type" : "r_source"
 }

@@ -46,7 +46,8 @@
 #' @return SpecAbund: the cluster intensities after collapsing features to clusters
 #' @return SpecAbundAve: the cluster intensities after averaging all samples with identical sample names
 #' @return 'spectra' directory is created in the working directory.  In this directory a .msp is (optionally) created, which contains the spectra for all compounds in the dataset following clustering.  if MSe/idMSMS data are provided, they are listed witht he same compound name as the MS spectrum, with the collision energy provided in the ExpDes object provided to distinguish low from high CE spectra. 
-#'
+#' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
+#' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
 #' @author Corey Broeckling
 #' @export
 

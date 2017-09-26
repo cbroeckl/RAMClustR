@@ -87,7 +87,8 @@ experiment <- defineExperiment(csv = TRUE)
 RC <- ramclustR(ms = "mymsdata.csv", featdelim - "_", timepos = 2, st = 5, ExpDes=experiment)
 ```
 
-
+### Interpretation:
+The ramclustR function does not tell you what your ions are likely to represent, only which ions are likely derived from the same compound.  
 
 ## Questions:
 Corey Broeckling  -  cbroeckl@colostate.edu

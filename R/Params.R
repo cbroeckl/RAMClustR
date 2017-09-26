@@ -8,7 +8,7 @@
 #' @export
 
 
-defineExperiment<-function(csv = TRUE) {
+defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
   LCMS <- data.frame("value" = c(chrominst="",
                                  msinst="",
                                  column="",
@@ -44,24 +44,33 @@ defineExperiment<-function(csv = TRUE) {
                                            "individual and/or organizational affiliation",
                                            "GC-MS or LC-MS"), 
                          row.names = c("Experiment",
-                             "Species",
-                             "Sample",
-                             "Contributor",
-                             "platform"))
+                                       "Species",
+                                       "Sample",
+                                       "Contributor",
+                                       "platform"))
   
+  
+  if(!force.skip) {
+    csv <- TRUE
+  }
   
   if (is.logical(csv)) {
     if(csv) {
-      out<-read.csv(paste(find.package("RAMClustR"), "/params/params.csv", sep=""), header=TRUE, check.names=FALSE)
-      write.csv(out, file=paste(getwd(), "/ExpDes.csv", sep=""), row.names=FALSE)
-      readline(prompt=cat("A file called ExpDes.csv has been written to your working directorty:",
-                          '\n', '\n',
-                          getwd(), 
-                          '\n', '\n',
-                          "please replace platform appropriate 'fill' cells with instrument and experiment",
-                          '\n', "data and save file.  When complete, press [enter] to continue"
-      ))
-      csv.in<-read.csv(file=paste(getwd(), "/ExpDes.csv", sep=""), header=TRUE, check.names=FALSE)
+      out<-read.csv(paste(find.package("RAMClustR"), "/params/params.csv", sep=""), header=TRUE, check.names=FALSE, stringsAsFactors = FALSE)
+      if(!force.skip) {
+        write.csv(out, file=paste(getwd(), "/ExpDes.csv", sep=""), row.names=FALSE)
+        readline(prompt=cat("A file called ExpDes.csv has been written to your working directorty:",
+                            '\n', '\n',
+                            getwd(), 
+                            '\n', '\n',
+                            "please replace platform appropriate 'fill' cells with instrument and experiment",
+                            '\n', "data and save file.  When complete, press [enter] to continue"
+        ))
+        csv.in<-read.csv(file=paste(getwd(), "/ExpDes.csv", sep=""), header=TRUE, check.names=FALSE, stringsAsFactors = FALSE) } else {
+          csv.in <-out
+          csv.in[7,2]<-'LC-MS'
+          csv.in[which(csv.in[,1]=="Mslevs"),2]<-1
+        }
       design<-data.frame("value" = csv.in[3:7,2], row.names = csv.in[3:7,1])
       
       instrument <- NULL
@@ -124,7 +133,7 @@ defineExperiment<-function(csv = TRUE) {
       suppressWarnings( instrument<-edit(instrument))
       
       ExpDes<-list("design" = design, "instrument" = instrument)
-
+      
     }
     
   } else  {

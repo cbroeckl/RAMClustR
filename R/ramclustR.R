@@ -1,9 +1,5 @@
 #' ramclustR
 #'
-#' Main clustering function 
-#'
-#' A ramclustR object.  base structure is that of a standard R heirarchical clustering output. Additional slots (accessed with $) described below.
-#'
 #' @param xcmsObj xcmsObject: containing grouped feature data for clustering by ramclustR
 #' @param ms filepath: optional csv input. Features as columns, rows as samples. Column header mz_rt
 #' @param idmsms filepath: optional idMSMS / MSe csv data.  same dim and names as ms required
@@ -29,6 +25,7 @@
 #' @param mzdec integer: number of decimal places used in printing m/z values
 #' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
 #'
+#' @details Main clustering function
 #' @details featclus: integer vector of cluster membership for each feature
 #' @details frt: feature retention time, in whatever units were fed in (xcms uses seconds, by default)
 #' @details fmz: feature retention time, reported in number of decimal points selected in ramclustR function

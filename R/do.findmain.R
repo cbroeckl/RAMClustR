@@ -2,7 +2,17 @@
 #'
 #' cluster annotation function 
 #'
-#' This is the Details section
+#' a partially annotated ramclustR object.  base structure is that of a standard R heirarchical clustering output, with additional slots described in ramclustR documentation (?ramclustR).  New slots added after using the interpretMSSpectrum functionality include:
+#'  M The inferred molecular weight of the compound giving rise to the each spectrum
+#'  M.ppm The ppm error of all the MS signals annotated, high error values should be considered 'red flags'
+#'  M.ann The annotated spectrum supporting the intepretation of M
+#'  use.findmain  Logical vector indicating whether findmain scoring (TRUE) or ramclustR scoring (FALSE) was used to support inference of M.  By default, findmain scoring is used.  When ramclustR scoring differs from findmain scoring, the scoring metric which predicts higher M is selected. 
+#'  M.ramclustr  M selected using ramclustR scoring
+#'  M.ppm.ramclustr ppm error of M selected using ramclustR scoring
+#'  M.ann.ramclustr annotated spectrum supporing M using ramclustR scoring
+#'  M.findmain M selected using findmain scoring
+#'  M.ppm.findmain ppm error of M selected using findmain scoring
+#'  M.ann.findmain annotated spectrum supporing M using findmain scoring
 #'
 #' @param ramclustObj ramclustR object to annotate. 
 #' @param cmpd integer: vector defining compound numbers to annotated.  if NULL (default), all compounds
@@ -16,18 +26,7 @@
 #' @param plot.findmain logical: should pdf polts be generated for evaluation?
 #' @param writeMat logical: should indidual .mat files (for MSFinder) be generated in a 'mat' subdirectory in the 'spectra' folder?
 
-#' @return a partially annotated ramclustR object.  base structure is that of a standard R heirarchical clustering output, with additional slots described in ramclustR documentation (?ramclustR).  New slots added after using the interpretMSSpectrum functionality include:
-#' @return more slots to describe. 
-#' @return M The inferred molecular weight of the compound giving rise to the each spectrum
-#' @return M.ppm The ppm error of all the MS signals annotated, high error values should be considered 'red flags'
-#' @return M.ann The annotated spectrum supporting the intepretation of M
-#' @return use.findmain  Logical vector indicating whether findmain scoring (TRUE) or ramclustR scoring (FALSE) was used to support inference of M.  By default, findmain scoring is used.  When ramclustR scoring differs from findmain scoring, the scoring metric which predicts higher M is selected. 
-#' @return M.ramclustr  M selected using ramclustR scoring
-#' @return M.ppm.ramclustr ppm error of M selected using ramclustR scoring
-#' @return M.ann.ramclustr annotated spectrum supporing M using ramclustR scoring
-#' @return M.findmain M selected using findmain scoring
-#' @return M.ppm.findmain ppm error of M selected using findmain scoring
-#' @return M.ann.findmain annotated spectrum supporing M using findmain scoring
+
 #' 
 #' @references Jaeger C, Méret M, Schmitt CA, Lisec J. Compound annotation in liquid chromatography/high-resolution mass spectrometry based metabolomics: robust adduct ion determination as a prerequisite to structure prediction in electrospray ionization mass spectra. Rapid Commun Mass Spectrom. 2017 Aug 15;31(15):1261-1266. doi: 10.1002/rcm.7905. PubMed PMID: 28499062.
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.

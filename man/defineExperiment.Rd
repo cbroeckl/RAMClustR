@@ -4,16 +4,26 @@
 \alias{defineExperiment}
 \title{defineExperiment}
 \usage{
-defineExperiment(csv = TRUE)
+defineExperiment(csv = TRUE, force.skip = FALSE)
 }
 \arguments{
 \item{csv}{logical or filepath.  If   csv = TRUE , csv template called "ExpDes.csv" will be written to your working directory.  you will fill this in manually, ensuring that when you save you retain csv format.  ramclustR will then read this file in and and format appropriately.  If csv = FALSE, a pop up window will appear (in windows, at leaset) asking for input.  If a character string with full path (and file name) to a csv file is given, this will allow you to read in a previously edited csv file.}
+
+\item{force.skip}{logical.  If TRUE, ramclustR creates a pseudo-filled ExpDes object to enable testing of functionality. Not recommended for real data, as your exported spectra will be improperly labelled.}
 }
 \value{
 an Exp Des R object which will be used for record keeping and writing spectra data.
 }
 \description{
 Create an Experimental Design R object for record-keeping and msp output
+}
+\details{
+This is the Details section
+}
+\references{
+Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
+
+Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
 }
 \author{
 Corey Broeckling

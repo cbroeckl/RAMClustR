@@ -19,9 +19,9 @@ do.findmain(ramclustObj = RC, cmpd = NULL, mode = "positive",
 
 \item{ppm.error}{numeric: ppm mass error added to mzabs.error}
 
-\item{ads}{character: vector of allowed adducts, i.e. c("[M+H]+")}
+\item{ads}{character: vector of allowed adducts, i.e. c("[M+H]+"). if NULL, default values of H+, Na+, K+, and NH4+, as monomer, dimer, and trimer, are assigned.}
 
-\item{nls}{character: vector of allowed neutral losses, i.e. c("[M+H-H2O]+")}
+\item{nls}{character: vector of allowed neutral losses, i.e. c("[M+H-H2O]+").  if NULL, an extensive list derived from CAMERA's will be used.}
 
 \item{adwts}{numeric: vector of weights for adducts. length should match that of 'ads', else first value will be repeated.  if NULL (default), value of 1 is assigned to all. Only used for ramclustR scoring of M.}
 
@@ -31,14 +31,28 @@ do.findmain(ramclustObj = RC, cmpd = NULL, mode = "positive",
 
 \item{writeMat}{logical: should indidual .mat files (for MSFinder) be generated in a 'mat' subdirectory in the 'spectra' folder?}
 }
-\value{
-an annotated ramclustR object.  base structure is that of a standard R heirarchical clustering output
-}
 \description{
 cluster annotation function
 }
 \details{
-This is the Details section
+a partially annotated ramclustR object.  base structure is that of a standard R heirarchical clustering output, with additional slots described in ramclustR documentation (?ramclustR).  New slots added after using the interpretMSSpectrum functionality include:
+ M The inferred molecular weight of the compound giving rise to the each spectrum
+ M.ppm The ppm error of all the MS signals annotated, high error values should be considered 'red flags'
+ M.ann The annotated spectrum supporting the intepretation of M
+ use.findmain  Logical vector indicating whether findmain scoring (TRUE) or ramclustR scoring (FALSE) was used to support inference of M.  By default, findmain scoring is used.  When ramclustR scoring differs from findmain scoring, the scoring metric which predicts higher M is selected. 
+ M.ramclustr  M selected using ramclustR scoring
+ M.ppm.ramclustr ppm error of M selected using ramclustR scoring
+ M.ann.ramclustr annotated spectrum supporing M using ramclustR scoring
+ M.findmain M selected using findmain scoring
+ M.ppm.findmain ppm error of M selected using findmain scoring
+ M.ann.findmain annotated spectrum supporing M using findmain scoring
+}
+\references{
+Jaeger C, Méret M, Schmitt CA, Lisec J. Compound annotation in liquid chromatography/high-resolution mass spectrometry based metabolomics: robust adduct ion determination as a prerequisite to structure prediction in electrospray ionization mass spectra. Rapid Commun Mass Spectrom. 2017 Aug 15;31(15):1261-1266. doi: 10.1002/rcm.7905. PubMed PMID: 28499062.
+
+Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
+
+Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
 }
 \author{
 Corey Broeckling

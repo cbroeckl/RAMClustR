@@ -62,35 +62,35 @@ ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
 \item{cor.method}{character: which correlational method used to calculate 'r' - see ?cor}
 }
 \value{
-featclus: integer vector of cluster membership for each feature
+$featclus: integer vector of cluster membership for each feature
 
-frt: feature retention time, in whatever units were fed in (xcms uses seconds, by default)
+$frt: feature retention time, in whatever units were fed in (xcms uses seconds, by default)
 
-fmz: feature retention time, reported in number of decimal points selected in ramclustR function
+$fmz: feature retention time, reported in number of decimal points selected in ramclustR function
 
-xcmsOrd: the original XCMS (or csv) feature order for cross referencing, if need be
+$xcmsOrd: the original XCMS (or csv) feature order for cross referencing, if need be
 
-clrt: cluster retention time
+$clrt: cluster retention time
 
-clrtsd: retention time standard deviation of all the features that comprise that cluster
+$clrtsd: retention time standard deviation of all the features that comprise that cluster
 
-nfeat: number of features in the cluster
+$nfeat: number of features in the cluster
 
-nsing: number of 'singletons' - that is the number of features which clustered with no other feature
+$nsing: number of 'singletons' - that is the number of features which clustered with no other feature
 
-ExpDes: the experimental design object used when running ramclustR.  List of two dataframes.
+$ExpDes: the experimental design object used when running ramclustR.  List of two dataframes.
 
-cmpd: compound name.  C#### are assigned in order of output by dynamicTreeCut.  Compound with the most features is classified as C0001...
+$cmpd: compound name.  C#### are assigned in order of output by dynamicTreeCut.  Compound with the most features is classified as C0001...
 
-ann: annotation.  By default, annotation names are identical to 'cmpd' names.  This slot is a placeholder for when annotations are provided
+$ann: annotation.  By default, annotation names are identical to 'cmpd' names.  This slot is a placeholder for when annotations are provided
 
-MSdata:  the MSdataset provided by either xcms or csv input
+$MSdata:  the MSdataset provided by either xcms or csv input
 
-MSMSdata: the (optional) MSe/idMSMS dataset provided be either xcms or csv input
+$MSMSdata: the (optional) MSe/idMSMS dataset provided be either xcms or csv input
 
-SpecAbund: the cluster intensities after collapsing features to clusters
+$SpecAbund: the cluster intensities after collapsing features to clusters
 
-SpecAbundAve: the cluster intensities after averaging all samples with identical sample names
+$SpecAbundAve: the cluster intensities after averaging all samples with identical sample names
 
 - 'spectra' directory is created in the working directory.  In this directory a .msp is (optionally) created, which contains the spectra for all compounds in the dataset following clustering.  if MSe/idMSMS data are provided, they are listed witht he same compound name as the MS spectrum, with the collision energy provided in the ExpDes object provided to distinguish low from high CE spectra.
 }

@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "\n\n# build .Rd files (help)\nroxygen2::roxygenise()\n\n# build vignette\ndevtools::use_vignette(\"RAMClustR\") #doesn't seemt to work without 'latexpdf'\n\n\n# after commit, must load new version\ndevtools::install_github(\"cbroeckl/RAMClustR\", build_vignettes = TRUE, dependencies = TRUE)\n",
+    "created" : 1506521928616.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3503353704",
+    "id" : "2E275F8D",
+    "lastKnownWriteTime" : 1506536024,
+    "last_content_update" : 1506536024810,
+    "path" : "~/GitHub/pacakge_tools.R",
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

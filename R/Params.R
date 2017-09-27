@@ -2,7 +2,6 @@
 #'
 #' Create an Experimental Design R object for record-keeping and msp output
 #'
-#' This is the Details section
 #'
 #' @param csv logical or filepath.  If   csv = TRUE , csv template called "ExpDes.csv" will be written to your working directory.  you will fill this in manually, ensuring that when you save you retain csv format.  ramclustR will then read this file in and and format appropriately.  If csv = FALSE, a pop up window will appear (in windows, at leaset) asking for input.  If a character string with full path (and file name) to a csv file is given, this will allow you to read in a previously edited csv file. 
 #' @param force.skip logical.  If TRUE, ramclustR creates a pseudo-filled ExpDes object to enable testing of functionality. Not recommended for real data, as your exported spectra will be improperly labelled.

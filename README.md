@@ -13,6 +13,8 @@ install_github("cbroeckl/RAMClustR", build_vignettes = TRUE, dependencies = TRUE
 
 library(RAMClustR) 
 
+vignette("RAMClustR")
+
 Please cite:
 
 RAMClust: A Novel Feature Clustering Method Enables Spectral-Matching-Based Annotation for Metabolomics Data

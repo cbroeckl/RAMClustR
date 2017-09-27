@@ -55,7 +55,7 @@ library(RAMClustR)
 The ramclustR function is built to use xcms data to estimate the most appropriate parameters.  As such we do not need to set too many options.  However, we do need to provide ramclustR some data for record keeping and providing instrument descriptions for spectra output. 
 
 ```{r ramclustR of xcms processed faaKO, eval=FALSE, include=TRUE}
-experiment <- defineExperiment(csv = TRUE)
+experiment <- defineExperiment(csv = TRUE) # experiment <- defineExperiment(force.skip = TRUE)
 RC <- ramclustR(xcmsObj = xset, ExpDes=experiment)
 ```
 
@@ -80,15 +80,53 @@ If you have processed your data using some other program, and can get your featu
  cnt 1   | 12440          | 872274        | ...
  cnt 1   | 19421          | 563244        | ...
  
-Sample names in the first column.  Column names contain the mz value and the retention time in your units of choice, and these two values are separated by a delimiter, in this case and underscore "_".  If you also have data from an MSe experiment, you must input the data in the same format, and the column and row names must be identical.  
+Sample names in the first column.  Column names contain the mz value and the retention time in your units of choice, and these two values are separated by a delimiter, in this case and underscore "_".  If you also have data from an MSe experiment, you must input the data in the same format, and the column and row names must be identical.  For this excersize, we will just use the xcms data we just generated to make a csv version which we can input
 
 ```{r csv input, eval=FALSE, include=TRUE}
+# make csv files - outcsv1 for real MS data, outcsv2 for 'fake' idMSMS data after adding some noise.
+outcsv1<-RC$MSdata
+outcsv2<-abs(jitter(outcsv1, factor = 0.1))
+write.csv(outcsv1, file = paste0(getwd(), "/msdata.csv"), row.names = TRUE)
+write.csv(outcsv2, file = paste0(getwd(), "/msmsdata.csv"), row.names = TRUE)
+
+# run ramclustR on those csv files
+# first the MS data only
+
+RC1 <- ramclustR(ms = paste0(getwd(), "/msdata.csv"), 
+                 featdelim = "_", 
+                 st = 5, 
+                 ExpDes=experiment, 
+                 sampNameCol = 1)
+
+# then the MS and MSMS data. 
+# first we need to redefine our experiment, make sure to enter 'LC-MS' for plaform and '2' for the LC-MS MSlevs 
 experiment <- defineExperiment(csv = TRUE)
-RC <- ramclustR(ms = "mymsdata.csv", featdelim - "_", timepos = 2, st = 5, ExpDes=experiment)
+RC2 <- ramclustR(ms = paste0(getwd(), "/msdata.csv"), 
+                 idmsms = paste0(getwd(), "/msmsdata.csv"), 
+                 featdelim = "_", 
+                 timepos = 2, 
+                 st = 5, 
+                 ExpDes=experiment, 
+                 sampNameCol = 1)
 ```
 
-### Interpretation:
-The ramclustR function does not tell you what your ions are likely to represent, only which ions are likely derived from the same compound.  
+
+### Molecular weight inference (high resolution LC-MS):
+The ramclustR function does not tell you what your ions are likely to represent, only which ions are likely derived from the same compound.  We have adapted the 'findMain' function from the 'InterpretMSSpectrum' CRAN package to perform this task, with an alternate ramclustR score returned as well.  The do.findmain function in RAMClustR calls the findMain function, and the ramclust object is returned with the findMain results.  For every compound, the findMain score is used by default.  A second ramclustR score is also calcluated to determine the most likely molecular weight.  When the two two calculated masses are essensially idenfical (within two times the ppm.error selected), the findmain result is used.  In practice we find that the two scoring methods agree about 90% of the time.  The 10% of the time that they disagree, the higher of the two molecular weights is returned.  To run this function:
+
+```{r do.findmain, eval=FALSE, include=TRUE}
+RC <- do.findmain(RC, mode = "positive", mzabs.error = 0.02, ppm.error = 10)
+```
+
+
+There are now named slots in the in the RC object that were not there before.  see ?do.findmain for a description of what these slots contain.  You will also have a new directory called 'mat' in the 'spectrum' directory that was previously created.  This 'mat' contains spectra in .mat format suitable for import into MSFinder software.  There will also be a pdf document in your 'spectra' directorory called 'findmainPlots.pdf' demonstrating the evidence supporting M. lets look for a relationship between inferred M and retention time:  
+
+```{r see M, eval=FALSE, include=TRUE}
+fit<-lm(RC$M~RC$clrt)
+plot(RC$clrt, RC$M, xlab= "retention time", ylab = "M", bty = "L", pch = 19)
+abline(fit)
+anova(fit)
+```
 
 ## Questions:
 Corey Broeckling  -  cbroeckl@colostate.edu

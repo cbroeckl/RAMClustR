@@ -71,11 +71,12 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
                             "please replace platform appropriate 'fill' cells with instrument and experiment",
                             '\n', "data and save file.  When complete, press [enter] to continue"
         ))
-        csv.in<-read.csv(file=paste(getwd(), "/ExpDes.csv", sep=""), header=TRUE, check.names=FALSE, stringsAsFactors = FALSE) } else {
-          csv.in <-out
-          csv.in[7,2]<-'LC-MS'
-          csv.in[which(csv.in[,1]=="Mslevs"),2]<-1
-        }
+        csv.in<-read.csv(file=paste(getwd(), "/ExpDes.csv", sep=""), header=TRUE, check.names=FALSE, stringsAsFactors = FALSE) 
+      } else {
+        csv.in <-out
+        csv.in[7,2]<-'LC-MS'
+        csv.in[which(csv.in[,1]=="MSlevs"),2]<-1
+      }
       design<-data.frame("value" = csv.in[3:7,2], row.names = csv.in[3:7,1])
       
       instrument <- NULL
@@ -99,7 +100,7 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
       }
       
       rowstart<-grep(instrument, csv.in[,1])+1
-      rowend<-grep("Mslevs", csv.in[,1])
+      rowend<-grep("MSlevs", csv.in[,1])
       rowend<-rowend[which(rowend > rowstart)]
       if(length(rowend)>1) {
         rowend<-rowend[which.min((rowend - rowstart))]
@@ -136,7 +137,7 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
       instrument <- platform
       
       suppressWarnings( instrument<-edit(instrument))
-      
+      instrument <- data.frame('value' = csv.in[rowstart:rowend,2], row.names = csv.in[rowstart:rowend,1])
       ExpDes<-list("design" = design, "instrument" = instrument)
       
     }
@@ -167,7 +168,7 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
       }
       
       rowstart<-grep(instrument, csv.in[,1])+1
-      rowend<-grep("Mslevs", csv.in[,1])
+      rowend<-grep("MSlevs", csv.in[,1])
       rowend<-rowend[which(rowend > rowstart)]
       if(length(rowend)>1) {
         rowend<-rowend[which.min((rowend - rowstart))]

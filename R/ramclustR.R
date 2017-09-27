@@ -26,22 +26,22 @@
 #' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
 #'
 #' @details Main clustering function
-#' @details featclus: integer vector of cluster membership for each feature
-#' @details frt: feature retention time, in whatever units were fed in (xcms uses seconds, by default)
-#' @details fmz: feature retention time, reported in number of decimal points selected in ramclustR function
-#' @details xcmsOrd: the original XCMS (or csv) feature order for cross referencing, if need be
-#' @details clrt: cluster retention time
-#' @details clrtsd: retention time standard deviation of all the features that comprise that cluster
-#' @details nfeat: number of features in the cluster
-#' @details nsing: number of 'singletons' - that is the number of features which clustered with no other feature
-#' @details ExpDes: the experimental design object used when running ramclustR.  List of two dataframes. 
-#' @details cmpd: compound name.  C#### are assigned in order of output by dynamicTreeCut.  Compound with the most features is classified as C0001...
-#' @details ann: annotation.  By default, annotation names are identical to 'cmpd' names.  This slot is a placeholder for when annotations are provided
-#' @details MSdata:  the MSdataset provided by either xcms or csv input
-#' @details MSMSdata: the (optional) MSe/idMSMS dataset provided be either xcms or csv input
-#' @details SpecAbund: the cluster intensities after collapsing features to clusters
-#' @details SpecAbundAve: the cluster intensities after averaging all samples with identical sample names
-#' @details 'spectra' directory is created in the working directory.  In this directory a .msp is (optionally) created, which contains the spectra for all compounds in the dataset following clustering.  if MSe/idMSMS data are provided, they are listed witht he same compound name as the MS spectrum, with the collision energy provided in the ExpDes object provided to distinguish low from high CE spectra. 
+#' @details   featclus: integer vector of cluster membership for each feature
+#' @details   frt: feature retention time, in whatever units were fed in (xcms uses seconds, by default)
+#' @details   fmz: feature retention time, reported in number of decimal points selected in ramclustR function
+#' @details   xcmsOrd: the original XCMS (or csv) feature order for cross referencing, if need be
+#' @details   clrt: cluster retention time
+#' @details   clrtsd: retention time standard deviation of all the features that comprise that cluster
+#' @details   nfeat: number of features in the cluster
+#' @details   nsing: number of 'singletons' - that is the number of features which clustered with no other feature
+#' @details   ExpDes: the experimental design object used when running ramclustR.  List of two dataframes. 
+#' @details   cmpd: compound name.  C#### are assigned in order of output by dynamicTreeCut.  Compound with the most features is classified as C0001...
+#' @details   ann: annotation.  By default, annotation names are identical to 'cmpd' names.  This slot is a placeholder for when annotations are provided
+#' @details   MSdata:  the MSdataset provided by either xcms or csv input
+#' @details   MSMSdata: the (optional) MSe/idMSMS dataset provided be either xcms or csv input
+#' @details   SpecAbund: the cluster intensities after collapsing features to clusters
+#' @details   SpecAbundAve: the cluster intensities after averaging all samples with identical sample names
+#' @details   - 'spectra' directory is created in the working directory.  In this directory a .msp is (optionally) created, which contains the spectra for all compounds in the dataset following clustering.  if MSe/idMSMS data are provided, they are listed witht he same compound name as the MS spectrum, with the collision energy provided in the ExpDes object provided to distinguish low from high CE spectra. 
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
 #' @author Corey Broeckling
@@ -63,7 +63,7 @@ ramclustR<- function(  xcmsObj=NULL,
                        blocksize=2000,
                        mult=5,
                        hmax=NULL,
-                       sampNameCol=NULL,
+                       sampNameCol=1,
                        collapse=TRUE,
                        usePheno=TRUE,
                        mspout=TRUE, 
@@ -75,11 +75,20 @@ ramclustR<- function(  xcmsObj=NULL,
                        cor.method="pearson"
 ) {
   
+  ########
+  # load packages
   require(xcms, quietly=TRUE)
   require(ff, quietly=TRUE)
   require(fastcluster, quietly=TRUE)
   require(dynamicTreeCut, quietly=TRUE)
   
+  ########
+  # define ms levels, used several tims below
+  mslev <- as.integer(as.numeric(as.character(ExpDes[[2]][nrow(ExpDes[[2]]),1])))
+  
+  
+  ########
+  # do some checks to make sure we have everything we need before proceeding
   if(is.null(xcmsObj) & is.null(ms))  {
     stop("you must select either 
           1: an MS dataset with features as columns 
@@ -93,21 +102,26 @@ ramclustR<- function(  xcmsObj=NULL,
   if( normalize!="none"  & normalize!="TIC" & normalize!="quantile") {
     stop("please selected either 'none', 'TIC', or 'quantile' for the normalize setting")}
   
-  mslev = ExpDes[[1]][5,1]
+
   a<-Sys.time()   
   
+  ########
+  # set default parameters of not defined in function call
+  
   if(is.null(hmax)) {hmax<-0.3}
-  ##in using non-xcms data as input
-  ##remove MSdata sets and save data matrix alone
+  
+  
+  ########
+  # if csv input of MS data, do this: 
   if(!is.null(ms)){
     if(is.null(st)) stop("please specify st: 
       a recommended starting point is half the value of 
       your average chromatographic peak width at half max (seconds)")
     if(is.null(sr)) sr<-0.5
     if(is.null(maxt)) maxt<-60
-    MSdata<-read.csv(ms, header=TRUE, check.names=FALSE)
+    MSdata<-read.csv(file = ms, header=TRUE, check.names=FALSE)
     if(!is.null(idmsms)){
-      MSMSdata<-read.csv(idmsms, header=TRUE, check.names=FALSE)}
+      MSMSdata<-read.csv(file = idmsms, header=TRUE, check.names=FALSE)}
     if(is.null(idmsms)) { MSMSdata<-MSdata}
     if(is.null(sampNameCol)) {featcol<-1:ncol(MSdata)} else {
       featcol<-setdiff(1:(ncol(MSdata)), sampNameCol)}
@@ -133,10 +147,11 @@ ramclustR<- function(  xcmsObj=NULL,
       byrow=TRUE, ncol=2)
     times<-as.numeric(rtmz[,timepos])
     mzs<-as.numeric(rtmz[,which(c(1:2)!=timepos)])
-    rm(rtmz)     
+    rm(rtmz)
   }
   
-  ##if xcms object is selected instead of an R dataframe/matrix
+  ########
+  # if xcms object as input, do this:
   if(!is.null(xcmsObj)){
     if(!class(xcmsObj)=="xcmsSet")
     {stop("xcmsObj must reference an object generated by XCMS, of class 'xcmsSet'")}
@@ -185,7 +200,10 @@ ramclustR<- function(  xcmsObj=NULL,
   }
   
   
-  ##replace na, inf, 0, and NaN with jittered min dataset value
+  ########
+  # ensure that we have all numeric values in the dataset. 
+  # uses a noise addition 'jitter' around minimum values with missing data points.
+  # this is mostly necessary for csv input, where other programs may not have used a 'fillPeaks' like step
   rpl1<-unique(c(which(is.na(data1)), which(is.nan(data1)), which(is.infinite(data1)), which(data1==0)))
   rpl2<-unique(c(which(is.na(data2)), which(is.nan(data2)), which(is.infinite(data2)), which(data2==0)))
   if(length(rpl1)>0) {data1[rpl1]<-abs(jitter(rep(min(data1, na.rm=TRUE), length(rpl1) ), amount=min(data1/100, na.rm=TRUE)))}
@@ -195,7 +213,8 @@ ramclustR<- function(  xcmsObj=NULL,
   data1[which(data1<0)]<-abs(data1[which(data1<0)])
   data2[which(data2<0)]<-abs(data2[which(data2<0)])
   
-  ##Optional normalization of data, either Total ion signal or quantile
+  ########
+  # Optional normalization of data, either Total ion signal or quantile
   
   if(normalize=="TIC") {
     data1<-(data1/rowSums(data1))*mean(rowSums(data1), na.rm=TRUE)
@@ -206,36 +225,34 @@ ramclustR<- function(  xcmsObj=NULL,
     data2<-t(preprocessCore::normalize.quantiles(t(data2)))	
   }
   
-  ##retention times and mzs vectors
-  
-  ##sort rt vector and data by retention time
+  ########
+  # data organization and parsing 
+  # sort rt vector and data by retention time
   xcmsOrd<-order(times)
   data1<-data1[,order(times)]
   data2<-data2[,order(times)]
   mzs<-mzs[order(times)]
   times<-times[order(times)]
-  
-  ##extract names (would like to be pulling from XCMS set instead...)
   featnames<-paste(mzs, "_", times, sep="")
   dimnames(data1)[[2]]<-featnames
   dimnames(data2)[[2]]<-featnames
   
-  ##establish some constants for downstream processing
+  ########
+  # establish some constants for downstream processing
   n<-ncol(data1)
   vlength<-(n*(n-1))/2
   nblocks<-floor(n/blocksize)
   
-  ##create three empty matrices, one each for the correlation matrix, the rt matrix, and the product matrix
-  #ffcor<-ff(vmode="double", dim=c(n, n), init=0)
-  #gc()
-  #ffrt<-ff(vmode="double", dim=c(n, n), init=0)
-  #gc()
+  ########
+  # set off ff matrix system for holding data. 
+  # manages RAM demands a bit.  
   ffmat<-ff(vmode="double", dim=c(n, n), initdata = 0) ##reset to 1 if necessary
   gc()
   #Sys.sleep((n^2)/10000000)
   #gc()
   
-  ##make list of all row and column blocks to evaluate
+  ########
+  # make list of all row and column blocks to evaluate
   eval1<-expand.grid(0:nblocks, 0:nblocks)
   names(eval1)<-c("j", "k") #j for cols, k for rows
   eval1<-eval1[which(eval1[,"j"]<=eval1[,"k"]),] #upper triangle only
@@ -243,6 +260,9 @@ ramclustR<- function(  xcmsObj=NULL,
   cat('\n', paste("calculating ramclustR similarity: nblocks = ", bl))
   cat('\n', "finished:")
   
+  
+  ########
+  # Define the RCsim function used to calculate feature similarities on selected blocks of data
   RCsim<-function(bl)  {
     cat(bl,' ')
     j<-eval1[bl,"j"]  #columns
@@ -261,8 +281,7 @@ ramclustR<- function(  xcmsObj=NULL,
         temp1<-round(exp(-(( (abs(outer(times[startr:stopr], times[startc:stopc], FUN="-"))))^2)/(2*(st^2))), 
                      
                      digits=20 )
-        #stopifnot(max(temp)!=0)
-        #ffrt[startr:stopr, startc:stopc]<- temp
+
         temp2<-round (exp(-((1-(pmax(  cor(data1[,startr:stopr], data1[,startc:stopc], method=cor.method),
                                        cor(data1[,startr:stopr], data2[,startc:stopc], method=cor.method),
                                        cor(data2[,startr:stopr], data2[,startc:stopc], method=cor.method)  )))^2)/(2*(sr^2))), 
@@ -279,34 +298,33 @@ ramclustR<- function(  xcmsObj=NULL,
       if(mint>maxt) {ffmat[startr:stopr, startc:stopc]<- 1}
     }
     gc()}
-  # ffmat[995:1002,995:1002]
   
-  ##Call the similarity scoring function  #  
+  ########
+  # Call the similarity scoring function
   system.time(sapply(1:bl, RCsim))
-  #RCsim(bl=1:bl)
   
   b<-Sys.time()
   
+  ########
+  # Report progress and timing
   cat('\n','\n' )
   cat(paste("RAMClust feature similarity matrix calculated and stored:", 
             round(difftime(b, a, units="mins"), digits=1), "minutes"))
-  
-  #cleanup
-  #delete.ff(ffrt)
-  #rm(ffrt)
-  #delete.ff(ffcor)
-  #rm(ffcor)
   gc() 
   
   
-  ##extract lower diagonal of ffmat as vector
+  ########
+  # extract lower diagonal of ffmat as vector
   blocksize<-mult*round(blocksize^2/n)
   nblocks<-floor(n/blocksize)
   remaind<-n-(nblocks*blocksize)
   
-  ##create vector for storing dissimilarities
-  RC<-vector(mode="integer", length=vlength)
+  ########
+  # create vector for storing dissimilarities
+  ramclustObj<-vector(mode="integer", length=vlength)
   
+  ########
+  # fill vector with dissimilarities
   for(k in 0:(nblocks)){
     startc<-1+(k*blocksize)
     if ((k+1)*blocksize > n) {
@@ -316,7 +334,7 @@ ramclustR<- function(  xcmsObj=NULL,
     temp<-temp[which(row(temp)-col(temp)>0)]
     if(exists("startv")==FALSE) startv<-1
     stopv<-startv+length(temp)-1
-    RC[startv:stopv]<-temp
+    ramclustObj[startv:stopv]<-temp
     gc()
     startv<-stopv+1
     rm(temp)
@@ -325,8 +343,9 @@ ramclustR<- function(  xcmsObj=NULL,
   rm(startv)
   gc()
   
-  ##convert vector to distance formatted object
-  RC<-structure(RC, Size=(n), Diag=FALSE, Upper=FALSE, method="RAMClustR", Labels=featnames, class="dist")
+  ########
+  # convert vector to distance formatted object
+  ramclustObj<-structure(ramclustObj, Size=(n), Diag=FALSE, Upper=FALSE, method="RAMClustR", Labels=featnames, class="dist")
   gc()
   
   c<-Sys.time()    
@@ -334,55 +353,58 @@ ramclustR<- function(  xcmsObj=NULL,
   cat(paste("RAMClust distances converted to distance object:", 
             round(difftime(c, b, units="mins"), digits=1), "minutes"))
   
-  ##cleanup
+  ########
+  # cleanup
   delete.ff(ffmat)
   rm(ffmat)
   gc()
   
   
-  ##cluster using fastcluster package,
-  system.time(RC<-hclust(RC, method=linkage))
+  ########
+  # cluster using fastcluster package,
+  system.time(ramclustObj<-hclust(ramclustObj, method=linkage))
   gc()
   d<-Sys.time()    
   cat('\n', '\n')    
   cat(paste("fastcluster based clustering complete:", 
             round(difftime(d, c, units="mins"), digits=1), "minutes"))
   if(minModuleSize==1) {
-    clus<-cutreeDynamicTree(RC, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=2)
+    clus<-cutreeDynamicTree(ramclustObj, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=2)
     sing<-which(clus==0)
     clus[sing]<-max(clus)+1:length(sing)
   }
   if(minModuleSize>1) {
-    clus<-cutreeDynamicTree(RC, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=minModuleSize)
+    clus<-cutreeDynamicTree(ramclustObj, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=minModuleSize)
   }
   gc()
   
-  
-  RC$featclus<-clus
-  RC$frt<-times
-  RC$fmz<-mzs
-  RC$xcmsOrd<-xcmsOrd
-  msint<-rep(0, length(RC$fmz))
+  ########
+  # build results into ramclustObj
+  ramclustObj$featclus<-clus
+  ramclustObj$frt<-times
+  ramclustObj$fmz<-mzs
+  ramclustObj$xcmsOrd<-xcmsOrd
+  msint<-rep(0, length(ramclustObj$fmz))
   for(i in 1:ncol(data1)){
     msint[i]<-weighted.mean(data1[,i], data1[,i])
   }
-  RC$msint<-msint
+  ramclustObj$msint<-msint
   
   if(mslev==2) {
-    msmsint<-rep(0, length(RC$fmz))	
+    msmsint<-rep(0, length(ramclustObj$fmz))	
     for(i in 1:ncol(data1)){	
       msmsint[i]<-weighted.mean(data2[,i], data2[,i])
     }
-    RC$msmsint<-msmsint
+    ramclustObj$msmsint<-msmsint
   }
   
-  clrt<-aggregate(RC$frt, by=list(RC$featclus), FUN="mean")
-  RC$clrt<-clrt[which(clrt[,1]!=0),2]
-  clrtsd<-aggregate(RC$frt, by=list(RC$featclus), FUN="sd")
-  RC$clrtsd<-clrtsd[which(clrtsd[,1]!=0),2]
+  clrt<-aggregate(ramclustObj$frt, by=list(ramclustObj$featclus), FUN="mean")
+  ramclustObj$clrt<-clrt[which(clrt[,1]!=0),2]
+  clrtsd<-aggregate(ramclustObj$frt, by=list(ramclustObj$featclus), FUN="sd")
+  ramclustObj$clrtsd<-clrtsd[which(clrtsd[,1]!=0),2]
   
-  RC$nfeat<-as.vector(table(RC$featclus)[2:max(RC$featclus)])
-  RC$nsing<-length(which(RC$featclus==0))
+  ramclustObj$nfeat<-as.vector(table(ramclustObj$featclus)[2:max(ramclustObj$featclus)])
+  ramclustObj$nsing<-length(which(ramclustObj$featclus==0))
   
   e<-Sys.time() 
   cat('\n', '\n')
@@ -395,80 +417,85 @@ ramclustR<- function(  xcmsObj=NULL,
                                                                                                    
                                                                                                    units="mins"), digits=1), "minutes", '\n'))
   
-  RC$ExpDes<-ExpDes
-  strl<-nchar(max(RC$featclus)) - 1
-  RC$cmpd<-paste("C", formatC(1:length(RC$clrt), digits = strl, flag = 0 ) , sep="")
-  RC$ann<-RC$cmpd
-  RC$annconf<-rep("", length(RC$clrt))
-  RC$annnotes<-rep("", length(RC$clrt))
-  RC$MSdata<-data1
-  if(mslev==2) RC$MSMSdata<-data2  
+  ramclustObj$ExpDes<-ExpDes
+  strl<-nchar(max(ramclustObj$featclus)) - 1
+  ramclustObj$cmpd<-paste("C", formatC(1:length(ramclustObj$clrt), digits = strl, flag = 0 ) , sep="")
+  # cat(ramclustObj$cmpd[1:10], '\n')
+  ramclustObj$ann<-ramclustObj$cmpd
+  ramclustObj$annconf<-rep("", length(ramclustObj$clrt))
+  ramclustObj$annnotes<-rep("", length(ramclustObj$clrt))
+  ramclustObj$MSdata<-data1
+  if(mslev==2) ramclustObj$MSMSdata<-data2  
   
+  ########
+  # collapse feature dataset into spectrum dataset
   if(collapse=="TRUE") {
     cat('\n', '\n', "... collapsing features into spectra")
     wts<-colSums(data1[])
-    RC$SpecAbund<-matrix(nrow=nrow(data1), ncol=max(clus))
-    for (ro in 1:nrow(RC$SpecAbund)) { 
-      for (co in 1:ncol(RC$SpecAbund)) {
-        RC$SpecAbund[ro,co]<- weighted.mean(data1[ro,which(RC$featclus==co)], wts[which(RC$featclus==co)])
+    ramclustObj$SpecAbund<-matrix(nrow=nrow(data1), ncol=max(clus))
+    for (ro in 1:nrow(ramclustObj$SpecAbund)) { 
+      for (co in 1:ncol(ramclustObj$SpecAbund)) {
+        ramclustObj$SpecAbund[ro,co]<- weighted.mean(data1[ro,which(ramclustObj$featclus==co)], wts[which(ramclustObj$featclus==co)])
       }
     }
-    dimnames(RC$SpecAbund)[[2]]<-paste("C", 1:ncol(RC$SpecAbund), sep="")
-    if(!usePheno | is.null(xcmsObj)) {dimnames(RC$SpecAbund)[[1]]<-dimnames(RC$MSdata)[[1]]} 
-    if(usePheno & !is.null(xcmsObj)) {dimnames(RC$SpecAbund)[[1]]<-as.vector(xcmsObj@phenoData[,1])[msfiles]}
-    #if(!usePheno) {dimnames(RC$SpecAbund)[[1]]<-dimnames(RC$MSdata)[[1]]} 
-    #if(usePheno) {dimnames(RC$SpecAbund)[[1]]<-xcmsObj@phenoData[,1][msfiles]}
+    dimnames(ramclustObj$SpecAbund)[[2]]<-ramclustObj$cmpd
+    if(!usePheno | is.null(xcmsObj)) {dimnames(ramclustObj$SpecAbund)[[1]]<-dimnames(ramclustObj$MSdata)[[1]]} 
+    if(usePheno & !is.null(xcmsObj)) {dimnames(ramclustObj$SpecAbund)[[1]]<-as.vector(xcmsObj@phenoData[,1])[msfiles]}
     g<-Sys.time()
     cat('\n', '\n')
     cat(paste("RAMClustR has collapsed feature quantities
              into spectral quantities:", round(difftime(g, f, units="mins"), digits=1), "minutes", '\n'))
   }
   
+  ########
+  # further aggregate by sample names for 'SpecAbundAve' dataset
+  
   rm(data1)
   rm(data2)
-  if(!is.null(RC$SpecAbund)) {
-    if(length(dimnames(RC$SpecAbund)[[1]])> length(unique(dimnames(RC$SpecAbund)[[1]]))) {
-      RC$SpecAbundAve<-aggregate(RC$SpecAbund[,1:ncol(RC$SpecAbund)], 
-                                 by=list(dimnames(RC$SpecAbund)[[1]]), 
+  if(!is.null(ramclustObj$SpecAbund)) {
+    if(length(dimnames(ramclustObj$SpecAbund)[[1]])> length(unique(dimnames(ramclustObj$SpecAbund)[[1]]))) {
+      ramclustObj$SpecAbundAve<-aggregate(ramclustObj$SpecAbund[,1:ncol(ramclustObj$SpecAbund)], 
+                                 by=list(dimnames(ramclustObj$SpecAbund)[[1]]), 
                                  FUN="mean", simplify=TRUE)
-      dimnames(RC$SpecAbundAve)[[1]]<-RC$SpecAbundAve[,1]
-      RC$SpecAbundAve<-as.matrix(RC$SpecAbundAve[,2:ncol(RC$SpecAbundAve)])
-      dimnames(RC$SpecAbundAve)[[2]]<-dimnames(RC$SpecAbund)[[2]]
+      dimnames(ramclustObj$SpecAbundAve)[[1]]<-ramclustObj$SpecAbundAve[,1]
+      ramclustObj$SpecAbundAve<-as.matrix(ramclustObj$SpecAbundAve[,2:ncol(ramclustObj$SpecAbundAve)])
+      dimnames(ramclustObj$SpecAbundAve)[[2]]<-dimnames(ramclustObj$SpecAbund)[[2]]
       gc()
     }
   }
   gc()
   
+  ########
+  # write msp formatted spectra
   if(mspout==TRUE){ 
     cat(paste("writing msp formatted spectra...", '\n'))
     dir.create("spectra")
     libName<-paste("spectra/", ExpDes[[1]]["Experiment", 1], ".mspLib", sep="")
     file.create(file=libName)
     for (m in 1:as.numeric(mslev)){
-      for (j in 1:max(RC$featclus)) {
+      for (j in 1:max(ramclustObj$featclus)) {
         #print(paste(j,"_", sep=""))
-        sl<-which(RC$featclus==j)
+        sl<-which(ramclustObj$featclus==j)
         wm<-vector(length=length(sl))
-        if(m==1) {wts<-rowSums(RC$MSdata[,sl, drop=FALSE])
+        if(m==1) {wts<-rowSums(ramclustObj$MSdata[,sl, drop=FALSE])
         for (k in 1:length(sl)) {     
-          wm[k]<-weighted.mean(RC$MSdata[,sl[k]], wts)
+          wm[k]<-weighted.mean(ramclustObj$MSdata[,sl[k]], wts)
         }}
-        if(m==2) {wts<-rowSums(RC$MSMSdata[,sl, drop=FALSE])
+        if(m==2) {wts<-rowSums(ramclustObj$MSMSdata[,sl, drop=FALSE])
         for (k in 1:length(sl)) {    
-          wm[k]<-weighted.mean(RC$MSMSdata[,sl[k]], wts)
+          wm[k]<-weighted.mean(ramclustObj$MSMSdata[,sl[k]], wts)
         }}
-        mz<-round(RC$fmz[sl][order(wm, decreasing=TRUE)], digits=mzdec)
-        rt<-RC$frt[sl][order(wm, decreasing=TRUE)]
+        mz<-round(ramclustObj$fmz[sl][order(wm, decreasing=TRUE)], digits=mzdec)
+        rt<-ramclustObj$frt[sl][order(wm, decreasing=TRUE)]
         wm<-round(wm[order(wm, decreasing=TRUE)])
         mrt<-mean(rt)
         npeaks<-length(mz)
+        specdat<-""
         for (l in 1:length(mz)) {
-          ion<- paste(mz[l], wm[l])
-          if(l==1) {specdat<-ion} 
-          if(l>1)  {specdat<-c(specdat, " ", ion)}
+          specdat<-paste(specdat, mz[l], " ", wm[l], '\n', sep="")
         }
         cat(
-          paste("Name: C", j, sep=""), '\n',
+          paste("Name: ", ramclustObj$cmpd[j], sep=""), '\n',
           paste("SYNON: $:00in-source", sep=""), '\n',
           paste("SYNON: $:04", sep=""), '\n', 
           paste("SYNON: $:05", if(m==1) {ExpDes[[2]]["CE1", 1]} else {ExpDes$instrument["CE2", "InstVals"]}, sep=""), '\n',
@@ -478,21 +505,21 @@ ramclustR<- function(  xcmsObj=NULL,
           paste("SYNON: $:10", ExpDes[[2]]["ionization", 1], sep=""),  '\n',      #ionization method
           paste("SYNON: $:11", ExpDes[[2]]["msmode", 1], sep=""), '\n',           #msmode
           if(any(row.names(ExpDes[[2]])=="colgas")) {
-            cat(paste("SYNON: $:12", ExpDes[[2]]["colgas", 1], sep=""), '\n')
+            paste("SYNON: $:12", ExpDes[[2]]["colgas", 1], '\n', sep="") 
             },          #collision gas
           paste("SYNON: $:14", ExpDes[[2]]["msscanrange", 1], sep=""), '\n',      #ms scanrange
           if(any(row.names(ExpDes[[2]])=="conevolt")) {
-            cat(paste("SYNON: $:16", ExpDes[[2]]["conevolt", 1], sep=""), '\n')
+            paste("SYNON: $:16", ExpDes[[2]]["conevolt", 1], '\n', sep="")
             },         #conevoltage
           paste("Comment: Rt=", round(mrt, digits=2), 
                 "  Contributor=", ExpDes[[1]]["Contributor", 1], 
                 "  Study=", ExpDes[[1]]["Experiment", 1], 
                 sep=""), '\n',
           paste("Num Peaks:", npeaks), '\n',
-          paste(specdat), '\n', '\n', sep="", file=libName, append= TRUE)
+          paste(specdat), '\n', sep="", file=libName, append= TRUE)
       }
     }
     cat(paste('\n', "msp file complete", '\n')) 
   }  
-  return(RC)
+  return(ramclustObj)
 }

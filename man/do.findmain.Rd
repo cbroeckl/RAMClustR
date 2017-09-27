@@ -46,6 +46,28 @@ a partially annotated ramclustR object.  base structure is that of a standard R 
  M.findmain M selected using findmain scoring
  M.ppm.findmain ppm error of M selected using findmain scoring
  M.ann.findmain annotated spectrum supporing M using findmain scoring
+
+a partially annotated ramclustR object.  base structure is that of a standard R heirarchical clustering output, with additional slots described in ramclustR documentation (?ramclustR).  New slots added after using the interpretMSSpectrum functionality include:
+
+   M:  The inferred molecular weight of the compound giving rise to the each spectrum
+
+   M.ppm:  The ppm error of all the MS signals annotated, high error values should be considered 'red flags'
+
+   M.ann:  The annotated spectrum supporting the intepretation of M
+
+   use.findmain:  Logical vector indicating whether findmain scoring (TRUE) or ramclustR scoring (FALSE) was used to support inference of M.  By default, findmain scoring is used.  When ramclustR scoring differs from findmain scoring, the scoring metric which predicts higher M is selected. 
+
+   M.ramclustr:  M selected using ramclustR scoring
+
+   M.ppm.ramclustr:  ppm error of M selected using ramclustR scoring
+
+   M.ann.ramclustr:  annotated spectrum supporing M using ramclustR scoring
+
+   M.findmain:  M selected using findmain scoring
+
+   M.ppm.findmain:  ppm error of M selected using findmain scoring
+
+   M.ann.findmain:  annotated spectrum supporing M using findmain scoring
 }
 \references{
 Jaeger C, Méret M, Schmitt CA, Lisec J. Compound annotation in liquid chromatography/high-resolution mass spectrometry based metabolomics: robust adduct ion determination as a prerequisite to structure prediction in electrospray ionization mass spectra. Rapid Commun Mass Spectrom. 2017 Aug 15;31(15):1261-1266. doi: 10.1002/rcm.7905. PubMed PMID: 28499062.

@@ -8,7 +8,7 @@ ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
   taglocation = "filepaths", MStag = NULL, idMSMStag = NULL,
   featdelim = "_", mzpos = 1, timepos = 2, st = NULL, sr = NULL,
   maxt = NULL, deepSplit = FALSE, blocksize = 2000, mult = 5,
-  hmax = NULL, sampNameCol = NULL, collapse = TRUE, usePheno = TRUE,
+  hmax = NULL, sampNameCol = 1, collapse = TRUE, usePheno = TRUE,
   mspout = TRUE, ExpDes = NULL, normalize = "TIC", minModuleSize = 2,
   linkage = "average", mzdec = 4, cor.method = "pearson")
 }
@@ -97,7 +97,7 @@ SpecAbund: the cluster intensities after collapsing features to clusters
 
 SpecAbundAve: the cluster intensities after averaging all samples with identical sample names
 
-'spectra' directory is created in the working directory.  In this directory a .msp is (optionally) created, which contains the spectra for all compounds in the dataset following clustering.  if MSe/idMSMS data are provided, they are listed witht he same compound name as the MS spectrum, with the collision energy provided in the ExpDes object provided to distinguish low from high CE spectra.
+- 'spectra' directory is created in the working directory.  In this directory a .msp is (optionally) created, which contains the spectra for all compounds in the dataset following clustering.  if MSe/idMSMS data are provided, they are listed witht he same compound name as the MS spectrum, with the collision energy provided in the ExpDes object provided to distinguish low from high CE spectra.
 }
 \references{
 Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.

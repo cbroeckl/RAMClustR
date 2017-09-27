@@ -1,0 +1,3206 @@
+Name: C01
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3668.26  Contributor=NA  Study=fill
+Num Peaks: 9
+281.2 2019336
+249.1239 966530
+267.1573 960217
+282.1844 482455
+266.1782 288413
+309.2 274229
+250.1289 203271
+268.1611 192271
+291.2 71607
+
+Name: C02
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2791.34  Contributor=NA  Study=fill
+Num Peaks: 8
+279.018 13113194
+280.017 2327781
+301 1847706
+579.1244 935565
+302.0027 338927
+580.1112 330424
+281.0686 319669
+324.0943 311016
+
+Name: C03
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2687.69  Contributor=NA  Study=fill
+Num Peaks: 8
+343 18437949
+360.0252 9537617
+344 4053213
+430.1 2837600
+361.0531 2243931
+431.1024 835044
+362.0584 666695
+345.0154 630271
+
+Name: C04
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3291.55  Contributor=NA  Study=fill
+Num Peaks: 7
+454.1091 7557769
+455.1242 1840921
+313.1744 802396
+528.121 551032
+456.1525 349603
+314.1531 199016
+529.1532 174053
+
+Name: C05
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3529.89  Contributor=NA  Study=fill
+Num Peaks: 6
+508.2 29103445
+509.2 8239312
+367.2 2175360
+510.2 1755531
+368.2 605333
+558.184 305534
+
+Name: C06
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3421.96  Contributor=NA  Study=fill
+Num Peaks: 6
+496.2 28171636
+497.2 7615759
+498.2 1439219
+518.1972 963375
+519.1567 277610
+515.2575 91211
+
+Name: C07
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2522.88  Contributor=NA  Study=fill
+Num Peaks: 6
+332 6387196
+337 4851468
+315 4563706
+333.0012 1341775
+316 983808
+334.0316 314769
+
+Name: C08
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3499.5  Contributor=NA  Study=fill
+Num Peaks: 5
+346.1308 823562
+329.1051 317655
+347.1336 222093
+351.1154 171721
+330.1492 84000
+
+Name: C09
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3504.49  Contributor=NA  Study=fill
+Num Peaks: 5
+322.1487 1245328
+305.1 922455
+323.1439 294406
+327.1 291065
+306.1116 201335
+
+Name: C10
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3354.27  Contributor=NA  Study=fill
+Num Peaks: 5
+530.2 14068921
+531.2 4308219
+532.1887 917433
+389.1913 914696
+390.188 264660
+
+Name: C11
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3329.99  Contributor=NA  Study=fill
+Num Peaks: 5
+379.1288 1527192
+396.1954 617325
+380.2 254871
+401.1 231178
+397.1734 170010
+
+Name: C12
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2787.71  Contributor=NA  Study=fill
+Num Peaks: 5
+313.0012 4686195
+314.0046 1011995
+335 841708
+400.1 231683
+336.0028 190700
+
+Name: C13
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2918.38  Contributor=NA  Study=fill
+Num Peaks: 5
+358.8701 2947358
+360.8515 2728146
+361.8627 1327732
+569.8 370877
+572.8 171106
+
+Name: C14
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3880.88  Contributor=NA  Study=fill
+Num Peaks: 4
+269.1617 935287
+283.2 934132
+268.2 191407
+270.1767 182966
+
+Name: C15
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3418.23  Contributor=NA  Study=fill
+Num Peaks: 4
+326.2 3819360
+327.1989 894386
+348.1431 350782
+349.1123 102052
+
+Name: C16
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3717.56  Contributor=NA  Study=fill
+Num Peaks: 4
+536.2 4890552
+537.2 1516069
+395.2 307366
+538.2025 299055
+
+Name: C17
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3677.9  Contributor=NA  Study=fill
+Num Peaks: 4
+255.1596 996937
+241.1275 996522
+256.1519 210052
+242.1415 185104
+
+Name: C18
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2800.79  Contributor=NA  Study=fill
+Num Peaks: 4
+399.1053 320779
+486.2 233231
+500.2108 134460
+421.0845 77143
+
+Name: C19
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=4138.92  Contributor=NA  Study=fill
+Num Peaks: 3
+520.3131 136729
+564.4 135804
+538.343 124927
+
+Name: C20
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=4057.23  Contributor=NA  Study=fill
+Num Peaks: 3
+438.3 818066
+439.2884 269412
+398.3 138643
+
+Name: C21
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3003.45  Contributor=NA  Study=fill
+Num Peaks: 3
+590.2863 2741010
+591.2811 969369
+595.2 365172
+
+Name: C22
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3023.59  Contributor=NA  Study=fill
+Num Peaks: 3
+338.1 382323
+233.0377 363017
+234.0277 80377
+
+Name: C23
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3044.23  Contributor=NA  Study=fill
+Num Peaks: 3
+458.2 902572
+463.1817 400212
+459.2 297792
+
+Name: C24
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3169.66  Contributor=NA  Study=fill
+Num Peaks: 3
+502.1056 11691566
+503.1049 3334122
+361.1387 941399
+
+Name: C25
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3178.81  Contributor=NA  Study=fill
+Num Peaks: 3
+526.1 14210592
+527.1141 4271094
+528.1264 812563
+
+Name: C26
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3154.52  Contributor=NA  Study=fill
+Num Peaks: 3
+380.1 2098258
+381.1052 417463
+264.1441 187121
+
+Name: C27
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3263.41  Contributor=NA  Study=fill
+Num Peaks: 3
+504.1387 3540157
+505.1605 1002491
+363.1568 290009
+
+Name: C28
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3465.32  Contributor=NA  Study=fill
+Num Peaks: 3
+464.2 7339688
+465.2 1953496
+486.156 254437
+
+Name: C29
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3394.29  Contributor=NA  Study=fill
+Num Peaks: 3
+506.1943 3545568
+507.2 1037695
+365.1784 281633
+
+Name: C30
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3390.15  Contributor=NA  Study=fill
+Num Peaks: 3
+300.1898 4273295
+301.1879 886395
+322.1212 234356
+
+Name: C31
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3580.49  Contributor=NA  Study=fill
+Num Peaks: 3
+566.2 719721
+580.1975 442534
+567.1921 216472
+
+Name: C32
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3713.86  Contributor=NA  Study=fill
+Num Peaks: 3
+593.444 945928
+584.9909 157988
+595.9747 139750
+
+Name: C33
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3632.07  Contributor=NA  Study=fill
+Num Peaks: 3
+328.2 3813707
+329.2 882511
+330.191 120729
+
+Name: C34
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3626.14  Contributor=NA  Study=fill
+Num Peaks: 3
+391.1249 5083626
+392.1336 1361004
+436.1915 226178
+
+Name: C35
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3609.55  Contributor=NA  Study=fill
+Num Peaks: 3
+482.2 5678659
+483.2 1518491
+484.1939 291984
+
+Name: C36
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2925.27  Contributor=NA  Study=fill
+Num Peaks: 3
+304.1 1625267
+309.1 533623
+200.1 120214
+
+Name: C37
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2515.17  Contributor=NA  Study=fill
+Num Peaks: 3
+338 909705
+352.9458 477362
+231.0236 282565
+
+Name: C38
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=4115.16  Contributor=NA  Study=fill
+Num Peaks: 2
+412.2905 1555900
+413.269 456459
+
+Name: C39
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3777.7  Contributor=NA  Study=fill
+Num Peaks: 2
+510.2 5575810
+511.2 1609707
+
+Name: C40
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3937.1  Contributor=NA  Study=fill
+Num Peaks: 2
+410.2658 930544
+411.2339 304420
+
+Name: C41
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3926.3  Contributor=NA  Study=fill
+Num Peaks: 2
+536.0333 338235
+537.051 185334
+
+Name: C42
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3816.45  Contributor=NA  Study=fill
+Num Peaks: 2
+596.3432 1916830
+597.3378 718340
+
+Name: C43
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3835.98  Contributor=NA  Study=fill
+Num Peaks: 2
+356.2 1139785
+357.2062 296190
+
+Name: C44
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3885.56  Contributor=NA  Study=fill
+Num Peaks: 2
+429.2 1731532
+430.2 567355
+
+Name: C45
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3861.19  Contributor=NA  Study=fill
+Num Peaks: 2
+534.3 1282275
+535.3 468205
+
+Name: C46
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3015.74  Contributor=NA  Study=fill
+Num Peaks: 2
+546.2529 2367898
+547.2409 787838
+
+Name: C47
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3077.57  Contributor=NA  Study=fill
+Num Peaks: 2
+452.1025 1490075
+474.1 161548
+
+Name: C48
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3178.93  Contributor=NA  Study=fill
+Num Peaks: 2
+385.1347 1043041
+386.1474 284781
+
+Name: C49
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3215.64  Contributor=NA  Study=fill
+Num Peaks: 2
+554.1391 354982
+555.1073 131217
+
+Name: C50
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3215.4  Contributor=NA  Study=fill
+Num Peaks: 2
+520.2 815807
+521.2 252499
+
+Name: C51
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3211.49  Contributor=NA  Study=fill
+Num Peaks: 2
+544.2 2646649
+545.2 852947
+
+Name: C52
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3215.01  Contributor=NA  Study=fill
+Num Peaks: 2
+568.2 3246166
+569.2 1105388
+
+Name: C53
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3291.69  Contributor=NA  Study=fill
+Num Peaks: 2
+476.1031 542530
+477.1332 125537
+
+Name: C54
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3289.81  Contributor=NA  Study=fill
+Num Peaks: 2
+348.162 147045
+449.1321 128477
+
+Name: C55
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3248.09  Contributor=NA  Study=fill
+Num Peaks: 2
+382.1089 1044494
+318.113 120884
+
+Name: C56
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3261.07  Contributor=NA  Study=fill
+Num Peaks: 2
+286.1792 1326576
+287.1418 373228
+
+Name: C57
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3242.31  Contributor=NA  Study=fill
+Num Peaks: 2
+528.1463 1466941
+529.1408 453318
+
+Name: C58
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3498.15  Contributor=NA  Study=fill
+Num Peaks: 2
+331.1501 417341
+348.174 195990
+
+Name: C59
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3511.52  Contributor=NA  Study=fill
+Num Peaks: 2
+579.4094 591577
+557.3806 426667
+
+Name: C60
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3442.42  Contributor=NA  Study=fill
+Num Peaks: 2
+522.2 13045073
+523.2 3858720
+
+Name: C61
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3456.51  Contributor=NA  Study=fill
+Num Peaks: 2
+438.1665 2616406
+439.1625 649817
+
+Name: C62
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3454.24  Contributor=NA  Study=fill
+Num Peaks: 2
+331.1426 182642
+460.1338 93645
+
+Name: C63
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3488.63  Contributor=NA  Study=fill
+Num Peaks: 2
+532.2 2606839
+533.2 821411
+
+Name: C64
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3349.83  Contributor=NA  Study=fill
+Num Peaks: 2
+496.2 9607860
+497.2 2625917
+
+Name: C65
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3320.78  Contributor=NA  Study=fill
+Num Peaks: 2
+480.1669 31875428
+481.1664 8291947
+
+Name: C66
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3428.07  Contributor=NA  Study=fill
+Num Peaks: 2
+494.1956 923686
+495.2146 213619
+
+Name: C67
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3375.92  Contributor=NA  Study=fill
+Num Peaks: 2
+522.2 18017686
+523.2 5252486
+
+Name: C68
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3403.5  Contributor=NA  Study=fill
+Num Peaks: 2
+572.2 338300
+573.2233 113802
+
+Name: C69
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3391.55  Contributor=NA  Study=fill
+Num Peaks: 2
+558.1752 257954
+559.1581 88109
+
+Name: C70
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3590.29  Contributor=NA  Study=fill
+Num Peaks: 2
+534.2 1524484
+535.2 492274
+
+Name: C71
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3572.22  Contributor=NA  Study=fill
+Num Peaks: 2
+536.2 887632
+537.2 250474
+
+Name: C72
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3696.23  Contributor=NA  Study=fill
+Num Peaks: 2
+466.2 2975052
+467.2 821495
+
+Name: C73
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3714.55  Contributor=NA  Study=fill
+Num Peaks: 2
+550.2 4301662
+551.2092 1394113
+
+Name: C74
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3719.76  Contributor=NA  Study=fill
+Num Peaks: 2
+359.2 491462
+376.2042 176198
+
+Name: C75
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3719.86  Contributor=NA  Study=fill
+Num Peaks: 2
+571.4141 868942
+562.9888 205452
+
+Name: C76
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3726.45  Contributor=NA  Study=fill
+Num Peaks: 2
+549.3786 837846
+541.0007 218033
+
+Name: C77
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3732.29  Contributor=NA  Study=fill
+Num Peaks: 2
+527.3179 762847
+518.9841 233183
+
+Name: C78
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3678.01  Contributor=NA  Study=fill
+Num Peaks: 2
+550.22 4441975
+551.2126 1455115
+
+Name: C79
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3667.28  Contributor=NA  Study=fill
+Num Peaks: 2
+338.2 467493
+321.1537 212805
+
+Name: C80
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3646.23  Contributor=NA  Study=fill
+Num Peaks: 2
+560.2 179841
+561.1881 60977
+
+Name: C81
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3627.45  Contributor=NA  Study=fill
+Num Peaks: 2
+478.2055 1639417
+479.2268 542864
+
+Name: C82
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3631.14  Contributor=NA  Study=fill
+Num Peaks: 2
+393.162 269895
+450.1913 176622
+
+Name: C83
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3613.61  Contributor=NA  Study=fill
+Num Peaks: 2
+594.3153 1884497
+595.3084 758381
+
+Name: C84
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3618.02  Contributor=NA  Study=fill
+Num Peaks: 2
+568.3 684536
+569.3078 239117
+
+Name: C85
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3618.69  Contributor=NA  Study=fill
+Num Peaks: 2
+354.2 704777
+355.1906 202189
+
+Name: C86
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2791.1  Contributor=NA  Study=fill
+Num Peaks: 2
+366.1053 885414
+354.1249 214734
+
+Name: C87
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2791.51  Contributor=NA  Study=fill
+Num Peaks: 2
+317 277547
+352.1031 189863
+
+Name: C88
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2790.63  Contributor=NA  Study=fill
+Num Peaks: 2
+205 1452945
+205.9927 207851
+
+Name: C89
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2927.62  Contributor=NA  Study=fill
+Num Peaks: 2
+305.1 1569561
+306.1 349425
+
+Name: C90
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2924.51  Contributor=NA  Study=fill
+Num Peaks: 2
+512.2595 1071202
+517.2066 166017
+
+Name: C91
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2913.57  Contributor=NA  Study=fill
+Num Peaks: 2
+556.2944 887873
+557.2506 298167
+
+Name: C92
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2936.64  Contributor=NA  Study=fill
+Num Peaks: 2
+468.2344 1111017
+473.1769 202227
+
+Name: C93
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2687.15  Contributor=NA  Study=fill
+Num Peaks: 2
+365 10112479
+366 2220283
+
+Name: C94
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2523.91  Contributor=NA  Study=fill
+Num Peaks: 2
+236.1018 210403
+219.0848 193195
+
+Name: C95
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05fill
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2624.39  Contributor=NA  Study=fill
+Num Peaks: 2
+302.0013 517469
+306.9929 233014
+
+Name: C01
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3668.26  Contributor=NA  Study=fill
+Num Peaks: 9
+281.2 2019362
+249.1239 966542
+267.1573 960259
+282.1844 482486
+266.1782 288397
+309.2 274224
+250.1289 203318
+268.1611 192282
+291.2 71615
+
+Name: C02
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2791.34  Contributor=NA  Study=fill
+Num Peaks: 8
+279.018 13113237
+280.017 2327782
+301 1847664
+579.1244 935579
+302.0027 338915
+580.1112 330429
+281.0686 319629
+324.0943 310989
+
+Name: C03
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2687.69  Contributor=NA  Study=fill
+Num Peaks: 8
+343 18437955
+360.0252 9537608
+344 4053204
+430.1 2837554
+361.0531 2243861
+431.1024 835074
+362.0584 666674
+345.0154 630242
+
+Name: C04
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3291.55  Contributor=NA  Study=fill
+Num Peaks: 7
+454.1091 7557751
+455.1242 1840876
+313.1744 802450
+528.121 551090
+456.1525 349566
+314.1531 199004
+529.1532 174063
+
+Name: C05
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3529.89  Contributor=NA  Study=fill
+Num Peaks: 6
+508.2 29103474
+509.2 8239260
+367.2 2175322
+510.2 1755527
+368.2 605325
+558.184 305518
+
+Name: C06
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3421.96  Contributor=NA  Study=fill
+Num Peaks: 6
+496.2 28171646
+497.2 7615739
+498.2 1439222
+518.1972 963354
+519.1567 277584
+515.2575 91237
+
+Name: C07
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2522.88  Contributor=NA  Study=fill
+Num Peaks: 6
+332 6387102
+337 4851345
+315 4563575
+333.0012 1341769
+316 983768
+334.0316 314814
+
+Name: C08
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3499.5  Contributor=NA  Study=fill
+Num Peaks: 5
+346.1308 823603
+329.1051 317658
+347.1336 222075
+351.1154 171712
+330.1492 84074
+
+Name: C09
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3504.49  Contributor=NA  Study=fill
+Num Peaks: 5
+322.1487 1245304
+305.1 922457
+323.1439 294441
+327.1 290989
+306.1116 201320
+
+Name: C10
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3354.27  Contributor=NA  Study=fill
+Num Peaks: 5
+530.2 14068902
+531.2 4308252
+532.1887 917384
+389.1913 914675
+390.188 264639
+
+Name: C11
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3329.99  Contributor=NA  Study=fill
+Num Peaks: 5
+379.1288 1527130
+396.1954 617301
+380.2 254821
+401.1 231226
+397.1734 170004
+
+Name: C12
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2787.71  Contributor=NA  Study=fill
+Num Peaks: 5
+313.0012 4686147
+314.0046 1012068
+335 841658
+400.1 231639
+336.0028 190713
+
+Name: C13
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2918.38  Contributor=NA  Study=fill
+Num Peaks: 5
+358.8701 2946884
+360.8515 2727604
+361.8627 1327628
+569.8 370862
+572.8 170996
+
+Name: C14
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3880.88  Contributor=NA  Study=fill
+Num Peaks: 4
+269.1617 935286
+283.2 934191
+268.2 191356
+270.1767 182980
+
+Name: C15
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3418.23  Contributor=NA  Study=fill
+Num Peaks: 4
+326.2 3819365
+327.1989 894470
+348.1431 350781
+349.1123 102127
+
+Name: C16
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3717.56  Contributor=NA  Study=fill
+Num Peaks: 4
+536.2 4890480
+537.2 1516045
+395.2 307381
+538.2025 299079
+
+Name: C17
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3677.9  Contributor=NA  Study=fill
+Num Peaks: 4
+255.1596 996899
+241.1275 996533
+256.1519 210060
+242.1415 185090
+
+Name: C18
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2800.79  Contributor=NA  Study=fill
+Num Peaks: 4
+399.1053 320734
+486.2 233189
+500.2108 134501
+421.0845 77099
+
+Name: C19
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=4138.92  Contributor=NA  Study=fill
+Num Peaks: 3
+520.3131 136757
+564.4 135794
+538.343 124957
+
+Name: C20
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=4057.23  Contributor=NA  Study=fill
+Num Peaks: 3
+438.3 818103
+439.2884 269389
+398.3 138661
+
+Name: C21
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3003.45  Contributor=NA  Study=fill
+Num Peaks: 3
+590.2863 2741032
+591.2811 969361
+595.2 365060
+
+Name: C22
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3023.59  Contributor=NA  Study=fill
+Num Peaks: 3
+338.1 382345
+233.0377 363023
+234.0277 80400
+
+Name: C23
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3044.23  Contributor=NA  Study=fill
+Num Peaks: 3
+458.2 902531
+463.1817 400236
+459.2 297826
+
+Name: C24
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3169.66  Contributor=NA  Study=fill
+Num Peaks: 3
+502.1056 11691521
+503.1049 3334113
+361.1387 941331
+
+Name: C25
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3178.81  Contributor=NA  Study=fill
+Num Peaks: 3
+526.1 14210596
+527.1141 4271100
+528.1264 812592
+
+Name: C26
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3154.52  Contributor=NA  Study=fill
+Num Peaks: 3
+380.1 2098208
+381.1052 417472
+264.1441 187176
+
+Name: C27
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3263.41  Contributor=NA  Study=fill
+Num Peaks: 3
+504.1387 3540195
+505.1605 1002493
+363.1568 290043
+
+Name: C28
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3465.32  Contributor=NA  Study=fill
+Num Peaks: 3
+464.2 7339654
+465.2 1953478
+486.156 254476
+
+Name: C29
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3394.29  Contributor=NA  Study=fill
+Num Peaks: 3
+506.1943 3545587
+507.2 1037705
+365.1784 281640
+
+Name: C30
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3390.15  Contributor=NA  Study=fill
+Num Peaks: 3
+300.1898 4273253
+301.1879 886297
+322.1212 234359
+
+Name: C31
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3580.49  Contributor=NA  Study=fill
+Num Peaks: 3
+566.2 719707
+580.1975 442527
+567.1921 216477
+
+Name: C32
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3713.86  Contributor=NA  Study=fill
+Num Peaks: 3
+593.444 946014
+584.9909 157949
+595.9747 139806
+
+Name: C33
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3632.07  Contributor=NA  Study=fill
+Num Peaks: 3
+328.2 3813625
+329.2 882437
+330.191 120724
+
+Name: C34
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3626.14  Contributor=NA  Study=fill
+Num Peaks: 3
+391.1249 5083597
+392.1336 1361014
+436.1915 226153
+
+Name: C35
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3609.55  Contributor=NA  Study=fill
+Num Peaks: 3
+482.2 5678588
+483.2 1518487
+484.1939 292005
+
+Name: C36
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2925.27  Contributor=NA  Study=fill
+Num Peaks: 3
+304.1 1625228
+309.1 533579
+200.1 120236
+
+Name: C37
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2515.17  Contributor=NA  Study=fill
+Num Peaks: 3
+338 909669
+352.9458 477321
+231.0236 282549
+
+Name: C38
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=4115.16  Contributor=NA  Study=fill
+Num Peaks: 2
+412.2905 1555895
+413.269 456471
+
+Name: C39
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3777.7  Contributor=NA  Study=fill
+Num Peaks: 2
+510.2 5575837
+511.2 1609639
+
+Name: C40
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3937.1  Contributor=NA  Study=fill
+Num Peaks: 2
+410.2658 930512
+411.2339 304466
+
+Name: C41
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3926.3  Contributor=NA  Study=fill
+Num Peaks: 2
+536.0333 338249
+537.051 185350
+
+Name: C42
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3816.45  Contributor=NA  Study=fill
+Num Peaks: 2
+596.3432 1916890
+597.3378 718247
+
+Name: C43
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3835.98  Contributor=NA  Study=fill
+Num Peaks: 2
+356.2 1139857
+357.2062 296204
+
+Name: C44
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3885.56  Contributor=NA  Study=fill
+Num Peaks: 2
+429.2 1731469
+430.2 567383
+
+Name: C45
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3861.19  Contributor=NA  Study=fill
+Num Peaks: 2
+534.3 1282282
+535.3 468239
+
+Name: C46
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3015.74  Contributor=NA  Study=fill
+Num Peaks: 2
+546.2529 2367942
+547.2409 787863
+
+Name: C47
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3077.57  Contributor=NA  Study=fill
+Num Peaks: 2
+452.1025 1490134
+474.1 161620
+
+Name: C48
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3178.93  Contributor=NA  Study=fill
+Num Peaks: 2
+385.1347 1043093
+386.1474 284725
+
+Name: C49
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3215.64  Contributor=NA  Study=fill
+Num Peaks: 2
+554.1391 354947
+555.1073 131212
+
+Name: C50
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3215.4  Contributor=NA  Study=fill
+Num Peaks: 2
+520.2 815771
+521.2 252498
+
+Name: C51
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3211.49  Contributor=NA  Study=fill
+Num Peaks: 2
+544.2 2646605
+545.2 852984
+
+Name: C52
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3215.01  Contributor=NA  Study=fill
+Num Peaks: 2
+568.2 3246154
+569.2 1105396
+
+Name: C53
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3291.69  Contributor=NA  Study=fill
+Num Peaks: 2
+476.1031 542578
+477.1332 125539
+
+Name: C54
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3289.81  Contributor=NA  Study=fill
+Num Peaks: 2
+348.162 146967
+449.1321 128444
+
+Name: C55
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3248.09  Contributor=NA  Study=fill
+Num Peaks: 2
+382.1089 1044468
+318.113 120873
+
+Name: C56
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3261.07  Contributor=NA  Study=fill
+Num Peaks: 2
+286.1792 1326560
+287.1418 373223
+
+Name: C57
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3242.31  Contributor=NA  Study=fill
+Num Peaks: 2
+528.1463 1466954
+529.1408 453358
+
+Name: C58
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3498.15  Contributor=NA  Study=fill
+Num Peaks: 2
+331.1501 417366
+348.174 195954
+
+Name: C59
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3511.52  Contributor=NA  Study=fill
+Num Peaks: 2
+579.4094 591530
+557.3806 426699
+
+Name: C60
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3442.42  Contributor=NA  Study=fill
+Num Peaks: 2
+522.2 13045063
+523.2 3858729
+
+Name: C61
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3456.51  Contributor=NA  Study=fill
+Num Peaks: 2
+438.1665 2616407
+439.1625 649874
+
+Name: C62
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3454.24  Contributor=NA  Study=fill
+Num Peaks: 2
+331.1426 182585
+460.1338 93638
+
+Name: C63
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3488.63  Contributor=NA  Study=fill
+Num Peaks: 2
+532.2 2606799
+533.2 821418
+
+Name: C64
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3349.83  Contributor=NA  Study=fill
+Num Peaks: 2
+496.2 9607874
+497.2 2625907
+
+Name: C65
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3320.78  Contributor=NA  Study=fill
+Num Peaks: 2
+480.1669 31875449
+481.1664 8291993
+
+Name: C66
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3428.07  Contributor=NA  Study=fill
+Num Peaks: 2
+494.1956 923608
+495.2146 213625
+
+Name: C67
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3375.92  Contributor=NA  Study=fill
+Num Peaks: 2
+522.2 18017663
+523.2 5252535
+
+Name: C68
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3403.5  Contributor=NA  Study=fill
+Num Peaks: 2
+572.2 338296
+573.2233 113804
+
+Name: C69
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3391.55  Contributor=NA  Study=fill
+Num Peaks: 2
+558.1752 257978
+559.1581 88047
+
+Name: C70
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3590.29  Contributor=NA  Study=fill
+Num Peaks: 2
+534.2 1524545
+535.2 492232
+
+Name: C71
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3572.22  Contributor=NA  Study=fill
+Num Peaks: 2
+536.2 887562
+537.2 250503
+
+Name: C72
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3696.23  Contributor=NA  Study=fill
+Num Peaks: 2
+466.2 2975092
+467.2 821504
+
+Name: C73
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3714.55  Contributor=NA  Study=fill
+Num Peaks: 2
+550.2 4301608
+551.2092 1394150
+
+Name: C74
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3719.76  Contributor=NA  Study=fill
+Num Peaks: 2
+359.2 491442
+376.2042 176192
+
+Name: C75
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3719.86  Contributor=NA  Study=fill
+Num Peaks: 2
+571.4141 868895
+562.9888 205403
+
+Name: C76
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3726.45  Contributor=NA  Study=fill
+Num Peaks: 2
+549.3786 837811
+541.0007 218075
+
+Name: C77
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3732.29  Contributor=NA  Study=fill
+Num Peaks: 2
+527.3179 762836
+518.9841 233186
+
+Name: C78
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3678.01  Contributor=NA  Study=fill
+Num Peaks: 2
+550.22 4442021
+551.2126 1455125
+
+Name: C79
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3667.28  Contributor=NA  Study=fill
+Num Peaks: 2
+338.2 467447
+321.1537 212825
+
+Name: C80
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3646.23  Contributor=NA  Study=fill
+Num Peaks: 2
+560.2 179852
+561.1881 60913
+
+Name: C81
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3627.45  Contributor=NA  Study=fill
+Num Peaks: 2
+478.2055 1639411
+479.2268 542882
+
+Name: C82
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3631.14  Contributor=NA  Study=fill
+Num Peaks: 2
+393.162 269870
+450.1913 176583
+
+Name: C83
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3613.61  Contributor=NA  Study=fill
+Num Peaks: 2
+594.3153 1884448
+595.3084 758394
+
+Name: C84
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3618.02  Contributor=NA  Study=fill
+Num Peaks: 2
+568.3 684487
+569.3078 239076
+
+Name: C85
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=3618.69  Contributor=NA  Study=fill
+Num Peaks: 2
+354.2 704753
+355.1906 202166
+
+Name: C86
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2791.1  Contributor=NA  Study=fill
+Num Peaks: 2
+366.1053 885430
+354.1249 214698
+
+Name: C87
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2791.51  Contributor=NA  Study=fill
+Num Peaks: 2
+317 277497
+352.1031 189871
+
+Name: C88
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2790.63  Contributor=NA  Study=fill
+Num Peaks: 2
+205 1452977
+205.9927 207913
+
+Name: C89
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2927.62  Contributor=NA  Study=fill
+Num Peaks: 2
+305.1 1569629
+306.1 349420
+
+Name: C90
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2924.51  Contributor=NA  Study=fill
+Num Peaks: 2
+512.2595 1071062
+517.2066 165933
+
+Name: C91
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2913.57  Contributor=NA  Study=fill
+Num Peaks: 2
+556.2944 887879
+557.2506 298097
+
+Name: C92
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2936.64  Contributor=NA  Study=fill
+Num Peaks: 2
+468.2344 1110948
+473.1769 202187
+
+Name: C93
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2687.15  Contributor=NA  Study=fill
+Num Peaks: 2
+365 10112504
+366 2220273
+
+Name: C94
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2523.91  Contributor=NA  Study=fill
+Num Peaks: 2
+236.1018 210421
+219.0848 193253
+
+Name: C95
+SYNON: $:00in-source
+SYNON: $:04
+SYNON: $:05
+SYNON: $:06fill
+SYNON: $:07fill
+SYNON: $:09fill
+SYNON: $:10fill
+SYNON: $:11fill
+SYNON: $:12fill
+SYNON: $:14fill
+Comment: Rt=2624.39  Contributor=NA  Study=fill
+Num Peaks: 2
+302.0013 517466
+306.9929 232975
+

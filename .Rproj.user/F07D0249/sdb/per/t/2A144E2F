@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "Package: RAMClustR\nType: Package\nTitle: RAMClust: a novel feature clustering method enables spectral-matching based annotation for metabolomics data\nVersion: 0.4\nDate: 2017-08-05\nAuthor: Corey D. Broeckling, Fayyaz Afsar, Steffan Neumann, Asa Ben-Hur,  Jessica Prenni.\nMaintainer: \"Broeckling,Corey\" <Corey.Broeckling@ColoState.EDU>\nImports: dynamicTreeCut, fastcluster, ff, fastmatch, preprocessCore, xcms, InterpretMSSpectrum\nLicense: GPL (>= 2)\nDescription: A feature clustering algorithm for non-targeted mass spectrometric metabolomics data, where feature detection is performed on both MS and idMS/MS(indiscriminant MS/MS) data, and feature relationships are determined simultaneously from the MS and idMS/MS data. \nURL: https://github.com/sneumann/RAMClustR\nEncoding: UTF-8\nbiocViews: MassSpectrometry, Metabolomics\nRoxygenNote: 6.0.1\nSuggests: knitr,\n    rmarkdown\nVignetteBuilder: knitr\n",
+    "created" : 1506543559502.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1783087824",
+    "id" : "2A144E2F",
+    "lastKnownWriteTime" : 1506440535,
+    "last_content_update" : 1506440535,
+    "path" : "~/GitHub/RAMClustR/DESCRIPTION",
+    "project_path" : "DESCRIPTION",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "dcf"
+}

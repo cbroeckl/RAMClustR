@@ -26,7 +26,7 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
                                  colgas="",
                                  msscanrange="",
                                  conevolt="",
-                                 MSlevs=1))
+                                 MSlevs=1), stringsAsFactors = FALSE)
   
   GCMS <- data.frame("value" = c(chrominst="",
                                  msinst="",
@@ -39,7 +39,7 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
                                  msscanrange="",
                                  scantime="",
                                  deriv="",
-                                 MSlevs=1))
+                                 MSlevs=1), stringsAsFactors = FALSE)
   
   Experiment<-data.frame("Value" = rep("", 5),
                          "Description" = c("experiment name, no spaces",
@@ -76,7 +76,7 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
         csv.in[7,2]<-'LC-MS'
         csv.in[which(csv.in[,1]=="MSlevs"),2]<-1
       }
-      design<-data.frame("value" = csv.in[3:7,2], row.names = csv.in[3:7,1])
+      design<-data.frame("value" = csv.in[3:7,2], row.names = csv.in[3:7,1], stringsAsFactors = FALSE)
       
       instrument <- NULL
       plat<-as.character(design[5,1])
@@ -104,7 +104,7 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
       if(length(rowend)>1) {
         rowend<-rowend[which.min((rowend - rowstart))]
       }
-      instrument <- data.frame('value' = csv.in[rowstart:rowend,2], row.names = csv.in[rowstart:rowend,1])
+      instrument <- data.frame('value' = csv.in[rowstart:rowend,2], row.names = csv.in[rowstart:rowend,1], stringsAsFactors = FALSE)
       ExpDes <- list("design" = design, "instrument" = instrument)
       
     }  else {
@@ -136,7 +136,7 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
       instrument <- platform
       
       suppressWarnings( instrument<-edit(instrument))
-      instrument <- data.frame('value' = csv.in[rowstart:rowend,2], row.names = csv.in[rowstart:rowend,1])
+      instrument <- data.frame('value' = csv.in[rowstart:rowend,2], row.names = csv.in[rowstart:rowend,1], stringsAsFactors = FALSE)
       ExpDes<-list("design" = design, "instrument" = instrument)
       
     }
@@ -144,7 +144,7 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
   } else  {
     if(file.exists(csv)) {
       csv.in <- read.csv(csv, header=TRUE, check.names=FALSE)
-      design<-data.frame("value" = csv.in[3:7,2], row.names = csv.in[3:7,1])
+      design<-data.frame("value" = csv.in[3:7,2], row.names = csv.in[3:7,1], stringsAsFactors = FALSE)
       
       instrument <- NULL
       plat<-as.character(design[5,1])
@@ -172,7 +172,7 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
       if(length(rowend)>1) {
         rowend<-rowend[which.min((rowend - rowstart))]
       }
-      instrument <- data.frame('value' = csv.in[rowstart:rowend,2], row.names = csv.in[rowstart:rowend,1])
+      instrument <- data.frame('value' = csv.in[rowstart:rowend,2], row.names = csv.in[rowstart:rowend,1], stringsAsFactors = FALSE)
       ExpDes <- list("design" = design, "instrument" = instrument)
       
     }

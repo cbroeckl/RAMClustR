@@ -8,11 +8,11 @@
     "hash" : "181732701",
     "id" : "859015A7",
     "lastKnownWriteTime" : 1506538305,
-    "last_content_update" : 1506538305255,
+    "last_content_update" : 1506546465389,
     "path" : "~/GitHub/RAMClustR/vignettes/RAMClustR.Rmd",
     "project_path" : "vignettes/RAMClustR.Rmd",
     "properties" : {
-        "last_setup_crc32" : ""
+        "last_setup_crc32" : "8541D2F9bb338d19"
     },
     "relative_order" : 5,
     "source_on_save" : false,

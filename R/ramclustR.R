@@ -85,10 +85,22 @@ ramclustR<- function(  xcmsObj=NULL,
   require(dynamicTreeCut, quietly=TRUE)
   
   ########
-  # define ms levels, used several tims below
+  # If experimental design is NULL: 
+  if(is.null(ExpDes)) {
+    ExpDes <- defineExperiment(force.skip = TRUE)
+    warning('\n', "you failed to define your experimental descriptor using 'defineExperiment()'", '\n',
+            "RAMClustR must now guess at what you are trying to do ", '\n',
+            "and your exported spectra will be labelled incorrectly")
+    if(!is.null(idmsms)) {
+      ExpDes[[2]][which(row.names(ExpDes[[2]]) == "MSlevs"),1]<-2
+    }
+  }
+
+  
+  ########
+  # define ms levels, used several times below
   mslev <- as.integer(as.numeric(as.character(ExpDes[[2]][nrow(ExpDes[[2]]),1])))
-  
-  
+
   ########
   # do some checks to make sure we have everything we need before proceeding
   if(is.null(xcmsObj) & is.null(ms))  {

@@ -43,12 +43,12 @@ xset <- fillPeaks(xset)  # 'fillPeaks' to remove missing values in final dataset
 xset
 ```
 
-We can use the xset we just created as input to ramclustR.  First, we must install RAMClustR and its dependent packages:
+We can use the xset we just created as input to ramclustR.  You likely have already installed RAMClustR - in the event you have not: 
 
 ```{r ramclustR installation, eval=FALSE, include=TRUE}
 install.packages("devtools", repos="http://cran.us.r-project.org", dependencies=TRUE)
 library(devtools)
-install_github("cbroeckl/RAMClustR")
+install_github("cbroeckl/RAMClustR", build_vignettes = TRUE, dependencies = TRUE)
 library(RAMClustR)
 ```
 

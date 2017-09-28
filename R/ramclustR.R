@@ -99,7 +99,7 @@ ramclustR<- function(  xcmsObj=NULL,
   
   ########
   # define ms levels, used several times below
-  mslev <- as.integer(as.numeric(as.character(ExpDes[[2]][nrow(ExpDes[[2]]),1])))
+  mslev <- as.integer(as.numeric(as.character(ExpDes[[2]][which(row.names(ExpDes[[2]]) == "MSlevs"),1])))
 
   ########
   # do some checks to make sure we have everything we need before proceeding

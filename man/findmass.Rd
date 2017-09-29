@@ -20,11 +20,10 @@ findmass(ramclustObj = RC, mz = NULL, mztol = 0.02, rttol = 2,
 }
 \value{
 returns a table to the console listing masses which match, their retention time and intensity, and whether it appears to be plausible as M0
-#' @export
 }
 \description{
 see if any features match a given mass, and whether they are plausibly M0
+ @details  a convenience function to perform a targeted search of all feaures for a mass of interest.  Also performs a crude plausibility check as to whether the matched feature could be M0, based on the assumption of approximately 1 carbon per 17 m/z units and natural isottopic abundance of 1.1% 13C
 }
-\details{
-a convenience function to perform a targeted search of all feaures for a mass of interest.  Also performs a crude plausibility check as to whether the matched feature could be M0, based on the assumption of approximately 1 carbon per 17 m/z units and natural isottopic abundance of 1.1% 13C
-}
+\keyword{'RAMClustR',}
+\keyword{'ramclustR'}

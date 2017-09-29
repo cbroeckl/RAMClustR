@@ -2,6 +2,7 @@
 
 export(defineExperiment)
 export(do.findmain)
+export(findmass)
 export(ramclustR)
 export(ramclustR2)
 export(write.single.msp)

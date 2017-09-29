@@ -25,5 +25,15 @@ returns a table to the console listing masses which match, their retention time 
 see if any features match a given mass, and whether they are plausibly M0
  @details  a convenience function to perform a targeted search of all feaures for a mass of interest.  Also performs a crude plausibility check as to whether the matched feature could be M0, based on the assumption of approximately 1 carbon per 17 m/z units and natural isottopic abundance of 1.1% 13C
 }
+\author{
+Corey Broeckling
+}
 \keyword{'RAMClustR',}
+\keyword{'clustering',}
+\keyword{'feature',}
+\keyword{'mass}
+\keyword{'metabolomics',}
 \keyword{'ramclustR'}
+\keyword{'ramclustR',}
+\keyword{'xcms'}
+\keyword{spectrometry',}

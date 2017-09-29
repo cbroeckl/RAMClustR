@@ -68,3 +68,12 @@ Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni
 \author{
 Corey Broeckling
 }
+\keyword{'RAMClustR',}
+\keyword{'clustering',}
+\keyword{'feature',}
+\keyword{'mass}
+\keyword{'metabolomics',}
+\keyword{'ramclustR'}
+\keyword{'ramclustR',}
+\keyword{'xcms'}
+\keyword{spectrometry',}

@@ -9,7 +9,8 @@
 #' @param rttol - when examining isotope patterns, feaure retention time tolerance around features matching mz +- mztol
 #' @param m.check - logical - check whether the matching masses are plausibly M0.  Looks for ions above and below the target m/z at the same time that have intensities consistent with target ion being a non-M0 isotope.
 #' @return returns a table to the console listing masses which match, their retention time and intensity, and whether it appears to be plausible as M0
-#' @keywords 'ramclustR' 'RAMClustR', 'ramclustR'
+#' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'mass spectrometry', 'clustering', 'feature', 'xcms'
+#' @author Corey Broeckling
 #' @export
 
 findmass<-function(

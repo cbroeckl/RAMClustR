@@ -1,13 +1,14 @@
 #' findmass
 #'
 #' see if any features match a given mass, and whether they are plausibly M0
-#'  @details  a convenience function to perform a targeted search of all feaures for a mass of interest.  Also performs a crude plausibility check as to whether the matched feature could be M0, based on the assumption of approximately 1 carbon per 17 m/z units and natural isottopic abundance of 1.1% 13C
+#'  @details  a convenience function to perform a targeted search of all feaures for a mass of interest.  Also performs a crude plausibility check as to whether the matched feature could be M0, based on the assumption of approximately 1 carbon per 17 m/z units and natural isottopic abundance of 1.1% 13C.  Note that this function returns the cluster to which the feature is assigned, but that the M0_plausibility is independent of cluster membership.
 #' 
-#' @param ramclustObj - the ramclustR object to explore
-#' @param mz - numeric mz value to search for
-#' @param mztol - absolute mass tolerance around mz
-#' @param rttol - when examining isotope patterns, feaure retention time tolerance around features matching mz +- mztol
-#' @param m.check - logical - check whether the matching masses are plausibly M0.  Looks for ions above and below the target m/z at the same time that have intensities consistent with target ion being a non-M0 isotope.
+#' @param ramclustObj R object: the ramclustR object to explore
+#' @param mz numeric: mz value to search for
+#' @param mztol numeric: absolute mass tolerance around mz
+#' @param rttol numeric: when examining isotope patterns, feaure retention time tolerance around features matching mz +- mztol
+#' @param zmax integer: maximum charge state to consider.  default is 6.  
+#' @param m.check logical:  check whether the matching masses are plausibly M0.  That is, we look for ions 1 proton mass (from charge state 1:zmax) below the target m/z at the same time that have intensities consistent with target ion being a non-M0 isotope.
 #' @return returns a table to the console listing masses which match, their retention time and intensity, and whether it appears to be plausible as M0
 #' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'mass spectrometry', 'clustering', 'feature', 'xcms'
 #' @author Corey Broeckling
@@ -18,6 +19,7 @@ findmass<-function(
   mz = NULL,
   mztol = 0.02,
   rttol = 2,
+  zmax = 6,
   m.check = TRUE
 ) {
   if(is.null(mz)) {stop("must set 'mz'", '\n')}
@@ -36,19 +38,23 @@ findmass<-function(
     if(m.check) {
       for(i in 1:length(tar)) {
         ## check to see if there is a signal at mz - proton mass with intensity inconsistent with mz  M0 isotope
-        check1<-which((abs(ramclustObj$fmz - mz + 1.0078) <= mztol) & (abs(ramclustObj$frt - ramclustObj$frt[tar[i]]) <= rttol ))
-        if(length(check1)>0) {
+        check <- vector()
+        for(j in 1:zmax) {
+          check1<-which((abs(ramclustObj$fmz - mz + 1.007276) <= mztol) & (abs(ramclustObj$frt - ramclustObj$frt[tar[i]]) <= rttol ))
+          check<-unique(c(check, check1))
+        }
+        if(length(check)>0) {
           negrange <- c(0.5,2)* (ramclustObj$msint[tar[i]]  / ((ramclustObj$fmz[tar[i]] / 17 ) * 0.011))
-          res1<-any(ramclustObj$msint[check1] > negrange[1] & ramclustObj$msint[check1] < negrange[2] )
-        } else {res1 <- FALSE}
+          out[i, "M0_plausible"]<-!any(ramclustObj$msint[check] > negrange[1] & ramclustObj$msint[check] < negrange[2] )
+        } else {out[i, "M0_plausible"] <- TRUE}
         
         ## check to see if there is a signal at mz + proton mass with intensity inconsistent with mz  M0 isotope
-        check2<-which((abs(ramclustObj$fmz - mz - 1.0078) <= mztol) & (abs(ramclustObj$frt - ramclustObj$frt[tar[i]]) <= rttol ))
-        if(length(check1)>0) {
-          posrange <- c(0.5,2)* (ramclustObj$msint[tar[i]]  * ((ramclustObj$fmz[tar[i]] / 17 ) * 0.011))
-          res2<-any(ramclustObj$msint[check2] > negrange[1] & ramclustObj$msint[check2] < negrange[2] )
-        } else {res2 <- FALSE}
-        out[i, "M0_plausible"]<-!any(c(res1, res2))
+        # check2<-which((abs(ramclustObj$fmz - mz - 1.0078) <= mztol) & (abs(ramclustObj$frt - ramclustObj$frt[tar[i]]) <= rttol ))
+        # if(length(check1)>0) {
+        #   posrange <- c(0.5,2)* (ramclustObj$msint[tar[i]]  * ((ramclustObj$fmz[tar[i]] / 17 ) * 0.011))
+        #   res2<-any(ramclustObj$msint[check2] > negrange[1] & ramclustObj$msint[check2] < negrange[2] )
+        # } else {res2 <- FALSE}
+        #out[i, "M0_plausible"]<-!res1
       }
     }
   }

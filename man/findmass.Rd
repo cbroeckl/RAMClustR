@@ -5,25 +5,27 @@
 \title{findmass}
 \usage{
 findmass(ramclustObj = RC, mz = NULL, mztol = 0.02, rttol = 2,
-  m.check = TRUE)
+  zmax = 6, m.check = TRUE)
 }
 \arguments{
-\item{ramclustObj}{- the ramclustR object to explore}
+\item{ramclustObj}{R object: the ramclustR object to explore}
 
-\item{mz}{- numeric mz value to search for}
+\item{mz}{numeric: mz value to search for}
 
-\item{mztol}{- absolute mass tolerance around mz}
+\item{mztol}{numeric: absolute mass tolerance around mz}
 
-\item{rttol}{- when examining isotope patterns, feaure retention time tolerance around features matching mz +- mztol}
+\item{rttol}{numeric: when examining isotope patterns, feaure retention time tolerance around features matching mz +- mztol}
 
-\item{m.check}{- logical - check whether the matching masses are plausibly M0.  Looks for ions above and below the target m/z at the same time that have intensities consistent with target ion being a non-M0 isotope.}
+\item{zmax}{integer: maximum charge state to consider.  default is 6.}
+
+\item{m.check}{logical:  check whether the matching masses are plausibly M0.  That is, we look for ions 1 proton mass (from charge state 1:zmax) below the target m/z at the same time that have intensities consistent with target ion being a non-M0 isotope.}
 }
 \value{
 returns a table to the console listing masses which match, their retention time and intensity, and whether it appears to be plausible as M0
 }
 \description{
 see if any features match a given mass, and whether they are plausibly M0
- @details  a convenience function to perform a targeted search of all feaures for a mass of interest.  Also performs a crude plausibility check as to whether the matched feature could be M0, based on the assumption of approximately 1 carbon per 17 m/z units and natural isottopic abundance of 1.1% 13C
+ @details  a convenience function to perform a targeted search of all feaures for a mass of interest.  Also performs a crude plausibility check as to whether the matched feature could be M0, based on the assumption of approximately 1 carbon per 17 m/z units and natural isottopic abundance of 1.1% 13C.  Note that this function returns the cluster to which the feature is assigned, but that the M0_plausibility is independent of cluster membership.
 }
 \author{
 Corey Broeckling

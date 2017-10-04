@@ -3,6 +3,7 @@
 export(defineExperiment)
 export(do.findmain)
 export(findmass)
+export(import.MSFinder.formulas)
 export(ramclustR)
 export(ramclustR2)
 export(write.single.msp)

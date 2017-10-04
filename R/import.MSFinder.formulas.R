@@ -1,28 +1,72 @@
 #' import.MSFinder.formulas
 #'
 #' After running MSFinder on .mat or .msp files, import the formulas and scores that were predicted
-#' 
+#' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
+#' @param mat.dir optional path to .mat directory
+#' @param msp.dor optional path to .msp directory
+#' @details this function imports the output from the MSFinder program to annotate the ramclustR object
+#' @return an annotated ramclustR object
+#' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
+#' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
+#' @references Tsugawa H, Kind T, Nakabayashi R, Yukihira D, Tanaka W, Cajka T, Saito K, Fiehn O, Arita M. Hydrogen Rearrangement Rules: Computational MS/MS Fragmentation and Structure Elucidation Using MS-FINDER Software. Anal Chem. 2016 Aug 16;88(16):7946-58. doi: 10.1021/acs.analchem.6b00770. Epub 2016 Aug 4. PubMed PMID: 27419259.
+#' @author Corey Broeckling
+#' @export
 
 import.MSFinder.formulas <- function (
   ramclustObj = RC,
   mat.dir = NULL,
-  rt.form.filter = TRUE
+  msp.dir = NULL
 ) {
   
-  if(rt.form.filter) {
-    library(CHNOSZ)
-  }
-    
   if(is.null(mat.dir)) {
     mat.dir = paste0(getwd(), "/spectra/mat")
   }
-  if(!dir.exists(mat.dir)) {
-    stop(paste("there is no directory called:", '\n', getwd()))
+  
+  if(is.null(msp.dir)) {
+    msp.dir = paste0(getwd(), "/spectra/msp")
   }
-
+  
+  usemat = TRUE
+  usemsp = TRUE
+  
+  if(!dir.exists(mat.dir)) {
+    usemat = FALSE
+  }
+  
+  if(!dir.exists(msp.dir)) {
+    usemsp = FALSE
+  }
+  
+  if(!usemsp & !usemat) {
+    stop("neither of these two directories exist: ", '\n',
+         "  ", mat.dir, '\n',
+         "  ", msp.dir, '\n')
+  }
+  
+  if(usemsp & usemat) {
+    msps<-list.files(msp.dir, recursive  = TRUE)
+    mats<-list.files(mat.dir, recursive = TRUE)
+    if(length(mats) > length(msps)) {usemsp <- FALSE}
+    if(length(msps) > length(mats)) {usemat <- FALSE}
+    if(length(msps) == length(mats)) {
+      feedback<-readline(prompt="Press 1 for .mat or 2 for .msp to continue")
+      if(feedback == 1) {usemsp <- FALSE}
+      if(feedback == 2) {usemat <- FALSE}
+    }
+  }
+  
+  mat.dir <- c(mat.dir, msp.dir)[c(usemat, usemsp)]
+  
+  
   do<-list.files(mat.dir, pattern = ".fgt", full.names = TRUE)
   
   cmpd<-gsub(".fgt", "", basename(do))
+  
+  tmp<-readLines(do[[1]])
+  
+  if(grepl("Spectral DB search", tmp[2])) {
+    stop("these MSFinder contain only spectral search results; please use 'import.MSFinder.search' function instead", '\n')
+  }
   
   tags<-c(
     "NAME: ",
@@ -55,7 +99,7 @@ import.MSFinder.formulas <- function (
   msfinder.formula<-as.list(rep(NA, length(ramclustObj$cmpd)))
   names(msfinder.formula)<-ramclustObj$cmpd
   
-  
+  tmp<-readLines(do[[i]])
   
   for(i in 1:length(do)) {
     tmp<-readLines(do[[i]])
@@ -86,41 +130,26 @@ import.MSFinder.formulas <- function (
     msfinder.formula[[cmpd[i]]]<-out
   }
   
-  if(rt.form.filter) {
-    df<-data.frame(
-      'cmpd' = rep(ramclustObj$cmpd[1], nrow(msfinder.formula[[1]])),
-      'rt' = rep(ramclustObj$clrt[1], nrow(msfinder.formula[[1]])), 
-      msfinder.formula[[1]], stringsAsFactors = FALSE, check.names = FALSE)
-    for(i in 2:length(msfinder.formula)) {
-      tmp<-data.frame(
-        'cmpd' = rep(ramclustObj$cmpd[i], nrow(msfinder.formula[[i]])),
-        'rt' = rep(ramclustObj$clrt[i], nrow(msfinder.formula[[i]])), 
-        msfinder.formula[[i]], stringsAsFactors = FALSE, check.names = FALSE)
-      df<-rbind(df, tmp, deparse.level = 1)
+  ramclustObj$msfinder.formula<-sapply(1:length(msfinder.formula), FUN = function(x) {
+    if(nrow(msfinder.formula[[x]])>0) {
+      msfinder.formula[[x]][1,"name"]
+    } else {
+      NA
     }
-    df<-as.data.frame(df, stringsAsFactors = FALSE, check.names = FALSE)
-    makes<-lapply(df$name, FUN = makeup)
-    elemnames<-unique(names(unlist(makes)))
-    elems<-matrix(ncol = length(elemnames), nrow = length(makes))
-    elems[,]<-0
-    dimnames(elems)[[2]]<-elemnames
-    for(i in 1:length(makes)) {
-      elems[i,names(makes[[i]])]<-makes[[i]]
-    }
-    dbe<-elems[,"C"] - (elems[,"H"]/2) + (elems[,"N"]/2) + 1
-    O<-elems[,"O"] 
-    rt<-df$rt
-    wt<-as.numeric(df$totalscore)
-    plot(rt, O, pch = 19, cex = 0.1*wt)
-    fit<-lm(rt~ dbe + elems +I(dbe^2) + I(elems^2) , weights = wt^10); summary(fit)
-    anova(fit)
-    summary(fit)
-    predrt<-predict(fit)
-    plot(rt, predrt, pch = 19, cex= 0.4, col = 4)
-    abline(smooth.spline(predrt~rt))
   }
+  )
+  
+  ramclustObj$msfinder.formula.score<-as.numeric(sapply(1:length(msfinder.formula), FUN = function(x) {
+    if(nrow(msfinder.formula[[x]])>0) {
+      msfinder.formula[[x]][1,"totalscore"]
+    } else {
+      NA
+    }
+  }
+  ))
+  
+  ramclustObj$msfinder.formula.details<-msfinder.formula
 
-  ramclustObj$msfinder.formula<-msfinder.formula
-
+  return(ramclustObj)
   
 }

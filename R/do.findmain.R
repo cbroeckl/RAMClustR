@@ -39,11 +39,23 @@ do.findmain <- function (ramclustObj = RC, cmpd = NULL, mode = "positive", mzabs
 {
   require(InterpretMSSpectrum)
   if (is.null(ads)) {
-    ads <- c("[M+H]+", "[M+Na]+", "[M+K]+", "[M+NH4]+", "[2M+H]+", 
-             "[2M+Na]+", "[2M+K]+", "[2M+NH4]+", "[3M+H]+", "[3M+Na]+", 
-             "[3M+K]+", "[3M+NH4]+")
+    if (grepl("p", mode)) {
+      ads <- c("[M+H]+", "[M+Na]+", "[M+K]+", "[M+NH4]+", "[2M+H]+", 
+               "[2M+Na]+", "[2M+K]+", "[2M+NH4]+", "[3M+H]+", "[3M+Na]+", 
+               "[3M+K]+", "[3M+NH4]+")
+    }
+    if(grepl("n", mode)) {
+      ads <- c("[M-H]-", "[M+Na-2H]-", "[M+K-2H]-", "[M+CH2O2- H]-",
+               "[2M-H]-", "[2M+Na-2H]-", "[2M+K-2H]-", "[2M+CH2O2- H]-",
+               "[3M-H]-", "[3M+Na-2H]-", "[3M+K-2H]-", "[3M+CH2O2- H]-")
+    }
+    if(is.null(ads)) {
+      stop("please define adducts using 'ads' or set mode to either'positive' or 'negative'")
+    }
+
   }
   if (is.null(nls)) {
+    if (grepl("p", mode)) {
     nls <- c("[M+H-NH3]+", "[M+H-H2O]+", "[M+H-COCH2]+", 
              "[M+H-CO2]+", "[M+H-NH3-CO2]+", "[M+H-NH3-HCOOH]+", 
              "[M+H-NH3-H2O]+", "[M+H-NH3-COCH2]+", "[M+H-S]+", 
@@ -75,6 +87,43 @@ do.findmain <- function (ramclustObj = RC, cmpd = NULL, mode = "positive", mzabs
              "[M+H-(H2O)3-CO]+", "[M+H-C6H13NO2]+", "[M+H-C5H11NO2]+", 
              "[M+H-CH3S]+", "[M+H-C8H8O2]+", "[M+H-C12H22O11]+", 
              "[M+H-C12H24O12]+", "[M+H-C12H20O10]+")
+    }
+    if (grepl("n", mode)) {
+      nls <- c("[M-H-NH3]-", "[M-H-H2O]-", "[M-H-COCH2]-", 
+               "[M-H-CO2]-", "[M-H-NH3-CO2]-", "[M-H-NH3-HCOOH]-", 
+               "[M-H-NH3-H2O]-", "[M-H-NH3-COCH2]-", "[M-H-S]-", 
+               "[M-H-S-NH3-HCOOH]-", "[M-H-H4O2]-", "[M-H-CH2]-", 
+               "[M-H-O]-", "[M-H-C2H2]-", "[M-H-C2H4]-", "[M-H-CO]-", 
+               "[M-H-C3H6]-", "[M-H-C2H4O]-", "[M-H-C4H6]-", "[M-H-C3H4O]-", 
+               "[M-H-C4H8]-", "[M-H-C5H8]-", "[M-H-C4H6O]-", "[M-H-C5H10]-", 
+               "[M-H-C6H12]-", "[M-H-C4H8O2]-", "[M-H-H2O-HCOOH]-", 
+               "[M-H-CH4]-", "[M-H-CH2O]-", "[M-H-C2H6]-", "[M-H-CH3OH]-", 
+               "[M-H-C3H4]-", "[M-H-C3H6O]-", "[M-H-CO2-C3H6]-", 
+               "[M-H-SO3]-", "[M-H-SO3-H2O]-", "[M-H-SO3-H2O-NH3]-", 
+               "[M-H-NH3-C3H4]-", "[M-H-H2O-CO2]-", "[M-H-H2O-H2O-C2H4O]-", 
+               "[M-H-NH3-CO-CO]-", "[M-H-NH3-CO-COCH2]-", "[M-H-C8H6O]-", 
+               "[M-H-C8H6O-NH3]-", "[M-H-C8H6O-H2O]-", "[M-H-C2H2O2]-", 
+               "[M-H-C2H4O2]-", "[M-H-C5H8O]-", "[M-H-NH3-CO2-CH2O]-", 
+               "[M-H-NH3-CO2-NH3-H2O]-", "[M-H-NH3-CO2-C3H4O]-", 
+               "[M-H-NH3-CO2-C5H8]-", "[M-H-HCOOH-HCOOH]-", "[M-H-C2H4-CO2]-", 
+               "[M-H-C2H4-HCOOH]-", "[M-H-NH3-H2O-H2O]-", "[M-H-H2O-C2H2O2]-", 
+               "[M-H-COCH2-C4H8]-", "[M-H-NH3-NH3-C3H4]-", "[M-H-C2H4O2-CH3OH]-", 
+               "[M-H-C3H6O-CH3OH]-", "[M-H-NH3-CO-COCH2-C4H6O]-", 
+               "[M-H-C4H6-H2O]-", "[M-H-C4H6-C2H4]-", "[M-H-C4H6-NH3-H2O]-", 
+               "[M-H-C4H6-COCH2]-", "[M-H-C4H6-C4H6O]-", "[M-H-C3H4O-C4H6]-", 
+               "[M-H-C3H4O-C4H8O2]-", "[M-H-C4H8-C4H6]-", "[M-H-NH3-HCOOH-CH3OH]-", 
+               "[M-H-NH3-C2H6]-", "[M-H-NH3-C8H6O-CH2]-", "[M-H-NH3-C3H4-COCH2]-", 
+               "[M-H-C3H9N]-", "[M-H-C3H9N-C2H4O2]-", "[M-H-C6H10O7]-", 
+               "[M-H-C6H10O7+H2O]-", "[M-H-C6H10O7-(H2O)2]-", "[M-H-C6H12O6]-", 
+               "[M-H-C6H12O6+H2O]-", "[M-H-C6H12O6-H2O]-", "[M-H-C5H10O5]-", 
+               "[M-H- C5H10O5+H2O]-", "[M-H- C5H10O5-H2O]-", "[M-H-C2H8NO4P]-", 
+               "[M-H-(H2O)3-CO]-", "[M-H-C6H13NO2]-", "[M-H-C5H11NO2]-", 
+               "[M-H-CH3S]-", "[M-H-C8H8O2]-", "[M-H-C12H22O11]-", 
+               "[M-H-C12H24O12]-", "[M-H-C12H20O10]-")
+    }
+    if(is.null(nls)) {
+      stop("please define neutral losses using 'nls' or set mode to either'positive' or 'negative'")
+    }
   }
   if (length(adwts) > 0) {
     if (length(adwts) != length(ads)) {

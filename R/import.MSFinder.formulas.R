@@ -96,15 +96,26 @@ import.MSFinder.formulas <- function (
   )
   names(tags)<-tolower(gsub(": ", "", tags))
   
+  fill<-matrix(nrow = 0, ncol = length(tags))
+  dimnames(fill)[[2]]<-names(tags)
+  data.frame(fill, check.names = FALSE, stringsAsFactors = FALSE)
+  
   msfinder.formula<-as.list(rep(NA, length(ramclustObj$cmpd)))
   names(msfinder.formula)<-ramclustObj$cmpd
   
-  tmp<-readLines(do[[i]])
   
   for(i in 1:length(do)) {
     tmp<-readLines(do[[i]])
     starts <- grep("NAME: ", tmp)
-    stops <- c(((starts[2:length(starts)])-1), (length(tmp)-1))
+    if(length(starts) < 1) {
+      msfinder.formula[[cmpd[i]]]<- fill
+      next
+    }
+    if(length(starts) > 1) {
+      stops <- c(((starts[2:length(starts)])-1), (length(tmp)-1))
+    } else {
+      stops <- length(tmp)-1
+    }
     out<-matrix(nrow = length(starts), ncol = length(tags))
     dimnames(out)[[2]]<-names(tags)
     for(j in 1:length(starts)) {
@@ -124,13 +135,18 @@ import.MSFinder.formulas <- function (
       out[j,]<-vals
     }
     out<-data.frame(out, check.names = FALSE, stringsAsFactors = FALSE)
-    if(any(out$name == "Spectral DB search")) {
-      out <- out[-grep("Spectral DB search", out$name),]
+    if(any(out[,"name"] == "Spectral DB search")) {
+      out <- out[-grep("Spectral DB search", out[,"name"]), ,drop = FALSE]
     }
-    msfinder.formula[[cmpd[i]]]<-out
+    if(nrow(out) == 0) {
+      msfinder.formula[[cmpd[i]]]<-fill
+    } else {
+      msfinder.formula[[cmpd[i]]]<-out
+    }
   }
   
   ramclustObj$msfinder.formula<-sapply(1:length(msfinder.formula), FUN = function(x) {
+    # for (x in 1:length( msfinder.formula)) {
     if(nrow(msfinder.formula[[x]])>0) {
       msfinder.formula[[x]][1,"name"]
     } else {
@@ -149,7 +165,7 @@ import.MSFinder.formulas <- function (
   ))
   
   ramclustObj$msfinder.formula.details<-msfinder.formula
-
+  
   return(ramclustObj)
   
 }

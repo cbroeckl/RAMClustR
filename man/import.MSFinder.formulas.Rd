@@ -32,3 +32,12 @@ Tsugawa H, Kind T, Nakabayashi R, Yukihira D, Tanaka W, Cajka T, Saito K, Fiehn 
 \author{
 Corey Broeckling
 }
+\keyword{'RAMClustR',}
+\keyword{'clustering',}
+\keyword{'feature',}
+\keyword{'mass}
+\keyword{'metabolomics',}
+\keyword{'ramclustR'}
+\keyword{'ramclustR',}
+\keyword{'xcms'}
+\keyword{spectrometry',}

@@ -2,6 +2,7 @@
 
 export(defineExperiment)
 export(do.findmain)
+export(do.msfinder.formula)
 export(findmass)
 export(import.MSFinder.formulas)
 export(import.MSFinder.structures)

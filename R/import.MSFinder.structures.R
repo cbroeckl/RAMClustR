@@ -113,6 +113,23 @@ import.MSFinder.structures <- function (
   msfinder.structure<-as.list(rep("", length(ramclustObj$cmpd)))
   names(msfinder.structure)<-ramclustObj$cmpd
   
+  fillfrag<-structure(list(`M/Z` = character(0), Intensity = character(0), 
+                           MatchedExactMass = character(0), SaturatedExactMass = character(0), 
+                           Formula = character(0), RearrangedHydrogen = character(0), 
+                           PPM = character(0), MassDiff_mDa = character(0), IsEvenElectronRule = character(0), 
+                           IsHrRule = character(0), IsSolventAdductFragment = character(0), 
+                           AssignedAdductMass = character(0), AdductString = character(0), 
+                           BondDissociationEnergy = character(0), TreeDepth = character(0), 
+                           SMILES = character(0), TotalScore = character(0), HrLikelihood = character(0), 
+                           BcLikelihood = character(0), MaLikelihood = character(0), 
+                           FlLikelihood = character(0), BeLikelihood = character(0)), .Names = c("M/Z", 
+                                                                                                 "Intensity", "MatchedExactMass", "SaturatedExactMass", "Formula", 
+                                                                                                 "RearrangedHydrogen", "PPM", "MassDiff_mDa", "IsEvenElectronRule", 
+                                                                                                 "IsHrRule", "IsSolventAdductFragment", "AssignedAdductMass", 
+                                                                                                 "AdductString", "BondDissociationEnergy", "TreeDepth", "SMILES", 
+                                                                                                 "TotalScore", "HrLikelihood", "BcLikelihood", "MaLikelihood", 
+                                                                                                 "FlLikelihood", "BeLikelihood"), row.names = integer(0), class = "data.frame")
+  
   for(i in 1:length(do)) {
     setwd(paste0(mat.dir, "/", do[i]))
     res<-list.files(pattern = ".sfd")
@@ -179,7 +196,7 @@ import.MSFinder.structures <- function (
             fragdat = fragdat[1:(length(fragdat)-1)]
           }
           if(length(fragdat)==1) {
-            fragments[[k]] <- NULL
+            fragments[[k]] <- fillfrag
             next
           }
           fragdat<-lapply(1:length(fragdat), FUN = function(x) {unlist(strsplit(fragdat[x], "\t")) })
@@ -199,8 +216,6 @@ import.MSFinder.structures <- function (
     msfinder.structure[[do[i]]]<-structures
     setwd(mat.dir)
   }
-  
-  ## need to fix below!!!
   
   ramclustObj$msfinder.structure.details<-msfinder.structure
   

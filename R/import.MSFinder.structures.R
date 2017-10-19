@@ -15,11 +15,11 @@
 #' @return - msfinder.structure$details: list containing the best structure match for all formulas.  Each list element represents one formula (with the formula as the name), and is composed of a list:
 #' @return    - structures: table of most likely structures
 #' @return    - fragments: list of data frames, with one element for each from from 'structures'.  names are assigned based on 'id' column from structures.   
-#' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'mass spectrometry', 'clustering', 'feature', 'xcms'
+#' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'mass spectrometry', 'clustering', 'feature', 'xcms', 'MSFinder'
 #' @author Corey Broeckling
 #' @export
 
-import.MSFinder.structures <- function (
+import.msfinder.structures <- function (
   ramclustObj = RC,
   mat.dir = NULL,
   msp.dir = NULL,

@@ -5,11 +5,11 @@
 #' @param mat.dir by default, ramclustR will look in the working directory for a spectra/mat or spectra/msp subdirectory.  Else specify the path here for mat formatted spectra (all spectra in directory will be used)
 #' @param msp.idr by default, ramclustR will look in the working directory for a spectra/mat or spectra/msp subdirectory.  Else specify the path here for msp formatted spectra (all spectra in directory will be used)
 #' @details calls the 'MsfinderConsoleApp.exe' 'predict' program.  Ensure before calling that you have set appropriate parameters in the 'MSFINDER.INI' file
-#' @return nothing is returned.  data can be imported using the import.MSFinder.formulas() and import.MSFinder.formulas.R(structure) commands after processing has finished
+#' @return nothing is returned.  data can be imported using the import.MSFinder.formulas() and import.MSFinder.structure() commands after processing has finished
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
 #' @references Tsugawa H, Kind T, Nakabayashi R, Yukihira D, Tanaka W, Cajka T, Saito K, Fiehn O, Arita M. Hydrogen Rearrangement Rules: Computational MS/MS Fragmentation and Structure Elucidation Using MS-FINDER Software. Anal Chem. 2016 Aug 16;88(16):7946-58. doi: 10.1021/acs.analchem.6b00770. Epub 2016 Aug 4. PubMed PMID: 27419259.
-#' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'mass spectrometry', 'clustering', 'feature', 'xcms'
+#' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'mass spectrometry', 'clustering', 'feature', 'xcms', 'MSFinder'
 #' @author Corey Broeckling
 #' @export
 #' 

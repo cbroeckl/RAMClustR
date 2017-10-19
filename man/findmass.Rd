@@ -25,11 +25,14 @@ returns a table to the console listing masses which match, their retention time 
 }
 \description{
 see if any features match a given mass, and whether they are plausibly M0
- @details  a convenience function to perform a targeted search of all feaures for a mass of interest.  Also performs a crude plausibility check as to whether the matched feature could be M0, based on the assumption of approximately 1 carbon per 17 m/z units and natural isottopic abundance of 1.1% 13C.  Note that this function returns the cluster to which the feature is assigned, but that the M0_plausibility is independent of cluster membership.
+}
+\details{
+a convenience function to perform a targeted search of all feaures for a mass of interest.  Also performs a crude plausibility check as to whether the matched feature could be M0, based on the assumption of approximately 1 carbon per 17 m/z units and natural isottopic abundance of 1.1% 13C.  Note that this function returns the cluster to which the feature is assigned, but that the M0_plausibility is independent of cluster membership.
 }
 \author{
 Corey Broeckling
 }
+\keyword{'MSFinder'}
 \keyword{'RAMClustR',}
 \keyword{'clustering',}
 \keyword{'feature',}
@@ -37,5 +40,5 @@ Corey Broeckling
 \keyword{'metabolomics',}
 \keyword{'ramclustR'}
 \keyword{'ramclustR',}
-\keyword{'xcms'}
+\keyword{'xcms',}
 \keyword{spectrometry',}

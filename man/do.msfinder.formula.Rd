@@ -16,7 +16,7 @@
 \item{msp.idr}{by default, ramclustR will look in the working directory for a spectra/mat or spectra/msp subdirectory.  Else specify the path here for msp formatted spectra (all spectra in directory will be used)}
 }
 \value{
-nothing is returned.  data can be imported using the import.MSFinder.formulas() and import.MSFinder.formulas.R(structure) commands after processing has finished
+nothing is returned.  data can be imported using the import.MSFinder.formulas() and import.MSFinder.structure() commands after processing has finished
 }
 \description{
 Call MSFinder from R.  Currently requires clunky pasting into cmd prompt.
@@ -34,6 +34,7 @@ Tsugawa H, Kind T, Nakabayashi R, Yukihira D, Tanaka W, Cajka T, Saito K, Fiehn 
 \author{
 Corey Broeckling
 }
+\keyword{'MSFinder'}
 \keyword{'RAMClustR',}
 \keyword{'clustering',}
 \keyword{'feature',}
@@ -41,5 +42,5 @@ Corey Broeckling
 \keyword{'metabolomics',}
 \keyword{'ramclustR'}
 \keyword{'ramclustR',}
-\keyword{'xcms'}
+\keyword{'xcms',}
 \keyword{spectrometry',}

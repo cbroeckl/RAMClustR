@@ -1,4 +1,4 @@
-#' import.MSFinder.formulas
+#' import.MSFinder.mssearch
 #'
 #' After running MSFinder on .mat or .msp files, import the spectral search results
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
@@ -13,7 +13,7 @@
 #' @author Corey Broeckling
 #' @export 
 
-import.msfinder.search <- function (
+import.msfinder.mssearch <- function (
   ramclustObj = RC,
   standardize.names = TRUE,
   mat.dir = NULL,

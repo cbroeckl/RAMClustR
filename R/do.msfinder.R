@@ -1,23 +1,29 @@
-#' do.msfinder.formula
+#' do.msfinder
 #'
 #' Call MSFinder from R.  Currently requires clunky pasting into cmd prompt.  
 #' @param msfinder.dir full path to the directory containing the MSFinderConsoleApp exe file
+#' @param which.function character - one of "predict" or "mssearch" - see MSFinder console application description for details
 #' @param mat.dir by default, ramclustR will look in the working directory for a spectra/mat or spectra/msp subdirectory.  Else specify the path here for mat formatted spectra (all spectra in directory will be used)
 #' @param msp.idr by default, ramclustR will look in the working directory for a spectra/mat or spectra/msp subdirectory.  Else specify the path here for msp formatted spectra (all spectra in directory will be used)
 #' @details calls the 'MsfinderConsoleApp.exe' 'predict' program.  Ensure before calling that you have set appropriate parameters in the 'MSFINDER.INI' file
-#' @return nothing is returned.  data can be imported using the import.MSFinder.formulas() and import.MSFinder.structure() commands after processing has finished
+#' @return nothing is returned.  All output is saved by MSFinder in the relevent mat or msp directory.  Data can be imported using the import.msfinder.formulas() and import.msfinder.structure() commands after processing has finished
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
 #' @references Tsugawa H, Kind T, Nakabayashi R, Yukihira D, Tanaka W, Cajka T, Saito K, Fiehn O, Arita M. Hydrogen Rearrangement Rules: Computational MS/MS Fragmentation and Structure Elucidation Using MS-FINDER Software. Anal Chem. 2016 Aug 16;88(16):7946-58. doi: 10.1021/acs.analchem.6b00770. Epub 2016 Aug 4. PubMed PMID: 27419259.
 #' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'mass spectrometry', 'clustering', 'feature', 'xcms', 'MSFinder'
 #' @author Corey Broeckling
-#' @export
+#' @export 
 #' 
-do.msfinder.formula <- function(
+do.msfinder <- function(
   msfinder.dir = "K:/software/MSFinder/MS-FINDER program ver. 2.20",
+  which.function = "predict",
   mat.dir = NULL,
   msp.dir = NULL
 ) {
+  
+  if(! any (which.function %in% c("predict", "mssearch"))) {
+    cat("'", which.function, "'", "is not a valid MSFinder console option", '\n', "please select one of 'predict' or 'mssearch'")
+  }
   
   if(is.null(msfinder.dir)) {
     choose.dir(caption = "Select directory containing MS-Finder program")
@@ -68,7 +74,8 @@ do.msfinder.formula <- function(
   # THIS WORKS if you copy the full string from the 'cmd.txt' file and paste into cmd console
   cmdString<-paste(
     paste0('"', normalizePath( paste0(msfinder.dir, "/", progname), winslash="\\"), '"'),
-    "predict -i",
+    which.function,
+    "-i",
     paste0('"', normalizePath(mat.dir, winslash = "\\"), '"'),
     "-o",
     paste0('"', normalizePath(mat.dir, winslash = "\\"), '"'),

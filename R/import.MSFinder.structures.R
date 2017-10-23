@@ -1,6 +1,6 @@
 #' import.MSFinder.structures
 #'
-#' After running MSFinder on .mat or .msp files, import the structure and scores that were predicted
+#' After running MSFinder on .mat or .msp files, import the structure that were predicted and their scores 
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param mat.dir optional path to .mat directory
 #' @param msp.dor optional path to .msp directory

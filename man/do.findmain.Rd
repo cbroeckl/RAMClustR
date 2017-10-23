@@ -29,7 +29,7 @@ do.findmain(ramclustObj = RC, cmpd = NULL, mode = "positive",
 
 \item{plot.findmain}{logical: should pdf polts be generated for evaluation?}
 
-\item{writeMat}{logical: should indidual .mat files (for MSFinder) be generated in a 'mat' subdirectory in the 'spectra' folder?}
+\item{writeMat}{logical: should indidual .mat files (for MSFinder) be generated in a 'mat' subdirectory in the 'spectra' folder? default = TRUE.}
 }
 \value{
 $M:  The inferred molecular weight of the compound giving rise to the each spectrum
@@ -56,7 +56,7 @@ $M.ann.findmain:  annotated spectrum supporing M using findmain scoring
 Cluster annotation function: inference of 'M' - molecular weight of the compound giving rise to each spectrum - using the InterpretMSSpectrum::findMain function
 }
 \details{
-a partially annotated ramclustR object.  base structure is that of a standard R heirarchical clustering output, with additional slots described in ramclustR documentation (?ramclustR).  New slots added after using the interpretMSSpectrum functionality include those described below.
+a partially annotated ramclustR object.  base structure is that of a standard R heirarchical clustering output, with additional slots described in ramclustR documentation (?ramclustR).  New slots added after using the interpretMSSpectrum functionality include those described below. .mat files written in new directory 'spectra/mat' in working directory
 }
 \references{
 Jaeger C, Méret M, Schmitt CA, Lisec J. Compound annotation in liquid chromatography/high-resolution mass spectrometry based metabolomics: robust adduct ion determination as a prerequisite to structure prediction in electrospray ionization mass spectra. Rapid Commun Mass Spectrom. 2017 Aug 15;31(15):1261-1266. doi: 10.1002/rcm.7905. PubMed PMID: 28499062.

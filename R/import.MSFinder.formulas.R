@@ -19,6 +19,8 @@ import.msfinder.formulas <- function (
   msp.dir = NULL
 ) {
   
+  home.dir <-getwd()
+  
   if(is.null(mat.dir)) {
     mat.dir = paste0(getwd(), "/spectra/mat")
   }
@@ -166,6 +168,8 @@ import.msfinder.formulas <- function (
   ))
   
   ramclustObj$msfinder.formula.details<-msfinder.formula
+  
+  setwd(home.dir)
   
   return(ramclustObj)
   

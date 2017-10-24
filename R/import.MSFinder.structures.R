@@ -26,6 +26,8 @@ import.msfinder.structures <- function (
   MSFinder.dir = "C:\\MSFinder\\MS-FINDER_2.20"
 ) {
   
+  home.dir <-getwd()
+  
   if(is.null(ramclustObj$msfinder.formula)) {
     warning("trying to run 'import.MSFinder.formulas' first")
     ramclustObj<-import.MSFinder.formulas(ramclustObj = RC, mat.dir = NULL, msp.dir = NULL)
@@ -240,6 +242,8 @@ import.msfinder.structures <- function (
     }
   }
   )
+  
+  setwd(home.dir)
   
   return(ramclustObj)
   

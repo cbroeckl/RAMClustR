@@ -17,7 +17,8 @@
 
 annotate<-function(ramclustObj = RC,
                             msfinder.dir = "K:/software/MSFinder/MS-FINDER program ver. 2.20",
-                            standardize.names = TRUE
+                            standardize.names = TRUE,
+                            delay.time = 0.5
                             ) {
   
   if(!dir.exists(msfinder.dir)) {
@@ -123,6 +124,7 @@ annotate<-function(ramclustObj = RC,
     cat("using chemical translation service - requires interet access and may take a few minutes to complete", '\n')
     require(jsonlite)
     for(i in 1:length(ramclustObj$ann)) {
+       Sys.sleep(delay.time)
       if(!is.na(ramclustObj$inchikey[i])) {
         link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/convert/InChIKey/Chemical%20Name/", ramclustObj$inchikey[i])
         suppressWarnings(out<-readLines(link))

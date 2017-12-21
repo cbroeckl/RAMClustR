@@ -4,7 +4,7 @@
 \alias{get.synonyms}
 \title{get.synonyms()}
 \usage{
-get.synonyms(ramclustObj = RC)
+get.synonyms(ramclustObj = RC, delay.time = 0.5)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}

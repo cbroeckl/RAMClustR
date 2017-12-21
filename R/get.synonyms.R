@@ -31,8 +31,10 @@ get.synonyms<-function(ramclustObj = RC,
       link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/synonyms/", ramclustObj$inchikey[i])
       suppressWarnings(out<-readLines(link))
       syns<-unlist(fromJSON(out))
-      syns<-syns[order(nchar(syns))]
-      synonyms[[i]] <- syns
+      if(!is.null(syns)) {
+        syns <- syns[order(nchar(syns))]
+        synonyms[[i]] <- syns
+      }
     }
   }
   

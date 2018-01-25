@@ -216,7 +216,7 @@ ramclustR<- function(  xcmsObj=NULL,
   
   
   ########
-  # ensure that we have all numeric values in the dataset. 
+  # ensure that we have all numeric non-zero values in the dataset. 
   # uses a noise addition 'jitter' around minimum values with missing data points.
   # this is mostly necessary for csv input, where other programs may not have used a 'fillPeaks' like step
   rpl1<-unique(c(which(is.na(data1)), which(is.nan(data1)), which(is.infinite(data1)), which(data1==0)))
@@ -236,8 +236,12 @@ ramclustR<- function(  xcmsObj=NULL,
     data2<-(data2/rowSums(data2))*mean(rowSums(data2), na.rm=TRUE)
   }
   if(normalize=="quantile") {
+    tmpnames1<-dimnames(data1)
+    tmpnames2<-dimnames(data2)
     data1<-t(preprocessCore::normalize.quantiles(t(data1)))
-    data2<-t(preprocessCore::normalize.quantiles(t(data2)))	
+    data2<-t(preprocessCore::normalize.quantiles(t(data2)))
+    dimnames(data1)<-tmpnames1
+    dimnames(data2)<-tmpnames2
   }
   
   ########
@@ -454,6 +458,7 @@ ramclustR<- function(  xcmsObj=NULL,
       }
     }
     dimnames(ramclustObj$SpecAbund)[[2]]<-ramclustObj$cmpd
+    if(!is.null(ms)) {dimnames(ramclustObj$SpecAbund)[[1]]<-tmpnames1[[1]]}
     if(!usePheno | is.null(xcmsObj)) {dimnames(ramclustObj$SpecAbund)[[1]]<-dimnames(ramclustObj$MSdata)[[1]]} 
     if(usePheno & !is.null(xcmsObj)) {dimnames(ramclustObj$SpecAbund)[[1]]<-as.vector(xcmsObj@phenoData[,1])[msfiles]}
     g<-Sys.time()

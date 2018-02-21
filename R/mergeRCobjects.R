@@ -226,10 +226,10 @@ mergeRCobjects <- function(
   
   newRC$pred.frt2 <- pred.frt
   newRC$frt2 <- rep(NA, length(newRC$frt))
-  newRC$frt2[map[!is.na(map)]] <- ramclustObj.2$frt[!is.na(map)]
+  newRC$frt2[!is.na(map)] <- ramclustObj.2$frt[map[!is.na(map)]]
   
   newRC$fmz2 <- rep(NA, length(newRC$frt))
-  newRC$fmz2[map[!is.na(map)]] <- ramclustObj.2$fmz[!is.na(map)]
+  newRC$fmz2[!is.na(map)] <- ramclustObj.2$fmz[map[!is.na(map)]]
   
   cat(" --   finished", '\n' )
   

@@ -14,49 +14,52 @@
 #' @author Corey Broeckling
 #' @export
 
-findmass<-function(
-  ramclustObj = RC,
-  mz = NULL,
-  mztol = 0.02,
-  rttol = 2,
-  zmax = 6,
-  m.check = TRUE
-) {
-  if(is.null(mz)) {stop("must set 'mz'", '\n')}
-  if(is.null(mztol)) {stop("must set 'mztol'", '\n')}
-  tar<-which(abs(ramclustObj$fmz - mz) <= mztol)
-  if(length (tar)==0) {
-    stop("no masses found within", mztol, "mz units of", mz, '\n')
-  } else {
-    out<-data.frame("featn" = tar, 
-                    "featclus" = ramclustObj$featclus[tar],
-                    "mz" = ramclustObj$fmz[tar],
-                    "rt" = ramclustObj$frt[tar],
-                    "int" = ramclustObj$msint[tar],
-                    "M0_plausible" = rep(NA, length(tar))
-                    )
-    if(m.check) {
-      for(i in 1:length(tar)) {
-        ## check to see if there is a signal at mz - proton mass with intensity inconsistent with mz  M0 isotope
+findmass <- function (ramclustObj = RC, 
+                      mz = NULL, 
+                      mztol = 0.02, 
+                      rttol = 2, 
+                      zmax = 6, 
+                      m.check = TRUE) 
+{
+  if (is.null(mz)) {
+    stop("must set 'mz'", "\n")
+  }
+  if (is.null(mztol)) {
+    stop("must set 'mztol'", "\n")
+  }
+  tar <- which(abs(ramclustObj$fmz - mz) <= mztol)
+  if (length(tar) == 0) {
+    out <- data.frame(featn = NA, featclus = NA, 
+                      mz = NA, rt = NA, 
+                      int = NA, M0_plausible = NA)
+    out<-out[0,]
+  }
+  else {
+    out <- data.frame(featn = tar, featclus = ramclustObj$featclus[tar], 
+                      mz = ramclustObj$fmz[tar], rt = ramclustObj$frt[tar], 
+                      int = ramclustObj$msint[tar], M0_plausible = rep(NA, 
+                                                                       length(tar)))
+    if (m.check) {
+      for (i in 1:length(tar)) {
         check <- vector()
-        for(j in 1:zmax) {
-          check1<-which((abs(ramclustObj$fmz - mz + 1.007276) <= mztol) & (abs(ramclustObj$frt - ramclustObj$frt[tar[i]]) <= rttol ))
-          check<-unique(c(check, check1))
+        for (j in 1:zmax) {
+          check1 <- which((abs(ramclustObj$fmz - mz + 
+                                 1.007276) <= mztol) & (abs(ramclustObj$frt - 
+                                                              ramclustObj$frt[tar[i]]) <= rttol))
+          check <- unique(c(check, check1))
         }
-        if(length(check)>0) {
-          negrange <- c(0.5,2)* (ramclustObj$msint[tar[i]]  / ((ramclustObj$fmz[tar[i]] / 17 ) * 0.011))
-          out[i, "M0_plausible"]<-!any(ramclustObj$msint[check] > negrange[1] & ramclustObj$msint[check] < negrange[2] )
-        } else {out[i, "M0_plausible"] <- TRUE}
-        
-        ## check to see if there is a signal at mz + proton mass with intensity inconsistent with mz  M0 isotope
-        # check2<-which((abs(ramclustObj$fmz - mz - 1.0078) <= mztol) & (abs(ramclustObj$frt - ramclustObj$frt[tar[i]]) <= rttol ))
-        # if(length(check1)>0) {
-        #   posrange <- c(0.5,2)* (ramclustObj$msint[tar[i]]  * ((ramclustObj$fmz[tar[i]] / 17 ) * 0.011))
-        #   res2<-any(ramclustObj$msint[check2] > negrange[1] & ramclustObj$msint[check2] < negrange[2] )
-        # } else {res2 <- FALSE}
-        #out[i, "M0_plausible"]<-!res1
+        if (length(check) > 0) {
+          negrange <- c(0.5, 2) * (ramclustObj$msint[tar[i]]/((ramclustObj$fmz[tar[i]]/17) * 
+                                                                0.011))
+          out[i, "M0_plausible"] <- !any(ramclustObj$msint[check] > 
+                                           negrange[1] & ramclustObj$msint[check] < 
+                                           negrange[2])
+        }
+        else {
+          out[i, "M0_plausible"] <- TRUE
+        }
       }
     }
   }
-  print(out)
+  return(out)
 }

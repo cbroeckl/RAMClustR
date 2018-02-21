@@ -215,6 +215,7 @@ mergeRCobjects <- function(
         newRC$SpecAbund[(ro + nrow(ramclustObj.1$MSdata)), co] <- weighted.mean(ramclustObj.2$MSdata[ro, which(map == co)], 
                                                                                 wts[which(map ==  co)])
       } else {
+        cat(co, " ")
         newRC$SpecAbund[(ro + nrow(ramclustObj.1$MSdata)), co] <- 0
       }
       

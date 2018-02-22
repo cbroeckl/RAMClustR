@@ -67,8 +67,8 @@ mergeRCobjects <- function(
   ## map the most selective features across the two ramclustObjects
   
   map<-rep(NA, length(newRC$frt))
-  if(length(map) > 4000) {qu <- 4}
-  if(length(map) > 1000 & length(map) <= 3999) {qu <- 3}
+  if(length(map) > 8000) {qu <- 4}
+  if(length(map) > 2000 & length(map) <= 7999) {qu <- 3}
   if(length(map) < 1000) {qu <- 2}
   marks<-which(sel.score >= quantile(sel.score)[[qu]])
   for(i in marks) {
@@ -103,7 +103,7 @@ mergeRCobjects <- function(
   }
   keep<-which(!is.na(map))
   if(length(keep) < 500) {
-    warning('fewer than 500 matching features: use output with caution', '\n')
+    warning(cat('only',  length(keep) ,'matching features: use output with caution', '\n'))
   }
   par(mfrow = c(2,2))
   plot(newRC$frt[keep], (newRC$frt[keep] - ramclustObj.2$frt[map[keep]]), xlab = "rt", ylab = "correction", 
@@ -196,12 +196,12 @@ mergeRCobjects <- function(
   newRC$SpecAbund.1<-ramclustObj.1$SpecAbund
   newRC$SpecAbund.2<-ramclustObj.2$SpecAbund
   
-  newRC$SpecAbund <- matrix(nrow = (nrow(newRC$SpecAbund.1) + nrow(newRC$SpecAbund.2)), ncol = ncol(newRC$SpecAbund.1))
+  newRC$SpecAbund <- matrix(nrow = (nrow(ramclustObj.1$MSdata) + nrow(ramclustObj.2$MSdata)), ncol = ncol(newRC$SpecAbund.1))
   
   cat(" --   collapsing spectra", '\n' )
   
   wts <- colSums(ramclustObj.1$MSdata)
-  for (ro in 1:nrow(newRC$SpecAbund.1)) {
+  for (ro in 1:nrow(ramclustObj.1$MSdata)) {
     for (co in 1:ncol(newRC$SpecAbund.1)) {
       newRC$SpecAbund[ro, co] <- weighted.mean(ramclustObj.1$MSdata[ro, which(ramclustObj.1$featclus == co)], 
                                                wts[which(ramclustObj.1$featclus ==  co)])
@@ -209,7 +209,7 @@ mergeRCobjects <- function(
   }
   
   wts <- colSums(ramclustObj.2$MSdata)
-  for (ro in 1:nrow(newRC$SpecAbund.2)) {
+  for (ro in 1:nrow(ramclustObj.2$MSdata)) {
     for (co in 1:ncol(newRC$SpecAbund.1)) {
       if(length(which(map == co)) > 0) {
         newRC$SpecAbund[(ro + nrow(ramclustObj.1$MSdata)), co] <- weighted.mean(ramclustObj.2$MSdata[ro, which(map == co)], 
@@ -222,7 +222,14 @@ mergeRCobjects <- function(
     }
   }
   dimnames(newRC$SpecAbund)[[2]] <- dimnames(ramclustObj.1$SpecAbund)[[2]]
-  dimnames(newRC$SpecAbund)[[1]] <- c(dimnames(ramclustObj.1$SpecAbund)[[1]], dimnames(ramclustObj.2$SpecAbund)[[1]])
+  rnames <- c(dimnames(ramclustObj.1$SpecAbund)[[1]], dimnames(ramclustObj.2$SpecAbund)[[1]])
+  if(length(rnames) == nrow(newRC$SpecAbund) ) {
+    dimnames(newRC$SpecAbund)[[1]] <- rnames
+  } else {
+    rnames <- c(dimnames(ramclustObj.1$MSdata)[[1]], dimnames(ramclustObj.2$MSdata)[[1]])
+    dimnames(newRC$SpecAbund)[[1]] <- rnames
+  }
+  
   
   newRC$pred.frt2 <- pred.frt
   newRC$frt2 <- rep(NA, length(newRC$frt))

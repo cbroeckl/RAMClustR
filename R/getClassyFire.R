@@ -28,6 +28,7 @@ getClassyFire <- function(
     "superclass" = rep(NA, length(ramclustObj$inchikey)),
     "class" = rep(NA, length(ramclustObj$inchikey)),
     "subclass" = rep(NA, length(ramclustObj$inchikey)),
+    "parent" = rep(NA, length(ramclustObj$inchikey)),
     "description" = rep(NA, length(ramclustObj$inchikey))
   )
   
@@ -46,9 +47,10 @@ getClassyFire <- function(
     c <- out$superclass$name; if(is.null(c)) c<-NA
     d <- out$class$name; if(is.null(d)) d<-NA
     e <- out$subclass$name; if(is.null(e)) e<-NA
-    f <- out$description; if(is.null(f)) f<-NA
+    f <- out$direct_parent$name; if(is.null(f)) f<-NA
+    g <- out$description; if(is.null(g)) g<-NA
     
-    ramclustObj$classyfire[i,]<- c(a,b,c,d,e,f)
+    ramclustObj$classyfire[i,]<- c(a,b,c,d,e,f,g)
     Sys.sleep(0.2)
   }
   return(ramclustObj)

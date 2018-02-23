@@ -10,7 +10,7 @@ getClassyFire(ramclustObj = RC)
 \item{ramclustObj}{ramclustR object to ClassyFy}
 }
 \value{
-returns a ramclustR object.  All values from ramclustObj.1 are retained.  SpecAbund dataset from ramclustObj.1 is moved to RC$SpecAbund.1, where RC is the new ramclustObj.
+returns a ramclustR object.  new dataframe in $classyfire slot with rows equal to number of compounds.
 }
 \description{
 use classyfire web API to look up full ClassyFire heirarchy for each inchikey

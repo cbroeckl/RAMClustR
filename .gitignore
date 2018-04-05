@@ -6,4 +6,7 @@
 RAMClusteR-concordance.tex
 RAMClusteR.tex
 inst/doc
+
+# R stuff
+.Rhistory
 .Rproj.user

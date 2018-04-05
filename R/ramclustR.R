@@ -46,6 +46,7 @@
 #' @return   - 'spectra' directory is created in the working directory.  In this directory a .msp is (optionally) created, which contains the spectra for all compounds in the dataset following clustering.  if MSe/idMSMS data are provided, they are listed witht he same compound name as the MS spectrum, with the collision energy provided in the ExpDes object provided to distinguish low from high CE spectra. 
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
+#' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'mass spectrometry', 'clustering', 'feature', 'xcms'
 #' @author Corey Broeckling
 #' @export
 
@@ -99,7 +100,7 @@ ramclustR<- function(  xcmsObj=NULL,
   
   ########
   # define ms levels, used several times below
-  mslev <- as.integer(as.numeric(as.character(ExpDes[[2]][nrow(ExpDes[[2]]),1])))
+  mslev <- as.integer(as.numeric(as.character(ExpDes[[2]][which(row.names(ExpDes[[2]]) == "MSlevs"),1])))
 
   ########
   # do some checks to make sure we have everything we need before proceeding
@@ -215,7 +216,7 @@ ramclustR<- function(  xcmsObj=NULL,
   
   
   ########
-  # ensure that we have all numeric values in the dataset. 
+  # ensure that we have all numeric non-zero values in the dataset. 
   # uses a noise addition 'jitter' around minimum values with missing data points.
   # this is mostly necessary for csv input, where other programs may not have used a 'fillPeaks' like step
   rpl1<-unique(c(which(is.na(data1)), which(is.nan(data1)), which(is.infinite(data1)), which(data1==0)))
@@ -235,8 +236,12 @@ ramclustR<- function(  xcmsObj=NULL,
     data2<-(data2/rowSums(data2))*mean(rowSums(data2), na.rm=TRUE)
   }
   if(normalize=="quantile") {
+    tmpnames1<-dimnames(data1)
+    tmpnames2<-dimnames(data2)
     data1<-t(preprocessCore::normalize.quantiles(t(data1)))
-    data2<-t(preprocessCore::normalize.quantiles(t(data2)))	
+    data2<-t(preprocessCore::normalize.quantiles(t(data2)))
+    dimnames(data1)<-tmpnames1
+    dimnames(data2)<-tmpnames2
   }
   
   ########
@@ -453,6 +458,7 @@ ramclustR<- function(  xcmsObj=NULL,
       }
     }
     dimnames(ramclustObj$SpecAbund)[[2]]<-ramclustObj$cmpd
+    if(!is.null(ms)) {dimnames(ramclustObj$SpecAbund)[[1]]<-tmpnames1[[1]]}
     if(!usePheno | is.null(xcmsObj)) {dimnames(ramclustObj$SpecAbund)[[1]]<-dimnames(ramclustObj$MSdata)[[1]]} 
     if(usePheno & !is.null(xcmsObj)) {dimnames(ramclustObj$SpecAbund)[[1]]<-as.vector(xcmsObj@phenoData[,1])[msfiles]}
     g<-Sys.time()

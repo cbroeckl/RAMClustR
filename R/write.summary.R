@@ -20,18 +20,19 @@ write.summary<-function(ramclustObj = RC
     stop("no inchikeys found in this ramclustR object")
   }
   
-  write.csv(file="spectra/annotationSummary.csv", data.frame("cmpd" = RC$cmpd,
-                                                              "rt" = RC$clrt,
-                                                              "annotation" = RC$ann,
-                                                              "inchikey" = RC$inchikey,
-                                                              "smiles" = RC$smiles,
-                                                              "DB_accessions" = RC$dbid,
-                                                              "synonyms" = sapply(1:length(RC$synonyms), function(x) {
-                                                                paste(RC$synonyms[[x]], collapse =  " ;  ")
+  write.csv(file="spectra/annotationSummary.csv", data.frame("cmpd" = ramclustObj$cmpd,
+                                                              "rt" = ramclustObj$clrt,
+                                                              "annotation" = ramclustObj$ann,
+                                                              "inchikey" = ramclustObj$inchikey,
+                                                              "smiles" = ramclustObj$smiles,
+                                                              "DB_accessions" = ramclustObj$dbid,
+                                                              "synonyms" = sapply(1:length(ramclustObj$synonyms), function(x) {
+                                                                paste(ramclustObj$synonyms[[x]], collapse =  " ;  ")
                                                               }),
-                                                              "ann.confidence" = RC$annconf,
-                                                              "inferred M" = RC$M,
-                                                              "inferred formula" = RC$msfinder.formula), row.names = FALSE)
+                                                              "ann.confidence" = ramclustObj$annconf,
+                                                              "inferred M" = ramclustObj$M,
+                                                              "inferred formula" = ramclustObj$msfinder.formula,
+                                                             "classyfire" = ramclustObj$classyfire), row.names = FALSE)
   cat("Annotation summary written to 'spectra' directory", '\n')
   
 }

@@ -4,6 +4,7 @@
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param mat.dir optional path to .mat directory
 #' @param msp.dor optional path to .msp directory
+#' @param database.priority character.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all'.  If any database is used, the best formula match to that (those) database(s) is selected, rather than the best formula match overall.  
 #' @details this function imports the output from the MSFinder program to annotate the ramclustR object
 #' @return new slots at $msfinder.formula, $msfinder.formula.score, and $msfinder.formula.details
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
@@ -16,10 +17,18 @@
 import.msfinder.formulas <- function (
   ramclustObj = RC,
   mat.dir = NULL,
-  msp.dir = NULL
+  msp.dir = NULL,
+  database.priority = NULL
 ) {
   
   home.dir <-getwd()
+  
+  r<-grep("msfinder", names(ramclustObj))
+  if(length(r) > 0) {
+    warning("removed previosly assigned MSFinder formulas and sructures", '\n')
+    ramclustObj <- ramclustObj[-r]
+    rm(r)
+  }
   
   if(is.null(mat.dir)) {
     mat.dir = paste0(getwd(), "/spectra/mat")
@@ -148,10 +157,62 @@ import.msfinder.formulas <- function (
     }
   }
   
-  ramclustObj$msfinder.formula<-sapply(1:length(msfinder.formula), FUN = function(x) {
-    # for (x in 1:length( msfinder.formula)) {
+  
+  dbs<- sapply(1:length(msfinder.formula), FUN = function(x) {
     if(nrow(msfinder.formula[[x]])>0) {
-      msfinder.formula[[x]][1,"name"]
+      paste(msfinder.formula[[x]][,"resourcenames"], collapse = ",")
+    } else {
+      NA
+    }
+  }
+  )
+  dbs<-paste(dbs, collapse = ",")  
+  dbs<- unlist(strsplit(dbs, ","))
+  dbs<-unique(dbs[which(nchar(dbs)>0)])
+  
+  #   database.priority<- c("KNApSAcK")
+  suppressWarnings(
+  if(!is.na(database.priority)) {
+    if(database.priority == "all") {database.priority <- dbs}
+  }
+  )
+  
+  dbmatch<- database.priority %in% dbs
+  while (any (!dbmatch)) {
+    dbmatch<- database.priority %in% dbs
+    for(i in which(!dbmatch)) {
+      close <- agrep(database.priority[i], dbs, max.distance = 0.2)
+      fix<- readline(prompt = cat(database.priority[i], 
+                              "does not match any database names", 
+                              "please type one of the following names or 'q' to quit:", 
+                            "\n", "\n", dbs, "\n")
+               )
+      if(fix == "q") {stop("function ended")}
+      database.priority[i]<- fix
+    }
+  }
+  
+  ramclustObj$msfinder.formula<-sapply(1:length(msfinder.formula), FUN = function(x) {
+    if(nrow(msfinder.formula[[x]])>0) {
+      if(is.null(database.priority)) {
+        msfinder.formula[[x]][1,"name"]
+      } else {
+        f<-NA
+        while(is.na(f)) {
+          for(i in 1:nrow(msfinder.formula[[x]])){
+            for(j in 1:length(database.priority)) {
+              if(grepl(database.priority[j], msfinder.formula[[x]][i,"resourcenames"])) {
+                f<-i
+                if(!is.na(f)) {break}
+              }
+              if(!is.na(f)) {break}
+            }
+            if(!is.na(f)) {break}
+          }
+          if(i == nrow(msfinder.formula[[x]])) { f <- 1}
+        }
+        if(!is.na(f)) {msfinder.formula[[x]][f,"name"]} else {NA}
+      }
     } else {
       NA
     }
@@ -159,8 +220,8 @@ import.msfinder.formulas <- function (
   )
   
   ramclustObj$msfinder.formula.score<-as.numeric(sapply(1:length(msfinder.formula), FUN = function(x) {
-    if(nrow(msfinder.formula[[x]])>0) {
-      msfinder.formula[[x]][1,"totalscore"]
+    if(!is.na(ramclustObj$msfinder.formula[x])) {
+      msfinder.formula[[ which(msfinder.formula[[x]][,"name"] == ramclustObj$msfinder.formula[x]) ]][1,"totalscore"]
     } else {
       NA
     }

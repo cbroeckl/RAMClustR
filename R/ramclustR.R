@@ -467,7 +467,7 @@ ramclustR<- function(  xcmsObj=NULL,
       }
     }
     dimnames(ramclustObj$SpecAbund)[[2]]<-ramclustObj$cmpd
-    if(!is.null(ms)) {dimnames(ramclustObj$SpecAbund)[[1]]<-tmpnames1[[1]]}
+    if(!is.null(ms) & normalize=="quantile") {dimnames(ramclustObj$SpecAbund)[[1]]<-tmpnames1[[1]]}
     if(!usePheno | is.null(xcmsObj)) {dimnames(ramclustObj$SpecAbund)[[1]]<-dimnames(ramclustObj$MSdata)[[1]]} 
     if(usePheno & !is.null(xcmsObj)) {dimnames(ramclustObj$SpecAbund)[[1]]<-as.vector(xcmsObj@phenoData[,1])[msfiles]}
     g<-Sys.time()

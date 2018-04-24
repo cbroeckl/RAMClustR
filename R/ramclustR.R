@@ -26,6 +26,7 @@
 #' @param linkage character: heirarchical clustering linkage method - see ?hclust
 #' @param mzdec integer: number of decimal places used in printing m/z values
 #' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
+#' @param fftempdir valid path: if there are file size limitations on the default ff pacakge temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.
 #'
 #' @details Main clustering function output - see citation for algorithm description of vignette('RAMClustR') for a walk through
 #' @return   $featclus: integer vector of cluster membership for each feature
@@ -75,7 +76,8 @@ ramclustR<- function(  xcmsObj=NULL,
                        minModuleSize=2,
                        linkage="average",
                        mzdec=4,
-                       cor.method="pearson"
+                       cor.method="pearson",
+                       fftempdir = NULL
 ) {
   
   ########
@@ -97,6 +99,10 @@ ramclustR<- function(  xcmsObj=NULL,
     }
   }
 
+  if(!is.null(fftempdir)) {
+    origffdir<-getOption("fftempdir")
+    options("fftempdir" = fftempdir)
+  }
   
   ########
   # define ms levels, used several times below
@@ -377,6 +383,9 @@ ramclustR<- function(  xcmsObj=NULL,
   delete.ff(ffmat)
   rm(ffmat)
   gc()
+  if(!is.null(fftempdir)) {
+    options("fftempdir" = origffdir)
+  }
   
   
   ########

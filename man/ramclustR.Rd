@@ -10,7 +10,8 @@ ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
   maxt = NULL, deepSplit = FALSE, blocksize = 2000, mult = 5,
   hmax = NULL, sampNameCol = 1, collapse = TRUE, usePheno = TRUE,
   mspout = TRUE, ExpDes = NULL, normalize = "TIC", minModuleSize = 2,
-  linkage = "average", mzdec = 4, cor.method = "pearson")
+  linkage = "average", mzdec = 4, cor.method = "pearson",
+  fftempdir = NULL)
 }
 \arguments{
 \item{xcmsObj}{xcmsObject: containing grouped feature data for clustering by ramclustR}
@@ -60,6 +61,8 @@ ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
 \item{mzdec}{integer: number of decimal places used in printing m/z values}
 
 \item{cor.method}{character: which correlational method used to calculate 'r' - see ?cor}
+
+\item{fftempdir}{valid path: if there are file size limitations on the default ff pacakge temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.}
 }
 \value{
 $featclus: integer vector of cluster membership for each feature

@@ -4,12 +4,15 @@
 \alias{import.msfinder.formulas}
 \title{import.MSFinder.formulas}
 \usage{
-import.msfinder.formulas(ramclustObj = RC, mat.dir = NULL, msp.dir = NULL)
+import.msfinder.formulas(ramclustObj = RC, mat.dir = NULL, msp.dir = NULL,
+  database.priority = NULL)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}
 
 \item{mat.dir}{optional path to .mat directory}
+
+\item{database.priority}{character.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all'.  If any database is used, the best formula match to that (those) database(s) is selected, rather than the best formula match overall.}
 
 \item{msp.dor}{optional path to .msp directory}
 }

@@ -192,24 +192,27 @@ import.msfinder.structures <- function (
         }
         numfrag<-grep("Num Fragment", tmp)
         fragments<-as.list(rep(NA, length(numfrag)))
-        for(k in 1:length(numfrag)) {
-          fragdat<-tmp[numfrag[k]:stops[k]]
-          if(nchar(fragdat[length(fragdat)])==0) {
-            fragdat = fragdat[1:(length(fragdat)-1)]
+        if(length(fragments > 0)) {
+          for(k in 1:length(numfrag)) {
+            fragdat<-tmp[numfrag[k]:stops[k]]
+            if(nchar(fragdat[length(fragdat)])==0) {
+              fragdat = fragdat[1:(length(fragdat)-1)]
+            }
+            if(length(fragdat)==1) {
+              fragments[[k]] <- fillfrag
+              next
+            }
+            fragdat<-lapply(1:length(fragdat), FUN = function(x) {unlist(strsplit(fragdat[x], "\t")) })
+            fragtab<-data.frame(matrix(nrow = length(fragdat)-1, ncol = length(fragdat[[2]])))
+            names(fragtab)<- unlist(strsplit(unlist(strsplit(unlist(strsplit(fragdat[[1]], "\\(" ))[2], "\\)" ))[1], " "))
+            for(l in 2:length(fragdat)) {
+              fragtab[l-1,]<-fragdat[[l]]
+            }
+            fragments[[k]] <- data.frame(fragtab)
           }
-          if(length(fragdat)==1) {
-            fragments[[k]] <- fillfrag
-            next
-          }
-          fragdat<-lapply(1:length(fragdat), FUN = function(x) {unlist(strsplit(fragdat[x], "\t")) })
-          fragtab<-data.frame(matrix(nrow = length(fragdat)-1, ncol = length(fragdat[[2]])))
-          names(fragtab)<- unlist(strsplit(unlist(strsplit(unlist(strsplit(fragdat[[1]], "\\(" ))[2], "\\)" ))[1], " "))
-          for(l in 2:length(fragdat)) {
-            fragtab[l-1,]<-fragdat[[l]]
-          }
-          fragments[[k]] <- data.frame(fragtab)
+          names(fragments)<-structures[[j]]$structures[,"id"]
         }
-        names(fragments)<-structures[[j]]$structures[,"id"]
+        
         suppressWarnings(structures[[j]]$fragments<-fragments)
         
       }

@@ -2,6 +2,7 @@
 
 export(RCQC)
 export(annotate)
+export(annotation.summary)
 export(defineExperiment)
 export(do.findmain)
 export(do.msfinder)

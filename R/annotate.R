@@ -38,19 +38,19 @@ annotate<-function(ramclustObj = RC,
   
   if(any(names(ramclustObj)=="M")) {
     findmain = TRUE
-  }
+  } else {findmain = FALSE}
   
   if(any(names(ramclustObj) == "msfinder.formula")) {
     formula = TRUE
-  }
+  } else {formula = FALSE}
   
   if(any(names(ramclustObj) == "msfinder.structure")) {
     structure = TRUE
-  }
+  } else {structure = FALSE}
   
   if(any(names(ramclustObj) == "msfinder.mssearch.details")) {
     mssearch = TRUE
-  }
+  } else {mssearch = FALSE}
   
   ramclustObj$inchikey <- rep(NA, length(ramclustObj$cmpd))
   ramclustObj$smiles <- rep(NA, length(ramclustObj$cmpd))

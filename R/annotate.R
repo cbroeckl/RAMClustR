@@ -4,6 +4,8 @@
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param msfinder.dir full path to MSFinder directory - used for naming refinement
 #' @param standardize.names logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)
+#' @get.syns get synonyms?  Highly recommened - requires internet connection, use inchikey for synonyms lookup (http://cts.fiehnlab.ucdavis.edu/)
+#' @param use.short.inchikey logical: if TRUE, look for compound names from MSFinder tables using only the first InChIKey block (non-stereochemical)
 #' @details this function imports the output from the MSFinder program to annotate the ramclustR object
 #' @return an updated ramclustR object, with the RC$ann and RC$ann.conf slots updated to annotated based on output from 1. ramsearch output, 2. msfinder mssearch, 3. msfinder predicted structure, 4. msfinder predicted formula, and 5. interpretMSSpectrum inferred molecular weight, with listed order as priority.  
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
@@ -16,10 +18,12 @@
 
 
 annotate<-function(ramclustObj = RC,
-                            msfinder.dir = "K:/software/MSFinder/MS-FINDER program ver. 2.20",
-                            standardize.names = TRUE,
-                            delay.time = 0.5
-                            ) {
+                   msfinder.dir = "K:/software/MSFinder/MS-FINDER program ver. 2.20",
+                   standardize.names = TRUE,
+                   get.syns = TRUE,
+                   delay.time = 0.5,
+                   use.short.inchikey = TRUE
+) {
   
   if(!dir.exists(msfinder.dir)) {
     stop("msfinder directory does not exist: please set 'msfinder.dir' option as your full msfinder directory path")
@@ -60,11 +64,11 @@ annotate<-function(ramclustObj = RC,
     for(i in 1:length(ramclustObj$ann)) {
       if((nrow(ramclustObj$msfinder.mssearch.details[[i]]$summary)>0) & (ramclustObj$cmpd[i] == ramclustObj$ann[i]))  {
         if(ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"totalscore"] >=4 ) {
-        ramclustObj$inchikey[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"inchikey"]
-        ramclustObj$smiles[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"smiles"]
-        ramclustObj$ann[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"name"]
-        ramclustObj$annconf[i]<-2
-        ramclustObj$dbid[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"resources"]
+          ramclustObj$inchikey[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"inchikey"]
+          ramclustObj$smiles[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"smiles"]
+          ramclustObj$ann[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"name"]
+          ramclustObj$annconf[i]<-2
+          ramclustObj$dbid[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"resources"]
         }
       }
     }
@@ -74,7 +78,15 @@ annotate<-function(ramclustObj = RC,
     for(i in 1:length(ramclustObj$ann)) {
       if( is.data.frame(ramclustObj$msfinder.structure[[i]]) && (ramclustObj$cmpd[i] == ramclustObj$ann[i]) )  {
         
-        drow<-grep(ramclustObj$msfinder.structure[[i]][1, "inchikey"], d[,"InChIKey"])
+        tmpinch<-ramclustObj$msfinder.structure[[i]][1, "inchikey"]
+        tmpinch.short<-unlist(strsplit(tmpinch, "-"))[1]
+        if(use.short.inchikey) {
+          drow<-grep(tmpinch.short, d[,"InChIKey"])
+        } else {
+          drow<-grep(tmpinch, d[,"InChIKey"])
+        }
+        # d[drow,"InChIKey"]
+        # tmp<- ramclustObj$msfinder.structure[[i]][1, "inchikey"]
         
         ramclustObj$inchikey[i]<-ramclustObj$msfinder.structure[[i]][1,"inchikey"]
         ramclustObj$smiles[i]<-ramclustObj$msfinder.structure[[i]][1,"smiles"]
@@ -120,14 +132,18 @@ annotate<-function(ramclustObj = RC,
   }
   
   
+  
   if(standardize.names) {
     cat("using chemical translation service - requires interet access and may take a few minutes to complete", '\n')
     require(jsonlite)
     for(i in 1:length(ramclustObj$ann)) {
-       Sys.sleep(delay.time)
+      Sys.sleep(delay.time)
       if(!is.na(ramclustObj$inchikey[i])) {
         link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/convert/InChIKey/Chemical%20Name/", ramclustObj$inchikey[i])
-        suppressWarnings(out<-readLines(link))
+        out<-NA
+        while(is.na(out[1])) {
+          tryCatch(suppressWarnings(out<-readLines(link)), error = function(x) {NA}, finally = NA)
+        }
         names<-unlist(fromJSON(out)$result)
         if(length(names) == 0) {
           names<-ramclustObj$ann[i]
@@ -140,7 +156,10 @@ annotate<-function(ramclustObj = RC,
         if(nchar(names) > 20) {
           
           link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/synonyms/", ramclustObj$inchikey[i])
-          suppressWarnings(out<-readLines(link))
+          out<-NA
+          while(is.na(out[1])) {
+            tryCatch(suppressWarnings(out<-readLines(link)), error = function(x) {NA}, finally = NA)
+          }
           syns<-unlist(fromJSON(out))
           if(length(syns) == 0) {
             syns<-names
@@ -159,7 +178,37 @@ annotate<-function(ramclustObj = RC,
     
   }
   
+  if(get.syns) {
+    ramclustObj<-get.synonyms(ramclustObj = ramclustObj, delay.time = 0)
+  }
+  
+  ## modify compound names to make them unique
+  nt <- table(ramclustObj$ann)
+  ramclustObj$inchikey[which(is.na(ramclustObj$inchikey))] <- "NA"
+  while(any(nt > 1)) {
+    do<-which(nt>1)[1]
+    mtch<-which(ramclustObj$ann == names(nt)[do])
+    if(length(unique(ramclustObj$inchikey[mtch]))==1){
+      ramclustObj$ann[mtch] <- paste(ramclustObj$ann[mtch], c(1:length(mtch)), sep = "__")
+    } else {
+      for(j in 1:length(mtch)) {
+        if(any(names(ramclustObj)=="synonyms")) {
+          cur<-which(ramclustObj$synonyms[[mtch[j]]] == names(do))
+          if(length(cur)>0) {
+            if(length(ramclustObj$synonyms[[mtch[j]]]) > cur){
+              ramclustObj$ann[mtch[j]] <- ramclustObj$synonyms[[mtch[j]]][cur+1]
+            } else {ramclustObj$ann[mtch[j]] <- paste(ramclustObj$ann[mtch[j]], j, sep = "__")}
+          } else {ramclustObj$ann[mtch[j]] <- paste(ramclustObj$ann[mtch[j]], j, sep = "__")}
+        }
+      }
+    }
+    nt <- table(ramclustObj$ann)
+  }
+  
+  ramclustObj$inchikey[which(ramclustObj$inchikey == "NA")] <- NA
+  
+  
   
   return(ramclustObj)
 }
-  
+

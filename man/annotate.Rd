@@ -6,7 +6,8 @@
 \usage{
 annotate(ramclustObj = RC,
   msfinder.dir = "K:/software/MSFinder/MS-FINDER program ver. 2.20",
-  standardize.names = TRUE, delay.time = 0.5)
+  standardize.names = TRUE, get.syns = TRUE, delay.time = 0.5,
+  use.short.inchikey = TRUE)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}
@@ -14,6 +15,8 @@ annotate(ramclustObj = RC,
 \item{msfinder.dir}{full path to MSFinder directory - used for naming refinement}
 
 \item{standardize.names}{logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)}
+
+\item{use.short.inchikey}{logical: if TRUE, look for compound names from MSFinder tables using only the first InChIKey block (non-stereochemical)}
 }
 \value{
 an updated ramclustR object, with the RC$ann and RC$ann.conf slots updated to annotated based on output from 1. ramsearch output, 2. msfinder mssearch, 3. msfinder predicted structure, 4. msfinder predicted formula, and 5. interpretMSSpectrum inferred molecular weight, with listed order as priority.

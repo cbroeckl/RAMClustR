@@ -4,6 +4,7 @@
 #' @details The $inchikey slot is used to look up the 
 #' 
 #' @param ramclustObj ramclustR object to ClassyFy
+#' @param get.all logical; if TRUE, when inchikey classyfire lookup fails, submits for classyfication.  Can be slow and cause errors. default = FALSE.
 #' @return returns a ramclustR object.  new dataframe in $classyfire slot with rows equal to number of compounds.  
 #' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'classyFire'
 #' @author Corey Broeckling
@@ -13,10 +14,15 @@
 
 
 getClassyFire <- function(
-  ramclustObj = RC
+  ramclustObj = RC,
+  get.all = FALSE
 ) {
   
   library(jsonlite)
+  
+  if(get.all) {
+    warning("'get.all' can sometimes take a bit of time", '\n')
+  }
   
   if(is.null(ramclustObj$inchikey)) {
     stop("no inchikey slot found, please 'annotate' first", '\n')
@@ -39,8 +45,41 @@ getClassyFire <- function(
     out<- tryCatch(fromJSON(paste0(url, "/entities/", ramclustObj$inchikey[i], ".json")), 
                    error = function(x) {return(NA)})
     if(length(out)<=1) {
-      rm(out)
-      next
+      ## insert a call to 
+      if(get.all) {
+        if(!is.na(ramclustObj$smiles[i])) {
+          params <- list(label = ramclustObj$inchikey[i],
+                         query_input = ramclustObj$smiles[i],
+                         query_type = "STRUCTURE")
+          
+          submit <- httr::POST(
+            "http://classyfire.wishartlab.com/queries",
+            body = params,
+            encode = "json",
+            httr::accept_json(),
+            httr::add_headers("Content-Type" = "application/json")
+          )
+          
+          query_id <- jsonlite::fromJSON(httr::content(submit, 'text')) # %>% unlist() %>% as.list()
+          
+          out<-list()
+          out$classification_status <- "not done"
+          Sys.sleep(1)
+          while(out$classification_status != "Done") {
+            Sys.sleep(1)
+            out<- fromJSON(
+              paste0(
+                "http://classyfire.wishartlab.com/queries/",
+                query = query_id$id,
+                ".json"
+              )
+            )
+          }
+          newinchikey<-out$entities$inchikey
+          newinchikey<-gsub("InChIKey=", "", newinchikey)
+          out<-fromJSON(paste0(url, "/entities/", newinchikey, ".json"))
+        }
+      }
     }
     a <- ramclustObj$inchikey[i]
     b <- out$kingdom$name; if(is.null(b)) b<-NA
@@ -51,7 +90,7 @@ getClassyFire <- function(
     g <- out$description; if(is.null(g)) g<-NA
     
     ramclustObj$classyfire[i,]<- c(a,b,c,d,e,f,g)
-    Sys.sleep(0.2)
+    rm(out)
   }
   return(ramclustObj)
 }

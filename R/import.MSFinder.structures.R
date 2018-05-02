@@ -110,7 +110,7 @@ import.msfinder.structures <- function (
   
   fill<-matrix(nrow = 0, ncol = length(tags))
   dimnames(fill)[[2]]<-names(tags)
-  data.frame(fill, check.names = FALSE, stringsAsFactors = FALSE)
+  fill<-data.frame(fill, check.names = FALSE, stringsAsFactors = FALSE)
   
   msfinder.structure<-as.list(rep("", length(ramclustObj$cmpd)))
   names(msfinder.structure)<-ramclustObj$cmpd

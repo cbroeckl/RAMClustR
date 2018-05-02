@@ -4,10 +4,12 @@
 \alias{getClassyFire}
 \title{getClassyFire}
 \usage{
-getClassyFire(ramclustObj = RC)
+getClassyFire(ramclustObj = RC, get.all = FALSE)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to ClassyFy}
+
+\item{get.all}{logical; if TRUE, when inchikey classyfire lookup fails, submits for classyfication.  Can be slow and cause errors. default = FALSE.}
 }
 \value{
 returns a ramclustR object.  new dataframe in $classyfire slot with rows equal to number of compounds.

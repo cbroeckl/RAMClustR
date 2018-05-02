@@ -29,7 +29,10 @@ get.synonyms<-function(ramclustObj = RC,
     Sys.sleep(delay.time)
     if(!is.na(ramclustObj$inchikey[i])) {
       link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/synonyms/", ramclustObj$inchikey[i])
-      suppressWarnings(out<-readLines(link))
+      out<-NA
+      while(is.na(out[1])) {
+        tryCatch(suppressWarnings(out<-readLines(link)), error = function(x) {NA}, finally = NA)
+      }
       syns<-unlist(fromJSON(out))
       if(!is.null(syns)) {
         syns <- syns[order(nchar(syns))]

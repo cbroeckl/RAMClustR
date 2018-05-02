@@ -49,7 +49,9 @@ annotation.summary<-function(ramclustObj = RC,
                                                                    paste(ramclustObj$synonyms[[x]], collapse = " __ ")
                                                                  }))
   }
-  
+  if(any(names(ramclustObj) == "classyfire")) {
+    out<- data.frame(out, ramclustObj$classyfire)
+  }
   
   write.csv(out, file = outfile, row.names = FALSE)
 }

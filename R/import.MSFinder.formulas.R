@@ -172,7 +172,7 @@ import.msfinder.formulas <- function (
   
   #   database.priority<- c("KNApSAcK")
   suppressWarnings(
-  if(!is.na(database.priority)) {
+  if(!is.null(database.priority)) {
     if(database.priority == "all") {database.priority <- dbs}
   }
   )

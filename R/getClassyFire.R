@@ -79,7 +79,7 @@ getClassyFire <- function(
           newinchikey<-gsub("InChIKey=", "", newinchikey)
           out<-fromJSON(paste0(url, "/entities/", newinchikey, ".json"))
         }
-      }
+      } else {next}
     }
     a <- ramclustObj$inchikey[i]
     b <- out$kingdom$name; if(is.null(b)) b<-NA

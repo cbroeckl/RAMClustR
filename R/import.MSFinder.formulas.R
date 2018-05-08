@@ -172,9 +172,9 @@ import.msfinder.formulas <- function (
   
   #   database.priority<- c("KNApSAcK")
   suppressWarnings(
-  if(!is.null(database.priority)) {
-    if(database.priority == "all") {database.priority <- dbs}
-  }
+    if(!is.null(database.priority)) {
+      if(database.priority == "all") {database.priority <- dbs}
+    }
   )
   
   dbmatch<- dbs %in% database.priority
@@ -183,10 +183,10 @@ import.msfinder.formulas <- function (
     for(i in which(!dbmatch)) {
       close <- agrep(database.priority[i], dbs, max.distance = 0.2)
       fix<- readline(prompt = cat(database.priority[i], 
-                              "does not match any database names", 
-                              "please type one of the following names or 'q' to quit:", 
-                            "\n", "\n", dbs, "\n")
-               )
+                                  "does not match any database names", 
+                                  "please type one of the following names or 'q' to quit:", 
+                                  "\n", "\n", dbs, "\n")
+      )
       if(fix == "q") {stop("function ended")}
       database.priority[i]<- fix
     }
@@ -219,14 +219,16 @@ import.msfinder.formulas <- function (
   }
   )
   
-  ramclustObj$msfinder.formula.score<-as.numeric(sapply(1:length(msfinder.formula), FUN = function(x) {
-    if(!is.na(ramclustObj$msfinder.formula[x])) {
-      msfinder.formula[[ which(msfinder.formula[[x]][,"name"] == ramclustObj$msfinder.formula[x]) ]][1,"totalscore"]
-    } else {
-      NA
-    }
-  }
-  ))
+  ramclustObj$msfinder.formula.score <- as.numeric(sapply(1:length(msfinder.formula), 
+                                                          FUN = function(x) {
+                                                            # cat(x)
+                                                            if (!is.na(ramclustObj$msfinder.formula[x])) {
+                                                              df<-msfinder.formula[[which(msfinder.formula[[x]][, "name"] == ramclustObj$msfinder.formula[x])]]
+                                                              if(nrow(df) > 0) {df[1,  "totalscore"]} else {NA}
+                                                            } else {
+                                                              NA
+                                                            }
+                                                          }))
   
   ramclustObj$msfinder.formula.details<-msfinder.formula
   

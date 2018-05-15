@@ -2,7 +2,7 @@
 % Please edit documentation in R/annotation.summary.R
 \name{annotation.summary}
 \alias{annotation.summary}
-\title{export an annotation summary to csv.}
+\title{annotation.summary()}
 \usage{
 annotation.summary(ramclustObj = RC, outfile = NULL)
 }
@@ -15,7 +15,7 @@ annotation.summary(ramclustObj = RC, outfile = NULL)
 nothing
 }
 \description{
-by default, annotation summary exported to /spectra subdirectory of working directory.
+Write a .csv file containing a summary of the annotations in the ramclustR object.
 }
 \details{
 this function exports a csv file summarizing annotation evidence for each compound

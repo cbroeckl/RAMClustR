@@ -4,12 +4,14 @@
 \alias{getClassyFire}
 \title{getClassyFire}
 \usage{
-getClassyFire(ramclustObj = RC, get.all = FALSE)
+getClassyFire(ramclustObj = RC, get.all = TRUE, max.wait = 30)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to ClassyFy}
 
-\item{get.all}{logical; if TRUE, when inchikey classyfire lookup fails, submits for classyfication.  Can be slow and cause errors. default = FALSE.}
+\item{get.all}{logical; if TRUE, when inchikey classyfire lookup fails, submits for classyfication.  Can be slow. max.wait (below) sets max time to spend on each compound before moving on. default = FALSE.}
+
+\item{max.wait}{numeric; maximum time to wait per compound when 'get.all' = TRUE.  The}
 }
 \value{
 returns a ramclustR object.  new dataframe in $classyfire slot with rows equal to number of compounds.

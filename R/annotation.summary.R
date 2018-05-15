@@ -1,6 +1,6 @@
-#' export an annotation summary to csv. 
+#' annotation.summary()
 #'
-#' by default, annotation summary exported to /spectra subdirectory of working directory.  
+#' Write a .csv file containing a summary of the annotations in the ramclustR object. 
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param outfile file path/name of output csv summary file.  if NULL (default) will be exported to spectra/annotaionSummary.csv
 #' @details this function exports a csv file summarizing annotation evidence for each compound
@@ -32,19 +32,22 @@ annotation.summary<-function(ramclustObj = RC,
                    "median signal" = as.vector(apply(ramclustObj$SpecAbund, 2, "median"))) 
   
   if(any(names(ramclustObj) == "M")) {
-    out<- data.frame(out, "inferred M" = RC$M)
-    }
+    out<- data.frame(out, "inferred M" = ramclustObj$M)
+  }
+  if(any(names(ramclustObj) == "zmax")) {
+    out<- data.frame(out, "zmax" = ramclustObj$zmax)
+  }
   if(any(names(ramclustObj) == "msfinder.formula")) {
-    out<- data.frame(out, "inferred formula" = RC$msfinder.formula)
+    out<- data.frame(out, "inferred formula" = ramclustObj$msfinder.formula)
     }
   if(any(names(ramclustObj) == "inchikey")) {
-    out<- data.frame(out, "inchikey" = RC$inchikey)
+    out<- data.frame(out, "inchikey" = ramclustObj$inchikey)
     }
   if(any(names(ramclustObj) == "inchi")) {
-    out<- data.frame(out, "inchi" = RC$inchi)
+    out<- data.frame(out, "inchi" = ramclustObj$inchi)
     }
   if(any(names(ramclustObj) == "synonyms")) {
-    out<- data.frame(out, "synonyms" = sapply(1:length(RC$synonyms), 
+    out<- data.frame(out, "synonyms" = sapply(1:length(ramclustObj$synonyms), 
                                                                  FUN = function(x) {
                                                                    paste(ramclustObj$synonyms[[x]], collapse = " __ ")
                                                                  }))

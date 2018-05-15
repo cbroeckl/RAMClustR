@@ -4,8 +4,6 @@
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param msfinder.dir full path to MSFinder directory - used for naming refinement
 #' @param standardize.names logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)
-#' @get.syns get synonyms?  Highly recommened - requires internet connection, use inchikey for synonyms lookup (http://cts.fiehnlab.ucdavis.edu/)
-#' @param use.short.inchikey logical: if TRUE, look for compound names from MSFinder tables using only the first InChIKey block (non-stereochemical)
 #' @details this function imports the output from the MSFinder program to annotate the ramclustR object
 #' @return an updated ramclustR object, with the RC$ann and RC$ann.conf slots updated to annotated based on output from 1. ramsearch output, 2. msfinder mssearch, 3. msfinder predicted structure, 4. msfinder predicted formula, and 5. interpretMSSpectrum inferred molecular weight, with listed order as priority.  
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
@@ -20,14 +18,36 @@
 annotate<-function(ramclustObj = RC,
                    msfinder.dir = "K:/software/MSFinder/MS-FINDER program ver. 2.20",
                    standardize.names = TRUE,
-                   get.syns = TRUE,
-                   delay.time = 0.5,
-                   use.short.inchikey = TRUE
+                   delay.time = 0
 ) {
   
   if(!dir.exists(msfinder.dir)) {
     stop("msfinder directory does not exist: please set 'msfinder.dir' option as your full msfinder directory path")
   }
+  
+  if(standardize.names) {
+    success<-library(devtools, logical.return = TRUE)
+    if(!success) {
+      install.packages("devtools")
+      library(devtools)
+    }
+    success<-library(rcdk, logical.return = TRUE)
+    if(!success) {
+      install.packages("rcdk")
+      library(rcdk)
+    }
+    success<-library(rinchi, logical.return = TRUE)
+    if(!success) {
+      install_github("cdkr", "rajarshi", subdir="rinchi")
+      library(rinchi)
+    }
+    success<-library(jsonlite, logical.return = TRUE)
+    if(!success) {
+      install.packages("jsonlite")
+      library(jsonlite)
+    }
+  }
+  use.short.inchikey = TRUE
   
   sfile<-list.files(paste0(msfinder.dir, "/Resources"), pattern = "ExistStructureDB_vs")
   if(length(sfile)==0) {
@@ -56,9 +76,14 @@ annotate<-function(ramclustObj = RC,
     mssearch = TRUE
   } else {mssearch = FALSE}
   
-  ramclustObj$inchikey <- rep(NA, length(ramclustObj$cmpd))
-  ramclustObj$smiles <- rep(NA, length(ramclustObj$cmpd))
-  ramclustObj$dbid<- rep(NA, length(ramclustObj$cmpd))
+  if(!any(names(ramclustObj) == "inchikey")) {ramclustObj$inchikey <- rep(NA, length(ramclustObj$cmpd))}
+  if(!any(names(ramclustObj) == "inchi")) {ramclustObj$inchi<- rep(NA, length(ramclustObj$cmpd))}
+  if(!any(names(ramclustObj) == "smiles"))  {ramclustObj$smiles <- rep(NA, length(ramclustObj$cmpd))}
+  if(!any(names(ramclustObj) == "dbid")) {ramclustObj$dbid<- rep(NA, length(ramclustObj$cmpd))}
+  if(!any(names(ramclustObj) == "synonyms")) {
+    ramclustObj$synonyms <- as.list(rep(NA, length(ramclustObj$cmpd)))
+  }
+  
   
   if(mssearch) {
     for(i in 1:length(ramclustObj$ann)) {
@@ -131,56 +156,94 @@ annotate<-function(ramclustObj = RC,
     }
   }
   
-  
+  ramclustObj$inchikey[which(ramclustObj$inchikey == "undefined")]<-NA
   
   if(standardize.names) {
     cat("using chemical translation service - requires interet access and may take a few minutes to complete", '\n')
-    require(jsonlite)
+    
+    inchikey2inchi<-which(!is.na(ramclustObj$inchikey) & is.na(ramclustObj$inchi))
+    for(i in inchikey2inchi) {
+      Sys.sleep(delay.time)
+      if(!is.na(ramclustObj$inchikey[i])) {
+        
+        link <- paste0("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/InChI Code/", ramclustObj$inchikey[i])
+        out<-NA
+        start<-Sys.time()
+        while(is.na(out[1])) {
+          tryCatch(suppressWarnings(out<-readLines(link)), error = function(x) {NA}, finally = NA)
+          if(as.numeric(Sys.time() - start) > 5) {
+            ramclustObj$inchi[[i]] <- NA
+            break
+          }
+        }
+        inchis<-unlist(fromJSON(out)$result)
+        if(length(inchis) == 0) {
+          ramclustObj$inchi[i] <- NA
+        }
+        if(length(inchis)>=1) {
+          ramclustObj$inchi[i] <- inchis[1]
+        }
+      }
+    }
+    
+    inchi2smiles<-which(!is.na(ramclustObj$inchi) & is.na(ramclustObj$smiles))
+    if(length(inchi2smiles) > 0) {
+      for(i in inchi2smiles) {
+        inchi<-ramclustObj$inchi[i]
+        m<-parse.inchi(inchi)[[1]]
+        s<-get.smiles(m)
+        rm(m)
+        ramclustObj$smiles[i]<-s
+      }
+    }
+    
     for(i in 1:length(ramclustObj$ann)) {
       Sys.sleep(delay.time)
       if(!is.na(ramclustObj$inchikey[i])) {
-        link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/convert/InChIKey/Chemical%20Name/", ramclustObj$inchikey[i])
+        
+        link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/synonyms/", ramclustObj$inchikey[i])
         out<-NA
+        start<-Sys.time()
         while(is.na(out[1])) {
           tryCatch(suppressWarnings(out<-readLines(link)), error = function(x) {NA}, finally = NA)
+          stop<-Sys.time()
+          if(as.numeric(stop - start) > 5) {
+            ramclustObj$synonyms[[i]] <- NA
+            break
+          }
         }
-        names<-unlist(fromJSON(out)$result)
-        if(length(names) == 0) {
-          names<-ramclustObj$ann[i]
+        syns<-unlist(fromJSON(out))
+        if(length(syns) == 0) {
+          ramclustObj$synonyms[[i]] <- NA
         }
-        if(length(names)>1) {
-          nc<-nchar(names)
-          names<-names[which.min(nc)]
+        if(length(syns)>=1) {
+          nc<-nchar(syns)
+          syns<-syns[order(nc, decreasing = FALSE)]
+          ramclustObj$synonyms[[i]] <- NA
         }
         
-        if(nchar(names) > 20) {
-          
-          link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/synonyms/", ramclustObj$inchikey[i])
+        
+        if(is.na(ramclustObj$inchi[i])) {          
+          link <- paste0("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/InChI Code/", ramclustObj$inchikey[i])
           out<-NA
           while(is.na(out[1])) {
             tryCatch(suppressWarnings(out<-readLines(link)), error = function(x) {NA}, finally = NA)
           }
-          syns<-unlist(fromJSON(out))
-          if(length(syns) == 0) {
-            syns<-names
+          inchi<-as.character(unlist(fromJSON(out))["result"])
+          if(length(inchi) == 0) {
+            ramclustObj$inchi[[i]] <- NA
           }
-          if(length(syns)>1) {
-            nc<-nchar(syns)
-            syns<-syns[which.min(nc)]
-          }
-          if(nchar(syns) < nchar(names)) {
-            names<-syns
+          if(length(inchi)>=1) {
+            nc<-nchar(inchi)
+            inchi<-inchi[order(nc, decreasing = FALSE)]
+            ramclustObj$inchi[i] <- inchi[1]
           }
         }
-        ramclustObj$ann[i] <- names
       }
     }
-    
   }
   
-  if(get.syns) {
-    ramclustObj<-get.synonyms(ramclustObj = ramclustObj, delay.time = 0)
-  }
+  
   
   ## modify compound names to make them unique
   nt <- table(ramclustObj$ann)

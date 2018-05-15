@@ -227,6 +227,10 @@ import.msfinder.structures <- function (
   ramclustObj$msfinder.structure<-lapply(1:length(msfinder.structure), FUN = function(x) {
     # for (x in 1:length( msfinder.structure)) {
     if(!is.na(ramclustObj$msfinder.formula[x])) {
+      if(is.null(ramclustObj$msfinder.structure.details[[x]][[ramclustObj$msfinder.formula[x]]]$structures)) {
+        return(NA)
+        next
+      }
       if(nrow(ramclustObj$msfinder.structure.details[[x]][[ramclustObj$msfinder.formula[x]]]$structures)>0) {
         # if(nrow(ramclustObj$msfinder.structure[[x]][[ramclustObj$msfinder.formula[x]]]$structures)>0) {
         best<-which.max(ramclustObj$msfinder.structure.details[[x]][[ramclustObj$msfinder.formula[x]]]$structures[,"totalscore"])

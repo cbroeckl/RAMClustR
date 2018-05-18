@@ -219,9 +219,9 @@ annotate<-function(ramclustObj = RC,
         if(length(syns)>=1) {
           nc<-nchar(syns)
           syns<-syns[order(nc, decreasing = FALSE)]
-          ramclustObj$synonyms[[i]] <- NA
+          ramclustObj$synonyms[[i]] <- syns
         }
-        
+      #}}
         
         if(is.na(ramclustObj$inchi[i])) {          
           link <- paste0("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/InChI Code/", ramclustObj$inchikey[i])

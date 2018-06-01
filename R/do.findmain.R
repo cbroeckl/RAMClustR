@@ -294,6 +294,21 @@ do.findmain <- function (ramclustObj = RC, cmpd = NULL, mode = "positive", mzabs
             }
           }
         }
+      } else  {
+        do <- which(ramclustObj$featclus == cl)
+        if(length(do)>0) {
+          msms <- cbind(mz = ramclustObj$fmz[do], int = ramclustObj$msint[do])
+          msms <- msms[which(msms[, "mz"] <= (prcmz + 3)), , drop = FALSE]
+          msms <- msms[order(msms[, "int"], decreasing = TRUE), , drop = FALSE]
+          if (nrow(msms) > 0) {
+            out <- paste(out, "MSTYPE:", "MS2", "\n", "Num Peaks: ", 
+                         nrow(msms), "\n", sep = "")
+            for (i in 1:nrow(msms)) {
+              out <- paste(out, msms[i, 1], " ", msms[i, 
+                                                      2], "\n", sep = "")
+            }
+          }
+        }
       }
       write(out, file = paste0("spectra/mat/", ramclustObj$cmpd[cl], 
                                ".mat"))

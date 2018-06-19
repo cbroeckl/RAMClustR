@@ -31,7 +31,7 @@ assign.z<-function(
   ramclustObj$zmax<-rep(if(assume1) {1} else {NA}, length(ramclustObj$clrt))
   ramclustObj$fm<-rep(if(assume1) {ramclustObj$fmz} else {NA}, length(ramclustObj$fmz))
   ramclustObj$fz<-rep(if(assume1) {1} else {NA}, length(ramclustObj$fmz))
-  ppmdifs<- 1.007276/chargeStates
+  ppmdifs<- 1.007276/chargestate
   for(i in 1:max(ramclustObj$featclus)) {
     members<-which(ramclustObj$featclus==i)
     mzvals<-ramclustObj$fmz[members]
@@ -53,21 +53,10 @@ assign.z<-function(
       if((100*sum(mzint[check])/ sum(mzint)) < minPercentSignal) {break}
       ramclustObj$fz[members[check]] <- j
       ramclustObj$fm[members[check]] <- ramclustObj$fmz[members[check]]*j
-      if(j>1) {
-        if(!overruleExisting) {
-          if (ramclustObj$ann[i] == ramclustObj$cmpd[i]) {
-            ramclustObj$ann[i]<-"peptide"
-            ramclustObj$annconf[i]<-3
-          }
-        } else {
-          ramclustObj$ann[i]<-"peptide"
-          ramclustObj$annconf[i]<-3
-        }
-      }
     }
-    ramclustObj$zmax <- max(ramclustObj$fz[members])
+    ramclustObj$zmax[i] <- max(ramclustObj$fz[members])
   }
-  ramclustObj$m<-ramclustObj$fmz*ramclustObj$z
+  ramclustObj$m<-ramclustObj$fmz*ramclustObj$fz
   return(ramclustObj)
 }
 

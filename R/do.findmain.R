@@ -35,7 +35,7 @@
 
 do.findmain <- function (ramclustObj = RC, cmpd = NULL, mode = "positive", mzabs.error = 0.01, 
                          ppm.error = 10, ads = NULL, nls = NULL, adwts = NULL, nlwts = NULL, 
-                         plot.findmain = TRUE, writeMat = TRUE) 
+                         plot.findmain = TRUE, writeMat = TRUE, writeMS = TRUE) 
 {
   require(InterpretMSSpectrum)
   if (is.null(ads)) {
@@ -314,6 +314,84 @@ do.findmain <- function (ramclustObj = RC, cmpd = NULL, mode = "positive", mzabs
                                ".mat"))
     }
   }
+  
+  if (writeMS) {
+    if (!dir.exists("spectra")) {
+      dir.create("spectra")
+    }
+    # list.dirs()
+    dir.create("spectra/ms")
+    for (cl in cmpd) {
+      ms <- ramclustObj$M.ann[[cl]]
+      m1ads<-ads[grep("[M", ads, fixed = TRUE)]
+      if(length(m1ads) == 0) {
+        next
+      } else {
+        prcr <- which(ms[, "adduct"] %in% m1ads)
+      }
+      prcr <- prcr[which.max(ms[prcr, "int"])]
+      prcmz <- ms[prcr, "mz"]
+      prctype <- ms[prcr, "adduct"]
+      out <- paste(">compound ", ramclustObj$cmpd[cl], "\n", 
+                   ">parentmass ", prcmz, 
+                   "\n", ">ionization ", prctype, "\n", '\n', sep = "")
+      ms<-ms[which((abs(ms[,"mz"] -  prcmz) < 5.5) | (abs(prcmz - ms[,"mz"]) < 0.2)), ]
+      out<-paste(out, ">ms1peaks", 
+                 '\n', sep = "")
+      for (i in 1:nrow(ms)) {
+        out <- paste(out, ms[i, 1], " ", ms[i, 2], "\n", 
+                     sep = "")
+      }
+      
+      # ms<-ms[which((abs(ms[,"mz"] -  prcmz) < 5.5) | (abs(prcmz - ms[,"mz"]) < 0.2)), ]
+      # out<-paste(out, '\n', ">collision ",  
+      #            ramclustObj$ExpDes$instrument[which(dimnames(ramclustObj$ExpDes$instrument)[[1]]=="CE2"),1], 
+      #            '\n', sep = "")
+      # for (i in 1:nrow(ms)) {
+      #   out <- paste(out, ms[i, 1], " ", ms[i, 2], "\n", 
+      #                sep = "")
+      # }
+      
+      
+      
+      if (!is.null(ramclustObj$msmsint)) {
+        do <- which(ramclustObj$featclus == cl)
+        if(length(do)>0) {
+          msms <- cbind(mz = ramclustObj$fmz[do], int = ramclustObj$msmsint[do])
+          msms <- msms[which(msms[, "mz"] <= (prcmz + 3)), , drop = FALSE]
+          msms <- msms[order(msms[, "int"], decreasing = TRUE), , drop = FALSE]
+          if (nrow(msms) > 0) {
+            out<-paste(out, '\n', ">collision ",
+                       ramclustObj$ExpDes$instrument[which(dimnames(ramclustObj$ExpDes$instrument)[[1]]=="CE2"),1],
+                       '\n', sep = "")
+            for (i in 1:nrow(msms)) {
+              out <- paste(out, msms[i, 1], " ", msms[i, 
+                                                      2], "\n", sep = "")
+            }
+          }
+        }
+      } else  {
+        do <- which(ramclustObj$featclus == cl)
+        if(length(do)>0) {
+          msms <- cbind(mz = ramclustObj$fmz[do], int = ramclustObj$msint[do])
+          msms <- msms[which(msms[, "mz"] <= (prcmz + 3)), , drop = FALSE]
+          msms <- msms[order(msms[, "int"], decreasing = TRUE), , drop = FALSE]
+          if (nrow(msms) > 0) {
+            out<-paste(out, '\n', ">collision ",
+                       ramclustObj$ExpDes$instrument[which(dimnames(ramclustObj$ExpDes$instrument)[[1]]=="CE1"),1],
+                       '\n', sep = "")
+            for (i in 1:nrow(msms)) {
+              out <- paste(out, msms[i, 1], " ", msms[i, 
+                                                      2], "\n", sep = "")
+            }
+          }
+        }
+      }
+      write(out, file = paste0("spectra/ms/", ramclustObj$cmpd[cl], 
+                               ".ms"))
+    }
+  }
+  
   cat("finished", "\n")
   return(ramclustObj)
 }

@@ -17,7 +17,7 @@
 getClassyFire <- function(
   ramclustObj = RC,
   get.all = TRUE,
-  max.wait = 30
+  max.wait = 10
 ) {
   
   library(jsonlite)
@@ -84,24 +84,27 @@ getClassyFire <- function(
         out<-list()
         out$classification_status <- "not done"
         Sys.sleep(1)
+        skiptonext <- FALSE
         time.a<-Sys.time()
-        while(out$classification_status != "Done") {
+        while (out$classification_status != "Done") {
           Sys.sleep(1)
-          out<- fromJSON(
-            paste0(
-              "http://classyfire.wishartlab.com/queries/",
-              query = query_id$id,
-              ".json"
-            )
-          )
-          if( round(as.numeric(difftime(time1 = Sys.time(), time2 = time.a, units = "secs")), 3) >= max.wait) {
-            next
+          out <- fromJSON(paste0("http://classyfire.wishartlab.com/queries/", 
+                                 query = query_id$id, ".json"))
+          if (round(as.numeric(difftime(Sys.time(), time.a, units = "secs")), 3) >= max.wait) {
+            cat("timed out", '\n')
+            skiptonext <- TRUE
+            break
           }
         }
-        newinchikey<-out$entities$inchikey
-        newinchikey<-gsub("InChIKey=", "", newinchikey)
-        out<-fromJSON(paste0(url, "/entities/", newinchikey, ".json"))
-        if(length(out) > 1) {
+        
+        
+        if( (out$classification_status != "Done")) {
+          ramclustObj$classyfire[i,] <- c(ramclustObj$inchikey[i], rep(NA, 6))
+          } else {
+          newinchikey<-out$entities$inchikey
+          newinchikey<-gsub("InChIKey=", "", newinchikey)
+          out<-fromJSON(paste0(url, "/entities/", newinchikey, ".json"))
+          
           a <- ramclustObj$inchikey[i]
           b <- out$kingdom$name; if(is.null(b)) b<-NA
           c <- out$superclass$name; if(is.null(c)) c<-NA
@@ -112,7 +115,7 @@ getClassyFire <- function(
           
           ramclustObj$classyfire[i,]<- c(a,b,c,d,e,f,g)
           rm(out)
-        } else {ramclustObj$classyfire[i,] <- c(ramclustObj$inchikey[i], rep(NA, 6))}
+        }  
       }
     }
   }

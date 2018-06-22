@@ -29,6 +29,10 @@ importFrom("httr", "POST", "accept_json", "add_headers", "content")
 importFrom("jsonlite", "fromJSON")
 importFrom("preprocessCore", "normalize.quantiles")
 
+importFrom("gplots", "heatmap.2")
+
+importFrom("xcms", "groupval", "getEIC")
+
 importFrom("grDevices", "dev.off", "pdf")
 importFrom("graphics", "abline", "axis", "hist", "legend", "par",
              "plot", "points", "text", "title")

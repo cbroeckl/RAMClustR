@@ -37,7 +37,6 @@ do.findmain <- function (ramclustObj = RC, cmpd = NULL, mode = "positive", mzabs
                          ppm.error = 10, ads = NULL, nls = NULL, adwts = NULL, nlwts = NULL, 
                          plot.findmain = TRUE, writeMat = TRUE, writeMS = TRUE) 
 {
-  require(InterpretMSSpectrum)
   if (is.null(ads)) {
     if (grepl("p", mode)) {
       ads <- c("[M+H]+", "[M+Na]+", "[M+K]+", "[M+NH4]+", "[2M+H]+", 

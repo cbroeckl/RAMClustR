@@ -81,13 +81,6 @@ ramclustR<- function(  xcmsObj=NULL,
 ) {
   
   ########
-  # load packages
-  require(xcms, quietly=TRUE)
-  require(ff, quietly=TRUE)
-  require(fastcluster, quietly=TRUE)
-  require(dynamicTreeCut, quietly=TRUE)
-  
-  ########
   # If experimental design is NULL: 
   if(is.null(ExpDes)) {
     ExpDes <- defineExperiment(force.skip = TRUE)

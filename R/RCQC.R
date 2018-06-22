@@ -25,8 +25,6 @@ RCQC<-function(ramclustObj=RC,
                outfile="ramclustQC.pdf"
                
 ){
-  library(e1071)
-  
   dir.create("QC")
   pdf(file=paste("QC/", "ramclustQC2.pdf", sep=""), useDingbats=FALSE, width=8, height=8)  
   #visualize clustering

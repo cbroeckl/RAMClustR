@@ -25,28 +25,6 @@ annotate<-function(ramclustObj = RC,
     stop("msfinder directory does not exist: please set 'msfinder.dir' option as your full msfinder directory path")
   }
   
-  if(standardize.names) {
-    success<-library(devtools, logical.return = TRUE)
-    if(!success) {
-      install.packages("devtools")
-      library(devtools)
-    }
-    success<-library(rcdk, logical.return = TRUE)
-    if(!success) {
-      install.packages("rcdk")
-      library(rcdk)
-    }
-    success<-library(rinchi, logical.return = TRUE)
-    if(!success) {
-      install_github("cdkr", "rajarshi", subdir="rinchi")
-      library(rinchi)
-    }
-    success<-library(jsonlite, logical.return = TRUE)
-    if(!success) {
-      install.packages("jsonlite")
-      library(jsonlite)
-    }
-  }
   use.short.inchikey = TRUE
   
   sfile<-list.files(paste0(msfinder.dir, "/Resources"), pattern = "ExistStructureDB_vs")

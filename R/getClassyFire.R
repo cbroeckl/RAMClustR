@@ -20,8 +20,6 @@ getClassyFire <- function(
   max.wait = 10
 ) {
   
-  library(jsonlite)
-  
   if(is.null(ramclustObj$inchikey)) {
     stop("no inchikey slot found, please 'annotate' first", '\n')
   }

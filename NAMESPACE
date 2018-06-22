@@ -25,6 +25,9 @@ importFrom("dynamicTreeCut", "cutreeDynamicTree", "cutreeHybrid")
 importFrom("ff", "ff", "delete.ff", "ffload", "ffsave")
 importFrom("fastmatch", "fmatch")
 
+importFrom("httr", "POST", "accept_json", "add_headers", "content")
+importFrom("jsonlite", "fromJSON")
+importFrom("preprocessCore", "normalize.quantiles")
 
 importFrom("grDevices", "dev.off", "pdf")
 importFrom("graphics", "abline", "axis", "hist", "legend", "par",

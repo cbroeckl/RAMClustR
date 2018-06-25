@@ -19,25 +19,3 @@ export(ramclustR)
 export(ramclustR2)
 export(write.single.msp)
 export(write.summary)
-
-importFrom("InterpretMSSpectrum", "findMAIN", "PlotSpec")
-importFrom("dynamicTreeCut", "cutreeDynamicTree", "cutreeHybrid")
-importFrom("ff", "ff", "delete.ff", "ffload", "ffsave")
-importFrom("fastmatch", "fmatch")
-
-importFrom("httr", "POST", "accept_json", "add_headers", "content")
-importFrom("jsonlite", "fromJSON")
-importFrom("preprocessCore", "normalize.quantiles")
-
-importFrom("gplots", "heatmap.2")
-
-importFrom("xcms", "groupval", "getEIC")
-
-importFrom("grDevices", "dev.off", "pdf")
-importFrom("graphics", "abline", "axis", "hist", "legend", "par",
-             "plot", "points", "text", "title")
-importFrom("stats", "aggregate", "cor", "fitted", "hclust", "lm",
-             "loess", "median", "predict", "quantile", "sd", "spline",
-             "weighted.mean")
-importFrom("utils", "edit", "install.packages", "read.csv",
-             "read.delim2", "write.csv")

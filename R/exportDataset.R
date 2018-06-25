@@ -3,6 +3,8 @@
 #' export one of 'SpecAbund', 'SpecAbundAve', 'MSdata' or 'MSMSdata' from an RC object to csv
 #' @details Useful for exporting the processed signal intensity matrix to csv for analysis elsewhere.  
 #' @param ramclustObj ramclustR object to export from
+#' @param which.data name of dataset to export.  SpecAbund, SpecAbundAve, MSdata, or MSMSdata
+#' @param label.by either 'ann' or 'cmpd', generally.  name of ramclustObj slot used as csv header for each column (compound)
 #' @return nothing is returned.  file exported as csf to 'datasets/*.csv'
 #' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'ramsearch'
 #' @author Corey Broeckling

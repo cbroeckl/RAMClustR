@@ -13,6 +13,7 @@
 #' @param nlwts numeric: vector of weights for neutral losses. length should match that of 'nls', else first value will be repeated.  if NULL (default), value of 0.1 is assigned to all.  Only used for ramclustR scoring of M.
 #' @param plot.findmain logical: should pdf polts be generated for evaluation?
 #' @param writeMat logical: should indidual .mat files (for MSFinder) be generated in a 'mat' subdirectory in the 'spectra' folder? default = TRUE.
+#' @param writeMS logical: should indidual .ms files (for Sirius) be generated in a 'ms' subdirectory in the 'spectra' folder? default = FALSE.  Not fully tested.
 #' @details a partially annotated ramclustR object.  base structure is that of a standard R heirarchical clustering output, with additional slots described in ramclustR documentation (?ramclustR).  New slots added after using the interpretMSSpectrum functionality include those described below. .mat files written in new directory 'spectra/mat' in working directory
 #' @return    $M:  The inferred molecular weight of the compound giving rise to the each spectrum
 #' @return    $M.ppm:  The ppm error of all the MS signals annotated, high error values should be considered 'red flags'
@@ -35,7 +36,7 @@
 
 do.findmain <- function (ramclustObj = RC, cmpd = NULL, mode = "positive", mzabs.error = 0.01, 
                          ppm.error = 10, ads = NULL, nls = NULL, adwts = NULL, nlwts = NULL, 
-                         plot.findmain = TRUE, writeMat = TRUE, writeMS = TRUE) 
+                         plot.findmain = TRUE, writeMat = TRUE, writeMS = FALSE) 
 {
   if (is.null(ads)) {
     if (grepl("p", mode)) {

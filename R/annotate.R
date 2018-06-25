@@ -17,8 +17,7 @@
 
 annotate<-function(ramclustObj = RC,
                    msfinder.dir = "K:/software/MSFinder/MS-FINDER program ver. 2.20",
-                   standardize.names = TRUE,
-                   delay.time = 0
+                   standardize.names = TRUE
 ) {
   
   if(!dir.exists(msfinder.dir)) {
@@ -141,7 +140,6 @@ annotate<-function(ramclustObj = RC,
     
     inchikey2inchi<-which(!is.na(ramclustObj$inchikey) & is.na(ramclustObj$inchi))
     for(i in inchikey2inchi) {
-      Sys.sleep(delay.time)
       if(!is.na(ramclustObj$inchikey[i])) {
         
         link <- paste0("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/InChI Code/", ramclustObj$inchikey[i])
@@ -176,7 +174,6 @@ annotate<-function(ramclustObj = RC,
     }
     
     for(i in 1:length(ramclustObj$ann)) {
-      Sys.sleep(delay.time)
       if(!is.na(ramclustObj$inchikey[i])) {
         
         link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/synonyms/", ramclustObj$inchikey[i])

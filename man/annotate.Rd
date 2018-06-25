@@ -6,7 +6,7 @@
 \usage{
 annotate(ramclustObj = RC,
   msfinder.dir = "K:/software/MSFinder/MS-FINDER program ver. 2.20",
-  standardize.names = TRUE, delay.time = 0)
+  standardize.names = TRUE)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}

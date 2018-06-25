@@ -3,7 +3,7 @@
 #' After running MSFinder on .mat or .msp files, import the formulas that were predicted and their scores 
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param mat.dir optional path to .mat directory
-#' @param msp.dor optional path to .msp directory
+#' @param msp.dir optional path to .msp directory
 #' @param database.priority character.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just selected databases).  If any database is set, the best formula match to that (those) database(s) is selected, rather than the best formula match overall.  
 #' @details this function imports the output from the MSFinder program to annotate the ramclustR object
 #' @return new slots at $msfinder.formula, $msfinder.formula.score, and $msfinder.formula.details

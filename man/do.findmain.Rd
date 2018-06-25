@@ -7,7 +7,7 @@
 do.findmain(ramclustObj = RC, cmpd = NULL, mode = "positive",
   mzabs.error = 0.01, ppm.error = 10, ads = NULL, nls = NULL,
   adwts = NULL, nlwts = NULL, plot.findmain = TRUE, writeMat = TRUE,
-  writeMS = TRUE)
+  writeMS = FALSE)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to annotate.}
@@ -31,6 +31,8 @@ do.findmain(ramclustObj = RC, cmpd = NULL, mode = "positive",
 \item{plot.findmain}{logical: should pdf polts be generated for evaluation?}
 
 \item{writeMat}{logical: should indidual .mat files (for MSFinder) be generated in a 'mat' subdirectory in the 'spectra' folder? default = TRUE.}
+
+\item{writeMS}{logical: should indidual .ms files (for Sirius) be generated in a 'ms' subdirectory in the 'spectra' folder? default = FALSE.  Not fully tested.}
 }
 \value{
 $M:  The inferred molecular weight of the compound giving rise to the each spectrum

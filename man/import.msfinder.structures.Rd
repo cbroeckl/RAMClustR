@@ -12,7 +12,7 @@ import.msfinder.structures(ramclustObj = RC, mat.dir = NULL,
 
 \item{mat.dir}{optional path to .mat directory}
 
-\item{msp.dor}{optional path to .msp directory}
+\item{msp.dir}{optional path to .msp directory}
 }
 \value{
 an annotated ramclustR object

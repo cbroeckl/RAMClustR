@@ -12,7 +12,7 @@ import.msfinder.mssearch(ramclustObj = RC, standardize.names = TRUE,
 
 \item{mat.dir}{optional path to .mat directory}
 
-\item{msp.dor}{optional path to .msp directory}
+\item{msp.dir}{optional path to .msp directory}
 }
 \value{
 an updated ramclustR object, with new slots at $msfinder.mssearch.details and $msfinder.mssearch.scores

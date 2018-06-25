@@ -9,6 +9,10 @@ exportDataset(ramclustObj = RC, which.data = "SpecAbund",
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to export from}
+
+\item{which.data}{name of dataset to export.  SpecAbund, SpecAbundAve, MSdata, or MSMSdata}
+
+\item{label.by}{either 'ann' or 'cmpd', generally.  name of ramclustObj slot used as csv header for each column (compound)}
 }
 \value{
 nothing is returned.  file exported as csf to 'datasets/*.csv'

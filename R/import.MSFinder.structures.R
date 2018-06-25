@@ -3,7 +3,8 @@
 #' After running MSFinder on .mat or .msp files, import the structure that were predicted and their scores 
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param mat.dir optional path to .mat directory
-#' @param msp.dor optional path to .msp directory
+#' @param msp.dir optional path to .msp directory
+#' @param msfinder.dir path to directory containing msfinder program and 'resources' directory
 #' @details this function imports the output from the MSFinder program to annotate the ramclustR object
 #' @return an annotated ramclustR object
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
@@ -23,7 +24,7 @@ import.msfinder.structures <- function (
   ramclustObj = RC,
   mat.dir = NULL,
   msp.dir = NULL,
-  MSFinder.dir = "C:\\MSFinder\\MS-FINDER_2.20"
+  msfinder.dir = "C:\\MSFinder\\MS-FINDER_2.20"
 ) {
   
   home.dir <-getwd()

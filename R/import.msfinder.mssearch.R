@@ -3,7 +3,8 @@
 #' After running MSFinder on .mat or .msp files, import the spectral search results
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param mat.dir optional path to .mat directory
-#' @param msp.dor optional path to .msp directory
+#' @param msp.dir optional path to .msp directory
+#' @param standardize.names logical; use chemical translation service to retreive standard chemical name for inchikey?
 #' @details this function imports the output from the MSFinder program to annotate the ramclustR object
 #' @return an updated ramclustR object, with new slots at $msfinder.mssearch.details and $msfinder.mssearch.scores
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.

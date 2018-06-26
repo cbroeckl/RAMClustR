@@ -15,7 +15,7 @@
 
 
 write.single.msp<-function(
-  ramclustObj = RC,
+  ramclustObj = NULL,
   mzdec = 4
 ) {
   if (!dir.exists("spectra")) {

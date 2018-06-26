@@ -4,7 +4,7 @@
 \alias{annotation.summary}
 \title{annotation.summary()}
 \usage{
-annotation.summary(ramclustObj = RC, outfile = NULL)
+annotation.summary(ramclustObj = NULL, outfile = NULL)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}

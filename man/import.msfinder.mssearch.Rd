@@ -4,7 +4,7 @@
 \alias{import.msfinder.mssearch}
 \title{import.MSFinder.mssearch}
 \usage{
-import.msfinder.mssearch(ramclustObj = RC, standardize.names = TRUE,
+import.msfinder.mssearch(ramclustObj = NULL, standardize.names = TRUE,
   mat.dir = NULL, msp.dir = NULL)
 }
 \arguments{

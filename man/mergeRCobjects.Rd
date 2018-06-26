@@ -4,7 +4,7 @@
 \alias{mergeRCobjects}
 \title{mergeRCobjects}
 \usage{
-mergeRCobjects(ramclustObj.1 = RC1, ramclustObj.2 = RC2, mztol = 0.02,
+mergeRCobjects(ramclustObj.1 = NULL, ramclustObj.2 = NULL, mztol = 0.02,
   rttol = 30, mzwt = 2, rtwt = 1)
 }
 \arguments{

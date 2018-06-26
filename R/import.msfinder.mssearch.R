@@ -15,7 +15,7 @@
 #' @export 
 
 import.msfinder.mssearch <- function (
-  ramclustObj = RC,
+  ramclustObj = NULL,
   standardize.names = TRUE,
   mat.dir = NULL,
   msp.dir = NULL

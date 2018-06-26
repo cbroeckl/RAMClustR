@@ -17,7 +17,7 @@
 #' @author Corey Broeckling
 #' @export
 
-RCQC<-function(ramclustObj=RC,
+RCQC<-function(ramclustObj=NULL,
                qctag="QC",
                npc=4,
                scale="pareto",

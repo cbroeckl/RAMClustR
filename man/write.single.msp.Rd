@@ -4,7 +4,7 @@
 \alias{write.single.msp}
 \title{write.single.msp}
 \usage{
-write.single.msp(ramclustObj = RC, mzdec = 4)
+write.single.msp(ramclustObj = NULL, mzdec = 4)
 }
 \arguments{
 \item{ramclustObj}{your ramclustR output R object.}

@@ -4,7 +4,7 @@
 \alias{impRamSearch}
 \title{impRamSearch}
 \usage{
-impRamSearch(ramclustObj = RC, ramsearchout = "spectra/results.rse")
+impRamSearch(ramclustObj = NULL, ramsearchout = "spectra/results.rse")
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to annotate}

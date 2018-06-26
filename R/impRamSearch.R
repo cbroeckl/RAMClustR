@@ -14,7 +14,7 @@
 
 
 impRamSearch<-function(
-  ramclustObj=RC,
+  ramclustObj=NULL,
   ramsearchout="spectra/results.rse"
 ) {
   out<-readLines(ramsearchout)

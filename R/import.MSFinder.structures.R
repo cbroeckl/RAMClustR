@@ -21,7 +21,7 @@
 #' @export
 
 import.msfinder.structures <- function (
-  ramclustObj = RC,
+  ramclustObj = NULL,
   mat.dir = NULL,
   msp.dir = NULL,
   msfinder.dir = "C:\\MSFinder\\MS-FINDER_2.20"

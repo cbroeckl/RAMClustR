@@ -4,7 +4,7 @@
 \alias{getClassyFire}
 \title{getClassyFire}
 \usage{
-getClassyFire(ramclustObj = RC, get.all = TRUE, max.wait = 10)
+getClassyFire(ramclustObj = NULL, get.all = TRUE, max.wait = 10)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to ClassyFy}

@@ -15,9 +15,9 @@
 #' @export 
 
 
-annotate<-function(ramclustObj = RC,
+annotate<-function(ramclustObj = NULL,
                    msfinder.dir = "K:/software/MSFinder/MS-FINDER program ver. 2.20",
-                   standardize.names = TRUE
+                   standardize.names = FALSE
 ) {
   
   if(!dir.exists(msfinder.dir)) {

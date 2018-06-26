@@ -15,7 +15,7 @@
 
 
 getClassyFire <- function(
-  ramclustObj = RC,
+  ramclustObj = NULL,
   get.all = TRUE,
   max.wait = 10
 ) {

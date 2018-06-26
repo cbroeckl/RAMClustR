@@ -4,7 +4,7 @@
 \alias{findmass}
 \title{findmass}
 \usage{
-findmass(ramclustObj = RC, mz = NULL, mztol = 0.02, rttol = 2,
+findmass(ramclustObj = NULL, mz = NULL, mztol = 0.02, rttol = 2,
   zmax = 6, m.check = TRUE)
 }
 \arguments{

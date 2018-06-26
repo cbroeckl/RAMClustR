@@ -14,7 +14,7 @@
 #' @author Corey Broeckling
 #' @export
 
-findmass <- function (ramclustObj = RC, 
+findmass <- function (ramclustObj = NULL, 
                       mz = NULL, 
                       mztol = 0.02, 
                       rttol = 2, 

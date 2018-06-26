@@ -11,7 +11,7 @@
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @export 
 
-exportDataset<-function(ramclustObj=RC,
+exportDataset<-function(ramclustObj=NULL,
                         which.data="SpecAbund",
                         label.by="ann") {
   temp<-ramclustObj[[which.data]]

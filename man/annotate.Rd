@@ -4,9 +4,9 @@
 \alias{annotate}
 \title{evalute ramSearch, MSFinder mssearch, MSFinder Structure, MSFinder Formula, and findmain output to annotate spectra of ramclustR object}
 \usage{
-annotate(ramclustObj = RC,
+annotate(ramclustObj = NULL,
   msfinder.dir = "K:/software/MSFinder/MS-FINDER program ver. 2.20",
-  standardize.names = TRUE)
+  standardize.names = FALSE)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}

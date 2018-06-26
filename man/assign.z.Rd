@@ -4,7 +4,7 @@
 \alias{assign.z}
 \title{assign.z}
 \usage{
-assign.z(ramclustObj = RC, chargestate = c(1:5), mzError = 0.02,
+assign.z(ramclustObj = NULL, chargestate = c(1:5), mzError = 0.02,
   nEvents = 2, minPercentSignal = 10, assume1 = TRUE)
 }
 \arguments{

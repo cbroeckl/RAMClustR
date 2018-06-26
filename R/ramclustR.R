@@ -46,6 +46,23 @@
 #' @return   $SpecAbund: the cluster intensities after collapsing features to clusters
 #' @return   $SpecAbundAve: the cluster intensities after averaging all samples with identical sample names
 #' @return   - 'spectra' directory is created in the working directory.  In this directory a .msp is (optionally) created, which contains the spectra for all compounds in the dataset following clustering.  if MSe/idMSMS data are provided, they are listed witht he same compound name as the MS spectrum, with the collision energy provided in the ExpDes object provided to distinguish low from high CE spectra. 
+#' @importFrom grDevices dev.off pdf
+#' @importFrom graphics abline axis hist "legend" "par" "plot" "points" "title"
+#' @importFrom stats aggregate cor fitted lm loess median predict quantile sd weighted.mean
+#' @importFrom utils edit read.csv read.delim2 write.csv
+#' @importFrom ff ff delete.ff
+#' @importFrom fastcluster hclust
+#' @importFrom dynamicTreeCut cutreeDynamicTree
+#' @importFrom e1071 skewness
+#' @importFrom gplots heatmap.2
+#' @importFrom pcaMethods pca
+#' @importFrom jsonlite fromJSON
+#' @importFrom preprocessCore normalize.quantiles
+#' @importFrom InterpretMSSpectrum findMAIN
+#' @importFrom rinchi parse.inchi 
+#' @importFrom xcms groupval
+#' @importFrom rcdk get.smiles
+
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
 #' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'mass spectrometry', 'clustering', 'feature', 'xcms'

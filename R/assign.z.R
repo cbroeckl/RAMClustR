@@ -21,7 +21,7 @@
 
 
 assign.z<-function(
-  ramclustObj=RC,
+  ramclustObj=NULL,
   chargestate=c(1:5),
   mzError=0.02,
   nEvents=2,

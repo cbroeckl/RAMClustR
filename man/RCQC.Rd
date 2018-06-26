@@ -4,7 +4,7 @@
 \alias{RCQC}
 \title{RCQC}
 \usage{
-RCQC(ramclustObj = RC, qctag = "QC", npc = 4, scale = "pareto",
+RCQC(ramclustObj = NULL, qctag = "QC", npc = 4, scale = "pareto",
   which.data = "SpecAbund", outfile = "ramclustQC.pdf")
 }
 \arguments{

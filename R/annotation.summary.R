@@ -11,7 +11,7 @@
 #' @export 
 
 
-annotation.summary<-function(ramclustObj = RC,
+annotation.summary<-function(ramclustObj = NULL,
                              outfile = NULL
                             ) {
   

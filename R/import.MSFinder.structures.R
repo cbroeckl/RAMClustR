@@ -232,7 +232,7 @@ import.msfinder.structures <- function (
     if(!is.na(ramclustObj$msfinder.formula[x])) {
       if(is.null(ramclustObj$msfinder.structure.details[[x]][[ramclustObj$msfinder.formula[x]]]$structures)) {
         return(NA)
-        next
+        # next
       }
       if(nrow(ramclustObj$msfinder.structure.details[[x]][[ramclustObj$msfinder.formula[x]]]$structures)>0) {
         # if(nrow(ramclustObj$msfinder.structure[[x]][[ramclustObj$msfinder.formula[x]]]$structures)>0) {

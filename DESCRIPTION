@@ -5,8 +5,7 @@ Version: 0.4.1
 Date: 2018-06-22
 Author: Corey D. Broeckling, Fayyaz Afsar, Steffan Neumann, Asa Ben-Hur,  Jessica Prenni.
 Maintainer: "Broeckling,Corey" <Corey.Broeckling@ColoState.EDU>
-Imports: dynamicTreeCut, ff, fastmatch, InterpretMSSpectrum, httr, jsonlite, 
-  preprocessCore, xcms, e1071, gplots, pcaMethods, stats
+Imports: dynamicTreeCut, ff, fastmatch, InterpretMSSpectrum, httr, jsonlite, preprocessCore, xcms, e1071, gplots, pcaMethods, stats, utils, animation
 License: GPL (>= 2)
 Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics data, where feature detection is performed on both MS and idMS/MS(indiscriminant MS/MS) data, and feature relationships are determined simultaneously from the MS and idMS/MS data. 
 URL: https://github.com/cbroeckl/RAMClustR

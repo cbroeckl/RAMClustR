@@ -5,6 +5,7 @@
 #' @param xcmsObj xcmsObject: containing grouped feature data for clustering by ramclustR
 #' @param ms filepath: optional csv input. Features as columns, rows as samples. Column header mz_rt
 #' @param idmsms filepath: optional idMSMS / MSe csv data.  same dim and names as ms required
+#' @param MStag character: character string in 'taglocation' to designat MS / MSe files e.g. "01.cdf"
 #' @param idMSMStag character: character string in 'taglocation' to designat idMSMS / MSe files e.g. "02.cdf"
 #' @param taglocation character: "filepaths" by default, "phenoData[,1]" is another option. referse to xcms slot
 #' @param featdelim character: how feature mz and rt are delimited in csv import column header e.g. ="-"
@@ -58,7 +59,6 @@ ramclustR<- function(  xcmsObj=NULL,
                        MStag=NULL,
                        idMSMStag=NULL, 
                        featdelim="_", 
-                       mzpos=1, 
                        timepos=2, 
                        st=NULL, 
                        sr=NULL, 

@@ -6,10 +6,10 @@
 \usage{
 ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
   taglocation = "filepaths", MStag = NULL, idMSMStag = NULL,
-  featdelim = "_", mzpos = 1, timepos = 2, st = NULL, sr = NULL,
-  maxt = NULL, deepSplit = FALSE, blocksize = 2000, mult = 5,
-  hmax = NULL, sampNameCol = 1, collapse = TRUE, usePheno = TRUE,
-  mspout = TRUE, ExpDes = NULL, normalize = "TIC", minModuleSize = 2,
+  featdelim = "_", timepos = 2, st = NULL, sr = NULL, maxt = NULL,
+  deepSplit = FALSE, blocksize = 2000, mult = 5, hmax = NULL,
+  sampNameCol = 1, collapse = TRUE, usePheno = TRUE, mspout = TRUE,
+  ExpDes = NULL, normalize = "TIC", minModuleSize = 2,
   linkage = "average", mzdec = 4, cor.method = "pearson",
   fftempdir = NULL)
 }
@@ -21,6 +21,8 @@ ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
 \item{idmsms}{filepath: optional idMSMS / MSe csv data.  same dim and names as ms required}
 
 \item{taglocation}{character: "filepaths" by default, "phenoData[,1]" is another option. referse to xcms slot}
+
+\item{MStag}{character: character string in 'taglocation' to designat MS / MSe files e.g. "01.cdf"}
 
 \item{idMSMStag}{character: character string in 'taglocation' to designat idMSMS / MSe files e.g. "02.cdf"}
 

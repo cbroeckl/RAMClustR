@@ -1,7 +1,7 @@
 Package: RAMClustR
 Type: Package
 Title: RAMClust: a novel feature clustering method enables spectral-matching based annotation for metabolomics data
-Version: 0.4.1
+Version: 0.4.2
 Date: 2018-06-22
 Author: Corey D. Broeckling, Fayyaz Afsar, Steffan Neumann, Asa Ben-Hur,  Jessica Prenni.
 Maintainer: "Broeckling,Corey" <Corey.Broeckling@ColoState.EDU>

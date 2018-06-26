@@ -1,3 +1,6 @@
+2018-06-26 Corey Broeckling 
+  * check() returns zero errors, warnings, or notes. 
+
 2014-09-02  Steffen Neumann  <sneumann@ipb-halle.de>
 
 	* Fix some minor stuff to make R CMD check happy

@@ -58,7 +58,7 @@
 #' @importFrom pcaMethods pca
 #' @importFrom jsonlite fromJSON
 #' @importFrom preprocessCore normalize.quantiles
-#' @importFrom InterpretMSSpectrum findMAIN
+#' @importFrom InterpretMSSpectrum findMAIN PlotSpec
 #' @importFrom rinchi parse.inchi 
 #' @importFrom xcms groupval
 #' @importFrom rcdk get.smiles

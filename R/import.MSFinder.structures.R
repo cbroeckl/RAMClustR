@@ -1,4 +1,4 @@
-#' import.MSFinder.structures
+#' import.msfinder.structures
 #'
 #' After running MSFinder on .mat or .msp files, import the structure that were predicted and their scores 
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
@@ -30,8 +30,10 @@ import.msfinder.structures <- function (
   home.dir <-getwd()
   
   if(is.null(ramclustObj$msfinder.formula)) {
-    warning("trying to run 'import.MSFinder.formulas' first")
-    ramclustObj<-import.MSFinder.formulas(ramclustObj = RC, mat.dir = NULL, msp.dir = NULL)
+    warning("trying to run 'import.msfinder.formulas' first")
+    rc<-ramclustObj
+    ramclustObj<-import.msfinder.formulas(ramclustObj = rc, mat.dir = NULL, msp.dir = NULL)
+    rm(rc)
   }
   
   if(is.null(mat.dir)) {
@@ -156,7 +158,7 @@ import.msfinder.structures <- function (
         starts <- grep("NAME: ", tmp)
         
         if(length(starts) < 1) {
-          msfinder.formula[[cmpd[i]]]<- fill
+          msfinder.formula[[ramclustObj$cmpd[i]]]<- fill
           next
         }
         if(length(starts) > 1) {

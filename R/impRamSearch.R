@@ -37,7 +37,7 @@ impRamSearch<-function(
   origname<-which(regexpr('Original Name', out)==1)
   
   if(any((origname-name)!=2)) stop("please don't edit the output from ramsearch manually")
-  if(any(RC$cmpd!=sub("Original Name: ", "", out[origname]))) {stop("compound names/order differ between ramclust object and ramsearch output")}  
+  if(any(ramclustObj$cmpd!=sub("Original Name: ", "", out[origname]))) {stop("compound names/order differ between ramclust object and ramsearch output")}  
   
   ##if length of name is not equal to length of ramclust Object 'cmpd' slot, something is wrong:
   if(length(name)/as.integer(as.character(ramclustObj$ExpDes[[2]]["MSlevs",1]))!= length(ramclustObj$cmpd)) stop("number of spectra in ramsearch output different than number of compounds in ramclust object")
@@ -70,7 +70,7 @@ impRamSearch<-function(
   }
   ramclustObj$ann[which(nchar(ramclustObj$ann)<1)]<-ramclustObj$cmpd[which(nchar(ramclustObj$ann)<1)]
   
-  write.csv(file="spectra/annotation_summary.csv", data.frame('cmpd'=RC$cmpd,
+  write.csv(file="spectra/annotation_summary.csv", data.frame('cmpd'=ramclustObj$cmpd,
                                                               'retention time'=ramclustObj$clrt,
                                                               'spectrum name'=ramclustObj$rs.specn,
                                                               'annotation'=ramclustObj$ann,

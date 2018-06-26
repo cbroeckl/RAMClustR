@@ -2,7 +2,7 @@
 % Please edit documentation in R/import.msfinder.structures.R
 \name{import.msfinder.structures}
 \alias{import.msfinder.structures}
-\title{import.MSFinder.structures}
+\title{import.msfinder.structures}
 \usage{
 import.msfinder.structures(ramclustObj = NULL, mat.dir = NULL,
   msp.dir = NULL, msfinder.dir = "C:\\\\MSFinder\\\\MS-FINDER_2.20")

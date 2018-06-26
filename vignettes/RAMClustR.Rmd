@@ -47,9 +47,10 @@ We can use the xset we just created as input to ramclustR.  You likely have alre
 
 ```{r ramclustR installation, eval=FALSE, include=TRUE}
 install.packages("devtools", repos="http://cran.us.r-project.org", dependencies=TRUE)
-library(devtools)
+library(devtools) 
+install_github("cdkr", "rajarshi", subdir="rinchi")
 install_github("cbroeckl/RAMClustR", build_vignettes = TRUE, dependencies = TRUE)
-library(RAMClustR)
+library(RAMClustR) 
 ```
 
 The ramclustR function is built to use xcms data to estimate the most appropriate parameters.  As such we do not need to set too many options.  However, we do need to provide ramclustR some data for record keeping and providing instrument descriptions for spectra output. 

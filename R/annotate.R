@@ -162,16 +162,18 @@ annotate<-function(ramclustObj = NULL,
       }
     }
     
-    inchi2smiles<-which(!is.na(ramclustObj$inchi) & is.na(ramclustObj$smiles))
-    if(length(inchi2smiles) > 0) {
-      for(i in inchi2smiles) {
-        inchi<-ramclustObj$inchi[i]
-        m<-parse.inchi(inchi)[[1]]
-        s<-get.smiles(m)
-        rm(m)
-        ramclustObj$smiles[i]<-s
-      }
-    }
+    ## rJava required for rcdk/rinchi.  causes too many headaches. 
+    ## try to find a lookup alternative for inchi to smiles
+    # inchi2smiles<-which(!is.na(ramclustObj$inchi) & is.na(ramclustObj$smiles))
+    # if(length(inchi2smiles) > 0) {
+    #   for(i in inchi2smiles) {
+    #     inchi<-ramclustObj$inchi[i]
+    #     m<-parse.inchi(inchi)[[1]]
+    #     s<-get.smiles(m)
+    #     rm(m)
+    #     ramclustObj$smiles[i]<-s
+    #   }
+    # }
     
     for(i in 1:length(ramclustObj$ann)) {
       if(!is.na(ramclustObj$inchikey[i])) {

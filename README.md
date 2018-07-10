@@ -9,10 +9,6 @@ install.packages("devtools", repos="http://cran.us.r-project.org", dependencies=
 
 library(devtools)  
 
-install.packages("httr")
-
-install_github("cdkr", "rajarshi", subdir="rinchi")
-
 install_github("cbroeckl/RAMClustR", build_vignettes = TRUE, dependencies = TRUE) 
 
 library(RAMClustR) 

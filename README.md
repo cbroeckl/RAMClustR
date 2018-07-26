@@ -8,7 +8,9 @@ To Install from R console:
 
 _if you are on a mac run these lines first 
 this seems to prevent an odd Rdisop error during the rest of installation_
+
 source("https://bioconductor.org/biocLite.R")
+
 biocLite("Rdisop")
 
 

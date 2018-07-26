@@ -6,10 +6,11 @@ A feature clustering algorithm for non-targeted mass spectrometric metabolomics 
 To Install from R console:
 
 
-### IF YOU ARE ON A MAC: 
+# if you are on a mac run these lines first 
+# this seems to prevent an odd Rdisop error during the rest of installation
 source("https://bioconductor.org/biocLite.R")
 biocLite("Rdisop")
-### this seems to prevent an odd Rdisop error during the rest of installation
+
 
 install.packages("devtools", repos="http://cran.us.r-project.org", dependencies=TRUE) 
 

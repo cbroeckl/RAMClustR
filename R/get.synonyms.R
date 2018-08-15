@@ -25,7 +25,7 @@ get.synonyms<-function(ramclustObj = RC
   
   require(jsonlite)
   for(i in 1:length(ramclustObj$ann)) {
-    Sys.sleep(delay.time)
+    # Sys.sleep(delay.time)
     if(!is.na(ramclustObj$inchikey[i])) {
       link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/synonyms/", ramclustObj$inchikey[i])
       suppressWarnings(out<-readLines(link))

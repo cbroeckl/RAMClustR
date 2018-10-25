@@ -4,6 +4,7 @@
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param msfinder.dir full path to MSFinder directory - used for naming refinement
 #' @param standardize.names logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)
+#' @param min.msms.score numerical: what is the minimum MSFinder similarity score acceptable.  default = 3.5
 #' @details this function imports the output from the MSFinder program to annotate the ramclustR object
 #' @return an updated ramclustR object, with the RC$ann and RC$ann.conf slots updated to annotated based on output from 1. ramsearch output, 2. msfinder mssearch, 3. msfinder predicted structure, 4. msfinder predicted formula, and 5. interpretMSSpectrum inferred molecular weight, with listed order as priority.  
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
@@ -18,6 +19,9 @@
 annotate<-function(ramclustObj = NULL,
                    msfinder.dir = "C:/MSFinder/MS-FINDER program ver. 2.40",
                    standardize.names = TRUE
+                   msfinder.dir = "K:/software/MSFinder/MS-FINDER program ver. 2.20",
+                   standardize.names = FALSE,
+                   min.msms.score = 3.5
 ) {
   
   if(!dir.exists(msfinder.dir)) {
@@ -78,7 +82,7 @@ annotate<-function(ramclustObj = NULL,
   if(mssearch) {
     for(i in 1:length(ramclustObj$ann)) {
       if((nrow(ramclustObj$msfinder.mssearch.details[[i]]$summary)>0) & (ramclustObj$cmpd[i] == ramclustObj$ann[i]))  {
-        if(ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"totalscore"] >=4 ) {
+        if(ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"totalscore"] >= min.msms.score ) {
           ramclustObj$inchikey[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"inchikey"]
           ramclustObj$smiles[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"smiles"]
           ramclustObj$ann[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"name"]

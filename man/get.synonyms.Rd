@@ -4,10 +4,17 @@
 \alias{get.synonyms}
 \title{get.synonyms()}
 \usage{
-get.synonyms(ramclustObj = RC)
+get.synonyms(ramclustObj = RC, get.db = TRUE, update.names = TRUE,
+  lipid.short.hand = TRUE)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}
+
+\item{get.db}{logical - should the HMDB, LipidMaps, and Pubchem names be retreived when available?}
+
+\item{update.names}{logical - should the ramclustObj$ann slot (annotation) be updated based on the above?}
+
+\item{lipid.short.hand}{- logical - should the stringr pacakge be used to look for lipid short hand nomenclature in the synonyms? Only used when update.names = TRUE}
 }
 \value{
 an updated ramclustR object, with the RC$synonyms slot containing a list with length equal to the number of compounds in the dataset.  Each list element represents a character vector of all the synonyms returns (or NA, for compounds with no inchikey)
@@ -16,7 +23,7 @@ an updated ramclustR object, with the RC$synonyms slot containing a list with le
 Use chemical translation service to retreive synonyms for ramclustR inchikeys
 }
 \details{
-this function uses the chemical translation service (http://cts.fiehnlab.ucdavis.edu/) to look up known names (synonyms for a given inchikey)
+this function uses the chemical translation service (http://cts.fiehnlab.ucdavis.edu/), HMDB, LipidMaps, and PubChem databases to retreive synonymns and compound names ror a given inchikey).  Lipid shorthand (i.e. PC(36:6)) can be identified and used when available.  Precendence for naming is lipid.short.hand > HMDB > LipidMaps > Pubchem > original assignment.
 }
 \references{
 Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.

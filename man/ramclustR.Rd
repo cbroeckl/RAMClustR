@@ -6,12 +6,12 @@
 \usage{
 ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
   taglocation = "filepaths", MStag = NULL, idMSMStag = NULL,
-  featdelim = "_", timepos = 2, st = NULL, sr = NULL, maxt = NULL,
-  deepSplit = FALSE, blocksize = 2000, mult = 5, hmax = NULL,
-  sampNameCol = 1, collapse = TRUE, usePheno = TRUE, mspout = TRUE,
-  ExpDes = NULL, normalize = "TIC", minModuleSize = 2,
-  linkage = "average", mzdec = 4, cor.method = "pearson",
-  fftempdir = NULL)
+  featdelim = "_", timepos = 2, st = NULL, sr = NULL,
+  maxt = NULL, deepSplit = FALSE, blocksize = 2000, mult = 5,
+  hmax = NULL, sampNameCol = 1, collapse = TRUE, usePheno = TRUE,
+  mspout = TRUE, ExpDes = NULL, normalize = "TIC",
+  minModuleSize = 2, linkage = "average", mzdec = 4,
+  cor.method = "pearson", fftempdir = NULL)
 }
 \arguments{
 \item{xcmsObj}{xcmsObject: containing grouped feature data for clustering by ramclustR}

@@ -6,8 +6,8 @@
 \usage{
 do.findmain(ramclustObj = NULL, cmpd = NULL, mode = "positive",
   mzabs.error = 0.01, ppm.error = 10, ads = NULL, nls = NULL,
-  adwts = NULL, nlwts = NULL, plot.findmain = TRUE, writeMat = TRUE,
-  writeMS = FALSE)
+  adwts = NULL, nlwts = NULL, plot.findmain = TRUE,
+  writeMat = TRUE, writeMS = FALSE)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to annotate.}

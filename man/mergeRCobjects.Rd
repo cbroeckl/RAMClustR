@@ -4,8 +4,8 @@
 \alias{mergeRCobjects}
 \title{mergeRCobjects}
 \usage{
-mergeRCobjects(ramclustObj.1 = NULL, ramclustObj.2 = NULL, mztol = 0.02,
-  rttol = 30, mzwt = 2, rtwt = 1)
+mergeRCobjects(ramclustObj.1 = NULL, ramclustObj.2 = NULL,
+  mztol = 0.02, rttol = 30, mzwt = 2, rtwt = 1)
 }
 \arguments{
 \item{ramclustObj.1}{ramclustR object 1: this object will be the base for the new object.  That is all the features from ramclustObj.1 will be retained.}

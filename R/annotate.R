@@ -16,8 +16,8 @@
 
 
 annotate<-function(ramclustObj = NULL,
-                   msfinder.dir = "K:/software/MSFinder/MS-FINDER program ver. 2.20",
-                   standardize.names = FALSE
+                   msfinder.dir = "C:/MSFinder/MS-FINDER program ver. 2.40",
+                   standardize.names = TRUE
 ) {
   
   if(!dir.exists(msfinder.dir)) {
@@ -27,13 +27,26 @@ annotate<-function(ramclustObj = NULL,
   use.short.inchikey = TRUE
   
   sfile<-list.files(paste0(msfinder.dir, "/Resources"), pattern = "ExistStructureDB_vs")
-  if(length(sfile)==0) {
-    stop("no structure DB file found in msfinder.dir / Resources")
-  }
-  
+  # if(length(sfile)==0) {
+  #   stop("no structure DB file found in msfinder.dir / Resources")
+  # }
+  # 
   if(length(sfile) > 1) {
     sfile <- sfile[which.max(as.numeric(gsub(".esd", "", gsub("ExistStructureDB_vs", "", sfile))))]
   }
+  
+  if(length(sfile) == 0) {
+    
+    sfile<-list.files(paste0(msfinder.dir, "/Resources"), pattern = "MsfinderStructureDB-VS")
+    # if(length(sfile)==0) {
+    #   stop("no structure DB file found in msfinder.dir / Resources")
+    # }
+    # 
+    if(length(sfile) > 1) {
+      sfile <- sfile[which.max(as.numeric(gsub(".esd", "", gsub("MsfinderStructureDB-VS", "", sfile))))]
+    }
+  }
+  
   
   d<-read.delim2(paste0(msfinder.dir, "/Resources/", sfile), header = TRUE, na.strings = "N/A", quote = "", stringsAsFactors = FALSE)
   
@@ -77,20 +90,34 @@ annotate<-function(ramclustObj = NULL,
   }
   
   if(structure) {
+    
+    inchikey <- grep("inchikey", names(d),  ignore.case = TRUE)
+   
+    if(length(inchikey) == 2) {
+      inchikey.short<- inchikey[grep("short", names(d)[inchikey], ignore.case = TRUE)]
+      inchikey <- inchikey[which(inchikey != inchikey.short)]
+    }
+    
+    if(length(inchikey) > 2) {
+      stop("too many inchikey columns in MSFinder table - please report error to ", maintainer('RAMClustR'),  '\n')
+    }
+  
+    
     for(i in 1:length(ramclustObj$ann)) {
       if( is.data.frame(ramclustObj$msfinder.structure[[i]]) && (ramclustObj$cmpd[i] == ramclustObj$ann[i]) )  {
         
         tmpinch<-ramclustObj$msfinder.structure[[i]][1, "inchikey"]
         tmpinch.short<-unlist(strsplit(tmpinch, "-"))[1]
-        if(use.short.inchikey) {
-          drow<-grep(tmpinch.short, d[,"InChIKey"])
+        if(use.short.inchikey & exists("inchikey.short")) {
+          drow<-grep(tmpinch.short, d[,inchikey.short])
         } else {
-          drow<-grep(tmpinch, d[,"InChIKey"])
+          drow<-grep(tmpinch, d[,inchikey])
         }
-        # d[drow,"InChIKey"]
+        # d[drow,]
         # tmp<- ramclustObj$msfinder.structure[[i]][1, "inchikey"]
         
         ramclustObj$inchikey[i]<-ramclustObj$msfinder.structure[[i]][1,"inchikey"]
+        ramclustObj$ann[i]<-ramclustObj$msfinder.structure[[i]][1,"name"]
         ramclustObj$smiles[i]<-ramclustObj$msfinder.structure[[i]][1,"smiles"]
         ramclustObj$annconf[i]<-2
         ramclustObj$dbid[i]<-ramclustObj$msfinder.structure[[i]][1,"resources"]
@@ -142,7 +169,9 @@ annotate<-function(ramclustObj = NULL,
     for(i in inchikey2inchi) {
       if(!is.na(ramclustObj$inchikey[i])) {
         
-        link <- paste0("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/InChI Code/", ramclustObj$inchikey[i])
+        link <- paste0("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/InChI Code/", 
+                       # unlist(strsplit(ramclustObj$inchikey[i], "-"))[1])
+                         ramclustObj$inchikey[i])
         out<-NA
         start<-Sys.time()
         while(is.na(out[1])) {
@@ -153,7 +182,7 @@ annotate<-function(ramclustObj = NULL,
           }
         }
         inchis<-unlist(fromJSON(out)$result)
-        if(length(inchis) == 0) {
+        if(length(inchis) == 0 ) {
           ramclustObj$inchi[i] <- NA
         }
         if(length(inchis)>=1) {
@@ -174,50 +203,50 @@ annotate<-function(ramclustObj = NULL,
     #     ramclustObj$smiles[i]<-s
     #   }
     # }
-    
-    for(i in 1:length(ramclustObj$ann)) {
-      if(!is.na(ramclustObj$inchikey[i])) {
-        
-        link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/synonyms/", ramclustObj$inchikey[i])
-        out<-NA
-        start<-Sys.time()
-        while(is.na(out[1])) {
-          tryCatch(suppressWarnings(out<-readLines(link)), error = function(x) {NA}, finally = NA)
-          stop<-Sys.time()
-          if(as.numeric(stop - start) > 5) {
-            ramclustObj$synonyms[[i]] <- NA
-            break
-          }
-        }
-        syns<-unlist(fromJSON(out))
-        if(length(syns) == 0) {
-          ramclustObj$synonyms[[i]] <- NA
-        }
-        if(length(syns)>=1) {
-          nc<-nchar(syns)
-          syns<-syns[order(nc, decreasing = FALSE)]
-          ramclustObj$synonyms[[i]] <- syns
-        }
-      #}}
-        
-        if(is.na(ramclustObj$inchi[i])) {          
-          link <- paste0("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/InChI Code/", ramclustObj$inchikey[i])
-          out<-NA
-          while(is.na(out[1])) {
-            tryCatch(suppressWarnings(out<-readLines(link)), error = function(x) {NA}, finally = NA)
-          }
-          inchi<-as.character(unlist(fromJSON(out))["result"])
-          if(length(inchi) == 0) {
-            ramclustObj$inchi[[i]] <- NA
-          }
-          if(length(inchi)>=1) {
-            nc<-nchar(inchi)
-            inchi<-inchi[order(nc, decreasing = FALSE)]
-            ramclustObj$inchi[i] <- inchi[1]
-          }
-        }
-      }
-    }
+    # 
+    # for(i in 1:length(ramclustObj$ann)) {
+    #   if(!is.na(ramclustObj$inchikey[i])) {
+    #     
+    #     link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/synonyms/", ramclustObj$inchikey[i])
+    #     out<-NA
+    #     start<-Sys.time()
+    #     while(is.na(out[1])) {
+    #       tryCatch(suppressWarnings(out<-readLines(link)), error = function(x) {NA}, finally = NA)
+    #       stop<-Sys.time()
+    #       if(as.numeric(stop - start) > 5) {
+    #         ramclustObj$synonyms[[i]] <- NA
+    #         break
+    #       }
+    #     }
+    #     syns<-unlist(fromJSON(out))
+    #     if(length(syns) == 0) {
+    #       ramclustObj$synonyms[[i]] <- NA
+    #     }
+    #     if(length(syns)>=1) {
+    #       nc<-nchar(syns)
+    #       syns<-syns[order(nc, decreasing = FALSE)]
+    #       ramclustObj$synonyms[[i]] <- syns
+    #     }
+    #   #}}
+    #     
+    #     if(is.na(ramclustObj$inchi[i])) {          
+    #       link <- paste0("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/InChI Code/", ramclustObj$inchikey[i])
+    #       out<-NA
+    #       while(is.na(out[1])) {
+    #         tryCatch(suppressWarnings(out<-readLines(link)), error = function(x) {NA}, finally = NA)
+    #       }
+    #       inchi<-as.character(unlist(fromJSON(out))["result"])
+    #       if(length(inchi) == 0) {
+    #         ramclustObj$inchi[[i]] <- NA
+    #       }
+    #       if(length(inchi)>=1) {
+    #         nc<-nchar(inchi)
+    #         inchi<-inchi[order(nc, decreasing = FALSE)]
+    #         ramclustObj$inchi[i] <- inchi[1]
+    #       }
+    #     }
+    #   }
+    # }
   }
   
   

@@ -18,7 +18,7 @@
 
 annotate<-function(ramclustObj = NULL,
                    msfinder.dir = "C:/MSFinder/MS-FINDER program ver. 2.40",
-                   standardize.names = TRUE
+                   standardize.names = TRUE,
                    msfinder.dir = "K:/software/MSFinder/MS-FINDER program ver. 2.20",
                    standardize.names = FALSE,
                    min.msms.score = 3.5

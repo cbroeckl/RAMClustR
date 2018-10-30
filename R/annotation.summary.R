@@ -13,7 +13,7 @@
 
 annotation.summary<-function(ramclustObj = NULL,
                              outfile = NULL
-                            ) {
+) {
   
   if(!is.null(outfile)) {
     f<-basename(outfile)
@@ -39,18 +39,31 @@ annotation.summary<-function(ramclustObj = NULL,
   }
   if(any(names(ramclustObj) == "msfinder.formula")) {
     out<- data.frame(out, "inferred formula" = ramclustObj$msfinder.formula)
-    }
+  }
   if(any(names(ramclustObj) == "inchikey")) {
     out<- data.frame(out, "inchikey" = ramclustObj$inchikey)
-    }
+  }
   if(any(names(ramclustObj) == "inchi")) {
     out<- data.frame(out, "inchi" = ramclustObj$inchi)
-    }
+  }
+  if(any(names(ramclustObj) == "hmdb.url")) {
+    # out<- data.frame(out, "hmdb.url" = paste0("<a href='", ramclustObj$hmdb.url, "'>", ramclustObj$hmdb.name, "</a>")) 
+    out<- data.frame(out, "hmdb.url" = ramclustObj$hmdb.url)
+  }
+  if(any(names(ramclustObj) == "lm.url")) {
+    out<- data.frame(out, "lm.url" = ramclustObj$lm.url)
+  }
+  if(any(names(ramclustObj) == "pubchem.url")) {
+    out<- data.frame(out, "pubchem.url" = ramclustObj$pubchem.url)
+  }
+  if(any(names(ramclustObj) == "chebi.url")) {
+    out<- data.frame(out, "chebi.url" = ramclustObj$chebi.url)
+  }
   if(any(names(ramclustObj) == "synonyms")) {
     out<- data.frame(out, "synonyms" = sapply(1:length(ramclustObj$synonyms), 
-                                                                 FUN = function(x) {
-                                                                   paste(ramclustObj$synonyms[[x]], collapse = " __ ")
-                                                                 }))
+                                              FUN = function(x) {
+                                                paste(ramclustObj$synonyms[[x]], collapse = " __ ")
+                                              }))
   }
   if(any(names(ramclustObj) == "classyfire")) {
     out<- data.frame(out, ramclustObj$classyfire)
@@ -58,4 +71,4 @@ annotation.summary<-function(ramclustObj = NULL,
   
   write.csv(out, file = outfile, row.names = FALSE)
 }
-  
+

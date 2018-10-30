@@ -52,9 +52,11 @@ get.synonyms <- function(ramclustObj = RC,
       }
     }
   }
-  cat("referencing web content: please be patient", '\n')
+
   
   if(get.db) {
+    cat("referencing web content: please be patient", '\n')
+    
     hmdb.name <- rep(NA, length(ramclustObj$cmpd))
     hmdb.url <- rep(NA, length(ramclustObj$cmpd))
     for(x in 1:length(ramclustObj$cmpd)) {

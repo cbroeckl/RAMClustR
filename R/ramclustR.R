@@ -22,14 +22,18 @@
 #' @param usePheno logical: tranfer phenotype data from XCMS object to SpecAbund dataset?
 #' @param mspout logical: write msp formatted specta to file?
 #' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
-#' @param normalize character: either "none", "TIC", or "quantile" normalization of feature intensities
+#' @param normalize character: either "none", "TIC", "quantile", or "batch.qc" normalization of feature intensities.  see batch.qc overview in details. 
+#' @param qc.inj.range integer: how many injections around each injection are to be scanned for presence of QC samples when using batch.qc normalization?  A good rule of thumb is between 1 and 3 times the typical injection span between QC injections.  i.e. if you inject QC ever 7 samples, set this to between 7 and 21.  smaller values provide more local precision but make normalization sensitive to individual poor outliers (though these are first removed using the boxplot function outlier detection), while wider values provide less local precision in normalization but better stability to individual peak areas.
+#' @param batch integer vector with length equal to number of injections in xset or csv file
+#' @param order integer vector with length equal to number of injections in xset or csv file
+#' @param qc logical vector with length equal to number of injections in xset or csv file.  
 #' @param minModuleSize integer: how many features must be part of a cluster to be returned? default = 2
 #' @param linkage character: heirarchical clustering linkage method - see ?hclust
 #' @param mzdec integer: number of decimal places used in printing m/z values
 #' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
 #' @param fftempdir valid path: if there are file size limitations on the default ff pacakge temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.
 #'
-#' @details Main clustering function output - see citation for algorithm description of vignette('RAMClustR') for a walk through
+#' @details Main clustering function output - see citation for algorithm description of vignette('RAMClustR') for a walk through.  batch.qc. normalization requires input of three vectors (1) batch (2) order (3) qc.   This is a feature centric normalization approach which adjusts signal intensities first by comparing batch median intensity of each feature (one feature at a time) QC signal intensity to full dataset median to correct for systematic batch effects and then secondly to apply a local QC median vs global median sample correction to correct for run order effects.
 #' @return   $featclus: integer vector of cluster membership for each feature
 #' @return   $frt: feature retention time, in whatever units were fed in (xcms uses seconds, by default)
 #' @return   $fmz: feature retention time, reported in number of decimal points selected in ramclustR function
@@ -88,9 +92,13 @@ ramclustR<- function(  xcmsObj=NULL,
                        mspout=TRUE, 
                        ExpDes=NULL,
                        normalize="TIC",
+                       qc.inj.range = 20,
+                       order = NULL,
+                       batch = NULL,
+                       qc = NULL,
                        minModuleSize=2,
                        linkage="average",
-                       mzdec=4,
+                       mzdec=3,
                        cor.method="pearson",
                        fftempdir = NULL
 ) {
@@ -106,7 +114,13 @@ ramclustR<- function(  xcmsObj=NULL,
       ExpDes[[2]][which(row.names(ExpDes[[2]]) == "MSlevs"),1]<-2
     }
   }
-
+  
+  if(normalize == "batch.qc") {
+    if(is.null(order) | is.null(batch) |is.null(qc)) {
+      stop('to use batch.qc normalization you must provide vectors for batch, order (run order) and qc information as vectors.  see help ?ramclustR')
+    }
+  }
+  
   if(!is.null(fftempdir)) {
     origffdir<-getOption("fftempdir")
     options("fftempdir" = fftempdir)
@@ -115,7 +129,7 @@ ramclustR<- function(  xcmsObj=NULL,
   ########
   # define ms levels, used several times below
   mslev <- as.integer(as.numeric(as.character(ExpDes[[2]][which(row.names(ExpDes[[2]]) == "MSlevs"),1])))
-
+  
   ########
   # do some checks to make sure we have everything we need before proceeding
   if(is.null(xcmsObj) & is.null(ms))  {
@@ -128,10 +142,10 @@ ramclustR<- function(  xcmsObj=NULL,
   if(!is.null(xcmsObj) & mslev==2 & any(is.null(MStag), is.null(idMSMStag), is.null(taglocation)))
   {stop("you must specify the the MStag, idMSMStag, and the taglocations")}
   
-  if( normalize!="none"  & normalize!="TIC" & normalize!="quantile") {
+  if( normalize!="none"  & normalize!="TIC" & normalize!="quantile" & normalize!="batch.qc") {
     stop("please selected either 'none', 'TIC', or 'quantile' for the normalize setting")}
   
-
+  
   a<-Sys.time()   
   
   ########
@@ -139,6 +153,7 @@ ramclustR<- function(  xcmsObj=NULL,
   
   if(is.null(hmax)) {hmax<-0.3}
   
+  cat(paste("  organizing dataset", '\n'))
   
   ########
   # if csv input of MS data, do this: 
@@ -192,26 +207,34 @@ ramclustR<- function(  xcmsObj=NULL,
     sampnames<-row.names(xcmsObj@phenoData)
     data12<-groupval(xcmsObj, value="into")
     
-    if(taglocation=="filepaths" & !is.null(MStag)) 
-    { msfiles<-grep(MStag, xcmsObj@filepaths, ignore.case=TRUE)
-    msmsfiles<-grep(idMSMStag, xcmsObj@filepaths, ignore.case=TRUE)
-    if(length(intersect(msfiles, msmsfiles)>0)) 
-    {stop("your MS and idMSMStag values do not generate unique file lists")}
-    if(length(msfiles)!=length(msmsfiles)) 
-    {stop("the number of MS files must equal the number of MSMS files")}
-    data1<-t(data12[,msfiles])
-    row.names(data1)<-sampnames[msfiles]
-    data2<-t(data12[,msmsfiles])
-    row.names(data2)<-sampnames[msmsfiles]  ##this may need to be changed to dimnames..
-    times<-round(xcmsObj@groups[,"rtmed"], digits=3)
-    if(any(is.na(times))) {
-      do<-which(is.na(times))
-      for(x in 1:length(do)) {
-        times[do[x]]<-  as.numeric((xcmsObj@groups[do[x],"rtmin"]+ xcmsObj@groups[do[x],"rtmax"])/2)
+    if(taglocation=="filepaths" & !is.null(MStag)){ 
+      msfiles<-grep(MStag, xcmsObj@filepaths, ignore.case=TRUE)
+      msmsfiles<-grep(idMSMStag, xcmsObj@filepaths, ignore.case=TRUE)
+      if(length(intersect(msfiles, msmsfiles)>0)) {stop("your MS and idMSMStag values do not generate unique file lists")}
+      if(length(msfiles)!=length(msmsfiles))  {stop("the number of MS files must equal the number of MSMS files")}
+      data1<-t(data12[,msfiles])
+      row.names(data1)<-sampnames[msfiles]
+      data2<-t(data12[,msmsfiles])
+      row.names(data2)<-sampnames[msmsfiles]  ##this may need to be changed to dimnames..
+      
+      if(normalize == "batch.qc") {
+        qc2     <- qc[msmsfiles]
+        qc      <- qc[msfiles]
+        order2  <- order[msmsfiles]
+        order   <- order[msfiles]
+        batch2  <- batch[msmsfiles]
+        batch   <- batch[msfiles]
       }
-    }
-    # if(any(is.na(times))) {stop("na values still present")} else {print("NAs removed")}
-    mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)
+      
+      times<-round(xcmsObj@groups[,"rtmed"], digits=3)
+      if(any(is.na(times))) {
+        do<-which(is.na(times))
+        for(x in 1:length(do)) {
+          times[do[x]]<-  as.numeric((xcmsObj@groups[do[x],"rtmin"]+ xcmsObj@groups[do[x],"rtmax"])/2)
+        }
+      }
+      # if(any(is.na(times))) {stop("na values still present")} else {print("NAs removed")}
+      mzs<-round(xcmsObj@groups[,"mzmed"], digits=4)
     } else {
       data1<-t(data12)
       msfiles<-1:nrow(data1)
@@ -225,6 +248,17 @@ ramclustR<- function(  xcmsObj=NULL,
         }
       }
       #if(any(is.na(times))) {stop("na values still present")} else {print("NAs removed")}
+    }
+  }
+  
+  ## if using batch.qc check for proper information
+  if(normalize == "batch.qc") {
+    if(!all.equal(length(batch), length(qc), length(order), nrow(data1))) {
+      stop("all lengths must be identical and are not: ", '\n',
+           "  length(batch) = ", length(batch), '\n', 
+           "  length(order) = ", length(order), '\n',
+           "  length(qc) = ", length(qc), '\n',
+           "  number of injections = ", nrow(data1), '\n')
     }
   }
   
@@ -245,6 +279,31 @@ ramclustR<- function(  xcmsObj=NULL,
   ########
   # Optional normalization of data, either Total ion signal or quantile
   
+  cat(paste("  normalizing dataset", '\n'))
+  
+  ## for batch.qc method, we will order the datasets first by batch and run order
+  # backup <- data1
+  if(normalize == "batch.qc") {
+    ndf <- data.frame(batch, order, qc)
+    new.ord <- order(ndf$order)
+    ndf <- ndf[new.ord,]
+    data1 <- data1[new.ord,]
+    data2 <- data2[new.ord,]
+    
+    new.ord <- order(ndf$batch)
+    ndf <- ndf[new.ord,]
+    data1 <- data1[new.ord,]
+    data2 <- data2[new.ord,]
+    
+    batch <- ndf[,"batch"]
+    qc <- ndf[,"qc"]
+    order <- ndf[,"order"]
+  }
+  
+  data1raw <- data1
+  if(mslev > 1) {data2raw <- data2}
+  
+  
   if(normalize=="TIC") {
     data1<-(data1/rowSums(data1))*mean(rowSums(data1), na.rm=TRUE)
     data2<-(data2/rowSums(data2))*mean(rowSums(data2), na.rm=TRUE)
@@ -257,6 +316,177 @@ ramclustR<- function(  xcmsObj=NULL,
     dimnames(data1)<-tmpnames1
     dimnames(data2)<-tmpnames2
   }
+  
+  #  data1 <- data1raw
+  
+  if(normalize == "batch.qc") {
+    pdf(file = "norm.plots.pdf", height = 4, width = 9)
+    
+    for(z in 1:ncol(data1)) {
+      # z <- sample(1:ncol(data1), 1)
+      tmp <- data1[,z]
+      featmed <- mean(tmp[qc])
+      tmpn <- tmp
+      
+      for( i in 1:max(batch)) {
+        
+        do <- which (batch == i)
+        doqc <- which(batch == i & qc)
+        names(doqc) <- names(tmp[doqc])
+        
+        ## use only 'typical' QC sample values from the given batch
+        ## outliers are detected using the standard boxplot definition (1.5 * the interquartile range)
+        out <- boxplot(tmp[doqc], plot = FALSE)$out
+        if(length(out)>0) doqc <- doqc[!(names(doqc) %in% names(out))]
+        
+        batchmed <- mean(tmpn[doqc])
+        f <- batchmed / featmed
+        if(abs(log2(f)) > 4)  {
+          if(f > 1) {f <- 4}
+          if(f < 1) {f <- 0.25}
+        }
+        tmpn[do] <- tmp[do]/f
+        
+        tmpnqc <- tmpn
+        
+        # cat("batch:", i, " raw   CV =", sd(tmp[doqc])/mean(tmp[doqc]), '\n')
+        # tmpna <- tmpn
+        ## local QC adjustment here: 
+        
+        for(x in do) {
+          
+          batchmed <- mean(tmpn[doqc])
+          ## try injection spacing weighted mean instead
+          space <- abs(x - doqc)
+          use <- which(space <= qc.inj.range)
+          wts <- 1/space[use]
+          wts <- wts/sum(wts)
+          localmed <- weighted.mean(tmpnqc[doqc[use]], weights = wts)
+          
+          # localmed <- median(tmpn[doqc[which(abs(x - doqc) <= qc.inj.range*y)]])
+          if(is.na(localmed)){
+            for(y in 2:5) {
+              # median
+              # localmed <- median(tmpn[doqc[which(abs(x - doqc) <= qc.inj.range*y)]])
+              mean
+              use <- which(space <= qc.inj.range*y)
+              wts <- 1/space[use]
+              wts <- wts/sum(wts)
+              localmed <- weighted.mean(tmpnqc[doqc[use]], weights = wts)
+              if(!is.na(localmed)) break
+            }
+          }
+          if(is.na(localmed)) {localmed <- batchmed}
+          f <- localmed/batchmed
+          
+          if(abs(log2(f)) > 4) {
+            # f <- batchmed / featmed
+            if(f > 1) {f <- 4}
+            if(f < 1) {f <- 0.25}
+          }
+          tmpn[x] <- tmpnqc[x] / f
+          rm(localmed); rm(f)
+        }
+        # cat("batch:", i, " normb CV =", sd(tmpn[doqc])/mean(tmpn[doqc]), '\n')
+      }
+      data1[,z] <- tmpn
+      par(mfrow = c(1,2))
+      plot(tmp, col = batch, cex = (qc + 1)/2, ylim = c(0.9,1.11)*range(tmp), 
+           main = paste("all:", round(sd(tmp)/mean(tmp), digits = 2), '\n',
+                        "qc:", round(sd(tmp[qc])/mean(tmp[qc]), digits = 2)))
+      plot(tmpn, col = batch, pch = 19, cex = (qc + 1)/2, , ylim = c(0.9,1.11)*range(tmp), 
+           main = paste("all:", round(sd(tmpn)/mean(tmpn), digits = 2), '\n',
+                        "qc:", round(sd(tmpn[qc])/mean(tmpn[qc]), digits = 2)))
+      rm(tmp); rm(tmpn); rm(tmpnqc); gc()
+      
+    }
+    
+    if(mslev > 1) {
+      
+      for(z in 1:ncol(data1)) {
+        # z <- sample(1:ncol(data1), 1)
+        tmp <- data1[,z]
+        featmed <- mean(tmp[qc])
+        tmpn <- tmp
+        
+        for( i in 1:max(batch)) {
+          
+          do <- which (batch == i)
+          doqc <- which(batch == i & qc)
+          names(doqc) <- names(tmp[doqc])
+          
+          ## use only 'typical' QC sample values from the given batch
+          ## outliers are detected using the standard boxplot definition (1.5 * the interquartile range)
+          out <- boxplot(tmp[doqc], plot = FALSE)$out
+          if(length(out)>0) doqc <- doqc[!(names(doqc) %in% names(out))]
+          
+          batchmed <- mean(tmpn[doqc])
+          f <- batchmed / featmed
+          if(abs(log2(f)) > 4)  {
+            if(f > 1) {f <- 4}
+            if(f < 1) {f <- 0.25}
+          }
+          tmpn[do] <- tmp[do]/f
+          
+          tmpnqc <- tmpn
+          
+          # cat("batch:", i, " raw   CV =", sd(tmp[doqc])/mean(tmp[doqc]), '\n')
+          # tmpna <- tmpn
+          ## local QC adjustment here: 
+          
+          for(x in do) {
+            
+            batchmed <- mean(tmpn[doqc])
+            ## try injection spacing weighted mean instead
+            space <- abs(x - doqc)
+            use <- which(space <= qc.inj.range)
+            wts <- 1/space[use]
+            wts <- wts/sum(wts)
+            localmed <- weighted.mean(tmpnqc[doqc[use]], weights = wts)
+            
+            # localmed <- median(tmpn[doqc[which(abs(x - doqc) <= qc.inj.range*y)]])
+            if(is.na(localmed)){
+              for(y in 2:5) {
+                # median
+                # localmed <- median(tmpn[doqc[which(abs(x - doqc) <= qc.inj.range*y)]])
+                mean
+                use <- which(space <= qc.inj.range*y)
+                wts <- 1/space[use]
+                wts <- wts/sum(wts)
+                localmed <- weighted.mean(tmpnqc[doqc[use]], weights = wts)
+                if(!is.na(localmed)) break
+              }
+            }
+            if(is.na(localmed)) {localmed <- batchmed}
+            f <- localmed/batchmed
+            
+            if(abs(log2(f)) > 4) {
+              # f <- batchmed / featmed
+              if(f > 1) {f <- 4}
+              if(f < 1) {f <- 0.25}
+            }
+            tmpn[x] <- tmpnqc[x] / f
+            rm(localmed); rm(f)
+          }
+          # cat("batch:", i, " normb CV =", sd(tmpn[doqc])/mean(tmpn[doqc]), '\n')
+        }
+        data1[,z] <- tmpn
+        par(mfrow = c(1,2))
+        plot(tmp, col = batch, cex = (qc + 1)/2, ylim = c(0.9,1.11)*range(tmp), 
+             main = paste("all:", round(sd(tmp)/mean(tmp), digits = 2), '\n',
+                          "qc:", round(sd(tmp[qc])/mean(tmp[qc]), digits = 2)))
+        plot(tmpn, col = batch, pch = 19, cex = (qc + 1)/2, , ylim = c(0.9,1.11)*range(tmp), 
+             main = paste("all:", round(sd(tmpn)/mean(tmpn), digits = 2), '\n',
+                          "qc:", round(sd(tmpn[qc])/mean(tmpn[qc]), digits = 2)))
+        rm(tmp); rm(tmpn); rm(tmpnqc); gc()
+        
+      }
+      
+    }
+    
+    dev.off()
+  }
+  
   
   ########
   # data organization and parsing 
@@ -290,9 +520,7 @@ ramclustR<- function(  xcmsObj=NULL,
   names(eval1)<-c("j", "k") #j for cols, k for rows
   eval1<-eval1[which(eval1[,"j"]<=eval1[,"k"]),] #upper triangle only
   bl<-nrow(eval1)
-  cat('\n', paste("calculating ramclustR similarity: nblocks = ", bl))
-  cat('\n', "finished:")
-  
+  cat(paste("calculating ramclustR similarity: nblocks = ", bl, '\n'))
   
   ########
   # Define the RCsim function used to calculate feature similarities on selected blocks of data
@@ -314,7 +542,7 @@ ramclustR<- function(  xcmsObj=NULL,
         temp1<-round(exp(-(( (abs(outer(times[startr:stopr], times[startc:stopc], FUN="-"))))^2)/(2*(st^2))), 
                      
                      digits=20 )
-
+        
         temp2<-round (exp(-((1-(pmax(  cor(data1[,startr:stopr], data1[,startc:stopc], method=cor.method),
                                        cor(data1[,startr:stopr], data2[,startc:stopc], method=cor.method),
                                        cor(data2[,startr:stopr], data2[,startc:stopc], method=cor.method)  )))^2)/(2*(sr^2))), 
@@ -340,9 +568,7 @@ ramclustR<- function(  xcmsObj=NULL,
   
   ########
   # Report progress and timing
-  cat('\n','\n' )
-  cat(paste("RAMClust feature similarity matrix calculated and stored:", 
-            round(difftime(b, a, units="mins"), digits=1), "minutes"))
+  cat("RAMClust feature similarity matrix calculated and stored:", '\n')
   gc() 
   
   
@@ -382,9 +608,7 @@ ramclustR<- function(  xcmsObj=NULL,
   gc()
   
   c<-Sys.time()    
-  cat('\n', '\n')
-  cat(paste("RAMClust distances converted to distance object:", 
-            round(difftime(c, b, units="mins"), digits=1), "minutes"))
+  cat("RAMClust distances converted to distance object", '\n')
   
   ########
   # cleanup
@@ -401,9 +625,7 @@ ramclustR<- function(  xcmsObj=NULL,
   system.time(ramclustObj<-hclust(ramclustObj, method=linkage))
   gc()
   d<-Sys.time()    
-  cat('\n', '\n')    
-  cat(paste("fastcluster based clustering complete:", 
-            round(difftime(d, c, units="mins"), digits=1), "minutes"))
+  cat("fastcluster based clustering complete", '\n')
   if(minModuleSize==1) {
     clus<-cutreeDynamicTree(ramclustObj, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=2)
     sing<-which(clus==0)
@@ -443,15 +665,10 @@ ramclustR<- function(  xcmsObj=NULL,
   ramclustObj$nsing<-length(which(ramclustObj$featclus==0))
   
   e<-Sys.time() 
-  cat('\n', '\n')
-  cat(paste("dynamicTreeCut based pruning complete:", 
-            round(difftime(e, d, units="mins"), digits=1), "minutes"))
+  cat("dynamicTreeCut based pruning complete", '\n')
   
   f<-Sys.time()
-  cat('\n', '\n')
-  cat(paste("RAMClust has condensed", n, "features into",  max(clus), "spectra in", round(difftime(f, a, 
-                                                                                                   
-                                                                                                   units="mins"), digits=1), "minutes", '\n'))
+  cat(paste("RAMClust has condensed", n, "features into",  max(clus), "spectra", '\n'))
   
   ramclustObj$ExpDes<-ExpDes
   strl<-nchar(max(ramclustObj$featclus)) - 1
@@ -460,13 +677,17 @@ ramclustR<- function(  xcmsObj=NULL,
   ramclustObj$ann<-ramclustObj$cmpd
   ramclustObj$annconf<-rep("", length(ramclustObj$clrt))
   ramclustObj$annnotes<-rep("", length(ramclustObj$clrt))
+  ramclustObj$MSdata_unnormalized <- data1raw
+  if(mslev == 2) {
+    ramclustObj$MSMSdata_unnormalized <- data2raw
+    ramclustObj$MSMSdata<-data2 
+  }
   ramclustObj$MSdata<-data1
-  if(mslev==2) ramclustObj$MSMSdata<-data2  
   
   ########
   # collapse feature dataset into spectrum dataset
   if(collapse=="TRUE") {
-    cat('\n', '\n', "... collapsing features into spectra")
+    cat("collapsing feature into spectral signal intensities", '\n')
     wts<-colSums(data1[])
     ramclustObj$SpecAbund<-matrix(nrow=nrow(data1), ncol=max(clus))
     for (ro in 1:nrow(ramclustObj$SpecAbund)) { 
@@ -479,9 +700,6 @@ ramclustR<- function(  xcmsObj=NULL,
     if(!usePheno | is.null(xcmsObj)) {dimnames(ramclustObj$SpecAbund)[[1]]<-dimnames(ramclustObj$MSdata)[[1]]} 
     if(usePheno & !is.null(xcmsObj)) {dimnames(ramclustObj$SpecAbund)[[1]]<-as.vector(xcmsObj@phenoData[,1])[msfiles]}
     g<-Sys.time()
-    cat('\n', '\n')
-    cat(paste("RAMClustR has collapsed feature quantities
-             into spectral quantities:", round(difftime(g, f, units="mins"), digits=1), "minutes", '\n'))
   }
   
   ########
@@ -492,8 +710,8 @@ ramclustR<- function(  xcmsObj=NULL,
   if(!is.null(ramclustObj$SpecAbund)) {
     if(length(dimnames(ramclustObj$SpecAbund)[[1]])> length(unique(dimnames(ramclustObj$SpecAbund)[[1]]))) {
       ramclustObj$SpecAbundAve<-aggregate(ramclustObj$SpecAbund[,1:ncol(ramclustObj$SpecAbund)], 
-                                 by=list(dimnames(ramclustObj$SpecAbund)[[1]]), 
-                                 FUN="mean", simplify=TRUE)
+                                          by=list(dimnames(ramclustObj$SpecAbund)[[1]]), 
+                                          FUN="mean", simplify=TRUE)
       dimnames(ramclustObj$SpecAbundAve)[[1]]<-ramclustObj$SpecAbundAve[,1]
       ramclustObj$SpecAbundAve<-as.matrix(ramclustObj$SpecAbundAve[,2:ncol(ramclustObj$SpecAbundAve)])
       dimnames(ramclustObj$SpecAbundAve)[[2]]<-dimnames(ramclustObj$SpecAbund)[[2]]
@@ -505,7 +723,7 @@ ramclustR<- function(  xcmsObj=NULL,
   ########
   # write msp formatted spectra
   if(mspout==TRUE){ 
-    cat(paste("writing msp formatted spectra...", '\n'))
+    cat(paste("writing msp formatted spectra", '\n'))
     dir.create("spectra")
     libName<-paste("spectra/", ExpDes[[1]]["Experiment", 1], ".mspLib", sep="")
     file.create(file=libName)
@@ -543,11 +761,11 @@ ramclustR<- function(  xcmsObj=NULL,
           paste("SYNON: $:11", ExpDes[[2]]["msmode", 1], sep=""), '\n',           #msmode
           if(any(row.names(ExpDes[[2]])=="colgas")) {
             paste("SYNON: $:12", ExpDes[[2]]["colgas", 1], '\n', sep="") 
-            },          #collision gas
+          },          #collision gas
           paste("SYNON: $:14", ExpDes[[2]]["msscanrange", 1], sep=""), '\n',      #ms scanrange
           if(any(row.names(ExpDes[[2]])=="conevolt")) {
             paste("SYNON: $:16", ExpDes[[2]]["conevolt", 1], '\n', sep="")
-            },         #conevoltage
+          },         #conevoltage
           paste("Comment: Rt=", round(mrt, digits=2), 
                 "  Contributor=", ExpDes[[1]]["Contributor", 1], 
                 "  Study=", ExpDes[[1]]["Experiment", 1], 
@@ -556,7 +774,7 @@ ramclustR<- function(  xcmsObj=NULL,
           paste(specdat), '\n', sep="", file=libName, append= TRUE)
       }
     }
-    cat(paste('\n', "msp file complete", '\n')) 
+    cat(paste("msp file complete", '\n')) 
   }  
   return(ramclustObj)
 }

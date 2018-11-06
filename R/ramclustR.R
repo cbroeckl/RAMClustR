@@ -251,6 +251,10 @@ ramclustR<- function(  xcmsObj=NULL,
     }
   }
   
+  if(nrow(data1) < 5) {
+    warning('\n', "too few samples to use correlational similarity, clustring by retention time only", '\n')
+  }
+  
   ## if using batch.qc check for proper information
   if(normalize == "batch.qc") {
     if(!all.equal(length(batch), length(qc), length(order), nrow(data1))) {
@@ -288,16 +292,24 @@ ramclustR<- function(  xcmsObj=NULL,
     new.ord <- order(ndf$order)
     ndf <- ndf[new.ord,]
     data1 <- data1[new.ord,]
-    data2 <- data2[new.ord,]
-    
     new.ord <- order(ndf$batch)
     ndf <- ndf[new.ord,]
     data1 <- data1[new.ord,]
-    data2 <- data2[new.ord,]
-    
     batch <- ndf[,"batch"]
     qc <- ndf[,"qc"]
     order <- ndf[,"order"]
+    
+    ndf <- data.frame(batch = batch2, order = order2, qc = qc2)
+    new.ord <- order(ndf$order)
+    ndf <- ndf[new.ord,]
+    data2 <- data2[new.ord,]
+    new.ord <- order(ndf$batch)
+    ndf <- ndf[new.ord,]
+    data2 <- data2[new.ord,]
+    batch2 <- ndf[,"batch"]
+    qc2 <- ndf[,"qc"]
+    order2 <- ndf[,"order"]
+
   }
   
   data1raw <- data1
@@ -402,10 +414,12 @@ ramclustR<- function(  xcmsObj=NULL,
     }
     
     if(mslev > 1) {
-      
-      for(z in 1:ncol(data1)) {
-        # z <- sample(1:ncol(data1), 1)
-        tmp <- data1[,z]
+      qc    <- qc2
+      batch <- batch2
+      order <- order2
+      for(z in 1:ncol(data2)) {
+        # z <- sample(1:ncol(data2), 1)
+        tmp <- data2[,z]
         featmed <- mean(tmp[qc])
         tmpn <- tmp
         
@@ -470,7 +484,7 @@ ramclustR<- function(  xcmsObj=NULL,
           }
           # cat("batch:", i, " normb CV =", sd(tmpn[doqc])/mean(tmpn[doqc]), '\n')
         }
-        data1[,z] <- tmpn
+        data2[,z] <- tmpn
         par(mfrow = c(1,2))
         plot(tmp, col = batch, cex = (qc + 1)/2, ylim = c(0.9,1.11)*range(tmp), 
              main = paste("all:", round(sd(tmp)/mean(tmp), digits = 2), '\n',
@@ -543,11 +557,15 @@ ramclustR<- function(  xcmsObj=NULL,
                      
                      digits=20 )
         
-        temp2<-round (exp(-((1-(pmax(  cor(data1[,startr:stopr], data1[,startc:stopc], method=cor.method),
+        if(nrow(data1) >= 5) {
+          temp2<-round (exp(-((1-(pmax(  cor(data1[,startr:stopr], data1[,startc:stopc], method=cor.method),
                                        cor(data1[,startr:stopr], data2[,startc:stopc], method=cor.method),
                                        cor(data2[,startr:stopr], data2[,startc:stopc], method=cor.method)  )))^2)/(2*(sr^2))), 
                       
-                      digits=20 )		
+                      digits=20 )	
+        } else {
+          tmp2 <- matrix(data = 0, nrow = nrow(temp1), ncol = ncol(temp2))
+        }
         #ffcor[startr:stopr, startc:stopc]<-temp
         temp<- 1-(temp1*temp2)
         temp[which(is.nan(temp))]<-1

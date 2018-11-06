@@ -10,7 +10,8 @@ ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
   maxt = NULL, deepSplit = FALSE, blocksize = 2000, mult = 5,
   hmax = NULL, sampNameCol = 1, collapse = TRUE, usePheno = TRUE,
   mspout = TRUE, ExpDes = NULL, normalize = "TIC",
-  minModuleSize = 2, linkage = "average", mzdec = 4,
+  qc.inj.range = 20, order = NULL, batch = NULL, qc = NULL,
+  minModuleSize = 2, linkage = "average", mzdec = 3,
   cor.method = "pearson", fftempdir = NULL)
 }
 \arguments{
@@ -54,7 +55,15 @@ ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
 
 \item{ExpDes}{either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output}
 
-\item{normalize}{character: either "none", "TIC", or "quantile" normalization of feature intensities}
+\item{normalize}{character: either "none", "TIC", "quantile", or "batch.qc" normalization of feature intensities.  see batch.qc overview in details.}
+
+\item{qc.inj.range}{integer: how many injections around each injection are to be scanned for presence of QC samples when using batch.qc normalization?  A good rule of thumb is between 1 and 3 times the typical injection span between QC injections.  i.e. if you inject QC ever 7 samples, set this to between 7 and 21.  smaller values provide more local precision but make normalization sensitive to individual poor outliers (though these are first removed using the boxplot function outlier detection), while wider values provide less local precision in normalization but better stability to individual peak areas.}
+
+\item{order}{integer vector with length equal to number of injections in xset or csv file}
+
+\item{batch}{integer vector with length equal to number of injections in xset or csv file}
+
+\item{qc}{logical vector with length equal to number of injections in xset or csv file.}
 
 \item{minModuleSize}{integer: how many features must be part of a cluster to be returned? default = 2}
 
@@ -103,7 +112,7 @@ $SpecAbundAve: the cluster intensities after averaging all samples with identica
 Main clustering function for grouping features based on their analytical behavior.
 }
 \details{
-Main clustering function output - see citation for algorithm description of vignette('RAMClustR') for a walk through
+Main clustering function output - see citation for algorithm description of vignette('RAMClustR') for a walk through.  batch.qc. normalization requires input of three vectors (1) batch (2) order (3) qc.   This is a feature centric normalization approach which adjusts signal intensities first by comparing batch median intensity of each feature (one feature at a time) QC signal intensity to full dataset median to correct for systematic batch effects and then secondly to apply a local QC median vs global median sample correction to correct for run order effects.
 }
 \references{
 Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.

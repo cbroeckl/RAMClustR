@@ -6,7 +6,7 @@
 \usage{
 annotate(ramclustObj = NULL,
   msfinder.dir = "C:/MSFinder/MS-FINDER program ver. 2.40",
-  standardize.names = TRUE)
+  standardize.names = FALSE, min.msms.score = 3.5)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}
@@ -14,6 +14,8 @@ annotate(ramclustObj = NULL,
 \item{msfinder.dir}{full path to MSFinder directory - used for naming refinement}
 
 \item{standardize.names}{logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)}
+
+\item{min.msms.score}{numerical: what is the minimum MSFinder similarity score acceptable.  default = 3.5}
 }
 \value{
 an updated ramclustR object, with the RC$ann and RC$ann.conf slots updated to annotated based on output from 1. ramsearch output, 2. msfinder mssearch, 3. msfinder predicted structure, 4. msfinder predicted formula, and 5. interpretMSSpectrum inferred molecular weight, with listed order as priority.

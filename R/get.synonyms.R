@@ -15,9 +15,9 @@
 
 
 get.synonyms <- function(ramclustObj = RC,
-                       get.db = TRUE,
-                       update.names = TRUE,
-                       lipid.short.hand = TRUE
+                         get.db = TRUE,
+                         update.names = TRUE,
+                         lipid.short.hand = TRUE
 ) {
   
   require(jsonlite)
@@ -52,7 +52,7 @@ get.synonyms <- function(ramclustObj = RC,
       }
     }
   }
-
+  
   
   if(get.db) {
     cat("referencing web content: please be patient", '\n')
@@ -157,7 +157,7 @@ get.synonyms <- function(ramclustObj = RC,
       #                unlist(strsplit(ramclustObj$inchikey[i], "-"))[1]
       #                )
       tryCatch(suppressWarnings(out<-readLines(link)), 
-                                error = function(x) {return(NA)})
+               error = function(x) {return(NA)})
       chemnames <- unlist(fromJSON(out))
       if(any(grepl("result", names(chemnames)))) {
         chemnames <- as.vector(chemnames[grepl("result", names(chemnames))])
@@ -169,14 +169,14 @@ get.synonyms <- function(ramclustObj = RC,
       if(!is.null(syns)) {
         syns <- unique(c(ramclustObj$ann[i], syns))
         syns <- syns[order(nchar(syns))]
-        if(nrow(ramclustObj$msfinder.structure[[i]]) == 1) {
+        if(any(names(ramclustObj) == "msfinder.structure")) {        if(nrow(ramclustObj$msfinder.structure[[i]]) == 1) {
           res <- ramclustObj$msfinder.structure[[i]][1,"resources"]
           res <- strsplit(res, ",")
           if(length(synonyms[[i]]) > 1) {
             synonyms[[i]] <- c(synonyms[[i]], res)
           }
           synonyms[[i]] <- syns
-        }
+        }      }
       }
     }
     

@@ -24,6 +24,11 @@ getClassyFire <- function(
     stop("no inchikey slot found, please 'annotate' first", '\n')
   }
   
+  if(get.all & is.null(ramclustObj$smiles)) {
+    stop("obtaining new classyfication (get.all option) requires a smiles notation", '\n',
+         "and no smiles slot found in ramclustObj.  Please first run 'getSmilesInchi()'", '\n')
+  }
+  
   if(any(names(ramclustObj) == "classyfire")) {redo <- TRUE} else {redo = FALSE}
   
   

@@ -65,11 +65,20 @@ getSmilesInchi <- function(
     
   }
   
-  ramclustObj$pubchem <- pubchem
-  ramclustObj$pubchem.url <- rep(NA, nrow(pubchem))
-  do <- which(!is.na(pubchem[,"CID"]))
-  ramclustObj$pubchem.url[do] <- paste0("https://pubchem.ncbi.nlm.nih.gov/compound/", pubchem[do,"CID"])
-
+  
+  if(is.null(ramclustObj$pubchem.url)) {
+    ramclustObj$pubchem <- pubchem
+    ramclustObj$pubchem.url <- rep(NA, nrow(pubchem))
+    do <- which(!is.na(pubchem[,"CID"]))
+    ramclustObj$pubchem.url[do] <- paste0("https://pubchem.ncbi.nlm.nih.gov/compound/", pubchem[do,"CID"])
+  } else  {
+    fix <- which(is.na(ramclustObj$pubchem.url) & !is.na(pubchem$pubchem.url))
+    if(length(fix) > 0) {
+      ramclustObj$pubchem.url[fix] <- pubchem$pubchem.url[fix]
+    }
+  }
+  
+  
   if(is.null(ramclustObj$smiles)) {ramclustObj$smiles <- pubchem$smiles} else {
     fix <- which(is.na(ramclustObj$smiles) & !is.na(pubchem$smiles))
     if(length(fix) > 0) {

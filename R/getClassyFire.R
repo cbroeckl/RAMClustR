@@ -13,8 +13,8 @@
 
 #' @export 
 
-
-getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10)  {
+getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10) 
+{
   if (is.null(ramclustObj$inchikey)) {
     stop("no inchikey slot found, please 'annotate' first", 
          "\n")
@@ -25,11 +25,7 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10)  {
          "\n")
   }
   if (any(names(ramclustObj) == "classyfire")) {
-    redo <- TRUE
-  }
-  else {
-    redo = FALSE
-  }
+    redo <- TRUE} else {redo <- FALSE}
   if (!redo) {
     ramclustObj$classyfire <- data.frame(inchikey = rep(NA, 
                                                         length(ramclustObj$inchikey)), kingdom = rep(NA, 
@@ -94,8 +90,14 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10)  {
         time.a <- Sys.time()
         while (out$number_of_elements == 0) {
           Sys.sleep(1)
-          out <- fromJSON(paste0("http://classyfire.wishartlab.com/queries/", 
-                                 query = query_id$id, ".json"))
+          out <- tryCatch( {fromJSON(paste0("http://classyfire.wishartlab.com/queries/", 
+                                            query = query_id$id, ".json"))}, 
+                           error = function() {
+                             out <- list()
+                             out$classification_status <- "not done"
+                             out$number_of_elements <- 0
+                           })
+          
           if (round(as.numeric(difftime(Sys.time(), 
                                         time.a, units = "secs")), 3) >= max.wait) {
             cat("timed out", "\n")
@@ -106,38 +108,40 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10)  {
         if (out$number_of_elements == 0) {
           ramclustObj$classyfire[i, ] <- c(ramclustObj$inchikey[i], 
                                            rep(NA, 6))
-          rm(out)
-        } else {
-          newinchikey <- out$entities$inchikey
-          newinchikey <- gsub("InChIKey=", "", newinchikey)
-          out <- fromJSON(paste0(url, "/entities/", 
-                                 newinchikey, ".json"))
-          a <- ramclustObj$inchikey[i]
-          b <- out$kingdom$name
-          if (is.null(b)) 
-            b <- NA
-          c <- out$superclass$name
-          if (is.null(c)) 
-            c <- NA
-          d <- out$class$name
-          if (is.null(d)) 
-            d <- NA
-          e <- out$subclass$name
-          if (is.null(e)) 
-            e <- NA
-          f <- out$direct_parent$name
-          if (is.null(f)) 
-            f <- NA
-          g <- out$description
-          if (is.null(g)) 
-            g <- NA
-          ramclustObj$classyfire[i, ] <- c(a, b, c, 
-                                           d, e, f, g)
-          rm(out)
-        }
+          rm(out)} else {
+            a <- out$entities$inchikey
+            if(is.null(a)) {
+              a <- ramclustObj$inchikey[i]
+            } else {
+              a <- gsub("InChIKey=", "", a)
+            }
+            b <- out$kingdom$name
+            if (is.null(b)) {
+              b <- NA
+              c <- NA
+              d <- NA 
+              e <- NA
+              f <- NA
+              g <- NA
+            } else {
+              c <- out$superclass$name
+              if (is.null(c)) {c <- NA}
+              d <- out$class$name
+              if (is.null(d)) {d <- NA}
+              e <- out$subclass$name
+              if (is.null(e)) {e <- NA}
+              f <- out$direct_parent$name
+              if (is.null(f)) {f <- NA}
+              g <- out$description
+              if (is.null(g)) {g <- NA}
+            }
+            
+            ramclustObj$classyfire[i, ] <- c(a, b, c, 
+                                             d, e, f, g)
+          }
+        rm(out)
       }
     }
   }
   return(ramclustObj)
 }
-

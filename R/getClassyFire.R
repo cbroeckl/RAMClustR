@@ -7,6 +7,7 @@
 #' @param get.all logical; if TRUE, when inchikey classyfire lookup fails, submits for classyfication.  Can be slow. max.wait (below) sets max time to spend on each compound before moving on. default = FALSE.
 #' @param max.wait  numeric; maximum time to wait per compound when 'get.all' = TRUE.  The 
 #' @return returns a ramclustR object.  new dataframe in $classyfire slot with rows equal to number of compounds.  
+#' @importFrom jsonlite fromJSON
 #' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'classyFire'
 #' @author Corey Broeckling
 #' @references Djoumbou Feunang Y, Eisner R, Knox C, Chepelev L, Hastings J, Owen G, Fahy E, Steinbeck C, Subramanian S, Bolton E, Greiner R, and Wishart DS. ClassyFire: Automated Chemical Classification With A Comprehensive, Computable Taxonomy. Journal of Cheminformatics, 2016, 8:61. DOI: 10.1186/s13321-016-0174-y
@@ -40,7 +41,7 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10)
     if (is.na(ramclustObj$inchikey[i])) {
       next
     }
-    out <- tryCatch(fromJSON(paste0(url, "/entities/", ramclustObj$inchikey[i], 
+    out <- tryCatch(jsonlite::fromJSON(paste0(url, "/entities/", ramclustObj$inchikey[i], 
                                     ".json")), error = function(x) {
                                       return(NA)
                                     })
@@ -138,10 +139,16 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10)
             
             ramclustObj$classyfire[i, ] <- c(a, b, c, 
                                              d, e, f, g)
+            rm(out)
           }
-        rm(out)
-      }
+       }
     }
   }
+  
+  ramclustObj$history <- paste(ramclustObj$history, 
+                               "Compounds were assigned to chemical ontegenies using the ClassyFire API (Djoumbou 2016)")
+  
+  
   return(ramclustObj)
 }
+

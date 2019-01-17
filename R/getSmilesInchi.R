@@ -5,6 +5,7 @@
 #' 
 #' @param ramclustObj ramclustR object to ClassyFy
 #' @return returns a ramclustR object.  new dataframe in $classyfire slot with rows equal to number of compounds.  
+#' @importFrom jsonlite fromJSON
 #' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'PubChem', smiles, inchi, inchikey
 #' @author Corey Broeckling
 #' @references Kim S, Thiessen PA, Bolton EE, Bryant SH. PUG-SOAP and PUG-REST: web services for programmatic access to chemical information in PubChem. Nucleic Acids Res. 2015;43(W1):W605-11.
@@ -31,7 +32,7 @@ getSmilesInchi <- function(
   
   for(i in 1:length(ramclustObj$inchikey)) {
     if(is.na(ramclustObj$inchikey[i])) {next} 
-    out<- tryCatch(fromJSON(paste0(url, ramclustObj$inchikey[i], "/JSON")), 
+    out<- tryCatch(jsonlite::fromJSON(paste0(url, ramclustObj$inchikey[i], "/JSON")), 
                    error = function(x) {return(NA)})
     
     if(is.list(out)) {
@@ -91,6 +92,10 @@ getSmilesInchi <- function(
       ramclustObj$inchi[fix] <- pubchem$inchi[fix]
     }
   }
+  
+  ramclustObj$history <- paste(ramclustObj$history, 
+                               "Smiles and InCHi structures were retreived for each inchikey without a structure using the Pubchem API (Djoumbou 2016) called from RAMClustR using the getSmilesInchi function.")
+  
   
   return(ramclustObj)
 }

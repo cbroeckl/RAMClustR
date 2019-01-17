@@ -57,6 +57,17 @@ assign.z<-function(
     ramclustObj$zmax[i] <- max(ramclustObj$fz[members])
   }
   ramclustObj$m<-ramclustObj$fmz*ramclustObj$fz
+  
+  ramclustObj$history <- paste(ramclustObj$history, 
+                               " Charge state detection was performed using the assign.z function ", 
+                               " using parameters: ",
+                               " chargestate = ", chargestate,
+                               ", mzError = ", mzError,
+                               ", nEvents = ", nEvents,
+                               ", minPercentSignal = ", minPercentSignal,
+                               ", and assume1 = ", assume1, ".", sep = "")
+    
+
   return(ramclustObj)
 }
 

@@ -4,15 +4,15 @@
 \alias{get.synonyms}
 \title{get.synonyms()}
 \usage{
-get.synonyms(ramclustObj = RC, get.db = TRUE, update.names = TRUE,
+get.synonyms(ramclustObj = NULL, get.db = TRUE, update.names = FALSE,
   lipid.short.hand = TRUE)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}
 
-\item{get.db}{logical - should the HMDB, LipidMaps, and Pubchem names be retreived when available?}
+\item{get.db}{logical - should the HMDB, LipidMaps, CheBI, and Pubchem names be retreived when available?}
 
-\item{update.names}{logical - should the ramclustObj$ann slot (annotation) be updated based on the above?}
+\item{update.names}{logical - should the ramclustObj$ann slot (annotation) be updated based on the above? selection of which synonym to chose is difficult to automate well - new name may not be the most commonly used.}
 
 \item{lipid.short.hand}{- logical - should the stringr pacakge be used to look for lipid short hand nomenclature in the synonyms? Only used when update.names = TRUE}
 }

@@ -78,6 +78,9 @@ impRamSearch<-function(
                                                               'library'=ramclustObj$rs.lib,
                                                               'notes'=ramclustObj$annnotes))
   
+  ramclustObj$history <- paste(ramclustObj$history, 
+                               "RAMSearch (Broeckling 2016) results were imported into the RAMClustR object.")
+  
   return(ramclustObj)
 }
 

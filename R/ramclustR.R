@@ -51,9 +51,9 @@
 #' @return   $SpecAbundAve: the cluster intensities after averaging all samples with identical sample names
 #' @return   - 'spectra' directory is created in the working directory.  In this directory a .msp is (optionally) created, which contains the spectra for all compounds in the dataset following clustering.  if MSe/idMSMS data are provided, they are listed witht he same compound name as the MS spectrum, with the collision energy provided in the ExpDes object provided to distinguish low from high CE spectra. 
 #' @importFrom grDevices dev.off pdf
-#' @importFrom graphics abline axis hist "legend" "par" "plot" "points" "title"
+#' @importFrom graphics abline axis boxplot hist "legend" "par" "plot" "points" "title"
 #' @importFrom stats aggregate cor fitted lm loess median predict quantile sd weighted.mean
-#' @importFrom utils edit read.csv read.delim2 write.csv
+#' @importFrom utils edit read.csv read.delim2 write.csv packageVersion
 #' @importFrom ff ff delete.ff
 #' @importFrom fastcluster hclust
 #' @importFrom dynamicTreeCut cutreeDynamicTree
@@ -130,6 +130,12 @@ ramclustR<- function(  xcmsObj=NULL,
   # define ms levels, used several times below
   mslev <- as.integer(as.numeric(as.character(ExpDes[[2]][which(row.names(ExpDes[[2]]) == "MSlevs"),1])))
   
+  history <- paste("RAMClustR (version ",
+                   packageVersion("RAMClustR"),
+                   ") was utilized to cluster features into spectra (Broeckling 2014).",
+                   sep = "")  
+  
+
   ########
   # do some checks to make sure we have everything we need before proceeding
   if(is.null(xcmsObj) & is.null(ms))  {
@@ -163,6 +169,14 @@ ramclustR<- function(  xcmsObj=NULL,
       your average chromatographic peak width at half max (seconds)")
     if(is.null(sr)) sr<-0.5
     if(is.null(maxt)) maxt<-60
+    
+    history <- paste(history,
+                    " Feature data was input as .csv files with ramclustR parameter settings of ",
+                    " st = ", st,
+                    " sr = ", sr,
+                    " and maxt = ", maxt, ".", sep = ""
+    )
+    
     MSdata<-read.csv(file = ms, header=TRUE, check.names=FALSE)
     if(!is.null(idmsms)){
       MSMSdata<-read.csv(file = idmsms, header=TRUE, check.names=FALSE)}
@@ -203,6 +217,13 @@ ramclustR<- function(  xcmsObj=NULL,
     if(is.null(st)) st<-round(median(xcmsObj@peaks[,"rtmax"]-xcmsObj@peaks[,"rtmin"])/2, digits=2)
     if(is.null(sr)) sr<-0.5
     if(is.null(maxt)) maxt<-st*20
+    
+    history <- paste(history,
+                     " Feature data was input as an xcms object with ramclustR parameter settings of ",
+                     " st = ", st,
+                     " sr = ", sr,
+                     " and maxt = ", maxt, ".", sep = ""
+    )
     
     sampnames<-row.names(xcmsObj@phenoData)
     data12<-groupval(xcmsObj, value="into")
@@ -252,7 +273,9 @@ ramclustR<- function(  xcmsObj=NULL,
   }
   
   if(nrow(data1) < 5) {
-    warning('\n', "too few samples to use correlational similarity, clustring by retention time only", '\n')
+    warning('\n', "too few samples to use correlational similarity, clustering by retention time only", '\n')
+    ramclustObj$history <- paste(ramclustObj$history,
+                                 "Since there were fewer than five injections, clustering was performed only using retention time simiilarity.")
   }
   
   ## if using batch.qc check for proper information
@@ -266,7 +289,11 @@ ramclustR<- function(  xcmsObj=NULL,
     }
   }
   
-  
+  if(mslev == 2) {
+    history <- paste(history,
+                     "Feature data included both MS and indiscriminant MS/MS data (Broeckling 2012)."
+    )
+  }
   ########
   # ensure that we have all numeric non-zero values in the dataset. 
   # uses a noise addition 'jitter' around minimum values with missing data points.
@@ -319,6 +346,10 @@ ramclustR<- function(  xcmsObj=NULL,
   if(normalize=="TIC") {
     data1<-(data1/rowSums(data1))*mean(rowSums(data1), na.rm=TRUE)
     data2<-(data2/rowSums(data2))*mean(rowSums(data2), na.rm=TRUE)
+    
+    history <- paste(history,
+                     " Features were normalized to total signal using 'tic' normalization."
+    )
   }
   if(normalize=="quantile") {
     tmpnames1<-dimnames(data1)
@@ -327,11 +358,21 @@ ramclustR<- function(  xcmsObj=NULL,
     data2<-t(preprocessCore::normalize.quantiles(t(data2)))
     dimnames(data1)<-tmpnames1
     dimnames(data2)<-tmpnames2
+    history <- paste(history,
+                     " Features were normalized using 'quantile' normalization."
+    )
   }
   
   #  data1 <- data1raw
   
   if(normalize == "batch.qc") {
+    
+    history <- paste(history,
+                     " Features were normalized to nearby QC samples on a feature-by-feature basis using the 'batch.qc' option ",
+                     "with qc.inj.range = ", qc.inj.range, ".", 
+                     " QC normalization was applied to ", length(order), " injections in ", length(unique(batch)), 
+                     " bactches, and normization was based on ", length(which(qc)), " recognized QC samples.", sep = "") 
+    
     pdf(file = "norm.plots.pdf", height = 4, width = 9)
     
     for(z in 1:ncol(data1)) {
@@ -564,7 +605,7 @@ ramclustR<- function(  xcmsObj=NULL,
                       
                       digits=20 )	
         } else {
-          tmp2 <- matrix(data = 0, nrow = nrow(temp1), ncol = ncol(temp2))
+          tmp2 <- matrix(data = 1, nrow = length(startr:stopr), ncol = length(startc:stopc))
         }
         #ffcor[startr:stopr, startc:stopc]<-temp
         temp<- 1-(temp1*temp2)
@@ -641,6 +682,11 @@ ramclustR<- function(  xcmsObj=NULL,
   ########
   # cluster using fastcluster package,
   system.time(ramclustObj<-hclust(ramclustObj, method=linkage))
+  history <- paste(history,
+                   "The feature similarity matrix was clustered using fastcluster package heirarchical clustering method using the",
+                   linkage, "method."
+  )
+
   gc()
   d<-Sys.time()    
   cat("fastcluster based clustering complete", '\n')
@@ -653,6 +699,15 @@ ramclustR<- function(  xcmsObj=NULL,
     clus<-cutreeDynamicTree(ramclustObj, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=minModuleSize)
   }
   gc()
+  
+  history <- paste(history,
+                   " The dendrogram was cut using the cutreeDynamicTree function from the dynamicTreeCut package. ",
+                   " Cutting parameters were set to ",
+                   "minModuleSize = ", minModuleSize,
+                   ", hmax = ", hmax, 
+                   ", and deepSplit = ", deepSplit, ".", sep = "")
+                   
+  
   
   ########
   # build results into ramclustObj
@@ -687,6 +742,8 @@ ramclustR<- function(  xcmsObj=NULL,
   
   f<-Sys.time()
   cat(paste("RAMClust has condensed", n, "features into",  max(clus), "spectra", '\n'))
+  
+  history <- paste(history, n, "features were collapsed into",  max(clus), "spectra.")
   
   ramclustObj$ExpDes<-ExpDes
   strl<-nchar(max(ramclustObj$featclus)) - 1
@@ -794,5 +851,7 @@ ramclustR<- function(  xcmsObj=NULL,
     }
     cat(paste("msp file complete", '\n')) 
   }  
+  ramclustObj$history <- history
   return(ramclustObj)
 }
+

@@ -125,6 +125,15 @@ RCQC<-function(ramclustObj=NULL,
       } 
     }
   }
+  
+  ramclustObj$history <- paste(ramclustObj$history, 
+                               "Variance in quality control samples was described using the",
+                               "RCQC function within ramclustR. Summary statistics are provided",
+                               "including the relative standard deviation of QC samples to all",
+                               "samples in PCA space, as well as the relative standard deviation",
+                               "of each feature in QC samples, plotted as a histogram.")
+  
   return(ramclustObj)
 }
+
 

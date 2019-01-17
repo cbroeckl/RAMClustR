@@ -233,7 +233,16 @@ import.msfinder.formulas <- function (
   ramclustObj$msfinder.formula.details<-msfinder.formula
   
   setwd(home.dir)
-  
+  if(is.null(database.priority)) {database.priority = "NULL"}
+  ramclustObj$history <- paste(ramclustObj$history,
+                               " MSFinder formula results were imported ",
+                               "with database priority set to ",
+                               paste(database.priority, collapse = " "), ".", sep = ""
+                               )
+  if(!grepl("(Tsugawa 2016)", ramclustObj$history)) {
+    ramclustObj$history <- gsub("MSFinder", "MSFinder (Tsugawa 2016)", ramclustObj$history)
+  }
   return(ramclustObj)
   
 }
+

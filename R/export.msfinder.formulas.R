@@ -14,7 +14,7 @@
 #' @export 
 
 export.msfinder.formulas <- function(
-  ramclustObj = RC, 
+  ramclustObj = NULL, 
   export.all = FALSE,
   output.directory = NULL) {
   
@@ -79,3 +79,4 @@ export.msfinder.formulas <- function(
   write.csv(out[,cols], file = paste0(output.directory, "/", "MSFinderFormulas_allResults.csv"), row.names = FALSE)
 
 }
+

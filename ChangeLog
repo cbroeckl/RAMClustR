@@ -1,3 +1,8 @@
+2019-01-11 Corey Broeckling 
+  * check() returns zero errors or warnings, two notes.
+  * check.windows() returns BioC warning, unclear how to fix (no reference to BioC apparent)
+  * updated do.findmain, altered ramclustR scoring algorithm, made ramclustR default, and changed selection criterion for find.main vs ramclustR scoring when mass assignment is conflicted between the two.  
+
 2018-06-26 Corey Broeckling 
   * check() returns zero errors, warnings, or notes. 
 

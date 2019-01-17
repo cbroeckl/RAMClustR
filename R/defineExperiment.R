@@ -12,7 +12,7 @@
 #' @author Corey Broeckling
 #' @export
 
-defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
+defineExperiment<-function(csv = FALSE, force.skip=FALSE) {
   LCMS <- data.frame("value" = c(chrominst="",
                                  msinst="",
                                  column="",
@@ -54,7 +54,9 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
                                        "platform"))
   
   
-  if(!force.skip) {
+   
+  
+  if(force.skip == TRUE) {
     csv <- TRUE
   }
   
@@ -107,7 +109,9 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
       instrument <- data.frame('value' = csv.in[rowstart:rowend,2], row.names = csv.in[rowstart:rowend,1], stringsAsFactors = FALSE)
       ExpDes <- list("design" = design, "instrument" = instrument)
       
-    }  else {
+    }  
+    
+    if(!csv){
       
       suppressWarnings( design<-edit(Experiment))
       
@@ -133,16 +137,25 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
       if(instrument == "LC-MS") platform<-LCMS
       if(instrument == "GC-MS") platform<-GCMS
       
+      # rowstart<-grep(instrument, csv.in[,1])+1
+      # rowend<-grep("MSlevs", csv.in[,1])
+      # rowend<-rowend[which(rowend > rowstart)]
+      # if(length(rowend)>1) {
+      #   rowend<-rowend[which.min((rowend - rowstart))]
+      # }
+      # instrument <- data.frame('value' = csv.in[rowstart:rowend,2], row.names = csv.in[rowstart:rowend,1], stringsAsFactors = FALSE)
+      # ExpDes <- list("design" = design, "instrument" = instrument)
+      # 
       instrument <- platform
       
       suppressWarnings( instrument<-edit(instrument))
-      instrument <- data.frame('value' = csv.in[rowstart:rowend,2], row.names = csv.in[rowstart:rowend,1], stringsAsFactors = FALSE)
+      # instrument <- data.frame('value' = csv.in[rowstart:rowend,2], row.names = csv.in[rowstart:rowend,1], stringsAsFactors = FALSE)
       ExpDes<-list("design" = design, "instrument" = instrument)
       
     }
     
   } else  {
-    if(file.exists(csv)) {
+    if(file.exists(csv)) { 
       csv.in <- read.csv(csv, header=TRUE, check.names=FALSE)
       design<-data.frame("value" = csv.in[3:7,2], row.names = csv.in[3:7,1], stringsAsFactors = FALSE)
       
@@ -180,3 +193,4 @@ defineExperiment<-function(csv = TRUE, force.skip=FALSE) {
   
   return(ExpDes)
 }
+

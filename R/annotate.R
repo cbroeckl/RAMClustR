@@ -101,7 +101,7 @@ annotate<-function(ramclustObj = NULL,
     }
     
     if(length(inchikey) > 2) {
-      stop("too many inchikey columns in MSFinder table - please report error to ", maintainer('RAMClustR'),  '\n')
+      stop("too many inchikey columns in MSFinder table - please report error to ", "maintainer('RAMClustR')",  '\n')
     }
   
     
@@ -278,7 +278,16 @@ annotate<-function(ramclustObj = NULL,
   
   ramclustObj$inchikey[which(ramclustObj$inchikey == "NA")] <- NA
   
-  
+  ramclustObj$history <- paste(ramclustObj$history, 
+                               " Annotations were assigned using the RAMClustR annotate function.", 
+                               " Annotation priority was assigned from higest priority to lowest:", 
+                               if(any(names(ramclustObj) == "rs.lib")) {" RAMsearch, "},
+                               if(any(names(ramclustObj) == "msfinder.mssearch.details")) {" MSFinder spectrum search, "},
+                               if(any(names(ramclustObj) == "msfinder.structure.details")) {" MSFinder structure, "},
+                               if(any(names(ramclustObj) == "msfinder.formula.details")) {" MSFinder formula, "},
+                               if(any(names(ramclustObj) == "M.ann")) {" interpretMSSpectrum M."},
+                               sep = ""
+                                 )
   
   return(ramclustObj)
 }

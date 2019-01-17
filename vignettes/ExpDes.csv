@@ -5,7 +5,7 @@ Experiment,fill,"experiment name, no spaces"
 Species,fill,Genus species from which samples are derived
 Sample,fill,"Type of sample (i.e., serum, leaf)"
 Contributer,fill,you or your PI's name
-platform,fill,either GC-MS or LC-MS
+platform,LC-MS,either GC-MS or LC-MS
 ,,
 GC-MS ,,
 chrominst,fill,model of LC instrument
@@ -35,4 +35,4 @@ ionization,fill,"ESI or APCI, typically"
 colgas,fill,gas used for collisional dissociation
 msscanrange,fill,scan range used for acquisition
 conevol,fill,cone voltage used for acquisition
-MSlevs,1,number of levels of energy in XCMS object data - 1 typically
+MSlevs,fill,number of levels of energy in XCMS object data - 1 typically

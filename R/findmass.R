@@ -63,3 +63,4 @@ findmass <- function (ramclustObj = NULL,
   }
   return(out)
 }
+

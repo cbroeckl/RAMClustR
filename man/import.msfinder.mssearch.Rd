@@ -4,13 +4,11 @@
 \alias{import.msfinder.mssearch}
 \title{import.MSFinder.mssearch}
 \usage{
-import.msfinder.mssearch(ramclustObj = NULL, standardize.names = TRUE,
-  mat.dir = NULL, msp.dir = NULL)
+import.msfinder.mssearch(ramclustObj = NULL, mat.dir = NULL,
+  msp.dir = NULL)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}
-
-\item{standardize.names}{logical; use chemical translation service to retreive standard chemical name for inchikey?}
 
 \item{mat.dir}{optional path to .mat directory}
 

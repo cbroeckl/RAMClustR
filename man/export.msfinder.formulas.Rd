@@ -4,7 +4,7 @@
 \alias{export.msfinder.formulas}
 \title{export MSFinder formula prediction results in tabular format.}
 \usage{
-export.msfinder.formulas(ramclustObj = RC, export.all = FALSE,
+export.msfinder.formulas(ramclustObj = NULL, export.all = FALSE,
   output.directory = NULL)
 }
 \arguments{

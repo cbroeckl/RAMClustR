@@ -1,13 +1,13 @@
 Package: RAMClustR
 Type: Package
 Title: RAMClust: a novel feature clustering method enables spectral-matching based annotation for metabolomics data
-Version: 0.4.2
-Date: 2018-06-22
+Version: 0.99.001
+Date: 2019-01-07
 Author: Corey D. Broeckling, Fayyaz Afsar, Steffan Neumann, Asa Ben-Hur,  Jessica Prenni.
 Maintainer: "Broeckling,Corey" <Corey.Broeckling@ColoState.EDU>
-Imports: dynamicTreeCut, fastcluster, ff, InterpretMSSpectrum, httr, jsonlite, preprocessCore, xcms, e1071, gplots, pcaMethods
+Imports: dynamicTreeCut, fastcluster, ff, InterpretMSSpectrum, BiocManager, httr, jsonlite, preprocessCore, xcms, e1071, gplots, pcaMethods, stringr, xml2
 License: GPL (>= 2)
-Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics data, where feature detection is performed on both MS and idMS/MS(indiscriminant MS/MS) data, and feature relationships are determined simultaneously from the MS and idMS/MS data. 
+Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics data. This method is compatible with GC-MS, LC-MS, and LC-MS data using indiscriminant MS/MS (MSe, MSall, etc) data. 
 URL: https://github.com/cbroeckl/RAMClustR
 Encoding: UTF-8
 biocViews: MassSpectrometry, Metabolomics

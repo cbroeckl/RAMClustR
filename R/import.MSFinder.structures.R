@@ -254,7 +254,12 @@ import.msfinder.structures <- function (
   )
   
   setwd(home.dir)
-  
+  ramclustObj$history <- paste(ramclustObj$history,
+                               "MSFinder structure results were imported for all formulas.")
+  if(!grepl("(Tsugawa 2016)", ramclustObj$history)) {
+    ramclustObj$history <- gsub("MSFinder", "MSFinder (Tsugawa 2016)", ramclustObj$history)
+  }
   return(ramclustObj)
   
 }
+

@@ -4,7 +4,7 @@ author: "Corey Broeckling"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{RAMClustR: post-XCMS Feature Clustering}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -29,9 +29,9 @@ The RAMClustR algorithm is built on creating similarity scores for all pairs of 
 We will start with the XCMS package data.  This will take up to a few minutes to run, depending on your computer specs. 
 
 ```{r xcms faaKO, eval=FALSE, include=TRUE}
+library(BiocManager)
 library(xcms)
-source("https://bioconductor.org/biocLite.R")
-biocLite("faahKO")
+install.packages("faahKO")
 library(faahKO)
 cdfpath <- system.file("cdf", package = "faahKO")
 cdffiles <- list.files(cdfpath, recursive = TRUE, full.names = TRUE)
@@ -56,7 +56,6 @@ We can use the xset we just created as input to ramclustR.  You likely have alre
 ```{r ramclustR installation, eval=FALSE, include=TRUE}
 install.packages("devtools", repos="http://cran.us.r-project.org", dependencies=TRUE)
 library(devtools) 
-install_github("cdkr", "rajarshi", subdir="rinchi")
 install_github("cbroeckl/RAMClustR", build_vignettes = TRUE, dependencies = TRUE)
 library(RAMClustR) 
 ```
@@ -128,14 +127,9 @@ RC <- do.findmain(RC, mode = "positive", mzabs.error = 0.02, ppm.error = 10)
 ```
 
 
-There are now named slots in the in the RC object that were not there before.  see ?do.findmain for a description of what these slots contain.  You will also have a new directory called 'mat' in the 'spectrum' directory that was previously created.  This 'mat' contains spectra in .mat format suitable for import into MSFinder software.  There will also be a pdf document in your 'spectra' directorory called 'findmainPlots.pdf' demonstrating the evidence supporting M. lets look for a relationship between inferred M and retention time:  
+There are now named slots in the in the RC object that were not there before.  see ?do.findmain for a description of what these slots contain.  You will also two new new directories called 'mat' and 'ms' in the 'spectrum' directory that was previously created.  The 'mat' contains spectra in .mat format suitable for import into MSFinder software.  The 'ms' contains spectra in .ms format suitable for import into Sirius software. There will also be a pdf document in your 'spectra' directorory called 'findmainPlots.pdf' demonstrating the evidence supporting M. lets look for a relationship between inferred M and retention time:  
 
-```{r see M, eval=FALSE, include=TRUE}
-fit<-lm(RC$M~RC$clrt)
-plot(RC$clrt, RC$M, xlab= "retention time", ylab = "M", bty = "L", pch = 19)
-abline(fit)
-anova(fit)
-```
+RAMClustR exports files suitable for import into Sirius and MSFinder, but does not run these programs.  You can run these programs based on your needs.  These programs generate output files that can be imported back into R to provide annotations for the RAMClustR compounds of interest.   Import functions are currently written for MSFinder output, and will soon be developed for Sirius output formats.
 
 ## Questions:
 Corey Broeckling  -  cbroeckl@colostate.edu

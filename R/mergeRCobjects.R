@@ -242,3 +242,4 @@ mergeRCobjects <- function(
   
   return(newRC)
 }
+

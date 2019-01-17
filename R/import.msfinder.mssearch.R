@@ -4,7 +4,6 @@
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param mat.dir optional path to .mat directory
 #' @param msp.dir optional path to .msp directory
-#' @param standardize.names logical; use chemical translation service to retreive standard chemical name for inchikey?
 #' @details this function imports the output from the MSFinder program to annotate the ramclustR object
 #' @return an updated ramclustR object, with new slots at $msfinder.mssearch.details and $msfinder.mssearch.scores
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
@@ -16,7 +15,6 @@
 
 import.msfinder.mssearch <- function (
   ramclustObj = NULL,
-  standardize.names = TRUE,
   mat.dir = NULL,
   msp.dir = NULL
 ) {
@@ -194,6 +192,13 @@ import.msfinder.mssearch <- function (
   
   setwd(home.dir)
 
+  ramclustObj$history <- paste(ramclustObj$history,
+                               "Spectral search was performed in MSFinder, and results imported to R using the import.msfinder.mssearch function.")
+  
+  if(!grepl("(Tsugawa 2016)", ramclustObj$history)) {
+    ramclustObj$history <- gsub("MSFinder", "MSFinder (Tsugawa 2016)", ramclustObj$history)
+  }
+  
   return(ramclustObj)
   
 }

@@ -333,4 +333,46 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
           msms <- msms[which(msms[, "mz"] <= (prcmz + 
                                                 3)), , drop = FALSE]
           msms <- msms[order(msms[, "int"], decreasing = TRUE), 
-                       
+                       , drop = FALSE]
+          if (nrow(msms) > 0) {
+            out <- paste(out, "\n", ">collision ", ramclustObj$ExpDes$instrument[which(dimnames(ramclustObj$ExpDes$instrument)[[1]] == 
+                                                                                         "CE2"), 1], "\n", sep = "")
+            for (i in 1:nrow(msms)) {
+              out <- paste(out, msms[i, 1], " ", msms[i, 
+                                                      2], "\n", sep = "")
+            }
+          }
+        }
+      }
+      else {
+        do <- which(ramclustObj$featclus == cl)
+        if (length(do) > 0) {
+          msms <- cbind(mz = ramclustObj[[use.mass]][do], 
+                        int = ramclustObj$msint[do])
+          msms <- msms[which(msms[, "mz"] <= (prcmz + 
+                                                3)), , drop = FALSE]
+          msms <- msms[order(msms[, "int"], decreasing = TRUE), 
+                       , drop = FALSE]
+          if (nrow(msms) > 0) {
+            out <- paste(out, "\n", ">collision ", ramclustObj$ExpDes$instrument[which(dimnames(ramclustObj$ExpDes$instrument)[[1]] == 
+                                                                                         "CE1"), 1], "\n", sep = "")
+            for (i in 1:nrow(msms)) {
+              out <- paste(out, msms[i, 1], " ", msms[i, 
+                                                      2], "\n", sep = "")
+            }
+          }
+        }
+      }
+      write(out, file = paste0("spectra/ms/", ramclustObj$cmpd[cl], 
+                               ".ms"))
+    }
+  }
+  ramclustObj$history <- paste(ramclustObj$history, " Molecular weight was inferred using the do.findmain function, which calls the ", 
+                               "interpretMSSpectrum package (Jaeger 2016). ", "Parameters for do.findmain were set to: ", 
+                               "mode = ", mode, ", mzabs.error = ", mzabs.error, ", ppm.error = ", 
+                               ppm.error, ", ads = ", paste(ads, collapse = " "), ", nls = ", 
+                               paste(nls, collapse = " "), ", scoring = ", scoring, 
+                               ", and use.z = ", use.z, ".", sep = "")
+  cat("finished", "\n")
+  return(ramclustObj)
+}

@@ -300,6 +300,7 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
     }
     dev.off()
   }
+  
   if (writeMat) {
     if (!dir.exists("spectra")) {
       dir.create("spectra")
@@ -321,6 +322,75 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
                                                                                              "CE2"), 1]), "\n", sep = "")
                    }, "MSTYPE: ", "MS1", "\n", "Num Peaks: ", nrow(ms), 
                    "\n", sep = "")
+      for (i in 1:nrow(ms)) {
+        out <- paste(out, ms[i, 1], " ", ms[i, 2], "\n", 
+                     sep = "")
+      }
+      if (!is.null(ramclustObj$msmsint)) {
+        do <- which(ramclustObj$featclus == cl)
+        if (length(do) > 0) {
+          msms <- cbind(mz = ramclustObj[[use.mass]][do], 
+                        int = ramclustObj$msmsint[do])
+          msms <- msms[which(msms[, "mz"] <= (prcmz + 
+                                                3)), , drop = FALSE]
+          msms <- msms[order(msms[, "int"], decreasing = TRUE), 
+                       , drop = FALSE]
+          if (nrow(msms) > 0) {
+            out <- paste(out, "MSTYPE:", "MS2", "\n", 
+                         "Num Peaks: ", nrow(msms), "\n", sep = "")
+            for (i in 1:nrow(msms)) {
+              out <- paste(out, msms[i, 1], " ", msms[i, 
+                                                      2], "\n", sep = "")
+            }
+          }
+        }
+      }
+      else {
+        do <- which(ramclustObj$featclus == cl)
+        if (length(do) > 0) {
+          msms <- cbind(mz = ramclustObj[[use.mass]][do], 
+                        int = ramclustObj$msint[do])
+          msms <- msms[which(msms[, "mz"] <= (prcmz + 
+                                                3)), , drop = FALSE]
+          msms <- msms[order(msms[, "int"], decreasing = TRUE), 
+                       , drop = FALSE]
+          if (nrow(msms) > 0) {
+            out <- paste(out, "MSTYPE:", "MS2", "\n", 
+                         "Num Peaks: ", nrow(msms), "\n", sep = "")
+            for (i in 1:nrow(msms)) {
+              out <- paste(out, msms[i, 1], " ", msms[i, 
+                                                      2], "\n", sep = "")
+            }
+          }
+        }
+      }
+      write(out, file = paste0("spectra/mat/", ramclustObj$cmpd[cl], 
+                               ".mat"))
+    }
+  }
+  if (writeMS) {
+    if (!dir.exists("spectra")) {
+      dir.create("spectra")
+    }
+    dir.create("spectra/ms")
+    for (cl in cmpd) {
+      ms <- ramclustObj$M.ann[[cl]]
+      m1ads <- ads[grep("[M", ads, fixed = TRUE)]
+      if (length(m1ads) == 0) {
+        next
+      }
+      else {
+        prcr <- which(ms[, "adduct"] %in% m1ads)
+      }
+      prcr <- prcr[which.max(ms[prcr, "int"])]
+      prcmz <- ms[prcr, "mz"]
+      prctype <- ms[prcr, "adduct"]
+      out <- paste(">compound ", ramclustObj$cmpd[cl], 
+                   "\n", ">parentmass ", prcmz, "\n", ">ionization ", 
+                   prctype, "\n", "\n", sep = "")
+      ms <- ms[which((abs(ms[, "mz"] - prcmz) < 5.5) | 
+                       (abs(prcmz - ms[, "mz"]) < 0.2)), ]
+      out <- paste(out, ">ms1peaks", "\n", sep = "")
       for (i in 1:nrow(ms)) {
         out <- paste(out, ms[i, 1], " ", ms[i, 2], "\n", 
                      sep = "")
@@ -375,4 +445,6 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
                                ", and use.z = ", use.z, ".", sep = "")
   cat("finished", "\n")
   return(ramclustObj)
+  
+  
 }

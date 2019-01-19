@@ -54,7 +54,7 @@ defineExperiment<-function(csv = FALSE, force.skip=FALSE) {
                                        "platform"))
   
   
-   
+  
   
   if(force.skip == TRUE) {
     csv <- TRUE
@@ -62,7 +62,39 @@ defineExperiment<-function(csv = FALSE, force.skip=FALSE) {
   
   if (is.logical(csv)) {
     if(csv) {
-      out<-read.csv(paste(find.package("RAMClustR"), "/params/params.csv", sep=""), header=TRUE, check.names=FALSE, stringsAsFactors = FALSE)
+      # cat(find.package("RAMClustR"))
+      #out<-read.csv(paste(find.package("RAMClustR"), "/params/params.csv", sep=""), header=TRUE, check.names=FALSE, stringsAsFactors = FALSE)
+      out <- structure(list(
+        parameter = c("", "Experimental Design: ", "Experiment", 
+                      "Species", "Sample", "Contributer", "platform", "", "GC-MS ", 
+                      "chrominst", "msinst", "column", "InletTemp", "TransferTemp", 
+                      "mstype", "msmode", "ionization", "msscanrange", "scantime", 
+                      "deriv", "MSlevs", "", "LC-MS", "chrominst", "msinst", "column", 
+                      "solvA", "solvB", "CE1", "CE2", "mstype", "msmode", "ionization", 
+                      "colgas", "msscanrange", "conevol", "MSlevs"), 
+        Value = c("", 
+                  "", "fill", "fill", "fill", "fill", "fill", "", "", "fill", "fill", 
+                  "fill", "fill", "fill", "fill", "fill", "fill", "fill", "fill", 
+                  "fill", "1", "", "", "fill", "fill", "fill", "fill", "fill", 
+                  "fill", "fill", "fill", "fill", "fill", "fill", "fill", "fill", 
+                  "1"), 
+        Description = c("", "", "experiment name, no spaces", "Genus species from which samples are derived", 
+                        "Type of sample (i.e., serum, leaf)", "you or your PI's name", 
+                        "either GC-MS or LC-MS", "", "", "model of LC instrument", "model of MS instrument", 
+                        "column description", "temperature of inlet", "temperature of GC to MS transfer line", 
+                        "Type of mass spectrometer (one of QQQ, TOF, QTOF, Orbi, Q)", 
+                        "positive or negative ion mode", "EI, AP, or CI, typically", 
+                        "scan range used for acquisition", "time for each full scan spectrum (i.e 0.2 seconds)", 
+                        "derivitization used ( \"TMS\", \"None\", \"TBDMS\".)", "number of levels of energy acquired - 1 typically", 
+                        "", "", "model of LC instrument", "model of MS instrument", "column description", 
+                        "Solvent A composition", "Solvent B composition", "Collision energy of acquisition of MS data", 
+                        "Collision energy of acquisition for MSe/idMSMS data (when applicable)", 
+                        "Type of mass spectrometer (one of QQQ, TOF, QTOF, Orbi, Q)", 
+                        "positive or negative ion mode", "ESI or APCI, typically", "gas used for collisional dissociation", 
+                        "scan range used for acquisition", "cone voltage used for acquisition", 
+                        "number of levels of energy in XCMS object data - 1 typically"
+        )), class = "data.frame", row.names = c(NA, -37L))
+      
       if(!force.skip) {
         write.csv(out, file=paste(getwd(), "/ExpDes.csv", sep=""), row.names=FALSE)
         readline(prompt=cat("A file called ExpDes.csv has been written to your working directorty:",

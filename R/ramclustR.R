@@ -272,12 +272,6 @@ ramclustR<- function(  xcmsObj=NULL,
     }
   }
   
-  if(nrow(data1) < 5) {
-    warning('\n', "too few samples to use correlational similarity, clustering by retention time only", '\n')
-    ramclustObj$history <- paste(ramclustObj$history,
-                                 "Since there were fewer than five injections, clustering was performed only using retention time simiilarity.")
-  }
-  
   ## if using batch.qc check for proper information
   if(normalize == "batch.qc") {
     if(!all.equal(length(batch), length(qc), length(order), nrow(data1))) {
@@ -605,7 +599,7 @@ ramclustR<- function(  xcmsObj=NULL,
                       
                       digits=20 )	
         } else {
-          tmp2 <- matrix(data = 1, nrow = length(startr:stopr), ncol = length(startc:stopc))
+          temp2 <- matrix(data = 1, nrow = length(startr:stopr), ncol = length(startc:stopc))
         }
         #ffcor[startr:stopr, startc:stopc]<-temp
         temp<- 1-(temp1*temp2)
@@ -852,6 +846,11 @@ ramclustR<- function(  xcmsObj=NULL,
     cat(paste("msp file complete", '\n')) 
   }  
   ramclustObj$history <- history
+  if(nrow(ramclustObj$MSdata) < 5) {
+    warning('\n', "too few samples to use correlational similarity, clustering by retention time only", '\n')
+    ramclustObj$history <- paste(ramclustObj$history,
+                                 "Since there were fewer than five injections, clustering was performed only using retention time simiilarity.")
+  }
   return(ramclustObj)
 }
 

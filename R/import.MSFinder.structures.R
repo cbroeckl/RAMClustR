@@ -1,21 +1,14 @@
-#' import.msfinder.structures
+#' write.methods
 #'
-#' After running MSFinder on .mat or .msp files, import the structure that were predicted and their scores 
+#' write RAMClustR processing methods and citations to text file 
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
-#' @param mat.dir optional path to .mat directory
-#' @param msp.dir optional path to .msp directory
-#' @details this function imports the output from the MSFinder program to annotate the ramclustR object
+#' @param mat.dir directory in which to look for mat file MSFinder output - by default the /spectra/mat in the working directory
+#' @param msp.dir directory in which to look for msp file MSFinder output - by default the /spectra/msp in the working directory
+#' @details this function exports a file called ramclustr_methods.txt which contains the processing history, parameters used, and relevent citations.
 #' @return an annotated ramclustR object
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
-#' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
-#' @references Tsugawa H, Kind T, Nakabayashi R, Yukihira D, Tanaka W, Cajka T, Saito K, Fiehn O, Arita M. Hydrogen Rearrangement Rules: Computational MS/MS Fragmentation and Structure Elucidation Using MS-FINDER Software. Anal Chem. 2016 Aug 16;88(16):7946-58. doi: 10.1021/acs.analchem.6b00770. Epub 2016 Aug 4. PubMed PMID: 27419259.
-#' @return ramclustR object with new $ slots for: 
-#' @return - msfinder.structure: data frame of one row describing the best structure match for the selected best formula match
-#' @return - msfinder.structure$fragments:  data frame the fragment ion interpretations supporting the best structure match
-#' @return - msfinder.structure$details: list containing the best structure match for all formulas.  Each list element represents one formula (with the formula as the name), and is composed of a list:
-#' @return    - structures: table of most likely structures
-#' @return    - fragments: list of data frames, with one element for each from from 'structures'.  names are assigned based on 'id' column from structures.   
-#' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'mass spectrometry', 'clustering', 'feature', 'xcms', 'MSFinder'
+#' @return nothing - new file written to working director
+#' @keywords 'ramclustR' 'RAMClustR', 'metabolomics', 'mass spectrometry'
 #' @author Corey Broeckling
 #' @export
 

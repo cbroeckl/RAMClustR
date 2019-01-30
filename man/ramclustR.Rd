@@ -12,7 +12,7 @@ ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
   mspout = TRUE, ExpDes = NULL, normalize = "TIC",
   qc.inj.range = 20, order = NULL, batch = NULL, qc = NULL,
   minModuleSize = 2, linkage = "average", mzdec = 3,
-  cor.method = "pearson", fftempdir = NULL)
+  cor.method = "pearson", rt.only.low.n = TRUE, fftempdir = NULL)
 }
 \arguments{
 \item{xcmsObj}{xcmsObject: containing grouped feature data for clustering by ramclustR}
@@ -73,9 +73,9 @@ ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
 
 \item{cor.method}{character: which correlational method used to calculate 'r' - see ?cor}
 
-\item{fftempdir}{valid path: if there are file size limitations on the default ff pacakge temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.}
+\item{rt.only.low.n}{logical: default = TRUE  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to FALSE.}
 
-\item{rt.only.low.n}{logical: default = FALSE.  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to TRUE.}
+\item{fftempdir}{valid path: if there are file size limitations on the default ff pacakge temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.}
 }
 \value{
 $featclus: integer vector of cluster membership for each feature
@@ -114,7 +114,7 @@ $SpecAbundAve: the cluster intensities after averaging all samples with identica
 Main clustering function for grouping features based on their analytical behavior.
 }
 \details{
-Main clustering function output - see citation for algorithm description of vignette('RAMClustR') for a walk through.  batch.qc. normalization requires input of three vectors (1) batch (2) order (3) qc.   This is a feature centric normalization approach which adjusts signal intensities first by comparing batch median intensity of each feature (one feature at a time) QC signal intensity to full dataset median to correct for systematic batch effects and then secondly to apply a local QC median vs global median sample correction to correct for run order effects.
+Main clustering function output - see citation for algorithm description or vignette('RAMClustR') for a walk through.  batch.qc. normalization requires input of three vectors (1) batch (2) order (3) qc.   This is a feature centric normalization approach which adjusts signal intensities first by comparing batch median intensity of each feature (one feature at a time) QC signal intensity to full dataset median to correct for systematic batch effects and then secondly to apply a local QC median vs global median sample correction to correct for run order effects.
 }
 \references{
 Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.

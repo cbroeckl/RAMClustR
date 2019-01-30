@@ -5,7 +5,7 @@
 \title{import.msfinder.formulas}
 \usage{
 import.msfinder.formulas(ramclustObj = NULL, mat.dir = NULL,
-  msp.dir = NULL, database.priority = NULL)
+  msp.dir = NULL)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}
@@ -13,17 +13,15 @@ import.msfinder.formulas(ramclustObj = NULL, mat.dir = NULL,
 \item{mat.dir}{optional path to .mat directory}
 
 \item{msp.dir}{optional path to .msp directory}
-
-\item{database.priority}{character.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just selected databases).  If any database is set, the best formula match to that (those) database(s) is selected, rather than the best formula match overall.}
 }
 \value{
-new slots at $msfinder.formula, $msfinder.formula.score, and $msfinder.formula.details
+new slot at $msfinder.formula.details
 }
 \description{
 After running MSFinder on .mat or .msp files, import the formulas that were predicted and their scores
 }
 \details{
-this function imports the output from the MSFinder program to annotate the ramclustR object
+this function imports the output from the MSFinder program to support annotation of the ramclustR object
 }
 \references{
 Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.

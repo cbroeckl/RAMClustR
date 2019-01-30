@@ -5,7 +5,7 @@
 \title{import.msfinder.structures}
 \usage{
 import.msfinder.structures(ramclustObj = NULL, mat.dir = NULL,
-  msp.dir = NULL, msfinder.dir = "C:\\\\MSFinder\\\\MS-FINDER_2.20")
+  msp.dir = NULL)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}
@@ -13,8 +13,6 @@ import.msfinder.structures(ramclustObj = NULL, mat.dir = NULL,
 \item{mat.dir}{optional path to .mat directory}
 
 \item{msp.dir}{optional path to .msp directory}
-
-\item{msfinder.dir}{path to directory containing msfinder program and 'resources' directory}
 }
 \value{
 an annotated ramclustR object

@@ -5,8 +5,10 @@
 \title{evalute ramSearch, MSFinder mssearch, MSFinder Structure, MSFinder Formula, and findmain output to annotate spectra of ramclustR object}
 \usage{
 annotate(ramclustObj = NULL,
-  msfinder.dir = "C:/MSFinder/MS-FINDER program ver. 2.40",
-  standardize.names = FALSE, min.msms.score = 3.5)
+  msfinder.dir = "C:/MSFinder/MSFINDER ver 3.12",
+  standardize.names = FALSE, min.msms.score = 3.5,
+  database.priority = "custom", any.database.priority = TRUE,
+  reset = TRUE)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}
@@ -16,9 +18,15 @@ annotate(ramclustObj = NULL,
 \item{standardize.names}{logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)}
 
 \item{min.msms.score}{numerical: what is the minimum MSFinder similarity score acceptable.  default = 3.5}
+
+\item{database.priority}{character.  Formula assignment prioritization based on presence in one or more databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just selected databases).  If any database is set, the best formula match to that (those) database(s) is selected, rather than the best formula match overall.}
+
+\item{any.database.priority}{logical.  First priority in formula assignment is based on any of the 'database.priority' values.  Secondary priority from all other databases (determined in original MSFinder search) if TRUE.  If false, formula assignment score from MSFinder used independent of structure search results.}
+
+\item{reset}{logical.  If TRUE, removes any previously assigned annotations.}
 }
 \value{
-an updated ramclustR object, with the RC$ann and RC$ann.conf slots updated to annotated based on output from 1. ramsearch output, 2. msfinder mssearch, 3. msfinder predicted structure, 4. msfinder predicted formula, and 5. interpretMSSpectrum inferred molecular weight, with listed order as priority.
+an updated ramclustR object, with the at $msfinder.formula, $msfinder.formula.score,  $ann, and $ann.conf slots updated to annotated based on output from 1. ramsearch output, 2. msfinder mssearch, 3. msfinder predicted structure, 4. msfinder predicted formula, and 5. interpretMSSpectrum inferred molecular weight, with listed order as priority.
 }
 \description{
 After running RAMSearch (msp) and MSFinder on .mat or .msp files, import the spectral search results

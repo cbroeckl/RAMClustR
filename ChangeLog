@@ -1,3 +1,7 @@
+2019-01-30 Corey Broeckling v1.0.2
+  * changed behavior of msfinder import and annotation. Structure results from a relevent database can be used to set the formula, rather than formula being independently assigned.  
+  * added rt.only.low.n option to control behavior of clustering with low n (< 5) 
+
 2019-01-18 Corey Broeckling v1.0.1
   * fixed bug in ramclustR function when fewer than five samples. 
   * added function to convert foodb download to MSFinder structure database import format. 

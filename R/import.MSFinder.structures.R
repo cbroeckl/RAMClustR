@@ -4,7 +4,6 @@
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param mat.dir optional path to .mat directory
 #' @param msp.dir optional path to .msp directory
-#' @param msfinder.dir path to directory containing msfinder program and 'resources' directory
 #' @details this function imports the output from the MSFinder program to annotate the ramclustR object
 #' @return an annotated ramclustR object
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
@@ -23,25 +22,17 @@
 import.msfinder.structures <- function (
   ramclustObj = NULL,
   mat.dir = NULL,
-  msp.dir = NULL,
-  msfinder.dir = "C:\\MSFinder\\MS-FINDER_2.20"
+  msp.dir = NULL
 ) {
   
   home.dir <-getwd()
   
-  if(is.null(ramclustObj$msfinder.formula)) {
-    warning("trying to run 'import.msfinder.formulas' first")
-    rc<-ramclustObj
-    ramclustObj<-import.msfinder.formulas(ramclustObj = rc, mat.dir = NULL, msp.dir = NULL)
-    rm(rc)
-  }
-  
   if(is.null(mat.dir)) {
-    mat.dir = paste0(getwd(), "/spectra/mat")
+    mat.dir = paste0(home.dir, "/spectra/mat")
   }
   
   if(is.null(msp.dir)) {
-    msp.dir = paste0(getwd(), "/spectra/msp")
+    msp.dir = paste0(home.dir, "/spectra/msp")
   }
   
   usemat = TRUE
@@ -76,9 +67,11 @@ import.msfinder.structures <- function (
   mat.dir <- c(mat.dir, msp.dir)[c(usemat, usemsp)]
   
   
-  do <- list.dirs(mat.dir, full.names = FALSE, recursive = FALSE)
+  # do <- list.dirs(mat.dir, full.names = FALSE, recursive = FALSE)
   
-  do <- do[do %in% ramclustObj$cmpd]
+  # do <- do[do %in% ramclustObj$cmpd]
+  
+  do <-  ramclustObj$cmpd
   
   # 
   # if(grepl("Spectral DB search", tmp[2])) {
@@ -136,6 +129,7 @@ import.msfinder.structures <- function (
                                                                                                  "FlLikelihood", "BeLikelihood"), row.names = integer(0), class = "data.frame")
   
   for(i in 1:length(do)) {
+    if(!dir.exists(paste0(mat.dir, "/", do[i]))) {next}
     setwd(paste0(mat.dir, "/", do[i]))
     res<-list.files(pattern = ".sfd")
     if(length(res) == 0) {next}
@@ -227,39 +221,14 @@ import.msfinder.structures <- function (
   
   ramclustObj$msfinder.structure.details<-msfinder.structure
   
-  ramclustObj$msfinder.structure<-lapply(1:length(msfinder.structure), FUN = function(x) {
-    # for (x in 1:length( msfinder.structure)) {
-    if(!is.na(ramclustObj$msfinder.formula[x])) {
-      if(is.null(ramclustObj$msfinder.structure.details[[x]][[ramclustObj$msfinder.formula[x]]]$structures)) {
-        return(NA)
-        # next
-      }
-      if(nrow(ramclustObj$msfinder.structure.details[[x]][[ramclustObj$msfinder.formula[x]]]$structures)>0) {
-        # if(nrow(ramclustObj$msfinder.structure[[x]][[ramclustObj$msfinder.formula[x]]]$structures)>0) {
-        best<-which.max(ramclustObj$msfinder.structure.details[[x]][[ramclustObj$msfinder.formula[x]]]$structures[,"totalscore"])
-        ramclustObj$msfinder.structure.details[[x]][[ramclustObj$msfinder.formula[x]]]$structures[best,]
-      } else {NA}
-    } else {NA}
-  }
-  )
-  
-  ramclustObj$msfinder.structure.fragments<-lapply(1:length(msfinder.structure), FUN = function(x) {
-    # for (x in 1:length( msfinder.structure)) {
-    if(!is.na(ramclustObj$msfinder.structure[[x]][1])) {
-      ramclustObj$msfinder.structure.details[[x]][[ramclustObj$msfinder.formula[x]]][["fragments"]][[ramclustObj$msfinder.structure[[x]][1,"id"]]]
-    } else {
-      NA
-    }
-  }
-  )
-  
   setwd(home.dir)
-  ramclustObj$history <- paste(ramclustObj$history,
-                               "MSFinder structure results were imported for all formulas.")
-  if(!grepl("(Tsugawa 2016)", ramclustObj$history)) {
-    ramclustObj$history <- gsub("MSFinder", "MSFinder (Tsugawa 2016)", ramclustObj$history)
+  
+  if(!grepl("MSFinder (Tsugawa 2016) results were imported into the RAMClustR object", ramclustObj$history)) {
+    ramclustObj$history <- paste(ramclustObj$history, " MSFinder (Tsugawa 2016) results were imported into the RAMClustR object.")
   }
+  
   return(ramclustObj)
   
 }
+
 

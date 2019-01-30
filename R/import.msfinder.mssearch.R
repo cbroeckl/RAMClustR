@@ -60,16 +60,9 @@ import.msfinder.mssearch <- function (
   
   mat.dir <- c(mat.dir, msp.dir)[c(usemat, usemsp)]
   
-  dirs<-list.dirs(mat.dir, recursive = FALSE, full.names = FALSE) 
+  do<-list.dirs(mat.dir, recursive = FALSE, full.names = FALSE) 
   
-  do<-list.files(mat.dir, pattern = "Spectral DB search.sfd", full.names = TRUE, recursive = TRUE)
-  
-  
-  if(!identical(sort(ramclustObj$cmpd), sort(dirs))) {
-    stop("spectral match directory names do not match compound names: please ensure you have the correct pair of ramclust object and directory")
-  } else {
-    cmpd<-dirs
-  }
+  ncmpd <- max(as.integer(gsub("C", "", do)))
   
   tags<-c(
     "NAME: ",
@@ -107,8 +100,9 @@ import.msfinder.mssearch <- function (
     msfinder.mssearch.details[[i]]<-template
   }
   
-  for(i in 1:length(cmpd)) {
-    setwd(paste0(mat.dir, "/", cmpd[i]))
+  for(i in 1:length(ramclustObj$cmpd)) {
+    if(!dir.exists(paste0(mat.dir, "/", ramclustObj$cmpd[i]))) next
+    setwd(paste0(mat.dir, "/", ramclustObj$cmpd[i]))
     if(!file.exists("Spectral DB search.sfd")) {next}
     tmp<-readLines("Spectral DB search.sfd")
     if(length(tmp) == 0) {next}
@@ -167,8 +161,8 @@ import.msfinder.mssearch <- function (
         out[,k]<-an
       }
     }
-    msfinder.mssearch.details[[cmpd[i]]]$summary<-out
-    msfinder.mssearch.details[[cmpd[i]]]$spectra<-spectra
+    msfinder.mssearch.details[[ramclustObj$cmpd[i]]]$summary<-out
+    msfinder.mssearch.details[[ramclustObj$cmpd[i]]]$spectra<-spectra
   }
   
   
@@ -177,26 +171,13 @@ import.msfinder.mssearch <- function (
       msfinder.mssearch.details[[i]]$summary <- data.frame(t(tags))[0,]
     }
   }
-  msfinder.mssearch.score<-as.numeric(sapply(1:length(msfinder.mssearch), FUN = function(x) {
-    if(is.null(nrow(msfinder.mssearch.details[[x]]$summary))) {
-      NA 
-    } else {
-      msfinder.mssearch.details[[x]]$summary[1,"totalscore"]
-    }
-  }
-  )
-  )
   
+
   ramclustObj$msfinder.mssearch.details<-msfinder.mssearch.details
-  ramclustObj$msfinder.mssearch.score<-msfinder.mssearch.score
-  
   setwd(home.dir)
 
-  ramclustObj$history <- paste(ramclustObj$history,
-                               "Spectral search was performed in MSFinder, and results imported to R using the import.msfinder.mssearch function.")
-  
-  if(!grepl("(Tsugawa 2016)", ramclustObj$history)) {
-    ramclustObj$history <- gsub("MSFinder", "MSFinder (Tsugawa 2016)", ramclustObj$history)
+  if(!grepl("MSFinder (Tsugawa 2016) results were imported into the RAMClustR object", ramclustObj$history)) {
+    ramclustObj$history <- paste(ramclustObj$history, " MSFinder (Tsugawa 2016) results were imported into the RAMClustR object.")
   }
   
   return(ramclustObj)

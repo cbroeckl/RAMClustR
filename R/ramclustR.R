@@ -31,6 +31,7 @@
 #' @param linkage character: heirarchical clustering linkage method - see ?hclust
 #' @param mzdec integer: number of decimal places used in printing m/z values
 #' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
+#' @param rt.only.low.n logical: default = FALSE.  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to TRUE.
 #' @param fftempdir valid path: if there are file size limitations on the default ff pacakge temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.
 #'
 #' @details Main clustering function output - see citation for algorithm description of vignette('RAMClustR') for a walk through.  batch.qc. normalization requires input of three vectors (1) batch (2) order (3) qc.   This is a feature centric normalization approach which adjusts signal intensities first by comparing batch median intensity of each feature (one feature at a time) QC signal intensity to full dataset median to correct for systematic batch effects and then secondly to apply a local QC median vs global median sample correction to correct for run order effects.
@@ -592,14 +593,14 @@ ramclustR<- function(  xcmsObj=NULL,
                      
                      digits=20 )
         
-        if(nrow(data1) >= 5) {
-          temp2<-round (exp(-((1-(pmax(  cor(data1[,startr:stopr], data1[,startc:stopc], method=cor.method),
-                                       cor(data1[,startr:stopr], data2[,startc:stopc], method=cor.method),
-                                       cor(data2[,startr:stopr], data2[,startc:stopc], method=cor.method)  )))^2)/(2*(sr^2))), 
-                      
-                      digits=20 )	
-        } else {
+        if(nrow(data1) < 5 & rt.only.low.n) {
           temp2 <- matrix(data = 1, nrow = length(startr:stopr), ncol = length(startc:stopc))
+        } else {
+          temp2<-round (exp(-((1-(pmax(  cor(data1[,startr:stopr], data1[,startc:stopc], method=cor.method),
+                                         cor(data1[,startr:stopr], data2[,startc:stopc], method=cor.method),
+                                         cor(data2[,startr:stopr], data2[,startc:stopc], method=cor.method)  )))^2)/(2*(sr^2))), 
+                        
+                        digits=20 )	
         }
         #ffcor[startr:stopr, startc:stopc]<-temp
         temp<- 1-(temp1*temp2)
@@ -744,7 +745,7 @@ ramclustR<- function(  xcmsObj=NULL,
   ramclustObj$cmpd<-paste("C", formatC(1:length(ramclustObj$clrt), digits = strl, flag = 0 ) , sep="")
   # cat(ramclustObj$cmpd[1:10], '\n')
   ramclustObj$ann<-ramclustObj$cmpd
-  ramclustObj$annconf<-rep("", length(ramclustObj$clrt))
+  ramclustObj$annconf<-rep(4, length(ramclustObj$clrt))
   ramclustObj$annnotes<-rep("", length(ramclustObj$clrt))
   ramclustObj$MSdata_unnormalized <- data1raw
   if(mslev == 2) {
@@ -846,7 +847,7 @@ ramclustR<- function(  xcmsObj=NULL,
     cat(paste("msp file complete", '\n')) 
   }  
   ramclustObj$history <- history
-  if(nrow(ramclustObj$MSdata) < 5) {
+  if(nrow(ramclustObj$MSdata) < 5 & rt.only.low.n) {
     warning('\n', "too few samples to use correlational similarity, clustering by retention time only", '\n')
     ramclustObj$history <- paste(ramclustObj$history,
                                  "Since there were fewer than five injections, clustering was performed only using retention time simiilarity.")

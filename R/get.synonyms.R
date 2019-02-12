@@ -17,7 +17,7 @@
 
 get.synonyms <- function(ramclustObj = NULL,
                          get.db = TRUE,
-                         update.names = FALSE,
+                         update.names = TRUE,
                          lipid.short.hand = TRUE
 ) {
   
@@ -132,13 +132,10 @@ get.synonyms <- function(ramclustObj = NULL,
       chebi.url[x] <- paste0("https://www.ebi.ac.uk/chebi/searchId.do?chebiId=", tmp)
     }
     ramclustObj$chebi.url <- chebi.url
-
+    
   }
   
   for(i in 1:length(ramclustObj$ann)) {
-    
-    
-    
     if(!is.na(ramclustObj$inchikey[i])) {
       link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/synonyms/", ramclustObj$inchikey[i])
       # link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/synonyms/", 
@@ -165,14 +162,18 @@ get.synonyms <- function(ramclustObj = NULL,
       if(!is.null(syns)) {
         syns <- unique(c(ramclustObj$ann[i], syns))
         syns <- syns[order(nchar(syns))]
-        if(any(names(ramclustObj) == "msfinder.structure")) {        if(nrow(ramclustObj$msfinder.structure[[i]]) == 1) {
-          res <- ramclustObj$msfinder.structure[[i]][1,"resources"]
-          res <- strsplit(res, ",")
-          if(length(synonyms[[i]]) > 1) {
-            synonyms[[i]] <- c(synonyms[[i]], res)
-          }
+        if(any(names(ramclustObj) == "msfinder.structure")) {   
+          if(is.data.frame(ramclustObj$msfinder.structure[[i]])){
+            if(nrow(ramclustObj$msfinder.structure[[i]]) == 1) {
+              res <- ramclustObj$msfinder.structure[[i]][1,"resources"]
+              res <- unlist(strsplit(res, ","))
+              if(length(synonyms[[i]]) > 1) {
+                syns <- c(synonyms[[i]], res)
+              }
+            }
+          }  
           synonyms[[i]] <- syns
-        }      }
+        }
       }
     }
     

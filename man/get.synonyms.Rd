@@ -4,7 +4,7 @@
 \alias{get.synonyms}
 \title{get.synonyms()}
 \usage{
-get.synonyms(ramclustObj = NULL, get.db = TRUE, update.names = FALSE,
+get.synonyms(ramclustObj = NULL, get.db = TRUE, update.names = TRUE,
   lipid.short.hand = TRUE)
 }
 \arguments{

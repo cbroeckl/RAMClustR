@@ -124,6 +124,8 @@ annotate<-function(ramclustObj = NULL,
   }
 
   if(structure) {
+    
+    ### need to revisit this - not sure it is behaving appropriately.  
     tmpdb <- as.list(rep("", length(ramclustObj$msfinder.structure.details)))
     dbs <- vector(length = 0, mode = 'character')
     for(x in 1:length(ramclustObj$msfinder.structure.details)) {

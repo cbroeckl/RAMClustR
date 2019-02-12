@@ -140,6 +140,10 @@ import.msfinder.formulas <- function (ramclustObj = NULL,
   ramclustObj$msfinder.formula.details <- msfinder.formula
   setwd(home.dir)
   
+  if(is.null(ramclustObj$history)) {
+    ramclustObj$history <- ""
+  }
+  
   if(!grepl("MSFinder (Tsugawa 2016) results were imported into the RAMClustR object", ramclustObj$history)) {
     ramclustObj$history <- paste(ramclustObj$history, " MSFinder (Tsugawa 2016) results were imported into the RAMClustR object.")
   }

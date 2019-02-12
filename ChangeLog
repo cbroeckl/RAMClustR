@@ -1,3 +1,6 @@
+2019-02-12 Corey Broeckling v1.0.3
+  * fixed bug in batch.qc correction for MSe data
+
 2019-01-30 Corey Broeckling v1.0.3
   * added write.methods function to export processing history
 

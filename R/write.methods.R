@@ -42,7 +42,12 @@ write.methods <- function (ramclustObj = NULL,
     
     '(Kim 2019)' = "Kim S, Chen J, Cheng T, Gindulyte A, He J, He S, Li Q, Shoemaker BA, Thiessen PA, Yu B, Zaslavsky L, Zhang J, Bolton EE. PubChem 2019 update: improved access to chemical data. Nucleic Acids Res. 2019. 47(D1):D1102-D1109.",
     
-    '(Djoumbou 2016)' = "Djoumbou Feunang Y, Eisner R, Knox C, Chepelev L, Hastings J, Owen G, Fahy E, Steinbeck C, Subramanian S, Bolton E, Greiner R, Wishart DS. ClassyFire:  automated chemical classification with a comprehensive, computable taxonomy. J  Cheminform. 2016. 8:61."
+    '(Djoumbou 2016)' = "Djoumbou Feunang Y, Eisner R, Knox C, Chepelev L, Hastings J, Owen G, Fahy E, Steinbeck C, Subramanian S, Bolton E, Greiner R, Wishart DS. ClassyFire:  automated chemical classification with a comprehensive, computable taxonomy. J  Cheminform. 2016. 8:61.",
+    
+    '(Smith 2006)' = "Smith, C.A. and Want, E.J. and O'Maille, G. and Abagyan,R. and Siuzdak, G.: XCMS: Processing mass spectrometry data for metabolite profiling using nonlinear peak alignment, matching and identification, Analytical Chemistry, 78:779-787 (2006)",
+    
+    '(Tautenhahn 2008)' = "Ralf Tautenhahn, Christoph Boettcher, Steffen Neumann: Highly sensitive feature detection for high resolution LC/MS BMC Bioinformatics, 9:504 (2008)"
+    
   )
   
   sink(filename)

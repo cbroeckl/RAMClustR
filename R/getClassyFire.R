@@ -74,7 +74,7 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10)
     get.full <- which(!is.na(ramclustObj$inchikey) & is.na(ramclustObj$classyfire[, 
                                                                                   2]))
     for (i in get.full) {
-      cat(i, "\n")
+      cat(i)
       if (!is.na(ramclustObj$smiles[i])) {
         params <- list(label = "ramclustR", query_input = ramclustObj$smiles[i], 
                        query_type = "STRUCTURE")
@@ -83,6 +83,13 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10)
                              httr::add_headers(`Content-Type` = "application/json"))
         query_id <- jsonlite::fromJSON(httr::content(submit, 
                                                      "text"))
+        if(any(names(query_id) == "status")) {
+          if(query_id$status == "500") {
+            cat(" failed", '\n')
+            next
+          }
+        }
+        
         out <- list()
         out$classification_status <- "not done"
         out$number_of_elements <- 0
@@ -91,7 +98,7 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10)
         time.a <- Sys.time()
         while (out$number_of_elements == 0) {
           Sys.sleep(1)
-          out <- tryCatch( {fromJSON(paste0("http://classyfire.wishartlab.com/queries/", 
+          out <- tryCatch( {jsonlite::fromJSON(paste0("http://classyfire.wishartlab.com/queries/", 
                                             query = query_id$id, ".json"))}, 
                            error = function() {
                              out <- list()
@@ -136,7 +143,7 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10)
               g <- out$description
               if (is.null(g)) {g <- NA}
             }
-            
+            cat(" done", '\n')
             ramclustObj$classyfire[i, ] <- c(a, b, c, 
                                              d, e, f, g)
             rm(out)

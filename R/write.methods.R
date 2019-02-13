@@ -24,6 +24,8 @@ write.methods <- function (ramclustObj = NULL,
   }
   
   cit.list <- c(
+    '(Broeckling 2012)' = "Broeckling CD, Heuberger A, Prince JA, Ingelsson E, Prenni JE. Assigning precursor-product ion relationships in indiscriminant MS/MS data from non-targeted metabolite profiling studies. Metabolomics 2012. 9(1):33-43.",
+    
     '(Broeckling 2014)' = "Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014. 86(14):6812-7.",
     
     '(Broeckling 2016)' = "Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016. 88(18):9226-34.", 

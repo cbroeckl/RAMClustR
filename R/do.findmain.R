@@ -206,6 +206,7 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
       sort(summaryscores, decreasing = TRUE)[1]/sort(summaryscores, 
                                                      decreasing = TRUE)[2]
     }
+    if(is.na(M.space.ramclustr[cl])) {M.space.ramclustr[cl] <- 1}
     M.ramclustr[cl] <- summarytable[best, "neutral_mass"]
     M.ppm.ramclustr[cl] <- summarytable[best, "medppm"]
     M.rank.ramclustr[cl] <- best

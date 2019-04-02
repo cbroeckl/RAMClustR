@@ -14,7 +14,7 @@
 
 #' @export 
 
-getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10) 
+getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10, posts.per.minute = 5) 
 {
   if (is.null(ramclustObj$inchikey)) {
     stop("no inchikey slot found, please 'annotate' first", 
@@ -73,7 +73,9 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10)
   if (get.all) {
     get.full <- which(!is.na(ramclustObj$inchikey) & is.na(ramclustObj$classyfire[, 
                                                                                   2]))
+    cat("this will take some time - maximum of", posts.per.minute, "posts per minute", '\n')
     for (i in get.full) {
+
       cat(i)
       if (!is.na(ramclustObj$smiles[i])) {
         params <- list(label = "ramclustR", query_input = ramclustObj$smiles[i], 
@@ -83,6 +85,21 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10)
                              httr::add_headers(`Content-Type` = "application/json"))
         query_id <- jsonlite::fromJSON(httr::content(submit, 
                                                      "text"))
+        
+        if(any(names(query_id) == "error")) {
+          if(query_id$error == "Limit exceeded") {
+            Sys.sleep(60)
+            params <- list(label = "ramclustR", query_input = ramclustObj$smiles[i], 
+                           query_type = "STRUCTURE")
+            submit <- httr::POST("http://classyfire.wishartlab.com/queries", 
+                                 body = params, encode = "json", httr::accept_json(), 
+                                 httr::add_headers(`Content-Type` = "application/json"))
+            query_id <- jsonlite::fromJSON(httr::content(submit, 
+                                                         "text"))
+          }
+        }
+        
+        
         if(any(names(query_id) == "status")) {
           if(query_id$status == "500") {
             cat(" failed", '\n')
@@ -98,13 +115,15 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10)
         time.a <- Sys.time()
         while (out$number_of_elements == 0) {
           Sys.sleep(1)
-          out <- tryCatch( {jsonlite::fromJSON(paste0("http://classyfire.wishartlab.com/queries/", 
+          out <- tryCatch( {out <- jsonlite::fromJSON(paste0("http://classyfire.wishartlab.com/queries/", 
                                             query = query_id$id, ".json"))}, 
                            error = function() {
                              out <- list()
                              out$classification_status <- "not done"
                              out$number_of_elements <- 0
-                           })
+                             out
+                           }
+                           )
           
           if (round(as.numeric(difftime(Sys.time(), 
                                         time.a, units = "secs")), 3) >= max.wait) {
@@ -148,7 +167,8 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10)
                                              d, e, f, g)
             rm(out)
           }
-       }
+      }
+      Sys.sleep(ceiling(60/posts.per.minute))
     }
   }
   

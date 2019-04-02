@@ -65,8 +65,15 @@ import.msfinder.formulas <- function (ramclustObj = NULL,
   mat.dir <- c(mat.dir, msp.dir)[c(usemat, usemsp)]
   do <- list.files(mat.dir, pattern = ".fgt", full.names = TRUE)
   cmpd <- gsub(".fgt", "", basename(do))
-  tmp <- readLines(do[[1]])
-  if (grepl("Spectral DB search", tmp[2])) {
+  specres <- 0
+  allres <- 0
+  for(i in 1:min(10,length(do))) {
+    tmp <- readLines(do[[i]])
+    allres <- allres + length(which(grepl("NAME:", tmp, ignore.case = TRUE)))
+    specres <- specres + length(which(grepl("NAME: Spectral DB search", tmp, ignore.case = TRUE)))
+    rm(tmp)
+  }
+  if (specres == allres) {
     stop("these MSFinder contain only spectral search results; please use 'import.MSFinder.search' function instead", 
          "\n")
   }

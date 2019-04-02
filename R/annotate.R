@@ -23,7 +23,7 @@ annotate<-function(ramclustObj = NULL,
                    msfinder.dir = "C:/MSFinder/MSFINDER ver 3.12",
                    standardize.names = FALSE,
                    min.msms.score = 3.5,
-                   database.priority = "custom",
+                   database.priority = "all",
                    any.database.priority = TRUE,
                    reset = TRUE
 ) {

@@ -136,6 +136,7 @@ get.synonyms <- function(ramclustObj = NULL,
   }
   
   for(i in 1:length(ramclustObj$ann)) {
+    if(round(i/10) == i/10) cat(i, "of", length(ramclustObj$ann), '\n')
     if(!is.na(ramclustObj$inchikey[i])) {
       link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/synonyms/", ramclustObj$inchikey[i])
       # link <- paste0("http://cts.fiehnlab.ucdavis.edu/service/synonyms/", 

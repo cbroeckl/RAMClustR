@@ -5,9 +5,11 @@
 #' 
 #' @param ramclustObj ramclustR object to ClassyFy
 #' @param get.all logical; if TRUE, when inchikey classyfire lookup fails, submits for classyfication.  Can be slow. max.wait (below) sets max time to spend on each compound before moving on. default = FALSE.
-#' @param max.wait  numeric; maximum time to wait per compound when 'get.all' = TRUE.  The 
+#' @param max.wait  numeric; maximum time to wait per compound when 'get.all' = TRUE.   
+#' @param posts.per.minute  integer; a limit set when 'get.all' is true.  ClassyFire server accepts no more than 5 posts per minute when calculating new ClassyFire results.  Slows down submission process to keep server from denying access.  
 #' @return returns a ramclustR object.  new dataframe in $classyfire slot with rows equal to number of compounds.  
 #' @importFrom jsonlite fromJSON
+#' @importFrom RCurl url.exists
 #' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'classyFire'
 #' @author Corey Broeckling
 #' @references Djoumbou Feunang Y, Eisner R, Knox C, Chepelev L, Hastings J, Owen G, Fahy E, Steinbeck C, Subramanian S, Bolton E, Greiner R, and Wishart DS. ClassyFire: Automated Chemical Classification With A Comprehensive, Computable Taxonomy. Journal of Cheminformatics, 2016, 8:61. DOI: 10.1186/s13321-016-0174-y
@@ -115,6 +117,11 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10, po
         time.a <- Sys.time()
         while (out$number_of_elements == 0) {
           Sys.sleep(1)
+          
+          if(!RCurl::url.exists(paste0("http://classyfire.wishartlab.com/queries/",  query = query_id$id, ".json"))) {
+            cat(" not done", '\n')
+            break
+          }
           out <- tryCatch( {out <- jsonlite::fromJSON(paste0("http://classyfire.wishartlab.com/queries/", 
                                             query = query_id$id, ".json"))}, 
                            error = function() {

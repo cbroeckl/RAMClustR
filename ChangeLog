@@ -1,3 +1,7 @@
+2019-04-23 Corey Broeckling v1.0.6
+  * adapted getClassyFire to limit number of new structure ClassyFications to 5/minute per server regulations
+  * bug fix in annotate, get.synonyms
+
 2019-02-15 Corey Broeckling v1.0.5
   * fixed bug in do.findmain
 

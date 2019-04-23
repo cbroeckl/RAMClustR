@@ -20,7 +20,7 @@
 
 
 annotate<-function(ramclustObj = NULL,
-                   msfinder.dir = "C:/MSFinder/MSFINDER ver 3.12",
+                   msfinder.dir = "C:/MSFinder/MSFINDER ver 3.22",
                    standardize.names = FALSE,
                    min.msms.score = 3.5,
                    database.priority = "all",
@@ -140,7 +140,9 @@ annotate<-function(ramclustObj = NULL,
       
       if(nrow(all) > 0) {
         tmpdbs <- paste(all[,"resources"], collapse = ",")
+        if(tmpdbs == "") next
         tmpdbs <- unlist(strsplit(tmpdbs, ","))
+        tmpdbs <- unlist(strsplit(tmpdbs, ";"))
         tmpdbs <- tmpdbs[grepl("=", tmpdbs)]
         tmpdbs <- strsplit(tmpdbs, "=")
         if(length(tmpdbs)>0) {

@@ -4,14 +4,17 @@
 \alias{getClassyFire}
 \title{getClassyFire}
 \usage{
-getClassyFire(ramclustObj = NULL, get.all = TRUE, max.wait = 10)
+getClassyFire(ramclustObj = NULL, get.all = TRUE, max.wait = 10,
+  posts.per.minute = 5)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to ClassyFy}
 
 \item{get.all}{logical; if TRUE, when inchikey classyfire lookup fails, submits for classyfication.  Can be slow. max.wait (below) sets max time to spend on each compound before moving on. default = FALSE.}
 
-\item{max.wait}{numeric; maximum time to wait per compound when 'get.all' = TRUE.  The}
+\item{max.wait}{numeric; maximum time to wait per compound when 'get.all' = TRUE.}
+
+\item{posts.per.minute}{integer; a limit set when 'get.all' is true.  ClassyFire server accepts no more than 5 posts per minute when calculating new ClassyFire results.  Slows down submission process to keep server from denying access.}
 }
 \value{
 returns a ramclustR object.  new dataframe in $classyfire slot with rows equal to number of compounds.

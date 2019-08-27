@@ -183,7 +183,7 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10, po
   }
   
   ramclustObj$history <- paste(ramclustObj$history, 
-                               "Compounds were assigned to chemical ontegenies using the ClassyFire API (Djoumbou 2016)")
+                               "Compounds were assigned to chemical ontogenies using the ClassyFire API (Djoumbou 2016).")
   
   
   return(ramclustObj)

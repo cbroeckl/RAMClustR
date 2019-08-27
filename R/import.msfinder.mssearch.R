@@ -176,7 +176,7 @@ import.msfinder.mssearch <- function (
   ramclustObj$msfinder.mssearch.details<-msfinder.mssearch.details
   setwd(home.dir)
 
-  if(!grepl("MSFinder (Tsugawa 2016) results were imported into the RAMClustR object", ramclustObj$history)) {
+  if(!grepl("MSFinder (Tsugawa 2016) results were imported into the RAMClustR object", ramclustObj$history, fixed = TRUE)) {
     ramclustObj$history <- paste(ramclustObj$history, " MSFinder (Tsugawa 2016) results were imported into the RAMClustR object.")
   }
   

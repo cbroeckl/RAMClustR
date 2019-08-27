@@ -2,28 +2,25 @@
 #'
 #' After running RAMSearch (msp) and MSFinder on .mat or .msp files, import the spectral search results
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
-#' @param msfinder.dir full path to MSFinder directory - used for naming refinement.
+#' @param msfinder.dir full path to MSFinder directory - used for naming refinement
 #' @param standardize.names logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)
 #' @param min.msms.score numerical: what is the minimum MSFinder similarity score acceptable.  default = 3.5
 #' @param database.priority character.  Formula assignment prioritization based on presence in one or more databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just selected databases).  If any database is set, the best formula match to that (those) database(s) is selected, rather than the best formula match overall.  
 #' @param any.database.priority logical.  First priority in formula assignment is based on any of the 'database.priority' values.  Secondary priority from all other databases (determined in original MSFinder search) if TRUE.  If false, formula assignment score from MSFinder used independent of structure search results.
 #' @param reset logical.  If TRUE, removes any previously assigned annotations.  
-
 #' @details this function imports the output from the MSFinder program to annotate the ramclustR object
-
 #' @return an updated ramclustR object, with the at $msfinder.formula, $msfinder.formula.score,  $ann, and $ann.conf slots updated to annotated based on output from 1. ramsearch output, 2. msfinder mssearch, 3. msfinder predicted structure, 4. msfinder predicted formula, and 5. interpretMSSpectrum inferred molecular weight, with listed order as priority.  
-
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
 #' @references Tsugawa H, Kind T, Nakabayashi R, Yukihira D, Tanaka W, Cajka T, Saito K, Fiehn O, Arita M. Hydrogen Rearrangement Rules: Computational MS/MS Fragmentation and Structure Elucidation Using MS-FINDER Software. Anal Chem. 2016 Aug 16;88(16):7946-58. doi: 10.1021/acs.analchem.6b00770. Epub 2016 Aug 4. PubMed PMID: 27419259.
 #' @references http://cts.fiehnlab.ucdavis.edu/static/download/CTS2-MS2015.pdf 
-
 #' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'mass spectrometry', 'clustering', 'feature', 'xcms', 'MSFinder'
 #' @author Corey Broeckling
 #' @export 
 
-annotate<-function(ramclustObj = NULL,
-                   msfinder.dir = "C:/MSFinder/MSFINDER ver 3.24",
+
+change.annotation<-function(ramclustObj = NULL,
+                   msfinder.dir = "C:/MSFinder/MSFINDER ver 3.22",
                    standardize.names = FALSE,
                    min.msms.score = 3.5,
                    database.priority = "all",
@@ -125,7 +122,7 @@ annotate<-function(ramclustObj = NULL,
       }
     }
   }
-  
+
   if(structure) {
     
     ### need to revisit this - not sure it is behaving appropriately.  
@@ -219,7 +216,7 @@ annotate<-function(ramclustObj = NULL,
     
     ramclustObj$msfinder.structure<- as.list(rep(NA, length(ramclustObj$msfinder.structure.details)))
     names(ramclustObj$msfinder.structure) <- names(ramclustObj$msfinder.structure.details)
-    
+
     for(x in 1:length(ramclustObj$msfinder.structure)) {
       break.out <- FALSE
       ###################################################################################################################
@@ -412,7 +409,7 @@ annotate<-function(ramclustObj = NULL,
         
       }
     }
-    
+
     for(x in 1:length(ramclustObj$msfinder.formula)) {
       df <- ramclustObj$msfinder.formula.details[[x]]
       f <- which(ramclustObj$msfinder.formula.details[[x]][, "name"] == ramclustObj$msfinder.formula[x])
@@ -525,5 +522,4 @@ annotate<-function(ramclustObj = NULL,
   }
   return(ramclustObj)
 }
-
 

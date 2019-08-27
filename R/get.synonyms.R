@@ -219,7 +219,7 @@ get.synonyms <- function(ramclustObj = NULL,
   }
   
   ramclustObj$history <- paste(ramclustObj$history, 
-                               "Synonyms were retreived using the RAMClustR get.synonyms function within RAMClustR, calling the Chemical Translation Service (Wohlgemuth 2010) as well as database API for Pubchem (Kim 2019), LipidMaps (Fahy 2007), and HMDB (Wishart 2018), when appropriate.")
+                               "Synonyms were retrieved using the RAMClustR get.synonyms function within RAMClustR, calling the Chemical Translation Service (Wohlgemuth 2010) as well as database API for Pubchem (Kim 2019), LipidMaps (Fahy 2007), and HMDB (Wishart 2018), when appropriate.")
   ramclustObj$synonyms <- synonyms
   return(ramclustObj)
 }

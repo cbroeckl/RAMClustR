@@ -1,3 +1,6 @@
+2019-08-27 Corey Broeckling v1.0.8
+  * add reporting, fix processing history narrative issues. 
+
 2019-04-23 Corey Broeckling v1.0.7
   * trying to improve stability of getClassyFire - bug fix in tryCatch part of problem. 
 
@@ -34,6 +37,5 @@
   * check() returns zero errors, warnings, or notes. 
 
 2014-09-02  Steffen Neumann  <sneumann@ipb-halle.de>
-
 	* Fix some minor stuff to make R CMD check happy
 

@@ -28,8 +28,11 @@ Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni
 \author{
 Corey Broeckling
 }
-\keyword{'RAMClustR',}
-\keyword{'metabolomics',}
-\keyword{'ramclustR'}
-\keyword{'ramclustR',}
-\keyword{'ramsearch'}
+\concept{RAMClustR}
+\concept{RAMSearch}
+\concept{clustering}
+\concept{feature}
+\concept{mass spectrometry}
+\concept{metabolomics}
+\concept{ramclustR}
+\concept{xcms}

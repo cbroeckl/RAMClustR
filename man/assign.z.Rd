@@ -43,10 +43,11 @@ Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni
 \author{
 Corey Broeckling
 }
-\keyword{'RAMClustR',}
-\keyword{'charge}
-\keyword{'metabolomics',}
-\keyword{'ramclustR'}
-\keyword{'ramclustR',}
-\keyword{'ramsearch',}
-\keyword{state'}
+\concept{MSFinder}
+\concept{RAMClustR}
+\concept{charge state}
+\concept{feature}
+\concept{mass spectrometry}
+\concept{metabolomics}
+\concept{ramlclustR}
+\concept{xcms}

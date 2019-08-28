@@ -32,10 +32,9 @@ Two ramclustR objects are merged with this function, mapping features between th
 \author{
 Corey Broeckling
 }
-\keyword{'RAMClustR',}
-\keyword{'feature'}
-\keyword{'mass}
-\keyword{'metabolomics',}
-\keyword{'ramclustR'}
-\keyword{'ramclustR',}
-\keyword{spectrometry',}
+\concept{RAMClustR}
+\concept{clustering}
+\concept{feature}
+\concept{mass spectrometry}
+\concept{metabolomics}
+\concept{ramclustR}

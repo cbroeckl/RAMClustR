@@ -8,7 +8,13 @@
 #' @details Input file(s) should be csv formatted, with required headers of 'Name',	'Smiles',	'Inchikey',	'Chemical formula', and 'Mono mass' - case sensitive.  Ouput will be in tab delimited text format in directory of choice.
 #' @return  Nothing is returned - output file written to directory set by 'out.dir' and name set by 'out.name'
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
-#' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics'
+#' @concept ramclustR
+#' @concept RAMClustR
+#' @concept metabolomics
+#' @concept mass spectrometry
+#' @concept feature
+#' @concept MSFinder
+#' @concept xcms
 #' @author Corey Broeckling
 #' @export 
 

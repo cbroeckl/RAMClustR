@@ -32,13 +32,11 @@ a convenience function to perform a targeted search of all feaures for a mass of
 \author{
 Corey Broeckling
 }
-\keyword{'MSFinder'}
-\keyword{'RAMClustR',}
-\keyword{'clustering',}
-\keyword{'feature',}
-\keyword{'mass}
-\keyword{'metabolomics',}
-\keyword{'ramclustR'}
-\keyword{'ramclustR',}
-\keyword{'xcms',}
-\keyword{spectrometry',}
+\concept{MSFinder}
+\concept{RAMClustR}
+\concept{clustering}
+\concept{feature}
+\concept{mass spectrometry}
+\concept{metabolomics}
+\concept{ramclustR}
+\concept{xcms}

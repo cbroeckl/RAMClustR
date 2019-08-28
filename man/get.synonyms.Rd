@@ -33,17 +33,13 @@ http://cts.fiehnlab.ucdavis.edu/static/download/CTS2-MS2015.pdf
 \author{
 Corey Broeckling
 }
-\keyword{'MSFinder',}
-\keyword{'RAMClustR',}
-\keyword{'chemical}
-\keyword{'clustering',}
-\keyword{'cts'}
-\keyword{'feature',}
-\keyword{'mass}
-\keyword{'metabolomics',}
-\keyword{'ramclustR'}
-\keyword{'ramclustR',}
-\keyword{'xcms',}
-\keyword{service',}
-\keyword{spectrometry',}
-\keyword{translation}
+\concept{MSFinder}
+\concept{RAMClustR}
+\concept{chemical translation service}
+\concept{clustering}
+\concept{cts}
+\concept{feature}
+\concept{mass spectrometry}
+\concept{metabolomics}
+\concept{ramclustR}
+\concept{xcms}

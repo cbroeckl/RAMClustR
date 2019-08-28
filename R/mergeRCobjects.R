@@ -10,7 +10,12 @@
 #' @param mzwt numeric: when mapping features, weighting value used for similarities between feature mass values (see rtwt)
 #' @param rtwt numeric: when mapping features, weighting value used for similarities between feature retention time values (see mzwt)
 #' @return returns a ramclustR object.  All values from ramclustObj.1 are retained.  SpecAbund dataset from ramclustObj.1 is moved to RC$SpecAbund.1, where RC is the new ramclustObj.
-#' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'mass spectrometry', 'feature'
+#' @concept ramclustR
+#' @concept RAMClustR
+#' @concept metabolomics
+#' @concept mass spectrometry
+#' @concept clustering
+#' @concept feature
 #' @author Corey Broeckling
 #' @export 
 

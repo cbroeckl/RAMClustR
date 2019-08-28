@@ -6,7 +6,8 @@
 #' @param which.data name of dataset to export.  SpecAbund, SpecAbundAve, MSdata, or MSMSdata
 #' @param label.by either 'ann' or 'cmpd', generally.  name of ramclustObj slot used as csv header for each column (compound)
 #' @return nothing is returned.  file exported as csf to 'datasets/*.csv'
-#' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'ramsearch'
+#' @concept ramclustR
+#' @concept RAMClustR
 #' @author Corey Broeckling
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @export 

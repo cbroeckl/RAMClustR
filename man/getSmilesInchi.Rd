@@ -24,11 +24,13 @@ Kim S, Thiessen PA, Bolton EE, Bryant SH. PUG-SOAP and PUG-REST: web services fo
 \author{
 Corey Broeckling
 }
-\keyword{'PubChem',}
-\keyword{'RAMClustR',}
-\keyword{'metabolomics',}
-\keyword{'ramclustR'}
-\keyword{'ramclustR',}
-\keyword{inchi,}
-\keyword{inchikey}
-\keyword{smiles,}
+\concept{MSFinder}
+\concept{RAMClustR}
+\concept{clustering}
+\concept{feature}
+\concept{inchi}
+\concept{inchikey}
+\concept{mass spectrometry}
+\concept{metabolomics}
+\concept{ramclustR}
+\concept{smiles}

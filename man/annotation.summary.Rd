@@ -26,9 +26,9 @@ Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feat
 \author{
 Corey Broeckling
 }
-\keyword{'RAMClustR',}
-\keyword{'mass}
-\keyword{'metabolomics',}
-\keyword{'ramclustR'}
-\keyword{'ramclustR',}
-\keyword{spectrometry'}
+\concept{MSFinder}
+\concept{RAMClustR}
+\concept{mass spectrometry}
+\concept{metabolomics}
+\concept{ramlclustR}
+\concept{xcms}

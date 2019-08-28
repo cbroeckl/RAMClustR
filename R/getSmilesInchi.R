@@ -6,7 +6,16 @@
 #' @param ramclustObj ramclustR object to ClassyFy
 #' @return returns a ramclustR object.  new dataframe in $classyfire slot with rows equal to number of compounds.  
 #' @importFrom jsonlite fromJSON
-#' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'PubChem', smiles, inchi, inchikey
+#' @concept ramclustR
+#' @concept RAMClustR
+#' @concept metabolomics
+#' @concept mass spectrometry
+#' @concept clustering
+#' @concept feature
+#' @concept MSFinder
+#' @concept smiles
+#' @concept inchi
+#' @concept inchikey
 #' @author Corey Broeckling
 #' @references Kim S, Thiessen PA, Bolton EE, Bryant SH. PUG-SOAP and PUG-REST: web services for programmatic access to chemical information in PubChem. Nucleic Acids Res. 2015;43(W1):W605-11.
 

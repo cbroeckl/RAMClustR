@@ -31,8 +31,12 @@ Djoumbou Feunang Y, Eisner R, Knox C, Chepelev L, Hastings J, Owen G, Fahy E, St
 \author{
 Corey Broeckling
 }
-\keyword{'RAMClustR',}
-\keyword{'classyFire'}
-\keyword{'metabolomics',}
-\keyword{'ramclustR'}
-\keyword{'ramclustR',}
+\concept{MSFinder}
+\concept{RAMClustR}
+\concept{classyFire}
+\concept{clustering}
+\concept{feature}
+\concept{mass spectrometry}
+\concept{metabolomics}
+\concept{ramclustR}
+\concept{xcms}

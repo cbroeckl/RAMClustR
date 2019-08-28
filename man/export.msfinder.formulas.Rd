@@ -33,11 +33,11 @@ Tsugawa H, Kind T, Nakabayashi R, Yukihira D, Tanaka W, Cajka T, Saito K, Fiehn 
 \author{
 Corey Broeckling
 }
-\keyword{'MSFinder'}
-\keyword{'RAMClustR',}
-\keyword{'mass}
-\keyword{'metabolomics',}
-\keyword{'molecular}
-\keyword{'ramclustR'}
-\keyword{formula',}
-\keyword{spectrometry',}
+\concept{MSFinder}
+\concept{RAMClustR}
+\concept{clustering}
+\concept{feature}
+\concept{mass spectrometry}
+\concept{metabolomics}
+\concept{ramclustR}
+\concept{xcms}

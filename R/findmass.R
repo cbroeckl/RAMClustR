@@ -10,7 +10,14 @@
 #' @param zmax integer: maximum charge state to consider.  default is 6.  
 #' @param m.check logical:  check whether the matching masses are plausibly M0.  That is, we look for ions 1 proton mass (from charge state 1:zmax) below the target m/z at the same time that have intensities consistent with target ion being a non-M0 isotope.
 #' @return returns a table to the console listing masses which match, their retention time and intensity, and whether it appears to be plausible as M0
-#' @keywords 'ramclustR' 'RAMClustR', 'ramclustR', 'metabolomics', 'mass spectrometry', 'clustering', 'feature', 'xcms', 'MSFinder'
+#' @concept ramclustR
+#' @concept RAMClustR
+#' @concept metabolomics
+#' @concept mass spectrometry
+#' @concept clustering
+#' @concept feature
+#' @concept MSFinder
+#' @concept xcms
 #' @author Corey Broeckling
 #' @export
 

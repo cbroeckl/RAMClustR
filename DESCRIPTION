@@ -7,7 +7,7 @@ Author: Corey D. Broeckling, Fayyaz Afsar, Steffan Neumann, Asa Ben-Hur,  Jessic
 Maintainer: "Broeckling,Corey" <Corey.Broeckling@ColoState.EDU>
 Imports: dynamicTreeCut, fastcluster, ff, InterpretMSSpectrum, BiocManager, httr, jsonlite, preprocessCore, xcms, e1071, gplots, pcaMethods, stringr, xml2, utils, webchem, stringi, RCurl
 License: GPL (>= 2)
-Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics data. This method is compatible with gas and liquid chromatography coupled mass spectrometry, including indiscriminant tandem mass spectromery <DOI: 10.1021/ac501530d> data. 
+Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics data. This method is compatible with gas and liquid chromatography coupled mass spectrometry, including indiscriminant tandem mass spectrometry <DOI: 10.1021/ac501530d> data. 
 URL: https://github.com/cbroeckl/RAMClustR
 Encoding: UTF-8
 biocViews: MassSpectrometry, Metabolomics

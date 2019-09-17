@@ -64,9 +64,8 @@
 #' @importFrom jsonlite fromJSON
 #' @importFrom preprocessCore normalize.quantiles
 #' @importFrom InterpretMSSpectrum findMAIN PlotSpec
-#' @importFrom xcms groupval featureValues
 #' @importFrom utils citation packageVersion
-
+#' 
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
 #' @concept ramclustR
@@ -222,6 +221,12 @@ ramclustR  <- function(xcmsObj=NULL,
   ########
   # if xcms object as input, do this:
   if(!is.null(xcmsObj)){
+    
+    if (!requireNamespace("xcms", quietly = TRUE)) {
+      stop("The use of this function requires package 'xcms'. Please ",
+           "install with 'Biobase::install(\"xcms\")'")
+    }
+    
     OK <- FALSE
     
     if(class(xcmsObj)=="xcmsSet") {OK <- TRUE} 
@@ -247,8 +252,8 @@ ramclustR  <- function(xcmsObj=NULL,
     
     if(!newXCMS) {sampnames<-row.names(xcmsObj@phenoData)}
     if(newXCMS)  {sampnames <- xcmsObj@phenoData[[1]]}
-    if(!newXCMS) {data12<-groupval(xcmsObj, value="into")}
-    if(newXCMS) {data12<-featureValues(xcmsObj, value = "into")}
+    if(!newXCMS) {data12 <- xcms::groupval(xcmsObj, value="into")}
+    if(newXCMS)  {data12 <- xcms::featureValues(xcmsObj, value = "into")}
     
     if(taglocation=="filepaths" & !is.null(MStag)){ 
       if(!newXCMS) {
@@ -256,10 +261,11 @@ ramclustR  <- function(xcmsObj=NULL,
         msmsfiles<-grep(idMSMStag, xcmsObj@filepaths, ignore.case=TRUE)
       }
       if(newXCMS) {
-        msfiles<-grep(MStag, row.names(xcmsObj@phenoData), ignore.case=TRUE)
-        msmsfiles<-grep(idMSMStag, row.names(xcmsObj@phenoData), ignore.case=TRUE)
+        msfiles<-grep(MStag, xcmsObj@processingData@files, ignore.case=TRUE)
+        msmsfiles<-grep(idMSMStag, xcmsObj@processingData@files, ignore.case=TRUE)
       }
-      
+      if(length(msfiles) == 0) {stop("no msfiles recognized")}
+      if(length(msfiles) == 0) {stop("no msmsfiles recognized")}
       if(length(intersect(msfiles, msmsfiles)>0)) {stop("your MS and idMSMStag values do not generate unique file lists")}
       if(length(msfiles)!=length(msmsfiles))  {stop("the number of MS files must equal the number of MSMS files")}
       data1<-t(data12[,msfiles])

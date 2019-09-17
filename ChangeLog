@@ -1,3 +1,6 @@
+2019-09-17 Corey Broeckling v1.0.8
+  * remove dependency on XCMS, replace with XCMS as suggestion
+
 2019-08-27 Corey Broeckling v1.0.8
   * add reporting, fix processing history narrative issues. 
 

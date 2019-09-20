@@ -4,8 +4,8 @@
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param msfinder.dir full path to MSFinder directory - used for naming refinement.
 #' @param standardize.names logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)
-#' @param min.msms.score numerical: what is the minimum MSFinder similarity score acceptable.  default = 3.5
-#' @param database.priority character.  Formula assignment prioritization based on presence in one or more databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just selected databases).  If any database is set, the best formula match to that (those) database(s) is selected, rather than the best formula match overall.  
+#' @param min.msms.score numerical: what is the minimum MSFinder similarity score acceptable.  default = 6.5
+#' @param database.priority character.  Formula assignment prioritization based on presence in one or more (structure) databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just databases in MSFinder parameters).  If any database is set, the best formula match to any of those databases is selected, rather than the best formula match overall.  If NULL, this will be set to include all selected databases (from ramclustObj$msfinder.formula.dbs, retreieved from search output, when available) or 'all'.  
 #' @param any.database.priority logical.  First priority in formula assignment is based on any of the 'database.priority' values.  Secondary priority from all other databases (determined in original MSFinder search) if TRUE.  If false, formula assignment score from MSFinder used independent of structure search results.
 #' @param reset logical.  If TRUE, removes any previously assigned annotations.  
 
@@ -33,8 +33,8 @@
 annotate<-function(ramclustObj = NULL,
                    msfinder.dir = "C:/MSFinder/MSFINDER ver 3.24",
                    standardize.names = FALSE,
-                   min.msms.score = 3.5,
-                   database.priority = "all",
+                   min.msms.score = 6.5,
+                   database.priority = NULL,
                    any.database.priority = TRUE,
                    reset = TRUE
 ) {
@@ -45,7 +45,7 @@ annotate<-function(ramclustObj = NULL,
   }
   
   if(reset) {
-    ramclustObj$msfinder.formula <- rep(NA, length(ramclustObj$msfinder.structure.details))
+    ramclustObj$msfinder.formula <- rep(NA, length(ramclustObj$cmpd))
     ramclustObj$ann <- ramclustObj$cmpd
   }
   
@@ -63,12 +63,18 @@ annotate<-function(ramclustObj = NULL,
   if(length(sfile) == 0) {
     
     sfile<-list.files(paste0(msfinder.dir, "/Resources"), pattern = "MsfinderStructureDB-VS")
-    # if(length(sfile)==0) {
-    #   stop("no structure DB file found in msfinder.dir / Resources")
-    # }
-    # 
+    if(length(sfile)==0) {
+      stop("no structure DB file found in msfinder.dir / Resources")
+    }
+    
     if(length(sfile) > 1) {
-      sfile <- sfile[which.max(as.numeric(gsub(".esd", "", gsub("MsfinderStructureDB-VS", "", sfile))))]
+      r <- grep("_bin", sfile, fixed = TRUE)
+      if(length(r) > 0) {
+        sfile <- sfile[-r]
+      }
+      if(length(sfile) > 1) {
+        sfile <- sfile[which.max(as.numeric(gsub(".esd", "", gsub("MsfinderStructureDB-VS", "", sfile))))] 
+      }
     }
   }
   
@@ -165,11 +171,22 @@ annotate<-function(ramclustObj = NULL,
     }
     # rm(tmpdb)
     
-    suppressWarnings(if (!is.null(database.priority)) {
-      if (database.priority == "all") {
-        database.priority <- dbs
+    suppressWarnings(
+      if (is.null(database.priority)) {
+        if(!is.null(ramclustObj$msfinder.formula.dbs)) {
+          if(length(ramclustObj$msfinder.formula.dbs)>0) {
+            database.priority <- ramclustObj$msfinder.formula.dbs
+          } else {
+            database.priority <- "all"
+          }
+        } else {
+          database.priority <- "all" }
+        
+        if (database.priority == "all") {
+          database.priority <- dbs
+        }
       }
-    })
+    )
     
     if(any(grepl('custom', database.priority))) {
       database.priority <- gsub("custom", "Database ID", database.priority)
@@ -368,7 +385,7 @@ annotate<-function(ramclustObj = NULL,
       for (i in which(!dbmatch)) {
         close <- agrep(database.priority[i], dbs, max.distance = 0.2)
         fix <- readline(prompt = cat(database.priority[i], 
-                                     "does not match any database names", "please type one of the following names or 'q' to quit:", 
+                                     "does not match any database names", "please type one of the following names, 'rm' to remove this database, or or 'q' to quit:", 
                                      "\n", "\n", dbs, "\n"))
         if (fix == "q") {
           stop("function ended")

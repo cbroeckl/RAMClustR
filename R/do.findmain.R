@@ -451,7 +451,7 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
                                "mode = ", mode, ", mzabs.error = ", mzabs.error, ", ppm.error = ", 
                                ppm.error, ", ads = ", paste(ads, collapse = " "), ", nls = ", 
                                paste(nls, collapse = " "), ", scoring = ", scoring, 
-                               ", and use.z = ", use.z, ".", sep = "")
+                               ", and use.z = ", use.z, ".", '\n', '\n', sep = "")
   cat("finished", "\n")
   return(ramclustObj)
   

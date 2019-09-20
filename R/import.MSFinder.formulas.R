@@ -25,6 +25,7 @@ import.msfinder.formulas <- function (ramclustObj = NULL,
                                       msp.dir = NULL) 
 {
   home.dir <- getwd()
+  
   r <- grep("msfinder", names(ramclustObj))
   if (length(r) > 0) {
     warning("removed previosly assigned MSFinder formulas and sructures", 
@@ -71,6 +72,53 @@ import.msfinder.formulas <- function (ramclustObj = NULL,
   }
   mat.dir <- c(mat.dir, msp.dir)[c(usemat, usemsp)]
   do <- list.files(mat.dir, pattern = ".fgt", full.names = TRUE)
+  
+  ### retrieve parameter file from mat directory and parse to save with results.
+  params <- list.files(mat.dir, pattern = "batchparam", full.names = TRUE)
+  if(length(params) > 0) {
+    mtime <- rep(NA, length(params))
+    for(i in 1:length(mtime)) {
+      mtime[i] <- format(file.info(params[i])$mtime, format = '%y%m%d%H%M%S')
+    }
+    params <- params[which.max(mtime)]
+    params <- readLines(params)
+    breaks <- which(nchar(params)==0)
+    
+    ## forumla inference parameters
+    st <- grep ("Formula finder parameters", params)+1
+    end <- breaks[which(breaks > st)[1]]-1
+    if(end <= st) {stop('parsing of parameter file has failed')}
+    tmp <- strsplit(params[st:end], "=")
+    nms <- sapply(1:length(tmp), FUN = function(x) {tmp[[x]][1]})
+    vals <- sapply(1:length(tmp), FUN = function(x) {tmp[[x]][2]})
+    names(vals) <- nms
+    ramclustObj$msfinder.formula.parameters <- vals
+    
+    ## DB used record
+    st <- grep ("Data source", params)+1
+    end <- breaks[which(breaks > st)[1]]-1
+    if(end <= st) {stop('parsing of parameter file has failed')}
+    tmp <- strsplit(params[st:end], "=")
+    nms <- sapply(1:length(tmp), FUN = function(x) {tmp[[x]][1]})
+    vals <- sapply(1:length(tmp), FUN = function(x) {tmp[[x]][2]})
+    names(vals) <- nms
+    if(grepl("F", vals["IsUserDefinedDB"])) {
+      vals <- vals[1:(length(vals)-1)]
+      nms <- nms[1:(length(nms)-1)]
+    }
+    vals <- as.logical(vals)
+    names(vals) <- nms
+    vals <- names(which(vals))
+    vals <- vals[!grepl("NeverUse", vals)]
+    vals <- gsub("OnlyUseForNecessary", "", vals)
+    vals <- gsub("Allways", "", vals)
+    vals <- unique(vals)
+    ramclustObj$msfinder.formula.dbs <- vals
+    
+  } 
+    
+  
+  
   cmpd <- gsub(".fgt", "", basename(do))
   specres <- 0
   allres <- 0

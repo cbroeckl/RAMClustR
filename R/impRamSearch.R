@@ -28,6 +28,10 @@ impRamSearch<-function(
   
   ##these items will be filled and added to the RC object
   
+  if(is.null(ramclustObj$inchikey)) {
+    ramclustObj$inchikey <- rep(NA, length(ramclustObj$cmpd))
+  }
+  
   ramclustObj$rs.spec	<-as.list(rep("", max(ramclustObj$featclus)))
   ramclustObj$rs.lib	<-rep("", max(ramclustObj$featclus))
   ramclustObj$rs.specn	<-as.integer(rep(-1, max(ramclustObj$featclus)))
@@ -69,7 +73,8 @@ impRamSearch<-function(
       ramclustObj$rs.mf	[ind]	<- as.integer(sub("Match Factor / Dot Product: ", "", md[grep("Match Factor / Dot Product: ", md)]))
       ramclustObj$rs.rmf[ind]	<- as.integer(sub("Rev Match Factor / Rev Dot: ", "", md[grep("Rev Match Factor / Rev Dot: ", md)]))
       #ramclustObj$rs.prob[i]	<- sub("", "", md[grep("", md)])
-      #ramclustObj$smiles[i].... someday....
+      tmp.inch <- as.character(sub("InChIKey: ", "", md[grep("InChIKey: ", md)]))
+      if(nchar(tmp.inch) > 0) {ramclustObj$inchikey[i] <- tmp.inch; rm(tmp.inch)} else {ramclustObj$inchikey[i] <- NA}
       if(length(grep("Library Match Num Peaks:", md))==1) {
         ramclustObj$rs.spec[[ind]]	<- matrix(as.numeric(unlist(strsplit(md[(grep("Library Match Num Peaks:", md)+1)], " "))), ncol=2, byrow=TRUE)
       }
@@ -77,13 +82,13 @@ impRamSearch<-function(
   }
   ramclustObj$ann[which(nchar(ramclustObj$ann)<1)]<-ramclustObj$cmpd[which(nchar(ramclustObj$ann)<1)]
   
-  write.csv(file="spectra/annotation_summary.csv", data.frame('cmpd'=ramclustObj$cmpd,
-                                                              'retention time'=ramclustObj$clrt,
-                                                              'spectrum name'=ramclustObj$rs.specn,
-                                                              'annotation'=ramclustObj$ann,
-                                                              'MSI.confidence'=ramclustObj$annconf,
-                                                              'library'=ramclustObj$rs.lib,
-                                                              'notes'=ramclustObj$annnotes))
+  # write.csv(file="spectra/annotation_summary.csv", data.frame('cmpd'=ramclustObj$cmpd,
+  #                                                             'retention time'=ramclustObj$clrt,
+  #                                                             'spectrum name'=ramclustObj$rs.specn,
+  #                                                             'annotation'=ramclustObj$ann,
+  #                                                             'MSI.confidence'=ramclustObj$annconf,
+  #                                                             'library'=ramclustObj$rs.lib,
+  #                                                             'notes'=ramclustObj$annnotes))
   
   ramclustObj$history <- paste(ramclustObj$history, 
                                "RAMSearch (Broeckling 2016) results were imported into the RAMClustR object.")

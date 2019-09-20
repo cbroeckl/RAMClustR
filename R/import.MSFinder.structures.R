@@ -67,12 +67,55 @@ import.msfinder.structures <- function (
   
   mat.dir <- c(mat.dir, msp.dir)[c(usemat, usemsp)]
   
-  
-  # do <- list.dirs(mat.dir, full.names = FALSE, recursive = FALSE)
-  
-  # do <- do[do %in% ramclustObj$cmpd]
-  
   do <-  ramclustObj$cmpd
+  
+  ### retrieve parameter file from mat directory and parse to save with results.
+  params <- list.files(mat.dir, pattern = "batchparam", full.names = TRUE)
+  if(length(params) > 0) {
+    mtime <- rep(NA, length(params))
+    for(i in 1:length(mtime)) {
+      mtime[i] <- format(file.info(params[i])$mtime, format = '%y%m%d%H%M%S')
+    }
+    params <- params[which.max(mtime)]
+    params <- readLines(params)
+    breaks <- which(nchar(params)==0)
+    
+    ## structure inference parameters
+    st <- grep ("Structure finder parameters", params)+1
+    end <- breaks[which(breaks > st)[1]]-1
+    if(end <= st) {stop('parsing of parameter file has failed')}
+    tmp <- strsplit(params[st:end], "=")
+    nms <- sapply(1:length(tmp), FUN = function(x) {tmp[[x]][1]})
+    vals <- sapply(1:length(tmp), FUN = function(x) {tmp[[x]][2]})
+    names(vals) <- nms
+    ramclustObj$msfinder.structure.parameters <- vals
+    
+    ## DB used record
+    st <- grep ("Data source", params)+1
+    end <- breaks[which(breaks > st)[1]]-1
+    if(end <= st) {stop('parsing of parameter file has failed')}
+    tmp <- strsplit(params[st:end], "=")
+    nms <- sapply(1:length(tmp), FUN = function(x) {tmp[[x]][1]})
+    vals <- sapply(1:length(tmp), FUN = function(x) {tmp[[x]][2]})
+    names(vals) <- nms
+    if(grepl("F", vals["IsUserDefinedDB"])) {
+      vals <- vals[1:(length(vals)-1)]
+      nms <- nms[1:(length(nms)-1)]
+    }
+    vals <- as.logical(vals)
+    names(vals) <- nms
+    vals <- names(which(vals))
+    vals <- vals[!grepl("NeverUse", vals)]
+    vals <- gsub("OnlyUseForNecessary", "", vals)
+    vals <- gsub("Allways", "", vals)
+    vals <- unique(vals)
+    ramclustObj$msfinder.formula.dbs <- vals
+    
+  } 
+  
+  
+  
+  
   
   # 
   # if(grepl("Spectral DB search", tmp[2])) {

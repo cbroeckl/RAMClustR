@@ -139,12 +139,8 @@ ramclustR  <- function(xcmsObj=NULL,
   # define ms levels, used several times below
   mslev <- as.integer(as.numeric(as.character(ExpDes[[2]][which(row.names(ExpDes[[2]]) == "MSlevs"),1])))
   
-  history <- paste("RAMClustR (version ",
-                   packageVersion("RAMClustR"),
-                   ") was utilized to cluster features into spectra (Broeckling 2014).",
-                   sep = "")  
-  
-  
+  history <- paste("Raw mass spectrometry data were processed using an R based workflow for feature detection, retention time alignment, feature grouping, peak filling, feature clustering.")
+
   ########
   # do some checks to make sure we have everything we need before proceeding
   if(is.null(xcmsObj) & is.null(ms))  {
@@ -351,6 +347,12 @@ ramclustR  <- function(xcmsObj=NULL,
            "  number of injections = ", nrow(data1), '\n')
     }
   }
+  
+  
+  history <- paste(history, "RAMClustR (version ",
+                   packageVersion("RAMClustR"),
+                   ") was utilized to cluster features into spectra (Broeckling 2014).",
+                   sep = "")  
   
   if(mslev == 2) {
     history <- paste(history,
@@ -789,6 +791,7 @@ ramclustR  <- function(xcmsObj=NULL,
                    "minModuleSize = ", minModuleSize,
                    ", hmax = ", hmax, 
                    ", and deepSplit = ", deepSplit, ".", sep = "")
+  history <- paste(history, '\n', '\n')
   
   
   

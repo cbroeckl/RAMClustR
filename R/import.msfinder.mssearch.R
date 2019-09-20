@@ -69,6 +69,30 @@ import.msfinder.mssearch <- function (
   
   do<-list.dirs(mat.dir, recursive = FALSE, full.names = FALSE) 
   
+  ### retrieve parameter file from mat directory and parse to save with results.
+  params <- list.files(mat.dir, pattern = "batchparam", full.names = TRUE)
+  if(length(params) > 0) {
+    mtime <- rep(NA, length(params))
+    for(i in 1:length(mtime)) {
+      mtime[i] <- format(file.info(params[i])$mtime, format = '%y%m%d%H%M%S')
+    }
+    params <- params[which.max(mtime)]
+    params <- readLines(params)
+    breaks <- which(nchar(params)==0)
+    
+    ## spectral search parameters
+    st <- grep ("Spectral database search", params)+1
+    end <- breaks[which(breaks > st)[1]]-1
+    if(end <= st) {stop('parsing of parameter file has failed')}
+    tmp <- strsplit(params[st:end], "=")
+    nms <- sapply(1:length(tmp), FUN = function(x) {tmp[[x]][1]})
+    vals <- sapply(1:length(tmp), FUN = function(x) {tmp[[x]][2]})
+    names(vals) <- nms
+    ramclustObj$msfinder.mssearch.parameters <- vals
+    
+  } 
+  
+  
   ncmpd <- max(as.integer(gsub("C", "", do)))
   
   tags<-c(

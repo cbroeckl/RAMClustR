@@ -7,6 +7,7 @@
 #' @param ramclustObj.2 ramclustR object 2: this object will mapped and appended to racmlustObj1.  That is only features which appear consistent with those from ramclustObj.1 will be retained.
 #' @param mztol numeric: absolute mass tolerance around mz
 #' @param rttol numeric: feaure retention time tolerance.  Value set by this option will be used during the initial anchor mapping phase.  Two times the standard error of the rt loess correction will be used for the full mapping.
+#' @param course.rt.adj numeric: default = NULL. optional approximate retention time shift between ramclustObj.1 and ramclustObj.2.  i.e if the retention time of ramclustObj.1 is on average 15 seconds longer than that of ramclustobj.2, enter '15'.  if 1 is less than 2, enter a negative number.  This is applied before mapping to enable a smaller 'rttol' value to be used. 
 #' @param mzwt numeric: when mapping features, weighting value used for similarities between feature mass values (see rtwt)
 #' @param rtwt numeric: when mapping features, weighting value used for similarities between feature retention time values (see mzwt)
 #' @return returns a ramclustR object.  All values from ramclustObj.1 are retained.  SpecAbund dataset from ramclustObj.1 is moved to RC$SpecAbund.1, where RC is the new ramclustObj.
@@ -23,8 +24,9 @@
 mergeRCobjects <- function(
   ramclustObj.1 = NULL,  
   ramclustObj.2 = NULL,  
-  mztol = 0.02, 
+  mztol = 0.2, 
   rttol = 30,
+  course.rt.adj = NULL,
   mzwt = 2,
   rtwt = 1
 ) {
@@ -75,6 +77,12 @@ mergeRCobjects <- function(
   if(length(map) > 8000) {qu <- 4}
   if(length(map) > 2000 & length(map) <= 7999) {qu <- 3}
   if(length(map) < 1000) {qu <- 2}
+  
+  if(!is.null(course.rt.adj)) {
+    ramclustObj.2$frt <- ramclustObj.2$frt + course.rt.adj
+  }
+  
+  
   marks<-which(sel.score >= quantile(sel.score)[[qu]])
   for(i in marks) {
     keep <- which(
@@ -121,7 +129,7 @@ mergeRCobjects <- function(
   
   fit<- loess((newRC$frt[keep] - ramclustObj.2$frt[map[keep]]) ~ 
                 newRC$frt[keep] + I(newRC$frt[keep]^2), 
-              span = rttol/2, degree = 1, surface = "direct")
+              span = rttol/2, degree = 2, surface = "direct")
   pred<-fitted(fit)
   se<-predict(fit, se = TRUE)
   points(newRC$frt[keep], pred, type = "l", col = 2, lwd = 3)
@@ -143,7 +151,7 @@ mergeRCobjects <- function(
   
   ## map all features across the two ramclustObjects using new pred.frt
   
-  rttol<-2*fit$s  # set new rttol to 1.5 times the standard error of the fit from selective features
+  rttol<- fit$s  # set new rttol to 1.5 times the standard error of the fit from selective features
   
   map<-rep(NA, length(newRC$frt))
   marks<-1:length(newRC$frt)
@@ -185,7 +193,7 @@ mergeRCobjects <- function(
   
   fit<- loess((newRC$frt[keep] - pred.frt[map[keep]]) ~ 
                 newRC$frt[keep] + I(newRC$frt[keep]^2), 
-              span = rttol/2, degree = 1, surface = "direct")
+              span = rttol/2, degree = 2, surface = "direct")
   pred<-fitted(fit)
   se<-predict(fit, se = TRUE)
   points(newRC$frt[keep], pred, type = "l", col = 2, lwd = 3)
@@ -197,7 +205,7 @@ mergeRCobjects <- function(
                       log10(newRC$msint[keep])), digits = 2), sep = ""),
        col = "gray", pch = 19)
   abline(lm(log10(ramclustObj.2$msint[map[keep]]) ~ log10(newRC$msint[keep])), col = 2, lwd = 3)
-  
+
   newRC$SpecAbund.1<-ramclustObj.1$SpecAbund
   newRC$SpecAbund.2<-ramclustObj.2$SpecAbund
   

@@ -114,7 +114,6 @@ import.msfinder.formulas <- function (ramclustObj = NULL,
     vals <- gsub("Allways", "", vals)
     vals <- unique(vals)
     ramclustObj$msfinder.formula.dbs <- vals
-    
   } 
     
   

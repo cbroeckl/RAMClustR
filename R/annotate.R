@@ -177,10 +177,10 @@ annotate<-function(ramclustObj = NULL,
           if(length(ramclustObj$msfinder.formula.dbs)>0) {
             database.priority <- ramclustObj$msfinder.formula.dbs
           } else {
-            database.priority <- "all"
+            database.priority <- dbs
           }
         } else {
-          database.priority <- "all" }
+          database.priority <- dbs }
         
         if (database.priority == "all") {
           database.priority <- dbs
@@ -451,6 +451,7 @@ annotate<-function(ramclustObj = NULL,
   }
   
   for(i in 1:length(ramclustObj$ann)) {
+    if(is.null(ramclustObj$msfinder.formula)) stop("ramclustObj$msfinder.formula is null", '\n')
     if( !is.na(ramclustObj$msfinder.formula[[i]]) && (ramclustObj$cmpd[i] == ramclustObj$ann[i]) )  {
       ramclustObj$ann[i]<-ramclustObj$msfinder.formula[i]
       ramclustObj$annconf[i] <- 3

@@ -24,74 +24,13 @@ impRamSearch<-function(
   ramclustObj=NULL,
   ramsearchout="spectra/results.rse"
 ) {
+  
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
   out<-readLines(ramsearchout)
-  
-  ##these items will be filled and added to the RC object
-  
-  if(is.null(ramclustObj$inchikey)) {
-    ramclustObj$inchikey <- rep(NA, length(ramclustObj$cmpd))
-  }
-  
-  ramclustObj$rs.spec	<-as.list(rep("", max(ramclustObj$featclus)))
-  ramclustObj$rs.lib	<-rep("", max(ramclustObj$featclus))
-  ramclustObj$rs.specn	<-as.integer(rep(-1, max(ramclustObj$featclus)))
-  ramclustObj$rs.libn	<-as.integer(rep(-1, max(ramclustObj$featclus)))
-  ramclustObj$rs.mf	<-as.integer(rep(-1, max(ramclustObj$featclus)))
-  ramclustObj$rs.rmf	<-as.integer(rep(-1, max(ramclustObj$featclus)))
-  ramclustObj$rs.prob	<-as.numeric(rep(-1, max(ramclustObj$featclus)))
-  
-  ##pull relevent line numbers for all spectra
-  ##name line is first, so call that directly, range between name 1 and name 2 is the
-  ##range of spectrum 1
-  name<-which(regexpr('Matched Spectrum:', out)==1)
-  ann<-which(regexpr('Annotation:', out)==1)
-  origname<-which(regexpr('Original Name', out)==1)
-  
-  if(any((origname-name)!=2)) stop("please don't edit the output from ramsearch manually")
-  if(any(ramclustObj$cmpd!=sub("Original Name: ", "", out[origname]))) {stop("compound names/order differ between ramclust object and ramsearch output")}  
-  
-  ##if length of name is not equal to length of ramclust Object 'cmpd' slot, something is wrong:
-  if(length(name)/as.integer(as.character(ramclustObj$ExpDes[[2]]["MSlevs",1]))!= length(ramclustObj$cmpd)) stop("number of spectra in ramsearch output different than number of compounds in ramclust object")
-  
-  ##now pull relevent info our for each spectrum in output
-  for(i in 1:length(ann)) {
-    md<-out[name[i]:min((name[i+1]-1), length(out), na.rm=TRUE)]
-    cname<-sub("Original Name: ", "", md[grep("Original Name: ", md)])
-    ind<-as.numeric(sub("C", "", cname))
-    mf<-ramclustObj$rs.mf[ind]
-    newmf<-as.integer(sub("Match Factor / Dot Product: ", "", md[grep("Match Factor / Dot Product: ", md)]))
-    if(ramclustObj$cmpd[ind] != cname) {
-      stop(paste("something is amiss with compound ", i, ": the names do not match", sep=""))
-    }
-    if((nchar(sub("Annotation: ", "", md[2]))>0) & max(newmf, -1, na.rm=TRUE) >= mf ) {
-      ramclustObj$ann[ind] 	<- as.character(sub("Annotation: ", "", md[grep("Annotation: ", md)]))
-      ramclustObj$rs.specn[ind] 	<- as.character(sub("Matched Spectrum: ", "", md[grep("Matched Spectrum: ", md)]))
-      ramclustObj$annconf[ind] 	<- as.integer(sub("Confidence: ", "", md[grep("Confidence: ", md)]))
-      ramclustObj$annnotes[ind] <- as.character(sub("Comments: ", "", md[grep("Comments: ", md)]))
-      ramclustObj$rs.lib[ind]	<- as.character(sub("Library: ", "", md[grep("Library: ", md)]))
-      ramclustObj$rs.libn[ind]	<- as.integer(sub("Library Id: ", "", md[grep("Library Id: ", md)]))
-      ramclustObj$rs.mf	[ind]	<- as.integer(sub("Match Factor / Dot Product: ", "", md[grep("Match Factor / Dot Product: ", md)]))
-      ramclustObj$rs.rmf[ind]	<- as.integer(sub("Rev Match Factor / Rev Dot: ", "", md[grep("Rev Match Factor / Rev Dot: ", md)]))
-      #ramclustObj$rs.prob[i]	<- sub("", "", md[grep("", md)])
-      tmp.inch <- as.character(sub("InChIKey: ", "", md[grep("InChIKey: ", md)]))
-      if(nchar(tmp.inch) > 0) {ramclustObj$inchikey[i] <- tmp.inch; rm(tmp.inch)} else {ramclustObj$inchikey[i] <- NA}
-      if(length(grep("Library Match Num Peaks:", md))==1) {
-        ramclustObj$rs.spec[[ind]]	<- matrix(as.numeric(unlist(strsplit(md[(grep("Library Match Num Peaks:", md)+1)], " "))), ncol=2, byrow=TRUE)
-      }
-    }
-  }
-  ramclustObj$ann[which(nchar(ramclustObj$ann)<1)]<-ramclustObj$cmpd[which(nchar(ramclustObj$ann)<1)]
-  
-  # write.csv(file="spectra/annotation_summary.csv", data.frame('cmpd'=ramclustObj$cmpd,
-  #                                                             'retention time'=ramclustObj$clrt,
-  #                                                             'spectrum name'=ramclustObj$rs.specn,
-  #                                                             'annotation'=ramclustObj$ann,
-  #                                                             'MSI.confidence'=ramclustObj$annconf,
-  #                                                             'library'=ramclustObj$rs.lib,
-  #                                                             'notes'=ramclustObj$annnotes))
-  
-  ramclustObj$history <- paste(ramclustObj$history, 
-                               "RAMSearch (Broeckling 2016) results were imported into the RAMClustR object.")
+  ramclustObj$rs.out <- out
   
   return(ramclustObj)
 }

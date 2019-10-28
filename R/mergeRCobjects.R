@@ -31,6 +31,13 @@ mergeRCobjects <- function(
   rtwt = 1
 ) {
   
+  if(is.null(ramclustObj.1)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj.1 = RC1", '\n')
+  }
+  if(is.null(ramclustObj.2)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj.2 = RC2", '\n')
+  }
+  
   ## make new RC object and add slots for new data
   
   newRC <- ramclustObj.1

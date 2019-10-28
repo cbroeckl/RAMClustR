@@ -26,6 +26,10 @@ getSmilesInchi <- function(
   ramclustObj = NULL
 ) {
   
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
   if(is.null(ramclustObj$inchikey)) {
     stop("no inchikey slot found, please 'annotate' first", '\n')
   }

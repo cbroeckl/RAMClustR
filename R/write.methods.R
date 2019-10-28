@@ -21,6 +21,10 @@ write.methods <- function (ramclustObj = NULL,
   filename = NULL
 ) {
   
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC1", '\n')
+  }
+  
   if(!any(names(ramclustObj) == "history")) {
     stop("no processing history present for this ramclustR object")
   }

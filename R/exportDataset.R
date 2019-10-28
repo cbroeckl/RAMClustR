@@ -15,6 +15,12 @@
 exportDataset<-function(ramclustObj=NULL,
                         which.data="SpecAbund",
                         label.by="ann") {
+  
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
+  
   temp<-ramclustObj[[which.data]]
   if(!is.null(label.by)) dimnames(temp)[[2]]<-ramclustObj[[label.by]]  
   write.csv(temp, paste("datasets/", which.data, ".csv", sep=""), row.names=TRUE)

@@ -26,6 +26,10 @@ import.msfinder.mssearch <- function (
   msp.dir = NULL
 ) {
   
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
   home.dir <-getwd()
   
   if(is.null(mat.dir)) {

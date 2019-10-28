@@ -20,6 +20,10 @@ annotation.summary<-function(ramclustObj = NULL,
                              outfile = NULL
 ) {
   
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
   if(!is.null(outfile)) {
     f<-basename(outfile)
     p<-dirname(outfile)

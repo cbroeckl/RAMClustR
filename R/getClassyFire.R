@@ -26,6 +26,11 @@
 
 getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10, posts.per.minute = 5) 
 {
+  
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
   if (is.null(ramclustObj$inchikey)) {
     stop("no inchikey slot found, please 'annotate' first", 
          "\n")
@@ -59,7 +64,7 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10, po
     
     tryn <- 1 
     if(length(out) < 2 & tryn <= 3) {
-      cat("retry", i, '\n')
+      # cat("retry", i, '\n')
       tryn <- tryn + 1
       Sys.sleep(2)
       out <- tryCatch(jsonlite::fromJSON(paste0(url, "/entities/", ramclustObj$inchikey[i], 

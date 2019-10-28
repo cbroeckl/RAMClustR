@@ -28,6 +28,11 @@ findmass <- function (ramclustObj = NULL,
                       zmax = 6, 
                       m.check = TRUE) 
 {
+  
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
   if (is.null(mz)) {
     stop("must set 'mz'", "\n")
   }

@@ -26,6 +26,10 @@ export.msfinder.formulas <- function(
   output.directory = NULL) {
   
   
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
   if(!is.null(output.directory)) {
     if(!dir.exists(output.directory)) {
       stop("output directory ", output.directory, " does not exist")

@@ -36,6 +36,10 @@ change.annotation<-function(ramclustObj = NULL,
 ) {
   
   
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
   if(!dir.exists(msfinder.dir)) {
     stop("msfinder directory does not exist: please set 'msfinder.dir' option as your full msfinder directory path")
   }

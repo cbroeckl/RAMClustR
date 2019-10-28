@@ -24,6 +24,10 @@ fooddb2msfinder <- function(
   out.name = "FoodDB_for_MSFinder.txt"
 ) {
   
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
   if(is.null(foodb.files)) {
     foodb.files <- utils::choose.files (caption = "Select input files from FooDB")
   }

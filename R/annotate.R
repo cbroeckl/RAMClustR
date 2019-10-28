@@ -5,8 +5,11 @@
 #' @param msfinder.dir full path to MSFinder directory - used for naming refinement.
 #' @param standardize.names logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)
 #' @param min.msms.score numerical: what is the minimum MSFinder similarity score acceptable.  default = 6.5
-#' @param database.priority character.  Formula assignment prioritization based on presence in one or more (structure) databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just databases in MSFinder parameters).  If any database is set, the best formula match to any of those databases is selected, rather than the best formula match overall.  If NULL, this will be set to include all selected databases (from ramclustObj$msfinder.formula.dbs, retreieved from search output, when available) or 'all'.  
+#' @param database.priority character.  Formula assignment prioritization based on presence in one or more (structure) databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just databases in MSFinder parameters).  If any database is set, the best formula match to any of those databases is selected, rather than the best formula match overall.  If NULL, this will be set to include all selected databases (from ramclustObj$msfinder.dbs, retreieved from search output during import.msfinder.formulas(), when available) or 'all'.  
 #' @param any.database.priority logical.  First priority in formula assignment is based on any of the 'database.priority' values.  Secondary priority from all other databases (determined in original MSFinder search) if TRUE.  If false, formula assignment score from MSFinder used independent of structure search results.
+#' @param database.score logical. default = TRUE.  Should we use the MSFinder database score in assigning structures, as MSFinder does? If false the database score is subtracted out.  The database score increases the chance of returning biologically relevent compound matches, but biases the annotation toward well described/databased compounds. 
+#' @param form.structure.scoring logical. default = TRUE.  Should a combined score using the product of the formula and structure scores be used?  If FALSE, structure score alone is used in annotations. 
+#' @param find.inchikey logical.  default = TRUE. use chemical translation service to try to look up inchikey for chemical name.
 #' @param reset logical.  If TRUE, removes any previously assigned annotations.  
 
 #' @details this function imports the output from the MSFinder program to annotate the ramclustR object
@@ -36,6 +39,9 @@ annotate<-function(ramclustObj = NULL,
                    min.msms.score = 6.5,
                    database.priority = NULL,
                    any.database.priority = TRUE,
+                   database.score = TRUE,
+                   form.structure.scoring = TRUE,
+                   find.inchikey = TRUE,
                    reset = TRUE
 ) {
   
@@ -44,9 +50,21 @@ annotate<-function(ramclustObj = NULL,
     stop("msfinder directory does not exist: please set 'msfinder.dir' option as your full msfinder directory path")
   }
   
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
   if(reset) {
     ramclustObj$msfinder.formula <- rep(NA, length(ramclustObj$cmpd))
+    ramclustObj$msfinder.formula <- as.list(rep(NA, length(ramclustObj$cmpd)))
+    ramclustObj$annconf <- rep(4, length(ramclustObj$cmpd))
     ramclustObj$ann <- ramclustObj$cmpd
+    ramclustObj$inchikey <- NULL
+    ramclustObj$inchi <- NULL
+    ramclustObj$smiles <- NULL
+    ramclustObj$dbid <- NULL
+    ramclustObj$synonyms <- NULL
+    ramclustObj$classyfire <- NULL
   }
   
   use.short.inchikey = TRUE
@@ -80,13 +98,17 @@ annotate<-function(ramclustObj = NULL,
   
   reference.data<-read.delim2(paste0(msfinder.dir, "/Resources/", sfile), header = TRUE, na.strings = "N/A", quote = "", stringsAsFactors = FALSE)
   
+  if(any(names(ramclustObj)=="rs.out")) {
+    ramsearch = TRUE
+  } else {ramsearch = FALSE}
+  
   if(any(names(ramclustObj)=="M")) {
     findmain = TRUE
   } else {findmain = FALSE}
   
   if(any(names(ramclustObj) == "msfinder.formula.details")) {
     formula = TRUE
-    use.formula <- rep(FALSE, length(ramclustObj$msfinder.formula.details))
+    #use.formula <- rep(FALSE, length(ramclustObj$msfinder.formula.details))
   } else {formula = FALSE}
   
   if(any(names(ramclustObj) == "msfinder.structure.details")) {
@@ -103,6 +125,70 @@ annotate<-function(ramclustObj = NULL,
   if(!any(names(ramclustObj) == "dbid")) {ramclustObj$dbid<- rep(NA, length(ramclustObj$cmpd))}
   if(!any(names(ramclustObj) == "synonyms")) {
     ramclustObj$synonyms <- as.list(rep(NA, length(ramclustObj$cmpd)))
+  }
+  
+  if(!is.null(ramclustObj$msfinder.dbs)) {
+    database.priority <- ramclustObj$msfinder.dbs
+  }
+  
+  if(ramsearch) {
+    ##these items will be filled and added to the RC object
+    out <- ramclustObj$rs.out 
+    if(is.null(ramclustObj$inchikey)) {
+      ramclustObj$inchikey <- rep(NA, length(ramclustObj$cmpd))
+    }
+    
+    ramclustObj$rs.spec	<-as.list(rep("", max(ramclustObj$featclus)))
+    ramclustObj$rs.lib	<-rep("", max(ramclustObj$featclus))
+    ramclustObj$rs.specn	<-as.integer(rep(-1, max(ramclustObj$featclus)))
+    ramclustObj$rs.libn	<-as.integer(rep(-1, max(ramclustObj$featclus)))
+    ramclustObj$rs.mf	<-as.integer(rep(-1, max(ramclustObj$featclus)))
+    ramclustObj$rs.rmf	<-as.integer(rep(-1, max(ramclustObj$featclus)))
+    ramclustObj$rs.prob	<-as.numeric(rep(-1, max(ramclustObj$featclus)))
+    
+    ##pull relevent line numbers for all spectra
+    ##name line is first, so call that directly, range between name 1 and name 2 is the
+    ##range of spectrum 1
+    name<-which(regexpr('Matched Spectrum:', out)==1)
+    ann<-which(regexpr('Annotation:', out)==1)
+    origname<-which(regexpr('Original Name', out)==1)
+    
+    if(any((origname-name)!=2)) stop("please don't edit the output from ramsearch manually")
+    if(any(ramclustObj$cmpd!=sub("Original Name: ", "", out[origname]))) {stop("compound names/order differ between ramclust object and ramsearch output")}  
+    
+    ##if length of name is not equal to length of ramclust Object 'cmpd' slot, something is wrong:
+    if(length(name)/as.integer(as.character(ramclustObj$ExpDes[[2]]["MSlevs",1]))!= length(ramclustObj$cmpd)) stop("number of spectra in ramsearch output different than number of compounds in ramclust object")
+    
+    ##now pull relevent info our for each spectrum in output
+    for(i in 1:length(ann)) {
+      md<-out[name[i]:min((name[i+1]-1), length(out), na.rm=TRUE)]
+      cname<-sub("Original Name: ", "", md[grep("Original Name: ", md)])
+      ind<-as.numeric(sub("C", "", cname))
+      mf<-ramclustObj$rs.mf[ind]
+      newmf<-as.integer(sub("Match Factor / Dot Product: ", "", md[grep("Match Factor / Dot Product: ", md)]))
+      if(ramclustObj$cmpd[ind] != cname) {
+        stop(paste("something is amiss with compound ", i, ": the names do not match", sep=""))
+      }
+      if((nchar(sub("Annotation: ", "", md[2]))>0) & max(newmf, -1, na.rm=TRUE) >= mf ) {
+        ramclustObj$ann[ind] 	<- as.character(sub("Annotation: ", "", md[grep("Annotation: ", md)]))
+        ramclustObj$rs.specn[ind] 	<- as.character(sub("Matched Spectrum: ", "", md[grep("Matched Spectrum: ", md)]))
+        ramclustObj$annconf[ind] 	<- as.integer(sub("Confidence: ", "", md[grep("Confidence: ", md)]))
+        ramclustObj$annnotes[ind] <- as.character(sub("Comments: ", "", md[grep("Comments: ", md)]))
+        ramclustObj$rs.lib[ind]	<- as.character(sub("Library: ", "", md[grep("Library: ", md)]))
+        ramclustObj$rs.libn[ind]	<- as.integer(sub("Library Id: ", "", md[grep("Library Id: ", md)]))
+        ramclustObj$rs.mf	[ind]	<- as.integer(sub("Match Factor / Dot Product: ", "", md[grep("Match Factor / Dot Product: ", md)]))
+        ramclustObj$rs.rmf[ind]	<- as.integer(sub("Rev Match Factor / Rev Dot: ", "", md[grep("Rev Match Factor / Rev Dot: ", md)]))
+        #ramclustObj$rs.prob[i]	<- sub("", "", md[grep("", md)])
+        tmp.inchi <- as.character(gsub("InChIKey: ", "", md[grep("InChIKey: ", md)]))
+        tmp.inchi <- gsub("InChIKey=", "", tmp.inchi)
+        if(nchar(tmp.inch) > 0) {ramclustObj$inchikey[i] <- tmp.inch; rm(tmp.inch)} else {ramclustObj$inchikey[i] <- NA}
+        if(length(grep("Library Match Num Peaks:", md))==1) {
+          ramclustObj$rs.spec[[ind]]	<- matrix(as.numeric(unlist(strsplit(md[(grep("Library Match Num Peaks:", md)+1)], " "))), ncol=2, byrow=TRUE)
+        }
+      }
+    }
+    ramclustObj$ann[which(nchar(ramclustObj$ann)<1)]<-ramclustObj$cmpd[which(nchar(ramclustObj$ann)<1)]
+    
   }
   
   if(mssearch) {
@@ -142,8 +228,9 @@ annotate<-function(ramclustObj = NULL,
   
   if(structure) {
     
-    ### need to revisit this - not sure it is behaving appropriately.  
+    
     tmpdb <- as.list(rep("", length(ramclustObj$msfinder.structure.details)))
+    summary <- as.list(rep("", length(ramclustObj$msfinder.structure.details)))
     dbs <- vector(length = 0, mode = 'character')
     for(x in 1:length(ramclustObj$msfinder.structure.details)) {
       # cat(x, " ")
@@ -171,6 +258,13 @@ annotate<-function(ramclustObj = NULL,
     }
     # rm(tmpdb)
     
+    if(!(is.null(ramclustObj$msfinder.formula.dbs))) {
+      r <- which(grepl("IsUserDefinedDB", ramclustObj$msfinder.formula.dbs))
+      if(length(r)>0) {
+        ramclustObj$msfinder.formula.dbs[r] <- "Database ID"
+      }
+    }
+    
     suppressWarnings(
       if (is.null(database.priority)) {
         if(!is.null(ramclustObj$msfinder.formula.dbs)) {
@@ -192,110 +286,124 @@ annotate<-function(ramclustObj = NULL,
       database.priority <- gsub("custom", "Database ID", database.priority)
     }
     
-    dbmatch <- dbs %in% database.priority
+    dbmatch <- database.priority %in% dbs
     while (any(!dbmatch)) {
-      dbmatch <- database.priority %in% dbs
-      for (i in which(!dbmatch)) {
-        close <- agrep(database.priority[i], dbs, max.distance = 0.2)
-        fix <- readline(prompt = cat(database.priority[i], 
-                                     "does not match any database names", "please type one of the following names or 'q' to quit:", 
-                                     "\n", "\n", dbs, "\n"))
-        if (fix == "q") {
-          stop("function ended")
-        }
+      # dbmatch <- dbs %in% database.priority
+      # if(all(dbmatch)) break
+      correct <- which(!dbmatch)[1]
+      # close <- agrep(database.priority[i], dbs, max.distance = 0.2)
+      fix <- readline(prompt = cat("'", database.priority[correct], "'",
+                                   "does not match any database names", "please:", '\n', 
+                                   " - replace with one of the following names", '\n',
+                                   " - hit enter to skip this DB or", '\n',
+                                   " - 'q' to quit:", 
+                                   "\n", "\n", dbs, "\n"))
+      if (fix == "q") {
+        stop("please rerun MSFinder process as desired")
+      }
+      if (fix == "") {
+        database.priority <- database.priority[-correct]
+      } else {
         database.priority[i] <- fix
       }
+      dbmatch <- database.priority %in% dbs
     }
+    
     
     search.dbs <- dbs
     priority.dbs <- database.priority
     
-    use.formula <- sapply(1:length(ramclustObj$msfinder.structure.details), FUN = function(x) {
-      if(any(database.priority %in% tmpdb[[x]])) {
-        FALSE
-      } else {TRUE}
+    # use.formula <- sapply(1:length(ramclustObj$msfinder.structure.details), FUN = function(x) {
+    #   if(any(database.priority %in% tmpdb[[x]])) {
+    #     FALSE
+    #   } else {TRUE}
+    # }
+    # )
+    
+    ## create template
+    template <- matrix(nrow = 0, ncol = 0)
+    for(i in 1:length(ramclustObj$ann)) {
+      db.m <- data.frame(lapply(1:length(database.priority), FUN = function(x) grepl(database.priority[x], ramclustObj$msfinder.formula.details[[i]][,"resourcenames"])))
+      db.m <- apply(db.m, 1, FUN = 'any')
+      if(!any(db.m))  next
+      form.tab <- ramclustObj$msfinder.formula.details[[i]][db.m,]
+      if(is.null(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[1]]])) next
+      for(j in 1:nrow(form.tab)) {
+        if(is.null(names(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]]))) next
+        template.col.names <- c(paste0("f.", names(form.tab)), names(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]]))
+        template <- (matrix(nrow = 0, ncol = (ncol(form.tab) + ncol(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]]))))
+        if(ncol(template > 0)) break
+      }
+      if(ncol(template > 0)) break
     }
-    )
-    for(i in 1:length(ramclustObj$msfinder.formula)) {
+    
+    
+    
+    for(i in 1:length(ramclustObj$ann)) {
       # cat(i, " ")
       if(is.na(ramclustObj$msfinder.formula[i])) {
-        keep <- NA
-        for(j in 1:length(ramclustObj$msfinder.structure.details[[i]])) {
-          if(!is.na(keep)) break
-          for(k in 1:length(database.priority)) {
-            if(!is.na(keep)) break
-            if(is.list(ramclustObj$msfinder.structure.details[[i]])) {
-              if(any(grepl(database.priority[k], ramclustObj$msfinder.structure.details[[i]][[j]][["structures"]][,"resources"]))) {
-                keep <- j
-                if(!is.na(keep)) break
-              }
+        # keep <- vector(length = 0)
+        # for(j in 1:length(ramclustObj$msfinder.structure.details[[i]])) {
+        #   # if(!is.na(keep)) break
+        #   for(k in 1:length(database.priority)) {
+        #     # if(!is.na(keep)) break
+        #     if(is.list(ramclustObj$msfinder.structure.details[[i]])) {
+        #       if(any(grepl(database.priority[k], ramclustObj$msfinder.structure.details[[i]][[j]][["structures"]][,"resources"]))) {
+        #         keep <- c(keep, j)
+        #         # if(!is.na(keep)) break
+        #       }
+        #     }
+        #   }
+        # }
+        
+        db.m <- data.frame(lapply(1:length(database.priority), FUN = function(x) grepl(database.priority[x], ramclustObj$msfinder.formula.details[[i]][,"resourcenames"])))
+        db.m <- apply(db.m, 1, FUN = 'any')
+        if(!any(db.m)) next
+        form.tab <- ramclustObj$msfinder.formula.details[[i]][db.m,]
+        tmp <- template
+        
+        # tmp <- data.frame(tmp)
+        for(j in 1:nrow(form.tab)) {
+          if(!any(names(ramclustObj$msfinder.structure.details[[i]]) == form.tab$name[j])) next
+          for(k in 1:nrow(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]])) {
+            if(is.null(dimnames(tmp))) {
+              dimnames(tmp)[[2]] <- c(paste0("f.", names(form.tab)), names(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]]))
             }
+            nr <- as.vector(c(unlist(form.tab[j,]), unlist(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]][k,]))) 
+            names(nr) <- NULL
+            tmp <- rbind(tmp, nr)
           }
         }
-        if(is.na(keep)) next
-        tab <- ramclustObj$msfinder.structure.details[[i]][[keep]][["structures"]]
-        tar.inchikey <- tab[1,"id"]
-        form <- reference.data[which(reference.data[,"Short.InChIKey"] == tar.inchikey)[1], "Formula"]
-        ramclustObj$msfinder.formula[i] <- form
-        # ramclustObj$msfinder.formula.score[i] <-  ## MAY NEED TO FIX THIS - CAN ALSO DO THIS ALL LATER
-        rm(tab); rm(tar.inchikey); rm(form); rm(keep)
+        dimnames(tmp)[[2]] <- template.col.names
+        tmp <- data.frame(tmp, stringsAsFactors = FALSE)
+        tmp[,"f.totalscore"] <- as.numeric(tmp[,"f.totalscore"])
+        tmp[,"totalscore"] <- as.numeric(tmp[,"totalscore"])
+        tmp[,"databasescore"] <- as.numeric(tmp[,"databasescore"])
+        if(!database.score) {tmp[,"totalscore"] <- tmp[,"totalscore"] - (0.5*tmp[,"databasescore"])}
+        tmp[,"combined.score"] <- tmp[,"f.totalscore"] * tmp[,"totalscore"]
+        if(form.structure.scoring) {
+          tmp <- tmp[order(tmp$combined.score, decreasing = TRUE),]
+        } else {
+          tmp <- tmp[order(tmp$totalscore, decreasing = TRUE),]
+        }
+        summary[[i]] <- tmp
+        tar.inchikey <- tmp$id[1]
+        ramclustObj$msfinder.formula[i] <- tmp$f.name[1]
+        ramclustObj$msfinder.formula.score[i] <- as.numeric(tmp$f.totalscore[1])
+        best <- which(ramclustObj$msfinder.structure.details[[i]][[tmp$f.name[1]]][["structures"]][,"inchikey"] == tmp$inchikey[1])
+        ramclustObj$msfinder.structure[[i]] <- ramclustObj$msfinder.structure.details[[i]][[tmp$f.name[1]]][["structures"]][best,]
+        ramclustObj$msfinder.structure.fragments[[i]] <- {
+          ramclustObj$msfinder.structure.details[[i]][[tmp$f.name[1]]][["fragments"]][[tmp$id[1]]]
+        }
+        rm(tmp)
       }
     } 
+    names(summary) <- ramclustObj$cmpd
+    ramclustObj$msfinder.summary <- summary
+    # ramclustObj$msfinder.structure<- as.list(rep(NA, length(ramclustObj$msfinder.structure.details)))
+    # names(ramclustObj$msfinder.structure) <- ramclustObj$cmpd
     
-    ramclustObj$msfinder.structure<- as.list(rep(NA, length(ramclustObj$msfinder.structure.details)))
-    names(ramclustObj$msfinder.structure) <- names(ramclustObj$msfinder.structure.details)
-    
-    for(x in 1:length(ramclustObj$msfinder.structure)) {
-      break.out <- FALSE
-      ###################################################################################################################
-      if(!is.na(ramclustObj$msfinder.formula[x])) {
-        f <- ramclustObj$msfinder.formula[x]
-        if(is.list(f)) stop(cat("on", x, "formula should not be a list"))
-        if(!(any(names(ramclustObj$msfinder.structure.details[[x]]) == f))) {
-          break.out <- TRUE
-          spec.formula.warnings <- c(spec.formula.warnings, x)
-        }
-        if(break.out) {next}
-        if(nrow(ramclustObj$msfinder.structure.details[[x]][[f]]$structures)>0) {
-          dbm <- rep(FALSE, nrow(ramclustObj$msfinder.structure.details[[x]][[f]]$structures))
-          for(i in 1:length(database.priority)) {
-            tmpm <- grepl(database.priority[i], ramclustObj$msfinder.structure.details[[x]][[f]]$structures[,"resources"])
-            dbm[which(tmpm)] <- TRUE
-          }
-          best <- which(dbm)[1]
-          ramclustObj$msfinder.structure[[x]] <- ramclustObj$msfinder.structure.details[[x]][[f]][["structures"]][best,]
-          ramclustObj$msfinder.structure.fragments[[x]] <- {
-            ramclustObj$msfinder.structure.details[[x]][[f]][["fragments"]][[ramclustObj$msfinder.structure[[x]][best,"id"]]]
-          }
-        }
-      }
-    }
-    
-    if(any.database.priority) {
-      for(x in 1:length(ramclustObj$msfinder.structure)) {
-        # cat(x, " ")
-        
-        if(is.na(ramclustObj$msfinder.formula[x])) {
-          
-          if(is.list(ramclustObj$msfinder.structure.details[[x]])) {
-            nms <- names(ramclustObj$msfinder.structure.details[[x]]) 
-            do.form <- nms[-which(nms == "Spectral DB search")]
-            keep <- sapply(do.form, FUN = function(y) {
-              (nrow(ramclustObj$msfinder.structure.details[[x]][[y]][["structures"]]) > 0)
-            }
-            )
-            if(any(keep)) {
-              # stop('found one!')
-              best <- which(keep)[1]
-              ramclustObj$msfinder.formula[x] <- names(best)
-              ramclustObj$msfinder.structure[[x]] <- ramclustObj$msfinder.structure.details[[x]][[names(best)]]$structures[1,]
-              ramclustObj$msfinder.structure.fragments[[x]] <- ramclustObj$msfinder.structure.details[[x]][[names(best)]]$fragments[[1]]
-            }
-          }
-        }
-      }
-    }
-    
+    ## look up smiles and inchi from MSFinder reference data using inchikey
     inchikey <- grep("inchikey", names(reference.data),  ignore.case = TRUE)
     
     if(length(inchikey) == 2) {
@@ -345,6 +453,41 @@ annotate<-function(ramclustObj = NULL,
       }
     }
   }
+  
+  if(find.inchikey) {
+    
+    
+    cat("using chemical translation service to find inchikeys for compound names- requires interet access and may take a few minutes to complete", '\n')
+    
+    msf.ann <- sapply(1:length(ramclustObj$ann), FUN = function(x) {is.data.frame(ramclustObj$msfinder.summary[[x]])})
+    names2inchikey <- which(msf.ann & is.na(ramclustObj$inchikey))
+    
+    for(i in names2inchikey) {
+      if(!is.na(ramclustObj$ann[i])) {
+        
+        link <- paste0("http://cts.fiehnlab.ucdavis.edu/rest/convert/Chemical%20Name/InChIKey/", 
+                       # unlist(strsplit(ramclustObj$inchikey[i], "-"))[1])
+                       ramclustObj$inchikey[i])
+        out<-NA
+        start<-Sys.time()
+        while(is.na(out[1])) {
+          tryCatch(suppressWarnings(out<-readLines(link)), error = function(x) {NA}, finally = NA)
+          if(as.numeric(Sys.time() - start) > 5) {
+            ramclustObj$inchi[[i]] <- NA
+            break
+          }
+        }
+        inchis<-unlist(jsonlite::fromJSON(out)$result)
+        if(length(inchis) == 0 ) {
+          ramclustObj$inchi[i] <- NA
+        }
+        if(length(inchis)>=1) {
+          ramclustObj$inchi[i] <- inchis[1]
+        }
+      }
+    }
+  }
+  
   if(formula) {
     
     if(is.null(ramclustObj$msfinder.formula)) {
@@ -451,8 +594,9 @@ annotate<-function(ramclustObj = NULL,
   }
   
   for(i in 1:length(ramclustObj$ann)) {
+    # cat("length: ", length(ramclustObj$msfinder.formula), '\n')
     if(is.null(ramclustObj$msfinder.formula)) stop("ramclustObj$msfinder.formula is null", '\n')
-    if( !is.na(ramclustObj$msfinder.formula[[i]]) && (ramclustObj$cmpd[i] == ramclustObj$ann[i]) )  {
+    if(any(!is.na(ramclustObj$msfinder.formula.details[[i]])) && (ramclustObj$cmpd[i] == ramclustObj$ann[i]) )  {
       ramclustObj$ann[i]<-ramclustObj$msfinder.formula[i]
       ramclustObj$annconf[i] <- 3
       ramclustObj$dbid[i] <- ramclustObj$msfinder.formula.details[[i]][1,"resourcenames"]
@@ -471,6 +615,7 @@ annotate<-function(ramclustObj = NULL,
   if(length(which(ramclustObj$inchikey == "undefined")) > 0) {
     ramclustObj$inchikey[which(ramclustObj$inchikey == "undefined")]<-NA
   }
+  
   
   if(standardize.names) {
     cat("using chemical translation service - requires interet access and may take a few minutes to complete", '\n')
@@ -491,7 +636,7 @@ annotate<-function(ramclustObj = NULL,
             break
           }
         }
-        inchis<-unlist(fromJSON(out)$result)
+        inchis<-unlist(jsonlite::fromJSON(out)$result)
         if(length(inchis) == 0 ) {
           ramclustObj$inchi[i] <- NA
         }
@@ -544,10 +689,12 @@ annotate<-function(ramclustObj = NULL,
                                paste(priority.dbs, collapse = " "), ".",
                                " Any.database.priority was set to ", any.database.priority, ".",
                                sep = "")
-  if(length(spec.formula.warnings) > 0) {
-    warning(" The following compounds have spectral match molecular formulas", '\n',
-            "   which are inconsistent with the de novo MSFinder formula results:", '\n',
-            paste(ramclustObj$cmpd[spec.formula.warnings], collapse = '\n'))
+  if(mssearch) {
+    if(length(spec.formula.warnings) > 0) {
+      warning(" The following compounds have spectral match molecular formulas", '\n',
+              "   which are inconsistent with the de novo MSFinder formula results:", '\n',
+              paste(ramclustObj$cmpd[spec.formula.warnings], collapse = '\n'))
+    }
   }
   return(ramclustObj)
 }

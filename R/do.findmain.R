@@ -50,6 +50,11 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
                          scoring = "auto", plot.findmain = TRUE, writeMat = TRUE, 
                          writeMS = TRUE, use.z = TRUE) 
 {
+
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
   score.options <- c("auto", "imss", "ramclustr")
   if (!any(scoring == score.options)) {
     stop("scoring must be set to one of 'auto', 'imss', or 'ramclustr' ")

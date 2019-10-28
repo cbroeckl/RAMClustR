@@ -24,6 +24,11 @@ import.msfinder.formulas <- function (ramclustObj = NULL,
                                       mat.dir = NULL, 
                                       msp.dir = NULL) 
 {
+  
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
   home.dir <- getwd()
   
   r <- grep("msfinder", names(ramclustObj))
@@ -113,7 +118,7 @@ import.msfinder.formulas <- function (ramclustObj = NULL,
     vals <- gsub("OnlyUseForNecessary", "", vals)
     vals <- gsub("Allways", "", vals)
     vals <- unique(vals)
-    ramclustObj$msfinder.formula.dbs <- vals
+    ramclustObj$msfinder.dbs <- vals
   } 
     
   

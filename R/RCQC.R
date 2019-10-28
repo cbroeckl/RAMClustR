@@ -32,6 +32,11 @@ RCQC<-function(ramclustObj=NULL,
                outfile="ramclustQC.pdf"
                
 ){
+  
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC1", '\n')
+  }
+  
   dir.create("QC")
   pdf(file=paste("QC/", "ramclustQC2.pdf", sep=""), useDingbats=FALSE, width=8, height=8)  
   #visualize clustering

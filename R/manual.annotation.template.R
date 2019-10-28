@@ -23,6 +23,11 @@ manual.annotation.template<-function(
   ramclustObj=NULL,
   outfile = 'manual.annotation.template.csv'
 ) {
+  
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
   out <- data.frame(
     "cmpd" = ramclustObj$cmpd,
     "auto.inchikey" = ramclustObj$inchikey,

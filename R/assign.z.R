@@ -35,6 +35,11 @@ assign.z<-function(
   minPercentSignal = 10,
   assume1=TRUE
 ) {
+  
+  if(is.null(ramclustObj)) {
+    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
   ramclustObj$zmax<-rep(if(assume1) {1} else {NA}, length(ramclustObj$clrt))
   ramclustObj$fm<-rep(if(assume1) {ramclustObj$fmz} else {NA}, length(ramclustObj$fmz))
   ramclustObj$fz<-rep(if(assume1) {1} else {NA}, length(ramclustObj$fmz))

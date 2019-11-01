@@ -3,8 +3,8 @@
 #' use PubChem API to look up full smiles and inchi notation for each inchikey
 #' @details The $inchikey slot is used to look up parameters from pubchem. PubChem CID, a pubchem URL, smiles (canonical) and inchi are returned.  if smiles and inchi slots are alread present (from MSFinder, for example) pubchem smiles and inchi are used to fill in missing values only, not replace. 
 #' 
-#' @param ramclustObj ramclustR object to ClassyFy
-#' @return returns a ramclustR object.  new dataframe in $classyfire slot with rows equal to number of compounds.  
+#' @param ramclustObj ramclustR object to look up smiles and inchi for each inchikey (without a smiles/inchi)
+#' @return returns a ramclustR object.  new vector of $smiles and $inchi with length equal to number of compounds.  
 #' @importFrom jsonlite fromJSON
 #' @concept ramclustR
 #' @concept RAMClustR

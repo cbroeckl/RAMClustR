@@ -56,7 +56,6 @@ annotate<-function(ramclustObj = NULL,
   
   if(reset) {
     ramclustObj$msfinder.formula <- rep(NA, length(ramclustObj$cmpd))
-    ramclustObj$msfinder.formula <- as.list(rep(NA, length(ramclustObj$cmpd)))
     ramclustObj$annconf <- rep(4, length(ramclustObj$cmpd))
     ramclustObj$ann <- ramclustObj$cmpd
     ramclustObj$inchikey <- NULL
@@ -65,6 +64,12 @@ annotate<-function(ramclustObj = NULL,
     ramclustObj$dbid <- NULL
     ramclustObj$synonyms <- NULL
     ramclustObj$classyfire <- NULL
+    ramclustObj$rs.lib <- NULL
+    ramclustObj$rs.specn <- NULL
+    ramclustObj$rs.libn <- NULL
+    ramclustObj$rs.mf <- NULL
+    ramclustObj$rs.rmf <- NULL
+    ramclustObj$rs.prob <- NULL
   }
   
   use.short.inchikey = TRUE
@@ -181,7 +186,7 @@ annotate<-function(ramclustObj = NULL,
         #ramclustObj$rs.prob[i]	<- sub("", "", md[grep("", md)])
         tmp.inchi <- as.character(gsub("InChIKey: ", "", md[grep("InChIKey: ", md)]))
         tmp.inchi <- gsub("InChIKey=", "", tmp.inchi)
-        if(nchar(tmp.inch) > 0) {ramclustObj$inchikey[i] <- tmp.inch; rm(tmp.inch)} else {ramclustObj$inchikey[i] <- NA}
+        if(nchar(tmp.inchi) > 0) {ramclustObj$inchikey[i] <- tmp.inchi; rm(tmp.inch)} else {ramclustObj$inchikey[i] <- NA}
         if(length(grep("Library Match Num Peaks:", md))==1) {
           ramclustObj$rs.spec[[ind]]	<- matrix(as.numeric(unlist(strsplit(md[(grep("Library Match Num Peaks:", md)+1)], " "))), ncol=2, byrow=TRUE)
         }
@@ -682,13 +687,18 @@ annotate<-function(ramclustObj = NULL,
                                if(any(names(ramclustObj) == "M.ann")) {" interpretMSSpectrum M."},
                                sep = ""
   )
-  search.dbs <- search.dbs[-which(search.dbs == "NA")]
-  ramclustObj$history <- paste(ramclustObj$history, " MSFinder strucutures were considered from databases including", 
-                               paste(search.dbs, collapse = " "), ".", 
-                               " Database priority was set to ", 
-                               paste(priority.dbs, collapse = " "), ".",
-                               " Any.database.priority was set to ", any.database.priority, ".",
-                               sep = "")
+  
+
+  if(structure) {
+    search.dbs <- search.dbs[-which(search.dbs == "NA")]
+    ramclustObj$history <- paste(ramclustObj$history, " MSFinder strucutures were considered from databases including", 
+                                 paste(search.dbs, collapse = " "), ".", 
+                                 " Database priority was set to ", 
+                                 paste(priority.dbs, collapse = " "), ".",
+                                 " Any.database.priority was set to ", any.database.priority, ".",
+                                 sep = "")
+  }
+
   if(mssearch) {
     if(length(spec.formula.warnings) > 0) {
       warning(" The following compounds have spectral match molecular formulas", '\n',

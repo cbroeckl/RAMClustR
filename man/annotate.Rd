@@ -6,9 +6,11 @@
 \usage{
 annotate(ramclustObj = NULL,
   msfinder.dir = "C:/MSFinder/MSFINDER ver 3.24",
-  standardize.names = FALSE, min.msms.score = 3.5,
-  database.priority = "all", any.database.priority = TRUE,
-  reset = TRUE)
+  standardize.names = FALSE, min.msms.score = 6.5,
+  database.priority = NULL, any.database.priority = TRUE,
+  database.score = FALSE, rescore.structure = TRUE,
+  form.structure.scoring = TRUE, find.inchikey = TRUE,
+  taxonomy.inchi = NULL, reset = TRUE)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}
@@ -17,11 +19,21 @@ annotate(ramclustObj = NULL,
 
 \item{standardize.names}{logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)}
 
-\item{min.msms.score}{numerical: what is the minimum MSFinder similarity score acceptable.  default = 3.5}
+\item{min.msms.score}{numerical: what is the minimum MSFinder similarity score acceptable.  default = 6.5}
 
-\item{database.priority}{character.  Formula assignment prioritization based on presence in one or more databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just selected databases).  If any database is set, the best formula match to that (those) database(s) is selected, rather than the best formula match overall.}
+\item{database.priority}{character.  Formula assignment prioritization based on presence in one or more (structure) databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just databases in MSFinder parameters).  If any database is set, the best formula match to any of those databases is selected, rather than the best formula match overall.  If NULL, this will be set to include all selected databases (from ramclustObj$msfinder.dbs, retreieved from search output during import.msfinder.formulas(), when available) or 'all'.}
 
 \item{any.database.priority}{logical.  First priority in formula assignment is based on any of the 'database.priority' values.  Secondary priority from all other databases (determined in original MSFinder search) if TRUE.  If false, formula assignment score from MSFinder used independent of structure search results.}
+
+\item{database.score}{logical. Only when rescore.structure = TRUE. default = TRUE.  Should we use the MSFinder database score in assigning structures, as MSFinder does? If false the database score is subtracted out.  The database score increases the chance of returning biologically relevent compound matches, but biases the annotation toward well described/databased compounds.}
+
+\item{rescore.structure}{logical.  If TRUE, uses an internal scoring method, rather than default MSFinder method for structure scores.}
+
+\item{form.structure.scoring}{logical. default = TRUE.  Should a combined score using the product of the formula and structure scores be used?  If FALSE, structure score alone is used in annotations.}
+
+\item{find.inchikey}{logical.  default = TRUE. use chemical translation service to try to look up inchikey for chemical name.}
+
+\item{taxonomy.inchi}{vector.  Only when rescore.structure = TRUE.  user can supply a vector of inchikeys.  If used, structures which match first block of inchikey receive an addition score value of 1.}
 
 \item{reset}{logical.  If TRUE, removes any previously assigned annotations.}
 }

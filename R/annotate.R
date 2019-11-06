@@ -7,7 +7,9 @@
 #' @param min.msms.score numerical: what is the minimum MSFinder similarity score acceptable.  default = 6.5
 #' @param database.priority character.  Formula assignment prioritization based on presence in one or more (structure) databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just databases in MSFinder parameters).  If any database is set, the best formula match to any of those databases is selected, rather than the best formula match overall.  If NULL, this will be set to include all selected databases (from ramclustObj$msfinder.dbs, retreieved from search output during import.msfinder.formulas(), when available) or 'all'.  
 #' @param any.database.priority logical.  First priority in formula assignment is based on any of the 'database.priority' values.  Secondary priority from all other databases (determined in original MSFinder search) if TRUE.  If false, formula assignment score from MSFinder used independent of structure search results.
-#' @param database.score logical. default = TRUE.  Should we use the MSFinder database score in assigning structures, as MSFinder does? If false the database score is subtracted out.  The database score increases the chance of returning biologically relevent compound matches, but biases the annotation toward well described/databased compounds. 
+#' @param rescore.structure logical.  If TRUE, uses an internal scoring method, rather than default MSFinder method for structure scores.
+#' @param taxonomy.inchi vector.  Only when rescore.structure = TRUE.  user can supply a vector of inchikeys.  If used, structures which match first block of inchikey receive an addition score value of 1.  
+#' @param database.score logical. Only when rescore.structure = TRUE. default = TRUE.  Should we use the MSFinder database score in assigning structures, as MSFinder does? If false the database score is subtracted out.  The database score increases the chance of returning biologically relevent compound matches, but biases the annotation toward well described/databased compounds. 
 #' @param form.structure.scoring logical. default = TRUE.  Should a combined score using the product of the formula and structure scores be used?  If FALSE, structure score alone is used in annotations. 
 #' @param find.inchikey logical.  default = TRUE. use chemical translation service to try to look up inchikey for chemical name.
 #' @param reset logical.  If TRUE, removes any previously assigned annotations.  
@@ -39,9 +41,11 @@ annotate<-function(ramclustObj = NULL,
                    min.msms.score = 6.5,
                    database.priority = NULL,
                    any.database.priority = TRUE,
-                   database.score = TRUE,
+                   database.score = FALSE,
+                   rescore.structure = TRUE,
                    form.structure.scoring = TRUE,
                    find.inchikey = TRUE,
+                   taxonomy.inchi = NULL,
                    reset = TRUE
 ) {
   
@@ -70,6 +74,15 @@ annotate<-function(ramclustObj = NULL,
     ramclustObj$rs.mf <- NULL
     ramclustObj$rs.rmf <- NULL
     ramclustObj$rs.prob <- NULL
+  }
+  
+  if(!is.null(taxonomy.inchi)) {
+    if(is.factor(taxonomy.inchi)) {
+      taxonomy.inchi <- as.character(taxonomy.inchi)
+    }
+    taxonomy.inchi <- sapply(1:length(taxonomy.inchi), FUN = function(x) {
+      as.character(unlist(strsplit(taxonomy.inchi[x], "-"))[1])
+    })
   }
   
   use.short.inchikey = TRUE
@@ -381,16 +394,47 @@ annotate<-function(ramclustObj = NULL,
         }
         dimnames(tmp)[[2]] <- template.col.names
         tmp <- data.frame(tmp, stringsAsFactors = FALSE)
-        tmp[,"f.totalscore"] <- as.numeric(tmp[,"f.totalscore"])
-        tmp[,"totalscore"] <- as.numeric(tmp[,"totalscore"])
-        tmp[,"databasescore"] <- as.numeric(tmp[,"databasescore"])
-        if(!database.score) {tmp[,"totalscore"] <- tmp[,"totalscore"] - (0.5*tmp[,"databasescore"])}
-        tmp[,"combined.score"] <- tmp[,"f.totalscore"] * tmp[,"totalscore"]
-        if(form.structure.scoring) {
-          tmp <- tmp[order(tmp$combined.score, decreasing = TRUE),]
-        } else {
-          tmp <- tmp[order(tmp$totalscore, decreasing = TRUE),]
+        for(x in c("f.totalscore", "totalhrrulesscore", "totalbondcleavagescore", "totalmassaccuracyscore", 
+                   "totalfragmentlinkagescore", "totalbonddissociationenergyscore", 
+                   "databasescore", "substructureassignmentscore", "rtsimilarityscore", 
+                   "risimilarityscore")) {
+          tmp[,x] <- as.numeric(tmp[,x])
         }
+
+        if(rescore.structure) {
+          if(database.score) {
+            use <- c("totalhrrulesscore", "totalbondcleavagescore", "totalmassaccuracyscore", 
+                   "totalfragmentlinkagescore", "totalbonddissociationenergyscore", 
+                   "databasescore", "substructureassignmentscore", "rtsimilarityscore", 
+                   "risimilarityscore") 
+          } else {
+            use <- c("totalhrrulesscore", "totalbondcleavagescore", "totalmassaccuracyscore", 
+              "totalfragmentlinkagescore", "totalbonddissociationenergyscore", 
+              "substructureassignmentscore", "rtsimilarityscore", 
+              "risimilarityscore")
+          } 
+          tmp$totalscore <- rowSums(tmp[,use])
+          
+          ## if compound inchikey (id) is in taxonomy.inchi vector, add 1 to total score.
+          if(!is.null(taxonomy.inchi)) {
+            taxonomy.score <- as.numeric(tmp[,"id"] %in% taxonomy.inchi)
+            tmp$taxonomy.score <- taxonomy.score
+            tmp$totalscore <- tmp$totalscore + taxonomy.score
+          }
+          
+          # if(!database.score) {tmp[,"totalscore"] <- tmp[,"totalscore"] - (0.5*tmp[,"databasescore"])}
+          tmp[,"combined.score"] <- tmp[,"f.totalscore"] * tmp[,"totalscore"]
+          if(form.structure.scoring) {
+            tmp <- tmp[order(tmp$combined.score, decreasing = TRUE),]
+          } else {
+            tmp <- tmp[order(tmp$totalscore, decreasing = TRUE),]
+          }
+          
+        }
+        
+ 
+        
+
         summary[[i]] <- tmp
         tar.inchikey <- tmp$id[1]
         ramclustObj$msfinder.formula[i] <- tmp$f.name[1]

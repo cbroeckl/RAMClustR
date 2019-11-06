@@ -7,10 +7,10 @@
 getSmilesInchi(ramclustObj = NULL)
 }
 \arguments{
-\item{ramclustObj}{ramclustR object to ClassyFy}
+\item{ramclustObj}{ramclustR object to look up smiles and inchi for each inchikey (without a smiles/inchi)}
 }
 \value{
-returns a ramclustR object.  new dataframe in $classyfire slot with rows equal to number of compounds.
+returns a ramclustR object.  new vector of $smiles and $inchi with length equal to number of compounds.
 }
 \description{
 use PubChem API to look up full smiles and inchi notation for each inchikey

@@ -52,27 +52,33 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10, po
                                          description = rep(NA, length(ramclustObj$inchikey)))
   }
   url = "http://classyfire.wishartlab.com"
+  cat("performing inchikey based lookup:", '\n')
   for (i in 1:length(ramclustObj$inchikey)) {
-    Sys.sleep(5/posts.per.minute)
+    
     if (is.na(ramclustObj$inchikey[i])) {
       next
     }
+    if (!is.na(ramclustObj$classyfire[i, "kingdom"])) {
+      next
+    }
+    Sys.sleep(1/posts.per.minute)
+    cat(i, " ")
     out <- tryCatch(jsonlite::fromJSON(paste0(url, "/entities/", ramclustObj$inchikey[i], 
-                                    ".json")), error = function(y) {
-                                      return(NA)
-                                    })
+                                              ".json")), error = function(y) {
+                                                return(NA)
+                                              })
     
     tryn <- 1 
     if(length(out) < 2 & tryn <= 3) {
       # cat("retry", i, '\n')
       tryn <- tryn + 1
-      Sys.sleep(2)
+      Sys.sleep(1)
       out <- tryCatch(jsonlite::fromJSON(paste0(url, "/entities/", ramclustObj$inchikey[i], 
                                                 ".json")), error = function(y) {
                                                   return(NA)
                                                 })
     }
-
+    
     if (length(out) > 1) {
       a <- ramclustObj$inchikey[i]
       b <- out$kingdom$name
@@ -100,12 +106,13 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10, po
     }
   }
   if (get.all) {
-    get.full <- which(!is.na(ramclustObj$inchikey) & is.na(ramclustObj$classyfire[, 
-                                                                                  2]))
+    get.full <- which(
+      !is.na(ramclustObj$inchikey) & is.na(ramclustObj$classyfire[,2])
+    )
     cat("this will take some time - maximum of", posts.per.minute, "posts per minute", '\n')
     for (i in get.full) {
-
-      cat(i)
+      
+      cat(i, " ")
       if (!is.na(ramclustObj$smiles[i])) {
         params <- list(label = "ramclustR", query_input = ramclustObj$smiles[i], 
                        query_type = "STRUCTURE")
@@ -152,15 +159,15 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10, po
           }
           out <- tryCatch( 
             {
-            out <- jsonlite::fromJSON(paste0("http://classyfire.wishartlab.com/queries/", query = query_id$id, ".json"))
+              out <- jsonlite::fromJSON(paste0("http://classyfire.wishartlab.com/queries/", query = query_id$id, ".json"))
             }, 
             error = function(y) {
               out <- list()
               out$classification_status <- "not done"
               out$number_of_elements <- 0
               out
-              }
-            )
+            }
+          )
           
           if (round(as.numeric(difftime(Sys.time(), 
                                         time.a, units = "secs")), 3) >= max.wait) {

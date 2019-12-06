@@ -6,10 +6,10 @@
 #' @param standardize.names logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)
 #' @param min.msms.score numerical: what is the minimum MSFinder similarity score acceptable.  default = 6.5
 #' @param database.priority character.  Formula assignment prioritization based on presence in one or more (structure) databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just databases in MSFinder parameters).  If any database is set, the best formula match to any of those databases is selected, rather than the best formula match overall.  If NULL, this will be set to include all selected databases (from ramclustObj$msfinder.dbs, retreieved from search output during import.msfinder.formulas(), when available) or 'all'.  
-#' @param any.database.priority logical.  First priority in formula assignment is based on any of the 'database.priority' values.  Secondary priority from all other databases (determined in original MSFinder search) if TRUE.  If false, formula assignment score from MSFinder used independent of structure search results.
 #' @param rescore.structure logical.  If TRUE, uses an internal scoring method, rather than default MSFinder method for structure scores.
-#' @param taxonomy.inchi vector.  Only when rescore.structure = TRUE.  user can supply a vector of inchikeys.  If used, structures which match first block of inchikey receive an addition score value of 1.  
+#' @param taxonomy.inchi vector or data frame.  Only when rescore.structure = TRUE.  user can supply a vector of inchikeys.  If used, structures which match first block of inchikey receive an addition score value of 1.  
 #' @param database.score logical. Only when rescore.structure = TRUE. default = TRUE.  Should we use the MSFinder database score in assigning structures, as MSFinder does? If false the database score is subtracted out.  The database score increases the chance of returning biologically relevent compound matches, but biases the annotation toward well described/databased compounds. 
+#' @param citation.score logical. get.inchikey.from.name() returns a data frame which (optionally) includes a citation count and derived weights.  we can use these in taxonomy scoring to bias annotation toward compounds that are commonly referred to in pubmed literature. 
 #' @param form.structure.scoring logical. default = TRUE.  Should a combined score using the product of the formula and structure scores be used?  If FALSE, structure score alone is used in annotations. 
 #' @param find.inchikey logical.  default = TRUE. use chemical translation service to try to look up inchikey for chemical name.
 #' @param reset logical.  If TRUE, removes any previously assigned annotations.  
@@ -40,10 +40,10 @@ annotate<-function(ramclustObj = NULL,
                    standardize.names = FALSE,
                    min.msms.score = 6.5,
                    database.priority = NULL,
-                   any.database.priority = TRUE,
-                   database.score = FALSE,
-                   rescore.structure = TRUE,
-                   form.structure.scoring = TRUE,
+                   # database.score = TRUE,
+                   citation.score = TRUE, 
+                   # rescore.structure = TRUE,
+                   # form.structure.scoring = TRUE,
                    find.inchikey = TRUE,
                    taxonomy.inchi = NULL,
                    reset = TRUE
@@ -62,7 +62,7 @@ annotate<-function(ramclustObj = NULL,
     ramclustObj$msfinder.formula <- rep(NA, length(ramclustObj$cmpd))
     ramclustObj$annconf <- rep(4, length(ramclustObj$cmpd))
     ramclustObj$ann <- ramclustObj$cmpd
-    ramclustObj$inchikey <- NULL
+    ramclustObj$inchikey <- rep(NA, length(ramclustObj$cmpd))
     ramclustObj$inchi <- NULL
     ramclustObj$smiles <- NULL
     ramclustObj$dbid <- NULL
@@ -75,6 +75,24 @@ annotate<-function(ramclustObj = NULL,
     ramclustObj$rs.rmf <- NULL
     ramclustObj$rs.prob <- NULL
   }
+  
+  if(!is.null(taxonomy.inchi)) {
+    if(is.data.frame(taxonomy.inchi)) {
+      tax.df <- taxonomy.inchi
+      taxonomy.inchi <- tax.df[,"inchikey"]
+      if(citation.score) {
+        if(!any(names(tax.df) == "weights")) {
+          stop("no citation weights provided, consider using 
+               'get.inchikey.from.name(, citation.weights = TRUE)'
+               or setting 'citation.score = FALSE' in the 'annotate' function",  '\n')
+          cat('it didnt stop??')
+        }
+      }
+    }
+  }
+  
+  
+  
   
   if(!is.null(taxonomy.inchi)) {
     if(is.factor(taxonomy.inchi)) {
@@ -397,44 +415,62 @@ annotate<-function(ramclustObj = NULL,
         for(x in c("f.totalscore", "totalhrrulesscore", "totalbondcleavagescore", "totalmassaccuracyscore", 
                    "totalfragmentlinkagescore", "totalbonddissociationenergyscore", 
                    "databasescore", "substructureassignmentscore", "rtsimilarityscore", 
-                   "risimilarityscore")) {
+                   "risimilarityscore", "totalscore")) {
           tmp[,x] <- as.numeric(tmp[,x])
         }
-
-        if(rescore.structure) {
-          if(database.score) {
-            use <- c("totalhrrulesscore", "totalbondcleavagescore", "totalmassaccuracyscore", 
-                   "totalfragmentlinkagescore", "totalbonddissociationenergyscore", 
-                   "databasescore", "substructureassignmentscore", "rtsimilarityscore", 
-                   "risimilarityscore") 
-          } else {
-            use <- c("totalhrrulesscore", "totalbondcleavagescore", "totalmassaccuracyscore", 
-              "totalfragmentlinkagescore", "totalbonddissociationenergyscore", 
-              "substructureassignmentscore", "rtsimilarityscore", 
-              "risimilarityscore")
-          } 
-          tmp$totalscore <- rowSums(tmp[,use])
-          
-          ## if compound inchikey (id) is in taxonomy.inchi vector, add 1 to total score.
-          if(!is.null(taxonomy.inchi)) {
-            taxonomy.score <- as.numeric(tmp[,"id"] %in% taxonomy.inchi)
-            tmp$taxonomy.score <- taxonomy.score
-            tmp$totalscore <- tmp$totalscore + taxonomy.score
+        
+        for(j in c("rtsimilarityscore", "risimilarityscore")) {
+          if(max(tmp[,j]) <=0) {
+            tmp[,j] <- 0
           }
-          
-          # if(!database.score) {tmp[,"totalscore"] <- tmp[,"totalscore"] - (0.5*tmp[,"databasescore"])}
-          tmp[,"combined.score"] <- tmp[,"f.totalscore"] * tmp[,"totalscore"]
-          if(form.structure.scoring) {
-            tmp <- tmp[order(tmp$combined.score, decreasing = TRUE),]
-          } else {
-            tmp <- tmp[order(tmp$totalscore, decreasing = TRUE),]
-          }
-          
         }
         
- 
+        use <- c("totalhrrulesscore", "totalbondcleavagescore", "totalmassaccuracyscore", 
+                 "totalfragmentlinkagescore", "totalbonddissociationenergyscore", 
+                 "databasescore", "substructureassignmentscore", "rtsimilarityscore", 
+                 "risimilarityscore", "f.totalscore") 
         
-
+        # if(database.score) {
+        #   use <- use[use!="databasescore"]
+        # } 
+        
+        
+        # if(rescore.structure) {
+        #   tmp$totalscore <- rowSums(tmp[,use])
+        # }
+        
+        ## if compound inchikey (id) is in taxonomy.inchi vector, add 1 to total score.
+        if(!is.null(taxonomy.inchi)) {
+          taxonomy.score <- as.numeric(tmp[,"id"] %in% taxonomy.inchi)
+          if(citation.score & any(taxonomy.score > 0)) {
+            if(any(ls()=="tax.df")) {
+              for(z in 1:nrow(tmp)) {
+                if(taxonomy.score[z]!=1) next
+                mtch <- grep(tmp[z,"id"], taxonomy.inchi)[1]
+                if(length(mtch) == 0) {
+                  # cat('BAD: i', i, "; z", z, tmp[z,"id"], "  ", paste(taxonomy.inchi, collapse = " "))
+                  next
+                }
+                # cat('GOOD: i', i, "; z", z, cat(mtch, collapse = " "))
+                taxonomy.score[z] <-tax.df[mtch,"weights"]
+                
+              }
+            }
+          }
+          tmp$taxonomy.score <- taxonomy.score
+          tmp$totalscore <- tmp$totalscore + (tmp$totalscore * 0.2 *  taxonomy.score)
+        }
+        
+        # if(!database.score) {tmp[,"totalscore"] <- tmp[,"totalscore"] - (0.5*tmp[,"databasescore"])}
+        # tmp[,"combined.score"] <- tmp[,"f.totalscore"] * tmp[,"totalscore"]
+        # if(form.structure.scoring) {
+        #   tmp <- tmp[order(tmp$combined.score, decreasing = TRUE),]
+        # } else {
+        #   tmp <- tmp[order(tmp$totalscore, decreasing = TRUE),]
+        # }
+        #
+        # }
+        
         summary[[i]] <- tmp
         tar.inchikey <- tmp$id[1]
         ramclustObj$msfinder.formula[i] <- tmp$f.name[1]
@@ -465,6 +501,7 @@ annotate<-function(ramclustObj = NULL,
     }
     
     for(i in 1:length(ramclustObj$ann)) {
+      if(i > length(ramclustObj$msfinder.structure)) next
       if( is.data.frame(ramclustObj$msfinder.structure[[i]]) && (ramclustObj$cmpd[i] == ramclustObj$ann[i]) )  {
         
         tmpinch<-ramclustObj$msfinder.structure[[i]][1, "inchikey"]
@@ -505,37 +542,21 @@ annotate<-function(ramclustObj = NULL,
   
   if(find.inchikey) {
     
+    do <- which( (ramclustObj$ann != ramclustObj$cmpd) &  is.na(ramclustObj$inchikey))
+    if(length(do)>0) {
+      fill.inchis <- get.inchikey.from.name(cmpd.names = ramclustObj$ann[do], citation.weights = FALSE)
+    }
+    if(nrow(fill.inchis) == 0) break
     
-    cat("using chemical translation service to find inchikeys for compound names- requires interet access and may take a few minutes to complete", '\n')
-    
-    msf.ann <- sapply(1:length(ramclustObj$ann), FUN = function(x) {is.data.frame(ramclustObj$msfinder.summary[[x]])})
-    names2inchikey <- which(msf.ann & is.na(ramclustObj$inchikey))
-    
-    for(i in names2inchikey) {
-      if(!is.na(ramclustObj$ann[i])) {
-        
-        link <- paste0("http://cts.fiehnlab.ucdavis.edu/rest/convert/Chemical%20Name/InChIKey/", 
-                       # unlist(strsplit(ramclustObj$inchikey[i], "-"))[1])
-                       ramclustObj$inchikey[i])
-        out<-NA
-        start<-Sys.time()
-        while(is.na(out[1])) {
-          tryCatch(suppressWarnings(out<-readLines(link)), error = function(x) {NA}, finally = NA)
-          if(as.numeric(Sys.time() - start) > 5) {
-            ramclustObj$inchi[[i]] <- NA
-            break
-          }
-        }
-        inchis<-unlist(jsonlite::fromJSON(out)$result)
-        if(length(inchis) == 0 ) {
-          ramclustObj$inchi[i] <- NA
-        }
-        if(length(inchis)>=1) {
-          ramclustObj$inchi[i] <- inchis[1]
-        }
-      }
+    fill.inchis <- fill.inchis[!is.na(fill.inchis$inchikey),]
+    for(i in 1:length(do)) {
+      mtch <- which(ramclustObj$ann[do[i]] == fill.inchis[,"cmpd.name"])
+      # if(length(mtch) > 0) {break}
+      if(length(mtch)==0) {next}
+      ramclustObj$inchikey[do[i]] <- fill.inchis[mtch[1], "inchikey"]
     }
   }
+  
   
   if(formula) {
     
@@ -667,33 +688,26 @@ annotate<-function(ramclustObj = NULL,
   
   
   if(standardize.names) {
-    cat("using chemical translation service - requires interet access and may take a few minutes to complete", '\n')
-    
-    inchikey2inchi<-which(!is.na(ramclustObj$inchikey) & is.na(ramclustObj$inchi))
-    for(i in inchikey2inchi) {
-      if(!is.na(ramclustObj$inchikey[i])) {
-        
-        link <- paste0("http://cts.fiehnlab.ucdavis.edu/rest/convert/InChIKey/InChI Code/", 
-                       # unlist(strsplit(ramclustObj$inchikey[i], "-"))[1])
-                       ramclustObj$inchikey[i])
-        out<-NA
-        start<-Sys.time()
-        while(is.na(out[1])) {
-          tryCatch(suppressWarnings(out<-readLines(link)), error = function(x) {NA}, finally = NA)
-          if(as.numeric(Sys.time() - start) > 5) {
-            ramclustObj$inchi[[i]] <- NA
-            break
-          }
-        }
-        inchis<-unlist(jsonlite::fromJSON(out)$result)
-        if(length(inchis) == 0 ) {
-          ramclustObj$inchi[i] <- NA
-        }
-        if(length(inchis)>=1) {
-          ramclustObj$inchi[i] <- inchis[1]
-        }
+    cat("using pubchem PUGrest to retrieve compound names from inchikeys", '\n')
+    for(i in 1:length(ramclustObj$inchikey)) {
+      Sys.sleep(0.2)
+      if(is.na(ramclustObj$inchikey[i])) {next}
+      
+      # https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/InChIKey/BSYNRYMUTXBXSQ-UHFFFAOYSA-N/synonyms/TXT
+      syns <- tryCatch(readLines(paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/InChIKey/",
+                                        ramclustObj$inchikey[i], 
+                                        "/synonyms/TXT")),
+                       error = function(x) {vector(length = 0)}, 
+                       finally = function(x) {vector(length = 0)})
+      if(length(syns) == 0) next
+      
+      if(length(syns) >=2) {
+        ramclustObj$synonyms[[i]] <- syns
       }
+      ramclustObj$ann[i] <- syns[1]
+      
     }
+    
   }
   
   ## modify compound names to make them unique
@@ -732,17 +746,16 @@ annotate<-function(ramclustObj = NULL,
                                sep = ""
   )
   
-
+  
   if(structure) {
     search.dbs <- search.dbs[-which(search.dbs == "NA")]
     ramclustObj$history <- paste(ramclustObj$history, " MSFinder strucutures were considered from databases including", 
                                  paste(search.dbs, collapse = " "), ".", 
                                  " Database priority was set to ", 
                                  paste(priority.dbs, collapse = " "), ".",
-                                 " Any.database.priority was set to ", any.database.priority, ".",
                                  sep = "")
   }
-
+  
   if(mssearch) {
     if(length(spec.formula.warnings) > 0) {
       warning(" The following compounds have spectral match molecular formulas", '\n',

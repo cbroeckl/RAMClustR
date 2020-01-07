@@ -174,7 +174,7 @@ get.inchikey.from.name <- function(
   # })
   for(i in 1:nrow(out)) {
     if(is.na(out[i,"CID"])) next
-    inchikey <- grep(out[i,"CID"], CIDs)
+    inchikey <- which(out[i,"CID"] == CIDs)
     if(length(inchikey) == 0) next
     out[i, "inchikey"] <- inchikeys[inchikey]
   }

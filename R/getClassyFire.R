@@ -179,14 +179,15 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10, po
         if (out$number_of_elements == 0) {
           ramclustObj$classyfire[i, ] <- c(ramclustObj$inchikey[i], 
                                            rep(NA, 6))
-          rm(out)} else {
+          rm(out)
+          } else {
             a <- out$entities$inchikey
             if(is.null(a)) {
               a <- ramclustObj$inchikey[i]
             } else {
               a <- gsub("InChIKey=", "", a)
             }
-            b <- out$kingdom$name
+            b <- out$entities$kingdom$name
             if (is.null(b)) {
               b <- NA
               c <- NA
@@ -195,15 +196,15 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10, po
               f <- NA
               g <- NA
             } else {
-              c <- out$superclass$name
+              c <- if(length(out$entities$superclass)>1) {out$entities$superclass$name} else {c <- NA}
               if (is.null(c)) {c <- NA}
-              d <- out$class$name
+              d <- if(length(out$entities$class)>1) {out$entities$class$name} else {d <- NA}
               if (is.null(d)) {d <- NA}
-              e <- out$subclass$name
+              e <- if(length(out$entities$subclass)>1) {out$entities$subclass$name} else {e <- NA}
               if (is.null(e)) {e <- NA}
-              f <- out$direct_parent$name
+              f <- if(length(out$entities$direct_parent)>1) {out$entities$direct_parent$name} else {f <- NA}
               if (is.null(f)) {f <- NA}
-              g <- out$description
+              g <- if(nchar(out$entities$description)>1) {out$entities$description} else {g <- NA}
               if (is.null(g)) {g <- NA}
             }
             cat(" done", '\n')

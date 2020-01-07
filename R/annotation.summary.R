@@ -47,7 +47,7 @@ annotation.summary<-function(ramclustObj = NULL,
     out<- data.frame(out, "zmax" = ramclustObj$zmax)
   }
   if(any(names(ramclustObj) == "msfinder.formula")) {
-    out<- data.frame(out, "inferred formula" = ramclustObj$msfinder.formula)
+    out<- data.frame(out, "MSFinder inferred formula" = ramclustObj$msfinder.formula)
   }
   if(any(names(ramclustObj) == "inchikey")) {
     out<- data.frame(out, "inchikey" = ramclustObj$inchikey)
@@ -79,5 +79,21 @@ annotation.summary<-function(ramclustObj = NULL,
   }
   
   write.csv(out, file = outfile, row.names = FALSE)
+  
+  # ## library(xlsx)
+  # out.wb <- createWorkbook()
+  # sheet <- createSheet(out.wb, sheetName = "annotation summary")
+  # addDataFrame(out, sheet)
+  # rows   <- createRow(sheet, 1)
+  # cells <- createCell(rows, 1:ncol(out))
+  # 
+  # url.cols <- grep("url", names(out))
+  # for(i in 1:nrow(out)) {
+  #   for(j in url.cols) {
+  #     if(is.na(out[i, j])) {next}
+  #   }
+  #   addHyperlink(cell = cells[[i,j]], address = as.character(out[i,j]))
+  # }
+  # saveWorkbook(out.wb, file = "ann.summ.xlsx")
 }
 

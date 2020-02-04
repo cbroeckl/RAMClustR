@@ -544,16 +544,17 @@ annotate<-function(ramclustObj = NULL,
     
     do <- which( (ramclustObj$ann != ramclustObj$cmpd) &  is.na(ramclustObj$inchikey))
     if(length(do)>0) {
-      fill.inchis <- get.inchikey.from.name(cmpd.names = ramclustObj$ann[do], citation.weights = FALSE)
-    }
-    if(nrow(fill.inchis) == 0) break
-    
-    fill.inchis <- fill.inchis[!is.na(fill.inchis$inchikey),]
-    for(i in 1:length(do)) {
-      mtch <- which(ramclustObj$ann[do[i]] == fill.inchis[,"cmpd.name"])
-      # if(length(mtch) > 0) {break}
-      if(length(mtch)==0) {next}
-      ramclustObj$inchikey[do[i]] <- fill.inchis[mtch[1], "inchikey"]
+      fill.inchis <- get.inchikey.from.name(
+        cmpd.names = ramclustObj$ann[do], 
+        citation.weights = FALSE)
+      if(nrow(fill.inchis) == 0) break
+      fill.inchis <- fill.inchis[!is.na(fill.inchis$inchikey),]
+      for(i in 1:length(do)) {
+        mtch <- which(ramclustObj$ann[do[i]] == fill.inchis[,"cmpd.name"])
+        # if(length(mtch) > 0) {break}
+        if(length(mtch)==0) {next}
+        ramclustObj$inchikey[do[i]] <- fill.inchis[mtch[1], "inchikey"]
+      }
     }
   }
   

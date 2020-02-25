@@ -115,10 +115,14 @@ getSmilesInchi <- function(
     get.inchi <- which(!is.na(ramclustObj$smiles) & is.na(ramclustObj$inchi))
     if(length(get.inchi) > 0) {
       for(i in get.inchi) {
-        tmp <- unlist(webchem::cs_convert(ramclustObj$smiles[i], from = "smiles", to = "inchi", verbose = FALSE))
+        tmp <- unlist(webchem::cs_convert(ramclustObj$smiles[i], from = "smiles", to = "inchi"))
         if(length(tmp) == 1) {
           if(grepl("InChI=", tmp)) {
             ramclustObj$inchi[i] <- tmp
+          }
+        } else {
+          if(grepl("InChI=", tmp)) {
+            ramclustObj$inchi[i] <- tmp[1]
           }
         }
         rm(tmp)

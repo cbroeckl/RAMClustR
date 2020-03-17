@@ -132,6 +132,7 @@ annotate<-function(ramclustObj = NULL,
     }
   }
   
+  ## this is not stable.  vers 3.30 of MSFinder is now using a binary format. 
   reference.data<-read.delim2(paste0(msfinder.dir, "/Resources/", sfile), header = TRUE, na.strings = "N/A", quote = "", stringsAsFactors = FALSE)
   
   if(any(names(ramclustObj)=="rs.out")) {
@@ -163,7 +164,7 @@ annotate<-function(ramclustObj = NULL,
     ramclustObj$synonyms <- as.list(rep(NA, length(ramclustObj$cmpd)))
   }
   
-  if(!is.null(ramclustObj$msfinder.dbs)) {
+  if(!is.null(ramclustObj$msfinder.dbs) & is.null(database.priority)) {
     database.priority <- ramclustObj$msfinder.dbs
   }
   
@@ -322,39 +323,32 @@ annotate<-function(ramclustObj = NULL,
       database.priority <- gsub("custom", "Database ID", database.priority)
     }
     
+    ## use case insensitive matching to try to reconcile mismatches
     dbmatch <- database.priority %in% dbs
-    while (any(!dbmatch)) {
-      # dbmatch <- dbs %in% database.priority
-      # if(all(dbmatch)) break
-      correct <- which(!dbmatch)[1]
-      # close <- agrep(database.priority[i], dbs, max.distance = 0.2)
-      fix <- readline(prompt = cat("'", database.priority[correct], "'",
-                                   "does not match any database names", "please:", '\n', 
-                                   " - replace with one of the following names", '\n',
-                                   " - hit enter to skip this DB or", '\n',
-                                   " - 'q' to quit:", 
-                                   "\n", "\n", dbs, "\n"))
-      if (fix == "q") {
-        stop("please rerun MSFinder process as desired")
+    fix <- which(!dbmatch)
+    if(length(fix) > 0) {
+      for(i in fix) {
+        case.insensitive.match <- grep(database.priority[i], dbs, ignore.case = TRUE)
+        if(length(case.insensitive.match) == 1) {
+          dbs[case.insensitive.match] <- database.priority[i]
+        }
       }
-      if (fix == "") {
-        database.priority <- database.priority[-correct]
-      } else {
-        database.priority[i] <- fix
-      }
-      dbmatch <- database.priority %in% dbs
+    }
+    
+    ## should case sensitive fail, remove mismatches
+    dbmatch <- database.priority %in% dbs
+    fix <- which(!dbmatch)
+    if(length(fix) > 0) {
+      warning("The following databases do not match and will be removed from consideration: ", '\n',
+              "  ", database.priority[fix])
+      database.priority <- database.priority[-fix]
+      
     }
     
     
     search.dbs <- dbs
     priority.dbs <- database.priority
     
-    # use.formula <- sapply(1:length(ramclustObj$msfinder.structure.details), FUN = function(x) {
-    #   if(any(database.priority %in% tmpdb[[x]])) {
-    #     FALSE
-    #   } else {TRUE}
-    # }
-    # )
     
     ## create template
     template <- matrix(nrow = 0, ncol = 0)
@@ -401,6 +395,7 @@ annotate<-function(ramclustObj = NULL,
         # tmp <- data.frame(tmp)
         for(j in 1:nrow(form.tab)) {
           if(!any(names(ramclustObj$msfinder.structure.details[[i]]) == form.tab$name[j])) next
+          if(nrow(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]]) == 0) next
           for(k in 1:nrow(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]])) {
             if(is.null(dimnames(tmp))) {
               dimnames(tmp)[[2]] <- c(paste0("f.", names(form.tab)), names(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]]))
@@ -410,6 +405,7 @@ annotate<-function(ramclustObj = NULL,
             tmp <- rbind(tmp, nr)
           }
         }
+        
         dimnames(tmp)[[2]] <- template.col.names
         tmp <- data.frame(tmp, stringsAsFactors = FALSE)
         for(x in c("f.totalscore", "totalhrrulesscore", "totalbondcleavagescore", "totalmassaccuracyscore", 
@@ -419,9 +415,11 @@ annotate<-function(ramclustObj = NULL,
           tmp[,x] <- as.numeric(tmp[,x])
         }
         
-        for(j in c("rtsimilarityscore", "risimilarityscore")) {
-          if(max(tmp[,j]) <=0) {
-            tmp[,j] <- 0
+        if(nrow(tmp)>0) {
+          for(j in c("rtsimilarityscore", "risimilarityscore")) {
+            if(max(tmp[,j]) <=0) {
+              tmp[,j] <- 0
+            }
           }
         }
         
@@ -586,26 +584,32 @@ annotate<-function(ramclustObj = NULL,
     if(any(database.priority == "custom")) {database.priority <- database.priority[-which(database.priority == "custom")]}
     if(length(database.priority) == 0) {database.priority <- NULL}
     
-    suppressWarnings(if (!is.null(database.priority)) {
+    suppressWarnings(if(!is.null(database.priority)) {
       if (database.priority == "all") {
         database.priority <- dbs
       }
     })
     
-    dbmatch <- dbs %in% database.priority
-    
-    while (any(!dbmatch)) {
-      dbmatch <- database.priority %in% dbs
-      for (i in which(!dbmatch)) {
-        close <- agrep(database.priority[i], dbs, max.distance = 0.2)
-        fix <- readline(prompt = cat(database.priority[i], 
-                                     "does not match any database names", "please type one of the following names, 'rm' to remove this database, or or 'q' to quit:", 
-                                     "\n", "\n", dbs, "\n"))
-        if (fix == "q") {
-          stop("function ended")
+    ## use case insensitive matching to try to reconcile mismatches
+    dbmatch <- database.priority %in% dbs
+    fix <- which(!dbmatch)
+    if(length(fix) > 0) {
+      for(i in fix) {
+        case.insensitive.match <- grep(database.priority[i], dbs, ignore.case = TRUE)
+        if(length(case.insensitive.match) == 1) {
+          dbs[case.insensitive.match] <- database.priority[i]
         }
-        database.priority[i] <- fix
       }
+    }
+    
+    ## should case sensitive fail, remove mismatches
+    dbmatch <- database.priority %in% dbs
+    fix <- which(!dbmatch)
+    if(length(fix) > 0) {
+      warning("The following databases do not match and will be removed from consideration: ", '\n',
+              "  ", database.priority[fix])
+      database.priority <- database.priority[-fix]
+      
     }
     
     if(is.null(ramclustObj$msfinder.formula)) {

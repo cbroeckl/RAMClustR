@@ -30,7 +30,7 @@ mergeRCobjects <- function(
   course.rt.adj = NULL,
   mzwt = 2,
   rtwt = 1,
-  intwt = 3,
+  intwt = 3
 ) {
   
   if(is.null(ramclustObj.1)) {

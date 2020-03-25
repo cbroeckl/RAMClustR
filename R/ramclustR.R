@@ -33,7 +33,7 @@
 #' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
 #' @param rt.only.low.n logical: default = TRUE  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to FALSE.
 #' @param fftempdir valid path: if there are file size limitations on the default ff pacakge temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.
-#'
+#' @param replace.zeros logincal: TRUE by default.  NA, NaN, and Inf values are replaced with zero, and zero values are sometimes returned from peak peaking.  When TRUE, zero values will be replaced with a small amount of noise, with noise level set based on the detected signal intensities for that feature. 
 #' @details Main clustering function output - see citation for algorithm description or vignette('RAMClustR') for a walk through.  batch.qc. normalization requires input of three vectors (1) batch (2) order (3) qc.   This is a feature centric normalization approach which adjusts signal intensities first by comparing batch median intensity of each feature (one feature at a time) QC signal intensity to full dataset median to correct for systematic batch effects and then secondly to apply a local QC median vs global median sample correction to correct for run order effects.
 #' @return   $featclus: integer vector of cluster membership for each feature
 #' @return   $frt: feature retention time, in whatever units were fed in (xcms uses seconds, by default)
@@ -109,7 +109,8 @@ ramclustR  <- function(xcmsObj=NULL,
                        mzdec=3,
                        cor.method="pearson",
                        rt.only.low.n = TRUE,
-                       fftempdir = NULL
+                       fftempdir = NULL,
+                       replace.zeros = TRUE
 ) {
   
   ########
@@ -360,17 +361,25 @@ ramclustR  <- function(xcmsObj=NULL,
     )
   }
   ########
-  # ensure that we have all numeric non-zero values in the dataset. 
+  # ensure that we have all numeric values, 
+  # then optionally ensure we have all non-zero values in the dataset. 
   # uses a noise addition 'jitter' around minimum values with missing data points.
   # this is mostly necessary for csv input, where other programs may not have used a 'fillPeaks' like step
-  rpl1<-unique(c(which(is.na(data1)), which(is.nan(data1)), which(is.infinite(data1)), which(data1==0)))
-  rpl2<-unique(c(which(is.na(data2)), which(is.nan(data2)), which(is.infinite(data2)), which(data2==0)))
-  if(length(rpl1)>0) {data1[rpl1]<-abs(jitter(rep(min(data1, na.rm=TRUE), length(rpl1) ), amount=min(data1/100, na.rm=TRUE)))}
-  if(length(rpl2)>0) {data2[rpl2]<-abs(jitter(rep(min(data2, na.rm=TRUE), length(rpl2) ), amount=min(data2/100, na.rm=TRUE)))}
-  #if(length(rpl1)>0) {data1[rpl1]<-abs(jitter(rep(min(data1, na.rm=TRUE), length(rpl1) ), amount=min(data1/100, na.rm=TRUE)))}
-  #if(length(rpl2)>0) {data2[rpl2]<-abs(jitter(rep(min(data2, na.rm=TRUE), length(rpl2) ), amount=min(data2/100, na.rm=TRUE)))}
+  rpl1<-unique(c(which(is.na(data1)), which(is.nan(data1)), which(is.infinite(data1))))
+  rpl2<-unique(c(which(is.na(data2)), which(is.nan(data2)), which(is.infinite(data2))))
+  
+  if(length(rpl1)>0) {data1[rpl1]<- 0 }
+  if(length(rpl2)>0) {data2[rpl2]<- 0 }
+  
   data1[which(data1<0)]<-abs(data1[which(data1<0)])
   data2[which(data2<0)]<-abs(data2[which(data2<0)])
+
+  if(replace.zeros == TRUE) {
+    rpl1 <- which(data1==0)
+    rpl2 <- which(data2==0)
+    if(length(rpl1)>0) {data1[rpl1]<-abs(jitter(rep(min(data1, na.rm=TRUE), length(rpl1) ), amount=min(data1/100, na.rm=TRUE)))}
+    if(length(rpl2)>0) {data2[rpl2]<-abs(jitter(rep(min(data2, na.rm=TRUE), length(rpl2) ), amount=min(data2/100, na.rm=TRUE)))}
+  }
   
   ########
   # Optional normalization of data, either Total ion signal or quantile

@@ -8,8 +8,9 @@
 #' @param mztol numeric: absolute mass tolerance around mz
 #' @param rttol numeric: feaure retention time tolerance.  Value set by this option will be used during the initial anchor mapping phase.  Two times the standard error of the rt loess correction will be used for the full mapping.
 #' @param course.rt.adj numeric: default = NULL. optional approximate retention time shift between ramclustObj.1 and ramclustObj.2.  i.e if the retention time of ramclustObj.1 is on average 15 seconds longer than that of ramclustobj.2, enter '15'.  if 1 is less than 2, enter a negative number.  This is applied before mapping to enable a smaller 'rttol' value to be used. 
-#' @param mzwt numeric: when mapping features, weighting value used for similarities between feature mass values (see rtwt)
-#' @param rtwt numeric: when mapping features, weighting value used for similarities between feature retention time values (see mzwt)
+#' @param mzwt numeric: when mapping features, weighting value used for similarities between feature mass values (see rtwt, intwt)
+#' @param rtwt numeric: when mapping features, weighting value used for similarities between feature retention time values (see mzwt, intwt)
+#' @param intwt numeric: when mapping features, weighting value used for similarities between ranked signal intensity values (see rtwt, mzwt)
 #' @return returns a ramclustR object.  All values from ramclustObj.1 are retained.  SpecAbund dataset from ramclustObj.1 is moved to RC$SpecAbund.1, where RC is the new ramclustObj.
 #' @concept ramclustR
 #' @concept RAMClustR
@@ -28,7 +29,8 @@ mergeRCobjects <- function(
   rttol = 30,
   course.rt.adj = NULL,
   mzwt = 2,
-  rtwt = 1
+  rtwt = 1,
+  intwt = 1,
 ) {
   
   if(is.null(ramclustObj.1)) {
@@ -172,10 +174,11 @@ mergeRCobjects <- function(
       map[i] <- keep 
     }
     if(length(keep >1 )) {
-      rtsim<-rank(abs(newRC$frt[i] - pred.frt[keep]))
-      mzsim<-rank(abs(newRC$fmz[i] - ramclustObj.2$fmz[keep]))
+      rtsim <- rank(abs(newRC$frt[i] - pred.frt[keep]))
+      mzsim <- rank(abs(newRC$fmz[i] - ramclustObj.2$fmz[keep]))
+      intsim <-  rank(abs(rank(newRC$msint)[i] - rank(ramclustObj.2$msint)[keep])) ##rank(RC$msint)
       sims<-sapply(1:length(keep), FUN = function(x) {
-        weighted.mean(c(rtsim[x], mzsim[x]), weights = c(rtwt, mzwt))
+        weighted.mean(c(rtsim[x], mzsim[x], intsim[x]), weights = c(rtwt, mzwt, intwt))
       }
       )
       keep<-keep[which(sims == min(sims))]

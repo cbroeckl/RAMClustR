@@ -4,8 +4,11 @@
 \alias{export.msfinder.formulas}
 \title{export MSFinder formula prediction results in tabular format.}
 \usage{
-export.msfinder.formulas(ramclustObj = NULL, export.all = FALSE,
-  output.directory = NULL)
+export.msfinder.formulas(
+  ramclustObj = NULL,
+  export.all = FALSE,
+  output.directory = NULL
+)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}

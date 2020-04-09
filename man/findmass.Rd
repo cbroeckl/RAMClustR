@@ -4,8 +4,14 @@
 \alias{findmass}
 \title{findmass}
 \usage{
-findmass(ramclustObj = NULL, mz = NULL, mztol = 0.02, rttol = 2,
-  zmax = 6, m.check = TRUE)
+findmass(
+  ramclustObj = NULL,
+  mz = NULL,
+  mztol = 0.02,
+  rttol = 2,
+  zmax = 6,
+  m.check = TRUE
+)
 }
 \arguments{
 \item{ramclustObj}{R object: the ramclustR object to explore}

@@ -4,8 +4,12 @@
 \alias{getClassyFire}
 \title{getClassyFire}
 \usage{
-getClassyFire(ramclustObj = NULL, get.all = TRUE, max.wait = 10,
-  posts.per.minute = 5)
+getClassyFire(
+  ramclustObj = NULL,
+  get.all = TRUE,
+  max.wait = 10,
+  posts.per.minute = 5
+)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to ClassyFy}

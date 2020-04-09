@@ -4,8 +4,10 @@
 \alias{manual.annotation.template}
 \title{manual.annotation.template}
 \usage{
-manual.annotation.template(ramclustObj = NULL,
-  outfile = "manual.annotation.template.csv")
+manual.annotation.template(
+  ramclustObj = NULL,
+  outfile = "manual.annotation.template.csv"
+)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to annotate}

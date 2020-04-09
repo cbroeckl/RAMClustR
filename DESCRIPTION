@@ -11,6 +11,6 @@ Description: A feature clustering algorithm for non-targeted mass spectrometric 
 URL: https://github.com/cbroeckl/RAMClustR
 Encoding: UTF-8
 biocViews: MassSpectrometry, Metabolomics
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Suggests: knitr, rmarkdown, xcms
 VignetteBuilder: knitr

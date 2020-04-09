@@ -4,8 +4,7 @@
 \alias{import.msfinder.formulas}
 \title{import.msfinder.formulas}
 \usage{
-import.msfinder.formulas(ramclustObj = NULL, mat.dir = NULL,
-  msp.dir = NULL)
+import.msfinder.formulas(ramclustObj = NULL, mat.dir = NULL, msp.dir = NULL)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}

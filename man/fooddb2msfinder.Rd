@@ -4,8 +4,11 @@
 \alias{fooddb2msfinder}
 \title{foodb2msfinder}
 \usage{
-fooddb2msfinder(foodb.files = NULL, out.dir = NULL,
-  out.name = "FoodDB_for_MSFinder.txt")
+fooddb2msfinder(
+  foodb.files = NULL,
+  out.dir = NULL,
+  out.name = "FoodDB_for_MSFinder.txt"
+)
 }
 \arguments{
 \item{foodb.files}{default = NULL, if path is set, will read automatically.  If NULL, direcory selection by user.}

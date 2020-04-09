@@ -4,10 +4,20 @@
 \alias{do.findmain}
 \title{do.findmain}
 \usage{
-do.findmain(ramclustObj = NULL, cmpd = NULL, mode = "positive",
-  mzabs.error = 0.01, ppm.error = 10, ads = NULL, nls = NULL,
-  scoring = "auto", plot.findmain = TRUE, writeMat = TRUE,
-  writeMS = TRUE, use.z = TRUE)
+do.findmain(
+  ramclustObj = NULL,
+  cmpd = NULL,
+  mode = "positive",
+  mzabs.error = 0.01,
+  ppm.error = 10,
+  ads = NULL,
+  nls = NULL,
+  scoring = "auto",
+  plot.findmain = TRUE,
+  writeMat = TRUE,
+  writeMS = TRUE,
+  use.z = TRUE
+)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to annotate.}

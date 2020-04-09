@@ -4,8 +4,12 @@
 \alias{get.synonyms}
 \title{get.synonyms()}
 \usage{
-get.synonyms(ramclustObj = NULL, get.db = TRUE, update.names = TRUE,
-  lipid.short.hand = TRUE)
+get.synonyms(
+  ramclustObj = NULL,
+  get.db = TRUE,
+  update.names = TRUE,
+  lipid.short.hand = TRUE
+)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}

@@ -4,8 +4,14 @@
 \alias{RCQC}
 \title{RCQC}
 \usage{
-RCQC(ramclustObj = NULL, qctag = "QC", npc = 4, scale = "pareto",
-  which.data = "SpecAbund", outfile = "ramclustQC.pdf")
+RCQC(
+  ramclustObj = NULL,
+  qctag = "QC",
+  npc = 4,
+  scale = "pareto",
+  which.data = "SpecAbund",
+  outfile = "ramclustQC.pdf"
+)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to analyze}

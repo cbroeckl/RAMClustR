@@ -4,8 +4,14 @@
 \alias{assign.z}
 \title{assign.z}
 \usage{
-assign.z(ramclustObj = NULL, chargestate = c(1:5), mzError = 0.02,
-  nEvents = 2, minPercentSignal = 10, assume1 = TRUE)
+assign.z(
+  ramclustObj = NULL,
+  chargestate = c(1:5),
+  mzError = 0.02,
+  nEvents = 2,
+  minPercentSignal = 10,
+  assume1 = TRUE
+)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to annotate}

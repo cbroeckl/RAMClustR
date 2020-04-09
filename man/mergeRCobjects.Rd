@@ -4,9 +4,16 @@
 \alias{mergeRCobjects}
 \title{mergeRCobjects}
 \usage{
-mergeRCobjects(ramclustObj.1 = NULL, ramclustObj.2 = NULL,
-  mztol = 0.2, rttol = 30, course.rt.adj = NULL, mzwt = 2,
-  rtwt = 1)
+mergeRCobjects(
+  ramclustObj.1 = NULL,
+  ramclustObj.2 = NULL,
+  mztol = 0.2,
+  rttol = 30,
+  course.rt.adj = NULL,
+  mzwt = 2,
+  rtwt = 1,
+  intwt = 3
+)
 }
 \arguments{
 \item{ramclustObj.1}{ramclustR object 1: this object will be the base for the new object.  That is all the features from ramclustObj.1 will be retained.}
@@ -19,9 +26,11 @@ mergeRCobjects(ramclustObj.1 = NULL, ramclustObj.2 = NULL,
 
 \item{course.rt.adj}{numeric: default = NULL. optional approximate retention time shift between ramclustObj.1 and ramclustObj.2.  i.e if the retention time of ramclustObj.1 is on average 15 seconds longer than that of ramclustobj.2, enter '15'.  if 1 is less than 2, enter a negative number.  This is applied before mapping to enable a smaller 'rttol' value to be used.}
 
-\item{mzwt}{numeric: when mapping features, weighting value used for similarities between feature mass values (see rtwt)}
+\item{mzwt}{numeric: when mapping features, weighting value used for similarities between feature mass values (see rtwt, intwt)}
 
-\item{rtwt}{numeric: when mapping features, weighting value used for similarities between feature retention time values (see mzwt)}
+\item{rtwt}{numeric: when mapping features, weighting value used for similarities between feature retention time values (see mzwt, intwt)}
+
+\item{intwt}{numeric: when mapping features, weighting value used for similarities between ranked signal intensity values (see rtwt, mzwt)}
 }
 \value{
 returns a ramclustR object.  All values from ramclustObj.1 are retained.  SpecAbund dataset from ramclustObj.1 is moved to RC$SpecAbund.1, where RC is the new ramclustObj.

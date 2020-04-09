@@ -4,15 +4,40 @@
 \alias{ramclustR}
 \title{ramclustR}
 \usage{
-ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
-  taglocation = "filepaths", MStag = NULL, idMSMStag = NULL,
-  featdelim = "_", timepos = 2, st = NULL, sr = NULL,
-  maxt = NULL, deepSplit = FALSE, blocksize = 2000, mult = 5,
-  hmax = NULL, sampNameCol = 1, collapse = TRUE, usePheno = TRUE,
-  mspout = TRUE, ExpDes = NULL, normalize = "TIC",
-  qc.inj.range = 20, order = NULL, batch = NULL, qc = NULL,
-  minModuleSize = 2, linkage = "average", mzdec = 3,
-  cor.method = "pearson", rt.only.low.n = TRUE, fftempdir = NULL)
+ramclustR(
+  xcmsObj = NULL,
+  ms = NULL,
+  idmsms = NULL,
+  taglocation = "filepaths",
+  MStag = NULL,
+  idMSMStag = NULL,
+  featdelim = "_",
+  timepos = 2,
+  st = NULL,
+  sr = NULL,
+  maxt = NULL,
+  deepSplit = FALSE,
+  blocksize = 2000,
+  mult = 5,
+  hmax = NULL,
+  sampNameCol = 1,
+  collapse = TRUE,
+  usePheno = TRUE,
+  mspout = TRUE,
+  ExpDes = NULL,
+  normalize = "TIC",
+  qc.inj.range = 20,
+  order = NULL,
+  batch = NULL,
+  qc = NULL,
+  minModuleSize = 2,
+  linkage = "average",
+  mzdec = 3,
+  cor.method = "pearson",
+  rt.only.low.n = TRUE,
+  fftempdir = NULL,
+  replace.zeros = TRUE
+)
 }
 \arguments{
 \item{xcmsObj}{xcmsObject: containing grouped feature data for clustering by ramclustR}
@@ -76,6 +101,8 @@ ramclustR(xcmsObj = NULL, ms = NULL, idmsms = NULL,
 \item{rt.only.low.n}{logical: default = TRUE  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to FALSE.}
 
 \item{fftempdir}{valid path: if there are file size limitations on the default ff pacakge temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.}
+
+\item{replace.zeros}{logincal: TRUE by default.  NA, NaN, and Inf values are replaced with zero, and zero values are sometimes returned from peak peaking.  When TRUE, zero values will be replaced with a small amount of noise, with noise level set based on the detected signal intensities for that feature.}
 }
 \value{
 $featclus: integer vector of cluster membership for each feature

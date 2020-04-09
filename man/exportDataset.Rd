@@ -4,8 +4,7 @@
 \alias{exportDataset}
 \title{exportDataset}
 \usage{
-exportDataset(ramclustObj = NULL, which.data = "SpecAbund",
-  label.by = "ann")
+exportDataset(ramclustObj = NULL, which.data = "SpecAbund", label.by = "ann")
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to export from}

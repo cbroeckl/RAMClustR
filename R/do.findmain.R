@@ -46,11 +46,11 @@
 
 
 do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive", 
-                         mzabs.error = 0.01, ppm.error = 10, ads = NULL, nls = NULL, 
+                         mzabs.error = 0.005, ppm.error = 10, ads = NULL, nls = NULL, 
                          scoring = "auto", plot.findmain = TRUE, writeMat = TRUE, 
                          writeMS = TRUE, use.z = TRUE) 
 {
-
+  
   if(is.null(ramclustObj)) {
     stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
   }
@@ -265,6 +265,9 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
       }
     }
   }
+  
+  ramclustObj$precursor.mz <- rep(NA, length(ramclustObj$M.ann))
+  ramclustObj$precursor.type <- rep(NA, length(ramclustObj$M.ann))
   ramclustObj$M <- ramclustObj$M.ramclustr
   ramclustObj$M.ann <- ramclustObj$M.ann.ramclustr
   change <- which(ramclustObj$use.findmain)
@@ -272,6 +275,17 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
   for (i in change) {
     ramclustObj$M.ann[[i]] <- ramclustObj$M.ann.findmain[[i]]
   }
+  
+  for(i in 1:length(ramclustObj$precursor.mz)) {
+    for(j in 1:length(ads)) {
+      m <- which(ramclustObj$M.ann[[i]]$label == ads[[j]])
+      if(length(m) == 0) next
+      ramclustObj$precursor.mz[i] <- ramclustObj$M.ann[[i]][m, "mz"]
+      ramclustObj$precursor.type[i] <- ads[j]
+    }
+    
+  }
+  
   if (plot.findmain) {
     cat("plotting findmain annotation results", "\n")
     pdf("spectra/findmainPlots.pdf", width = 15, height = 7)

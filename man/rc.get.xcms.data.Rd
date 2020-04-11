@@ -8,7 +8,7 @@ rc.get.xcms.data(
   xcmsObj = NULL,
   taglocation = "filepaths",
   MStag = NULL,
-  idMSMStag = NULL,
+  MSMStag = NULL,
   ExpDes = NULL,
   mzdec = 3
 )
@@ -18,13 +18,13 @@ rc.get.xcms.data(
 
 \item{taglocation}{character: "filepaths" by default, "phenoData[,1]" is another option. referse to xcms slot}
 
-\item{MStag}{character: character string in 'taglocation' to designate files as either MS / DIA(MSe, idMSMS) e.g. "01.mzML"}
+\item{MStag}{character: character string in 'taglocation' to designate files as either MS / DIA(MSe, MSall, AIF, etc) e.g. "01.mzML"}
 
-\item{idMSMStag}{character: character string in 'taglocation' to designate files as either MS / DIA(MSe, idMSMS) e.g. "02.mzML"}
+\item{MSMStag}{character: character string in 'taglocation' to designate files as either MS / DIA(MSe, MSall, AIF, etc) e.g. "02.mzML"}
 
 \item{ExpDes}{either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output}
 
-\item{mzdec}{integer: number of decimal places used in printing m/z values}
+\item{mzdec}{integer: number of decimal places for storing m/z values}
 }
 \value{
 an empty ramclustR object.  this object is formatted as an hclust object with additional slots for holding feature and compound data. details on these found below.
@@ -37,9 +37,13 @@ $ExpDes: the experimental design object used when running ramclustR.  List of tw
 
 $MSdata:  the MSdataset provided by either xcms or csv input
 
-$MSMSdata: the (optional) MSe/idMSMS dataset provided be either xcms or csv input
+$MSMSdata: the (optional) DIA(MSe, MSall, AIF etc) dataset provided be either xcms or csv input
 
 $xcmsOrd: original xcms order of features, for back-referencing when necessary
+
+$msint: weighted.mean intensity of feature in ms level data
+
+$msmsint:weighted.mean intensity of feature in msms level data
 }
 \description{
 extractor for xcms objects in preparation for clustering

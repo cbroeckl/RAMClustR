@@ -8,7 +8,7 @@ do.findmain(
   ramclustObj = NULL,
   cmpd = NULL,
   mode = "positive",
-  mzabs.error = 0.01,
+  mzabs.error = 0.005,
   ppm.error = 10,
   ads = NULL,
   nls = NULL,

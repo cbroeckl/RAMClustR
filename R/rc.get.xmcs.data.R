@@ -3,21 +3,21 @@
 #' extractor for xcms objects in preparation for clustering  
 #'
 #' @param xcmsObj xcmsObject: containing grouped feature data for clustering by ramclustR
-#' @param MStag character: character string in 'taglocation' to designate files as either MS / DIA(MSe, idMSMS) e.g. "01.mzML"
-#' @param idMSMStag character: character string in 'taglocation' to designate files as either MS / DIA(MSe, idMSMS) e.g. "02.mzML"
+#' @param MStag character: character string in 'taglocation' to designate files as either MS / DIA(MSe, MSall, AIF, etc) e.g. "01.mzML"
+#' @param MSMStag character: character string in 'taglocation' to designate files as either MS / DIA(MSe, MSall, AIF, etc) e.g. "02.mzML"
 #' @param taglocation character: "filepaths" by default, "phenoData[,1]" is another option. referse to xcms slot
 #' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
-#' @param mzdec integer: number of decimal places used in printing m/z values
+#' @param mzdec integer: number of decimal places for storing m/z values
 #' @details This function creates a ramclustObj which will be used as input for clustering.
 #' @return  an empty ramclustR object.  this object is formatted as an hclust object with additional slots for holding feature and compound data. details on these found below. 
 #' @return   $frt: feature retention time, in whatever units were fed in (xcms uses seconds, by default)
 #' @return   $fmz: feature retention time, reported in number of decimal points selected in ramclustR function
 #' @return   $ExpDes: the experimental design object used when running ramclustR.  List of two dataframes. 
 #' @return   $MSdata:  the MSdataset provided by either xcms or csv input
-#' @return   $MSMSdata: the (optional) MSe/idMSMS dataset provided be either xcms or csv input
+#' @return   $MSMSdata: the (optional) DIA(MSe, MSall, AIF etc) dataset provided be either xcms or csv input
 #' @return   $xcmsOrd: original xcms order of features, for back-referencing when necessary
-#' @msint    $weighted.mean intensity of feature in ms level data
-#' @msmsint  $weighted.mean intensity of feature in msms level data
+#' @return   $msint: weighted.mean intensity of feature in ms level data
+#' @return   $msmsint:weighted.mean intensity of feature in msms level data
 #' 
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
@@ -35,7 +35,7 @@
 rc.get.xcms.data  <- function(xcmsObj=NULL,
                        taglocation="filepaths",
                        MStag=NULL,
-                       idMSMStag=NULL, 
+                       MSMStag=NULL, 
                        ExpDes=NULL,
                        mzdec=3
 ) {
@@ -47,13 +47,9 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
     warning('\n', "you failed to define your experimental descriptor using 'defineExperiment()'", '\n',
             "RAMClustR must now guess at what you are trying to do ", '\n',
             "and your exported spectra will be labelled incorrectly")
-    if(!is.null(idmsms)) {
-      ExpDes[[2]][which(row.names(ExpDes[[2]]) == "MSlevs"),1]<-2
-    }
   }
   
-  history <- list()
-  history$input <- "XCMS output data was used as input to RAMClustR. "
+
   ## add xcms processing history narrative here
   
   ## check xcms object presence
@@ -83,9 +79,9 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   ## check to see that we can find the MS2 data files
   
   ##  check to see if we have MS2 data, if not, error or switch to ms1
-  if(!is.null(idMSMStag)) {
+  if(!is.null(MSMStag)) {
     if(is.null(taglocation)){
-      stop("you must specify the the MStag, idMSMStag, and the taglocations")
+      stop("you must specify the the MStag, MSMStag, and the taglocations")
     }
     if(!any(grepl(taglocation, c("filepaths", "pheno")))) {
       stop("taglocation needs to be one of 'filepaths' or 'pheno'", '\n')
@@ -96,26 +92,26 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   if(taglocation == 'filepaths') {
     if(!newXCMS) {
       nfiles    <-  length(xcmsObj@filepaths)
-      msmsfiles <-  grep(idMSMStag, xcmsObj@filepaths, ignore.case=TRUE)
+      msmsfiles <-  grep(MSMStag, xcmsObj@filepaths, ignore.case=TRUE)
     }
     if(newXCMS) {
       nfiles    <-length(xcmsObj@processingData@files)
-      msmsfiles <-grep(idMSMStag, xcmsObj@processingData@files, ignore.case=TRUE)
+      msmsfiles <-grep(MSMStag, xcmsObj@processingData@files, ignore.case=TRUE)
     }
   }
   if(taglocation == 'pheno') {
     if(!newXCMS) {
       nfiles    <- length(xcmsObj@phenoData)
-      msmsfiles <- grep(idMSMStag, row.names(xcmsObj@phenoData), ignore.case=TRUE)
+      msmsfiles <- grep(MSMStag, row.names(xcmsObj@phenoData), ignore.case=TRUE)
     }
     if(newXCMS) {
       nfiles    <- length(xcmsObj@phenoData[[1]])
-      msmsfiles <- grep(idMSMStag, as.vector(xcmsObj@phenoData[[1]]), ignore.case=TRUE)
+      msmsfiles <- grep(MSMStag, as.vector(xcmsObj@phenoData[[1]]), ignore.case=TRUE)
     }
   }
   
   if(length(msmsfiles) == 0)  {
-    warning('no idMSMS files found - assuming all data is MS1', '\n')
+    warning('no MSMS files found - assuming all data is MS1', '\n')
     msfiles <- 1:nfiles
     mslev <- 1
   } else {
@@ -135,6 +131,21 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   
   if(length(msfiles) == 0) {stop("no msfiles recognized")}
   
+  ## get phenotype file name associations for storage in new RC object
+  if(newXCMS) {
+    filepaths <- fileNames(xcmsObj)
+    filenames <- basename(filepaths)
+    phenotype <- xcmsObj@phenoData@data
+    phenotype <- data.frame(phenotype, filenames, filepaths)
+    if(mslev == 2) {
+      mslevs <- rep(1, nrow(phenotype))
+      mslevs[msmsfiles] <- 2
+      phenotype <- data.frame(phenotype, mslevs)
+    }
+  } else {
+    stop("fix this - need to extract pheno from old xcms format")
+  }
+  
   
   ## create empty hclust object to ultimately hold clustering data
   ramclustObj <- list()
@@ -147,6 +158,9 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   ramclustObj$call         <- vector(length = 0)
   ramclustObj$dist.method  <- vector(length = 0)
   ramclustObj$ExpDes       <- ExpDes
+  ramclustObj$history      <- list()
+  ramclustObj$phenoData    <- phenotype
+  ramclustObj$history$input<- "XCMS output data was used as input to RAMClustR. "
   
   
   ## process data
@@ -177,28 +191,30 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   times<-times[xcmsOrd]
   featnames<-paste(mzs, "_", times, sep="")
   dimnames(data)[[2]]<-featnames
+  dimnames(data)[[1]]<-filenames
   
   ramclustObj$MSdata <- data[msfiles,]
-  row.names(ramclustObj$MSdata)<-sampnames
+  ramclustObj$MSdata_raw <- ramclustObj$MSdata
   msint<-rep(0, length(ramclustObj$fmz))
   for(i in 1:ncol(ramclustObj$MSdata)){
-    msint[i]<-weighted.mean(ramclustObj$MSdata[,i], ramclustObj$MSdata[,i])
+    msint[i]<-weighted.mean(ramclustObj$MSdata[,i], ramclustObj$MSdata[,i], na.rm = TRUE)
   }
   
   if(mslev == 2) {
     ramclustObj$MSMSdata <- data[msmsfiles,]
-    row.names(ramclustObj$MSMSdata)<-sampnames
+    ramclustObj$MSMSdata_raw <- ramclustObj$MSMSdata
   }
   
   ramclustObj$frt <- times
   ramclustObj$fmz <- mzs
+  ramclustObj$featnames <- featnames
   ramclustObj$xcmsOrd<-xcmsOrd
   ramclustObj$msint <- msint
   
   if(mslev == 2) {
     msmsint<-rep(0, length(ramclustObj$fmz))
     for(i in 1:ncol(ramclustObj$MSMSdata)){
-      msmsint[i]<-weighted.mean(ramclustObj$MSMSdata[,i], ramclustObj$MSMSdata[,i])
+      msmsint[i]<-weighted.mean(ramclustObj$MSMSdata[,i], ramclustObj$MSMSdata[,i], na.rm = TRUE)
     }
     ramclustObj$msmsint <- msmsint
   }

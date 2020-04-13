@@ -9,7 +9,7 @@ rc.normalize.batch.qc(
   qc.inj.range = 20,
   order = NULL,
   batch = NULL,
-  qc = NULL
+  qc.tag = NULL
 )
 }
 \arguments{
@@ -21,9 +21,7 @@ rc.normalize.batch.qc(
 
 \item{batch}{integer vector with length equal to number of injections in xset or csv file}
 
-\item{qc}{logical vector with length equal to number of injections in xset or csv file.}
-
-\item{normalize}{character: either "none", "TIC", "quantile", or "batch.qc" normalization of feature intensities.  see batch.qc overview in details.}
+\item{qc.tag}{character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.}
 }
 \value{
 ramclustR object with normalized data.

@@ -3,11 +3,10 @@
 #' extractor for xcms objects in preparation for clustering  
 #'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
-#' @param normalize character: either "none", "TIC", "quantile", or "batch.qc" normalization of feature intensities.  see batch.qc overview in details. 
 #' @param qc.inj.range integer: how many injections around each injection are to be scanned for presence of QC samples when using batch.qc normalization?  A good rule of thumb is between 1 and 3 times the typical injection span between QC injections.  i.e. if you inject QC ever 7 samples, set this to between 7 and 21.  smaller values provide more local precision but make normalization sensitive to individual poor outliers (though these are first removed using the boxplot function outlier detection), while wider values provide less local precision in normalization but better stability to individual peak areas.
 #' @param batch integer vector with length equal to number of injections in xset or csv file
 #' @param order integer vector with length equal to number of injections in xset or csv file
-#' @param qc logical vector with length equal to number of injections in xset or csv file.  
+#' @param qc.tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.
 #' @details This function offers normalization by run order, batch number, and QC sample signal intensity.
 #' @details Each input vector should be the same length, and equal to the number of samples in the $MSdata set.
 #' @details Input vector order is assumed to be the same as the sample order in the $MSdata set.  
@@ -29,7 +28,7 @@ rc.normalize.batch.qc  <- function(ramclustObj=NULL,
                                    qc.inj.range = 20,
                                    order = NULL,
                                    batch = NULL,
-                                   qc = NULL
+                                   qc.tag = NULL
 ) {
   
   ## CHECKS
@@ -39,19 +38,26 @@ rc.normalize.batch.qc  <- function(ramclustObj=NULL,
   }
   
   if(is.null(order)) {
-    stop("'order' must be set as a vector of integer values (i.e. c(10,13,7)) for this normalization approach", '\n')
+    stop("order = NULL; run order correction can not be applied.", '\n')
   }
   
   if(is.null(batch)) {
-    warning("batch = NULL; assumption of a single batch experiment is applied", '\n')
+    warning("batch = NULL; data will be treated as single batch experiment", '\n')
     batch <- rep(1, nrow(ramclustObj$MSdata))
   }
   
-  if(is.null(qc)) {
-    warning("qc = NULL; run order correction will be applied without QC samples.", '\n',
-            "     This approach assumes randomized run order. lack of QC samples", '\n', 
-            "     reduces confidence that run order trends are purely analtyical.", '\n')
+  if(is.null(qc.tag)) {
+    warning("qc.tag = NULL; QC based run order correction can not be applied.", '\n',
+            "       An assumption of random run order is required for this to be a valid approach.", '\n')
     qc <- rep(TRUE, nrow(ramclustObj$MSdata))
+  }
+  
+  ## define QC samples in each set
+  if(length(qc.tag) == 1) {
+    qc <- grepl(qc.tag[1], ramclustObj$phenoData$sample.names)
+  } 
+  if(length(qc.tag) == 2) {
+    qc <- grepl(qc.tag[1], ramclustObj$phenoData[[qc.tag[2]]])
   }
   
   if(!is.logical(qc)) {
@@ -75,6 +81,16 @@ rc.normalize.batch.qc  <- function(ramclustObj=NULL,
   }
   
   ndf <- data.frame(batch, order, qc)
+  if(mslev == 1) {
+    if(nrow(ndf) != nrow(ramclustObj$MSdata)) {
+      stop("run order length not equal to number of samples in MSdata set.", '\n')
+    }
+  }
+  if(mslev == 2) {
+    if(2*nrow(ndf) != nrow(ramclustObj$MSdata)) {
+      warning("run and batch order assumed to be identical for MSdata and MSMSdata sets.", '\n')
+    }
+  }
   new.ord <- order(ndf$order)
   ndf <- ndf[new.ord,]
   data1 <- data1[new.ord,]
@@ -292,7 +308,10 @@ rc.normalize.batch.qc  <- function(ramclustObj=NULL,
   
   dev.off()
   
-  
+  ramclustObj$history$normalize.batch.qc <- {
+    paste0("Each feature was independently normalized to signal intensity for that feature in", 
+           "the nearest QC sample(s) within ", qc.inj.range, " injections.")
+  }
   
   return(ramclustObj)
 }

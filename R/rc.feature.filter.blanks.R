@@ -53,8 +53,14 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
   d1 <- ramclustObj$MSdata
   
   ## define QC and Blank samples in each set
-  qc <- grep(qc.tag[1], ramclustObj$phenoData$sample.names)
-  qc <- qc[which(qc <= nrow(d1))]
+  if(length(qc.tag) == 1) {
+    qc <- grep(qc.tag[1], ramclustObj$phenoData$sample.names)
+    qc <- qc[which(qc <= nrow(d1))]
+  } 
+  if(length(qc.tag) == 2) {
+    qc <- grep(qc.tag[1], ramclustObj$phenoData[[qc.tag[2]]])
+    qc <- qc[which(qc <= nrow(d1))]
+  }
   
   if(length(qc) == 0) {
     stop("no qc samples found. ", '\n')
@@ -144,7 +150,13 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
     }
   }
   ramclustObj$feature.filter.blanks <- rf[-keep,]
-    
+  
+  ramclustObj$history$feature.filter.blanks <- {
+    paste0(
+      "Features which failed to demonstrate signal intensity of at least ",
+      sn, " fold greater than QC samples were removed from the feature dataset."
+    )
+  }  
     return(ramclustObj)
   }
   

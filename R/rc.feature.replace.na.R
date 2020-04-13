@@ -58,7 +58,7 @@ rc.feature.replace.na  <- function(
     if(x == "MSMSdata" & is.null(ramclustObj$MSMSdata)) {
       next
     }
-
+    
     # select data frame to use
     data <- ramclustObj[[x]]
     n.feat.total <- n.feat.total + (dim(data)[[1]] * dim(data)[[2]])
@@ -82,7 +82,7 @@ rc.feature.replace.na  <- function(
         } else {
           min.int.local <- min(data[,i], na.rm = TRUE) 
         }
-                min.int <- min(min.int.local, min.int.global, na.rm = TRUE)
+        min.int <- min(min.int.local, min.int.global, na.rm = TRUE)
         rpl.with <- rep((min.int * replace.int), length(rpl))
         rpl.with <- abs(jitter(rpl.with, amount = rpl.with[1]*replace.noise))
         data[rpl, i] <- rpl.with
@@ -92,7 +92,20 @@ rc.feature.replace.na  <- function(
     ramclustObj[[x]] <- data
   }
   result <- paste("replaced", n.feat.replaced, "of", n.feat.total, "total features (",
-      round((100 * n.feat.replaced/n.feat.total)), "% )", '\n')
+                  round((100 * n.feat.replaced/n.feat.total)), "% )", '\n')
   cat(result)
+  
+  ramclustObj$history$replace.na <- {
+    paste0(
+      "Features with missing values were replaced with small values simulating noise. ",
+      "For each feature, the minimum detected value was multiplied by ", replace.int, ". ",
+      "Noise was then added using a factor of ", replace.noise, ". ", 
+      "The absulute value of this value was used as the filled value to ensure that only non-negative values carried forward. ",
+      if(replace.zero) {
+        "Zero values were treated as missing values."
+      }
+    )
+  }
+  
   return(ramclustObj)
 }

@@ -721,7 +721,7 @@ ramclustR  <- function(xcmsObj=NULL,
   
   ########
   # Report progress and timing
-  cat("RAMClust feature similarity matrix calculated and stored:", '\n')
+  cat('\n', "RAMClust feature similarity matrix calculated and stored:", '\n')
   gc() 
   
   

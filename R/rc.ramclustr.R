@@ -86,8 +86,6 @@ rc.ramclustr  <- function(
     mslev <- 2
   }
   
-  # history <- paste("Raw mass spectrometry data were processed using an R based workflow for feature detection, retention time alignment, feature grouping, peak filling, feature clustering.")
-  
   a<-Sys.time()   
   
   ########
@@ -242,10 +240,6 @@ rc.ramclustr  <- function(
   ########
   # cluster using fastcluster package,
   system.time(tmp.ramclustObj<-fastcluster::hclust(tmp.ramclustObj, method=linkage))
-  # history <- paste(history,
-  #                  "The feature similarity matrix was clustered using fastcluster package heirarchical clustering method using the",
-  #                  linkage, "method."
-  # )
   
   gc()
   d<-Sys.time()    
@@ -259,16 +253,6 @@ rc.ramclustr  <- function(
     clus<-dynamicTreeCut::cutreeDynamicTree(tmp.ramclustObj, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=minModuleSize)
   }
   gc()
-  
-  # history <- paste(history,
-  #                  " The dendrogram was cut using the cutreeDynamicTree function from the dynamicTreeCut package. ",
-  #                  " Cutting parameters were set to ",
-  #                  "minModuleSize = ", minModuleSize,
-  #                  ", hmax = ", hmax, 
-  #                  ", and deepSplit = ", deepSplit, ".", sep = "")
-  # history <- paste(history, '\n', '\n')
-  
-  
   
   ########
   # build results into ramclustObj
@@ -295,8 +279,6 @@ rc.ramclustr  <- function(
   f<-Sys.time()
   cat(paste("RAMClust has condensed", n, "features into",  max(clus), "spectra", '\n'))
   
-  # history <- paste(history, n, "features were collapsed into",  max(clus), "spectra.")
-  
   strl<-nchar(max(ramclustObj$featclus)) - 1
   ramclustObj$cmpd<-paste("C", formatC(1:length(ramclustObj$clrt), digits = strl, flag = 0 ) , sep="")
   # cat(ramclustObj$cmpd[1:10], '\n')
@@ -321,9 +303,22 @@ rc.ramclustr  <- function(
   
   if(nrow(ramclustObj$MSdata) < 5 & rt.only.low.n) {
     warning('\n', "too few samples to use correlational similarity, clustering by retention time only", '\n')
-    # ramclustObj$history <- paste(ramclustObj$history,
-    #                            "Since there were fewer than five injections, clustering was performed only using retention time simiilarity.")
   }
+  
+  ramclustObj$history$ramclustr <- paste0(
+    "Features were clustered using the ramclustR algorithm. Paremeter settings were as follows: ",
+    "st = ", st,
+    ", sr = ", sr, 
+    ", maxt = ", maxt,
+    ", deepSplit = ", deepSplit,
+    ", hmax = ", hmax,
+    ", minModuleSize = ", minModuleSize,
+    ", and cor.method = ", cor.method, ". ",
+    if(nrow(ramclustObj$MSdata) < 5 & rt.only.low.n) {
+      "There were too few samples to use correlational similarity, thus clustering was performed using retention time only. "
+    } else {""}
+  )
+  
   return(ramclustObj)
 }
 

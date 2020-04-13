@@ -110,6 +110,9 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
     }
   }
   
+  if(is.null(st) & !newXCMS) st<-round(median(xcmsObj@peaks[,"rtmax"]-xcmsObj@peaks[,"rtmin"])/2, digits=2)
+  if(is.null(st) & newXCMS) st<-round(median(xcmsObj@msFeatureData$chromPeaks[,"rtmax"]-xcmsObj@msFeatureData$chromPeaks[,"rtmin"])/2, digits=2)
+
   if(length(msmsfiles) == 0)  {
     warning('no MSMS files found - assuming all data is MS1', '\n')
     msfiles <- 1:nfiles
@@ -138,9 +141,7 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
     phenotype <- xcmsObj@phenoData@data
     phenotype <- data.frame(phenotype, filenames, filepaths)
     if(mslev == 2) {
-      mslevs <- rep(1, nrow(phenotype))
-      mslevs[msmsfiles] <- 2
-      phenotype <- data.frame(phenotype, mslevs)
+      phenotype <- phenotype[1:(nrow(phenotype)/2),]
     }
   } else {
     stop("fix this - need to extract pheno from old xcms format")
@@ -160,7 +161,16 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   ramclustObj$ExpDes       <- ExpDes
   ramclustObj$history      <- list()
   ramclustObj$phenoData    <- phenotype
-  ramclustObj$history$input<- "XCMS output data was used as input to RAMClustR. "
+  ramclustObj$history$input<- {
+    paste0(
+      "XCMS output data was used as input to RAMClustR. ",
+      "Feature data was extracted using the xcms ", if(newXCMS) {
+        "featureValues"
+      } else {"groupval"}, 
+      " function.")
+  }
+  ramclustObj$st <- st
+  
   
   
   ## process data

@@ -210,9 +210,10 @@ import.msfinder.formulas <- function (ramclustObj = NULL,
     ramclustObj$history <- ""
   }
   
-  if(!grepl("MSFinder (Tsugawa 2016) results were imported into the RAMClustR object", ramclustObj$history, fixed = TRUE)) {
-    ramclustObj$history <- paste(ramclustObj$history, " MSFinder (Tsugawa 2016) results were imported into the RAMClustR object.")
-  }
+  ramclustObj$history$msfinder <- paste(
+    "MSFinder (Tsugawa 2016) was used for spectral matching,",
+    "formula inference, and tentative structure assignment,",
+    "and results were imported into the RAMClustR object.")
   
   
   

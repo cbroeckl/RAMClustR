@@ -180,45 +180,46 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10, po
           ramclustObj$classyfire[i, ] <- c(ramclustObj$inchikey[i], 
                                            rep(NA, 6))
           rm(out)
+        } else {
+          a <- out$entities$inchikey
+          if(is.null(a)) {
+            a <- ramclustObj$inchikey[i]
           } else {
-            a <- out$entities$inchikey
-            if(is.null(a)) {
-              a <- ramclustObj$inchikey[i]
-            } else {
-              a <- gsub("InChIKey=", "", a)
-            }
-            b <- out$entities$kingdom$name
-            if (is.null(b)) {
-              b <- NA
-              c <- NA
-              d <- NA 
-              e <- NA
-              f <- NA
-              g <- NA
-            } else {
-              c <- if(length(out$entities$superclass)>1) {out$entities$superclass$name} else {c <- NA}
-              if (is.null(c)) {c <- NA}
-              d <- if(length(out$entities$class)>1) {out$entities$class$name} else {d <- NA}
-              if (is.null(d)) {d <- NA}
-              e <- if(length(out$entities$subclass)>1) {out$entities$subclass$name} else {e <- NA}
-              if (is.null(e)) {e <- NA}
-              f <- if(length(out$entities$direct_parent)>1) {out$entities$direct_parent$name} else {f <- NA}
-              if (is.null(f)) {f <- NA}
-              g <- if(nchar(out$entities$description)>1) {out$entities$description} else {g <- NA}
-              if (is.null(g)) {g <- NA}
-            }
-            cat(" done", '\n')
-            ramclustObj$classyfire[i, ] <- c(a, b, c, 
-                                             d, e, f, g)
-            rm(out)
+            a <- gsub("InChIKey=", "", a)
           }
+          b <- out$entities$kingdom$name
+          if (is.null(b)) {
+            b <- NA
+            c <- NA
+            d <- NA 
+            e <- NA
+            f <- NA
+            g <- NA
+          } else {
+            c <- if(length(out$entities$superclass)>1) {out$entities$superclass$name} else {c <- NA}
+            if (is.null(c)) {c <- NA}
+            d <- if(length(out$entities$class)>1) {out$entities$class$name} else {d <- NA}
+            if (is.null(d)) {d <- NA}
+            e <- if(length(out$entities$subclass)>1) {out$entities$subclass$name} else {e <- NA}
+            if (is.null(e)) {e <- NA}
+            f <- if(length(out$entities$direct_parent)>1) {out$entities$direct_parent$name} else {f <- NA}
+            if (is.null(f)) {f <- NA}
+            g <- if(nchar(out$entities$description)>1) {out$entities$description} else {g <- NA}
+            if (is.null(g)) {g <- NA}
+          }
+          cat(" done", '\n')
+          ramclustObj$classyfire[i, ] <- c(a, b, c, 
+                                           d, e, f, g)
+          rm(out)
+        }
       }
       Sys.sleep(ceiling(60/posts.per.minute))
     }
   }
   
-  ramclustObj$history <- paste(ramclustObj$history, 
-                               "Compounds were assigned to chemical ontogenies using the ClassyFire API (Djoumbou 2016).")
+  ramclustObj$history$classyfire <- paste(
+    "Compounds were assigned to chemical ontogenies using the ClassyFire API (Djoumbou 2016)."
+  )
   
   
   return(ramclustObj)

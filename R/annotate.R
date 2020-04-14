@@ -740,8 +740,8 @@ annotate<-function(ramclustObj = NULL,
   
   ramclustObj$inchikey[which(ramclustObj$inchikey == "NA")] <- NA
   
-  ramclustObj$history <- paste(ramclustObj$history, 
-                               " Annotations were assigned using the RAMClustR annotate function.", 
+  ramclustObj$history$annotate <- paste( 
+                               "Annotations were assigned using the RAMClustR annotate function.", 
                                " Annotation priority was assigned from higest priority to lowest:", 
                                if(any(names(ramclustObj) == "rs.lib")) {" RAMsearch, "},
                                if(any(names(ramclustObj) == "msfinder.mssearch.details")) {" MSFinder spectrum search, "},

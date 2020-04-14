@@ -41,6 +41,22 @@ rc.normalize.tic  <- function(
   )
   
   
+  ## update msint and optionally msmsint
+  msint<-rep(0, length(ramclustObj$fmz))
+  for(i in 1:ncol(ramclustObj$MSdata)){
+    msint[i]<-weighted.mean(ramclustObj$MSdata[,i], ramclustObj$MSdata[,i], na.rm = TRUE)
+  }
+  ramclustObj$msint <- msint
+  
+  if(!is.null(ramclustObj$MSMSdata)) {
+    msmsint<-rep(0, length(ramclustObj$fmz))
+    for(i in 1:ncol(ramclustObj$MSMSdata)){
+      msmsint[i]<-weighted.mean(ramclustObj$MSMSdata[,i], ramclustObj$MSMSdata[,i], na.rm = TRUE)
+    }
+    ramclustObj$msmsint <- msmsint
+  }
+  
+  
   return(ramclustObj)
 }
 

@@ -1,3 +1,7 @@
+2020-04-14 Corey Broeckling v1.1.0
+  * splitting ramclustR function into several smaller functions
+  * adjust $history to a list.  
+
 2019-09-17 Corey Broeckling v1.0.8
   * remove dependency on XCMS, replace with XCMS as suggestion
 

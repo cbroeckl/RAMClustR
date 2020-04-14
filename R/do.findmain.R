@@ -266,15 +266,19 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
     }
   }
   
+  ramclustObj$M.ann <- ramclustObj$M.ann.ramclustr
   ramclustObj$precursor.mz <- rep(NA, length(ramclustObj$M.ann))
   ramclustObj$precursor.type <- rep(NA, length(ramclustObj$M.ann))
   ramclustObj$M <- ramclustObj$M.ramclustr
-  ramclustObj$M.ann <- ramclustObj$M.ann.ramclustr
+  
   change <- which(ramclustObj$use.findmain)
   ramclustObj$M[change] <- ramclustObj$M.findmain[change]
-  for (i in change) {
-    ramclustObj$M.ann[[i]] <- ramclustObj$M.ann.findmain[[i]]
+  if(length(change) > 0) {
+    for (i in change) {
+      ramclustObj$M.ann[[i]] <- ramclustObj$M.ann.findmain[[i]]
+    }
   }
+
   
   for(i in 1:length(ramclustObj$precursor.mz)) {
     for(j in 1:length(ads)) {
@@ -465,7 +469,7 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
                                ".ms"))
     }
   }
-  ramclustObj$history <- paste(ramclustObj$history, " Molecular weight was inferred using the do.findmain function, which calls the ", 
+  ramclustObj$history$do.findmain <- paste(" Molecular weight was inferred using the do.findmain function, which calls the ", 
                                "interpretMSSpectrum package (Jaeger 2016). ", "Parameters for do.findmain were set to: ", 
                                "mode = ", mode, ", mzabs.error = ", mzabs.error, ", ppm.error = ", 
                                ppm.error, ", ads = ", paste(ads, collapse = " "), ", nls = ", 

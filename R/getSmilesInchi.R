@@ -130,8 +130,9 @@ getSmilesInchi <- function(
     }
   }
   
-  ramclustObj$history <- paste(ramclustObj$history, 
-                               "Smiles structures were retrieved for each inchikey without a structure using the Pubchem API (Djoumbou 2016) called from RAMClustR using the getSmilesInchi function.")
+  ramclustObj$history.smiles.inchi <- paste(
+    "Smiles structures were retrieved for each inchikey without a structure using the Pubchem API (Djoumbou 2016) called from RAMClustR using the getSmilesInchi function."
+  )
   
   
   return(ramclustObj)

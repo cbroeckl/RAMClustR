@@ -754,7 +754,7 @@ annotate<-function(ramclustObj = NULL,
   
   if(structure) {
     search.dbs <- search.dbs[-which(search.dbs == "NA")]
-    ramclustObj$history <- paste(ramclustObj$history, " MSFinder strucutures were considered from databases including", 
+    ramclustObj$history$annotate2 <- paste(" MSFinder strucutures were considered from databases including", 
                                  paste(search.dbs, collapse = " "), ".", 
                                  " Database priority was set to ", 
                                  paste(priority.dbs, collapse = " "), ".",

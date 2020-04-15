@@ -6,6 +6,7 @@
 #' @param qc.tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default. 
 #' @param blank.tag see 'qc.tag' , but for blanks to use as background.
 #' @param sn numeric defines the ratio for 'signal'.  i.e. sn = 3 indicates that signal intensity must be 3 fold higher in sample than in blanks, on average, to be retained. 
+#' @param remove.blanks logical. TRUE by default.  this removes any recognized blanks samples from the MSdata and MSMSdata sets after they are used to filter contaminant features.
 #' @details This function offers normalization by run order, batch number, and QC sample signal intensity.
 #' @details Each input vector should be the same length, and equal to the number of samples in the $MSdata set.
 #' @details Input vector order is assumed to be the same as the sample order in the $MSdata set.  
@@ -26,7 +27,8 @@
 rc.feature.filter.blanks  <- function(ramclustObj=NULL,
                                       qc.tag = "QC",
                                       blank.tag = "extraction.blank",
-                                      sn = 3
+                                      sn = 3,
+                                      remove.blanks = TRUE
 ) {
   
   if(is.null(ramclustObj)) {
@@ -65,7 +67,7 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
   if(length(qc) == 0) {
     stop("no qc samples found. ", '\n')
   }
-  blank <- grep("blank.tag", ramclustObj$phenoData$sample.names)
+  blank <- grep(blank.tag, ramclustObj$phenoData$sample.names)
   blank <- blank[which(blank <= nrow(d1))]
   
   ## create logical vector of features to keep
@@ -151,12 +153,21 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
   }
   ramclustObj$feature.filter.blanks <- rf[-keep,]
   
+  if(remove.blanks){
+    ramclustObj$MSdata <- ramclustObj$MSdata[-blank,]
+    if(!is.null(ramclustObj$MSMSdata)) {
+      ramclustObj$MSMSdata <- ramclustObj$MSMSdata[-blank,]
+    }
+    if(!is.null(ramclustObj$phenoData)) {
+      ramclustObj$phenoData <- ramclustObj$phenoData[-blank,]
+    }
+  }
+  
   ramclustObj$history$feature.filter.blanks <- {
     paste0(
       "Features which failed to demonstrate signal intensity of at least ",
       sn, " fold greater than QC samples were removed from the feature dataset."
     )
   }  
-    return(ramclustObj)
-  }
-  
+  return(ramclustObj)
+}

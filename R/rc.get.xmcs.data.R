@@ -163,7 +163,7 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   ramclustObj$phenoData    <- phenotype
   ramclustObj$history$input<- {
     paste0(
-      "XCMS output data was used as input to RAMClustR. ",
+      "XCMS (Smith 2006)(Tautenhahn 2008) output data was transferred to a ramclustR object using the rc.get.xcms.data function. ",
       "Feature data was extracted using the xcms ", if(newXCMS) {
         "featureValues"
       } else {"groupval"}, 

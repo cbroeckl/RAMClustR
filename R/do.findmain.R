@@ -469,7 +469,7 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
                                ".ms"))
     }
   }
-  ramclustObj$history$do.findmain <- paste(" Molecular weight was inferred using the do.findmain function, which calls the ", 
+  ramclustObj$history$do.findmain <- paste(" Molecular weight was inferred from in-source spectra (Broeckling 2016) using the do.findmain function, which calls the ", 
                                "interpretMSSpectrum package (Jaeger 2016). ", "Parameters for do.findmain were set to: ", 
                                "mode = ", mode, ", mzabs.error = ", mzabs.error, ", ppm.error = ", 
                                ppm.error, ", ads = ", paste(ads, collapse = " "), ", nls = ", 

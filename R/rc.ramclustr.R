@@ -301,6 +301,8 @@ rc.ramclustr  <- function(
     g<-Sys.time()
   }
   
+  dimnames(ramclustObj$SpecAbund)[[1]]<-ramclustObj$phenoData$sample.names
+  
   if(nrow(ramclustObj$MSdata) < 5 & rt.only.low.n) {
     warning('\n', "too few samples to use correlational similarity, clustering by retention time only", '\n')
   }
@@ -321,4 +323,5 @@ rc.ramclustr  <- function(
   
   return(ramclustObj)
 }
+
 

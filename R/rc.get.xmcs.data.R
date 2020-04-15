@@ -110,8 +110,8 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
     }
   }
   
-  if(is.null(st) & !newXCMS) st<-round(median(xcmsObj@peaks[,"rtmax"]-xcmsObj@peaks[,"rtmin"])/2, digits=2)
-  if(is.null(st) & newXCMS) st<-round(median(xcmsObj@msFeatureData$chromPeaks[,"rtmax"]-xcmsObj@msFeatureData$chromPeaks[,"rtmin"])/2, digits=2)
+  if(!newXCMS) st<-round(median(xcmsObj@peaks[,"rtmax"]-xcmsObj@peaks[,"rtmin"])/2, digits=2)
+  if(newXCMS) st<-round(median(xcmsObj@msFeatureData$chromPeaks[,"rtmax"]-xcmsObj@msFeatureData$chromPeaks[,"rtmin"])/2, digits=2)
 
   if(length(msmsfiles) == 0)  {
     warning('no MSMS files found - assuming all data is MS1', '\n')

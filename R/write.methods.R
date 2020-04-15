@@ -76,10 +76,11 @@ write.methods <- function (ramclustObj = NULL,
   # paste0("(", citation()$author, " ",  citation()$year, ")") = paste0(citation()$author)
   sink(filename)
   
-  cat(ramclustObj$history)
+  history <- paste(ramclustObj$history, collapse = " " )
+  cat(history)
   
   cites <- sapply(1:length(cit.list), FUN = function(x) {
-    grepl(names(cit.list[x]), ramclustObj$history)
+    grepl(names(cit.list[x]), history)
   }
   )
   

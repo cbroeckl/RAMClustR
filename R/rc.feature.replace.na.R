@@ -23,10 +23,11 @@
 
 rc.feature.replace.na  <- function(
   ramclustObj=NULL,
-  replace.int = 0.2,
-  replace.noise = 0.2,
+  replace.int = 0.1,
+  replace.noise = 0.1,
   replace.zero = TRUE,
-  samp.max.missing = 0.8
+  samp.max.missing = 0.8,
+  remove.samples = TRUE
 ) {
   
   if(is.null(ramclustObj)) {
@@ -108,20 +109,20 @@ rc.feature.replace.na  <- function(
     )
   }
   
-  ## update msint and optionally msmsint
-  msint<-rep(0, length(ramclustObj$fmz))
-  for(i in 1:ncol(ramclustObj$MSdata)){
-    msint[i]<-weighted.mean(ramclustObj$MSdata[,i], ramclustObj$MSdata[,i], na.rm = TRUE)
-  }
-  ramclustObj$msint <- msint
-  
-  if(!is.null(ramclustObj$MSMSdata)) {
-    msmsint<-rep(0, length(ramclustObj$fmz))
-    for(i in 1:ncol(ramclustObj$MSMSdata)){
-      msmsint[i]<-weighted.mean(ramclustObj$MSMSdata[,i], ramclustObj$MSMSdata[,i], na.rm = TRUE)
-    }
-    ramclustObj$msmsint <- msmsint
-  }
+  # ## update msint and optionally msmsint
+  # msint<-rep(0, length(ramclustObj$fmz))
+  # for(i in 1:ncol(ramclustObj$MSdata)){
+  #   msint[i]<-weighted.mean(ramclustObj$MSdata[,i], ramclustObj$MSdata[,i], na.rm = TRUE)
+  # }
+  # ramclustObj$msint <- msint
+  # 
+  # if(!is.null(ramclustObj$MSMSdata)) {
+  #   msmsint<-rep(0, length(ramclustObj$fmz))
+  #   for(i in 1:ncol(ramclustObj$MSMSdata)){
+  #     msmsint[i]<-weighted.mean(ramclustObj$MSMSdata[,i], ramclustObj$MSMSdata[,i], na.rm = TRUE)
+  #   }
+  #   ramclustObj$msmsint <- msmsint
+  # }
   
   return(ramclustObj)
 }

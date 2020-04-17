@@ -45,11 +45,13 @@ rc.feature.replace.na.impute.knn  <- function(
     }
   }
   
-  # ## correlate predictor testing
-  # d <- ramclustObj$MSdata
-  # if(!is.null(ramclustObj$MSMSdata)) {
-  #   d <- rbind(d, (ramclustObj$MSMSdata))
-  # }
+  
+  d <- ramclustObj$MSdata
+  if(!is.null(ramclustObj$MSMSdata)) {
+    d <- rbind(d, (ramclustObj$MSMSdata))
+  }
+  
+  ## correlate predictor testing
   # for(i in 1:ncol(d)) {
   #   rval <- as.vector(cor(d[,i], d[,1:ncol(d)], use = "pairwise.complete.obs")^2)
   #   rval[which(is.na(rval))] <- 0
@@ -150,16 +152,5 @@ rc.feature.replace.na.impute.knn  <- function(
   return(ramclustObj)
 }
 
-
-missing <- sapply(1:nrow(d), 
-                  FUN = function(x) {
-                    length(
-                      which(
-                        is.na(d[x,])
-                      )
-                    )
-                  })
-missing <- missing/ncol(d)
-remove <- which(missing >= 1)
 
 

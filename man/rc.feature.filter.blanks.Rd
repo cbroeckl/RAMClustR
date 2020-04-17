@@ -7,8 +7,9 @@
 rc.feature.filter.blanks(
   ramclustObj = NULL,
   qc.tag = "QC",
-  blank.tag = "extraction.blank",
-  sn = 3
+  blank.tag = "blank",
+  sn = 3,
+  remove.blanks = TRUE
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ rc.feature.filter.blanks(
 \item{blank.tag}{see 'qc.tag' , but for blanks to use as background.}
 
 \item{sn}{numeric defines the ratio for 'signal'.  i.e. sn = 3 indicates that signal intensity must be 3 fold higher in sample than in blanks, on average, to be retained.}
+
+\item{remove.blanks}{logical. TRUE by default.  this removes any recognized blanks samples from the MSdata and MSMSdata sets after they are used to filter contaminant features.}
 }
 \value{
 ramclustR object with normalized data.

@@ -292,11 +292,14 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
   
   if (plot.findmain) {
     cat("plotting findmain annotation results", "\n")
+    if(!dir.exists('spectra')) {
+      dir.create('spectra')
+    }
     pdf("spectra/findmainPlots.pdf", width = 15, height = 7)
     par(mfrow = c(1, 2))
     par(xpd = TRUE)
     for (cl in cmpd) {
-      PlotSpec(x = ramclustObj$M.ann.ramclustr[[cl]], 
+      InterpretMSSpectrum::PlotSpec(x = ramclustObj$M.ann.ramclustr[[cl]], 
                txt = ramclustObj$M.ann.ramclustr[[cl]][, c("mz", 
                                                            "adduct")], cutoff = 0, masslab = 0, ylim = c(0, 
                                                                                                          1.1 * max(ramclustObj$M.ann.ramclustr[[cl]][, 

@@ -25,7 +25,8 @@ rc.feature.replace.na  <- function(
   ramclustObj=NULL,
   replace.int = 0.2,
   replace.noise = 0.2,
-  replace.zero = TRUE
+  replace.zero = TRUE,
+  samp.max.missing = 0.8
 ) {
   
   if(is.null(ramclustObj)) {

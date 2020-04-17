@@ -26,7 +26,7 @@
 
 rc.feature.filter.blanks  <- function(ramclustObj=NULL,
                                       qc.tag = "QC",
-                                      blank.tag = "extraction.blank",
+                                      blank.tag = "blank",
                                       sn = 3,
                                       remove.blanks = TRUE
 ) {
@@ -67,9 +67,12 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
   if(length(qc) == 0) {
     stop("no qc samples found. ", '\n')
   }
+  
   blank <- grep(blank.tag, ramclustObj$phenoData$sample.names)
   blank <- blank[which(blank <= nrow(d1))]
-  
+  if(length(blank) == 0) {
+    stop("no blank samples found. ", '\n')
+  }
   ## create logical vector of features to keep
   ## 'good' features should have signal intensity
   ## in pooled QC and/or Samples that is at least 

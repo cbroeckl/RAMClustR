@@ -45,10 +45,22 @@ rc.qc<-function(ramclustObj=NULL,
     outfile.basename <- ramclustQC
   }
   
-  if(!identical(
-    nrow(ramclustObj$MSdata),
-    nrow(ramclustObj$SpecAbund),
-    nrow(ramclustObj$phenoData))
+  do.sets <- c("MSdata", "MSMSdata", "SpecAbund")
+  if(is.null(ramclustObj$MSMSdata)) {
+    do.sets <- do.sets[!(do.sets %in% "MSMSdata")]
+  } 
+  if(is.null(ramclustObj$SpecAbund)) {
+    do.sets <- do.sets[!(do.sets %in% "SpecAbund")]
+  } 
+  
+  do.sets.rows <- sapply(
+    c(do.sets, "phenoData"), 
+    FUN = function(x) {
+      nrow(ramclustObj[[x]])
+    })
+  
+  if(!all.equal(
+    do.sets.rows, do.sets.rows)
   ) {
     stop("number of rows in MSdata, SpecAbund, and phenoData sets are not identical.")
   }
@@ -82,7 +94,7 @@ rc.qc<-function(ramclustObj=NULL,
     d<-diag(as.matrix((c[2:(nrow(c)), 1:ncol(c)-1])))
     hist(d, breaks=50, main="")
     title(main="histogram of pearson's r for each cluster to its adjacent cluster (by time)", cex.main=0.8,
-          sub=paste("skew =", round(skewness(d), digits=3), " :values near zero are better", '\n', 
+          sub=paste("skew =", round(e1071::skewness(d), digits=3), " :values near zero are better", '\n', 
                     'WARNING:metabolic relationships will confound interpretation of this plot'), cex.sub=0.6)
     
     # ideally heatmap will have a bright yellow diagonal with no yellow squares near the diagonal
@@ -94,11 +106,6 @@ rc.qc<-function(ramclustObj=NULL,
   
   ## PCA of QC samples
   
-  if(is.null(ramclustObj$MSMSdata)) {
-    do.sets <- c("MSdata", "SpecAbund")
-  } else {
-    do.sets <- c("MSdata", "MSMSdata", "SpecAbund")
-  }
   qc <- which(qc)
   
   cols<-rep(8, nrow(ramclustObj$phenoData))
@@ -106,7 +113,7 @@ rc.qc<-function(ramclustObj=NULL,
   
   for(x in do.sets) {
     td <- ramclustObj[[x]]
-    PCA<-pca(td, scale=scale, nPcs=npc, center=TRUE)
+    PCA<-pcaMethods::pca(td, scale=scale, nPcs=npc, center=TRUE)
     sc<-PCA@scores
     write.csv(sc, file = paste0("QC/", outfile.basename, "_", x, "_pcascores.csv"))
     pdf(file = paste0("QC/", outfile.basename, "_", x, "_qc_diagnostic.pdf"), useDingbats=FALSE, width=8, height=8)  
@@ -148,13 +155,18 @@ rc.qc<-function(ramclustObj=NULL,
       )
     } else {
       out <- data.frame(
-        "feature" = ramclustObj$labels,
         "mz" = ramclustObj$fmz,
         "rt" = ramclustObj$frt,
-        "cluster" = ramclustObj$featclus,
         "mean.int" = means,
         "cv" = cvs
       )
+      if(length(ramclustObj$labels) > 0) {
+        out <- data.frame(
+          out, 
+          "feature" = ramclustObj$labels,
+          "cluster" = ramclustObj$featclus
+        )
+      }
     }
     write.csv(out, file = paste0("QC/", outfile.basename, "_", x, "_cv_summar.csv"))
   }

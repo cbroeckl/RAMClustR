@@ -104,6 +104,7 @@ rc.cmpd.get.pubchem <- function(
         "CanonicalSMILES,",
         "IsomericSMILES,",
         "InChI,",
+        "InChIKey,",
         "XLogP,",
         "TPSA,",
         "Complexity,",
@@ -118,7 +119,10 @@ rc.cmpd.get.pubchem <- function(
     out<- tryCatch(suppressWarnings(jsonlite::fromJSON(link)), error = function(x) {return("stuff.and.nonsense")})
     if(!is.list(out)) next
     if(is.null(out$PropertyTable)) next
-    cmpd.props[[i]] <- out$PropertyTable$Properties
+    prop.names <- names(out$PropertyTable$Properties)
+    prop.vals <- as.vector(out$PropertyTable$Properties)
+    names(prop.vals) <- prop.names
+    cmpd.props[[i]] <- prop.vals
     
   }
   
@@ -173,11 +177,19 @@ rc.cmpd.get.pubchem <- function(
   #   }
   # }
   # 
-  ramclustObj$history$pubchem<- paste(
-    "Smiles structures were retrieved for each inchikey without a structure using the Pubchem API (Djoumbou 2016) called from RAMClustR using the getSmilesInchi function."
-  )
+  # ramclustObj$history$pubchem<- paste(
+  #   "Smiles structures were retrieved for each inchikey without a structure using the Pubchem API (Djoumbou 2016) called from RAMClustR using the getSmilesInchi function."
+  # )
   
-  ramclust$pubchem <- cmpd.props
+  tmp <- data.frame(ramclustObj$pubchem[[1]], stringsAsFactors = FALSE)
+  for(i in 2:length(ramclustObj$pubchem)) {
+    n <- names(ramclustObj$pubchem[[i]])
+    v <- ramclustObj$pubchem[[i]]
+    tmp[i,n] <- v
+  }
+  
+  
+  ramclustObj$pubchem <- tmp
   
   props <- structure(
     list(

@@ -1,9 +1,10 @@
 #' rc.cmpd.get.pubchem
 #'
-#' use PubChem API to look up full smiles and inchi notation for each inchikey
-#' @details The $inchikey slot is used to look up descriptions in pubchem. PubChem CID, a pubchem URL, smiles (canonical), inchi and other parameters are returned.  if smiles and inchi slots are alread present (from MSFinder, for example) pubchem smiles and inchi are used to fill in missing values only, not replace. 
+#' use PubChem API to look up pubchem data for compounds assigned annotates.
+#' @details Uses pubchem rest to retrieve standard pubchem properties for a compound.  The $inchikey slot and, if available, the MSFinder.structure are used to look up descriptions in pubchem. Highest priority is for a listed pubchem CID from MSFinder.  Next the full inchikey is used.  If no match is returned from pubchem, the first block (bonds) is used.  Note that this discards stereochemistry. PubChem CID, a pubchem URL, smiles (canonical), inchi and other parameters are returned.  if smiles and inchi slots are alread present (from MSFinder, for example) pubchem smiles and inchi are used to fill in missing values only - not to replace MSFinder derived values. 
 #' 
-#' @param ramclustObj ramclustR object to look up smiles and inchi for each inchikey (without a smiles/inchi)
+#' @param ramclustObj ramclustR object. must contain a $inchikey slot and/or or a $MSfinder.structure slot in which to look for a pubchem CID. 
+#' @param all.properties logical - if TRUE, a long list of properties is returned.  if FALSE, a short list.  FALSE is faster.
 #' @return returns a ramclustR object.  new vector of $smiles and $inchi with length equal to number of compounds.  
 #' @importFrom jsonlite fromJSON
 #' @concept ramclustR
@@ -38,22 +39,43 @@ rc.cmpd.get.pubchem <- function(
   # create list for storing values
   cmpd.props <- as.list(vector(length = length(ramclustObj$cmpd)))
   names(cmpd.props) <- ramclustObj$cmpd
-  
+  if(all.properties) {
+    fp <- vector(length = length(ramclustObj$cmpd))
+  }
   for(i in 1:length(ramclustObj$inchikey)) {
+    Sys.sleep(0.2)
+    #  for(i in 1:4) {
     cat("cmpd", i, '\n')
     if(is.na(ramclustObj$inchikey[i])) {next} 
     
     ## get CID from inchikey
-    link <- paste0(
-      "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/", 
-      ramclustObj$inchikey[i], 
-      "/cids/JSON")
-    out<- tryCatch(suppressWarnings(jsonlite::fromJSON(link)), error = function(x) {return("stuff.and.nonsense")})
-    
-    if(!is.list(out)) next
-    if(is.null(out$IdentifierList)) next
-    if(is.null(out$IdentifierList$CID)) next
-    cid <- out$IdentifierList$CID[1]
+    if(!is.null(ramclustObj$msfinder.structure[[i]]$resources) &
+       grepl("PubChem=", ramclustObj$msfinder.structure[[i]]$resources)) {
+      cid <- unlist(strsplit(ramclustObj$msfinder.structure[[i]]$resources, ","))
+      cid <- cid[grep("PubChem=", cid)]
+      cid <- gsub("PubChem=", "", cid)
+      cid <- unlist(strsplit(cid, ";"))[1]
+    } else {
+      link <- paste0(
+        "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/", 
+        ramclustObj$inchikey[i], 
+        "/cids/JSON")
+      out<- tryCatch(suppressWarnings(jsonlite::fromJSON(link)), error = function(x) {return(NULL)})
+      if(is.null(out)) {
+        bond.block <- unlist(strsplit(ramclustObj$inchikey[i], "-"))[1]
+        link <- paste0(
+          "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/", 
+          bond.block, 
+          "/cids/JSON")
+        out<- tryCatch(suppressWarnings(jsonlite::fromJSON(link)), error = function(x) {return(NULL)})
+      }
+      if(is.null(out)) next
+      if(is.null(out$IdentifierList)) next
+      if(is.null(out$IdentifierList$CID)) next
+      cid <- out$IdentifierList$CID
+      cid <- as.numeric(cid)
+      cid <- cid[which.min(cid)]
+    }
     
     if(all.properties) {
       ## get properties for compound - this can take several seconds per compound.  
@@ -64,6 +86,7 @@ rc.cmpd.get.pubchem <- function(
         "CanonicalSMILES,",
         "IsomericSMILES,",
         "InChI,",
+        "InChIKey,",
         "XLogP,",
         "TPSA,",
         "Complexity,",
@@ -116,15 +139,20 @@ rc.cmpd.get.pubchem <- function(
         "/JSON")
     }
     
-    out<- tryCatch(suppressWarnings(jsonlite::fromJSON(link)), error = function(x) {return("stuff.and.nonsense")})
-    if(!is.list(out)) next
+    
+    
+    out<- tryCatch(suppressWarnings(jsonlite::fromJSON(link)), error = function(x) {return("NULL")})
+    if(is.null(out)) next
     if(is.null(out$PropertyTable)) next
+    
     prop.names <- names(out$PropertyTable$Properties)
     prop.vals <- as.vector(out$PropertyTable$Properties)
     names(prop.vals) <- prop.names
     cmpd.props[[i]] <- prop.vals
     
   }
+  
+  
   
   # 
   # if(is.null(ramclustObj$pubchem.url)) {
@@ -181,84 +209,65 @@ rc.cmpd.get.pubchem <- function(
   #   "Smiles structures were retrieved for each inchikey without a structure using the Pubchem API (Djoumbou 2016) called from RAMClustR using the getSmilesInchi function."
   # )
   
-  tmp <- data.frame(ramclustObj$pubchem[[1]], stringsAsFactors = FALSE)
-  for(i in 2:length(ramclustObj$pubchem)) {
-    n <- names(ramclustObj$pubchem[[i]])
-    v <- ramclustObj$pubchem[[i]]
+  tmp <- data.frame(cmpd.props[[1]], stringsAsFactors = FALSE)
+  for(i in 1:length(ramclustObj$inchikey)) {
+    n <- names(cmpd.props[[i]])
+    v <- cmpd.props[[i]]
     tmp[i,n] <- v
   }
   
+  if(all.properties) {
+    fp <- tmp$Fingerprint2D
+    tmp <- tmp[, (1:ncol(tmp))[-which(names(tmp) == "Fingerprint2D")]]
+  }
   
-  ramclustObj$pubchem <- tmp
+  st <-tmp[,1:5]
+  tmp <- tmp[,-(1:5)]
   
-  props <- structure(
-    list(
-      property = 
-        structure(
-          c(29L, 30L, 3L, 26L, 24L, 
-            25L, 28L, 37L, 12L, 31L, 33L, 5L, 4L, 22L, 21L, 32L, 23L, 27L, 
-            1L, 9L, 34L, 2L, 10L, 35L, 8L, 36L, 38L, 39L, 40L, 16L, 13L, 
-            17L, 14L, 15L, 19L, 18L, 7L, 11L, 6L, 20L), 
-          .Label = 
-            c("AtomStereoCount", 
-              "BondStereoCount", "CanonicalSMILES", "Charge", "Complexity", 
-              "ConformerCount3D", "ConformerModelRMSD3D", "CovalentUnitCount", 
-              "DefinedAtomStereoCount", "DefinedBondStereoCount", "EffectiveRotorCount3D", 
-              "ExactMass", "FeatureAcceptorCount3D", "FeatureAnionCount3D", 
-              "FeatureCationCount3D", "FeatureCount3D", "FeatureDonorCount3D", 
-              "FeatureHydrophobeCount3D", "FeatureRingCount3D", "Fingerprint2D", 
-              "HBondAcceptorCount", "HBondDonorCount", "HeavyAtomCount", "InChI", 
-              "InChIKey", "IsomericSMILES", "IsotopeAtomCount", "IUPACName", 
-              "MolecularFormula", "MolecularWeight", "MonoisotopicMass", "RotatableBondCount", 
-              "TPSA", "UndefinedAtomStereoCount", "UndefinedBondStereoCount", 
-              "Volume3D", "XLogP", "XStericQuadrupole3D", "YStericQuadrupole3D", 
-              "ZStericQuadrupole3D"), class = "factor"), 
-      description = structure(
-        c(
-          9L, 
-          29L, 3L, 8L, 26L, 7L, 4L, 5L, 28L, 27L, 36L, 35L, 31L, 20L, 18L, 
-          25L, 23L, 13L, 38L, 12L, 15L, 39L, 11L, 14L, 17L, 1L, 32L, 33L, 
-          34L, 37L, 19L, 21L, 10L, 16L, 24L, 22L, 6L, 37L, 30L, 2L), 
-        .Label = 
-          c(
-            "Analytic volume of the first diverse conformer (default conformer) for a compound.", 
-            "Base64-encoded PubChem Substructure Fingerprint of a molecule.", 
-            "CanonicalÂ SMILESÂ (Simplified Molecular Input Line Entry System) string.Â  It isÂ a uniqueÂ SMILESÂ string of a compound, generated by a â\200ocanonicalizationâ\200\235 algorithm.", 
-            "Chemical name systematically determined according to the IUPAC nomenclatures.", 
-            "Computationally generated octanol-water partition coefficient or distribution coefficient.Â XLogPÂ is used as a measure of hydrophilicityÂ or hydrophobicityÂ of a molecule.", 
-            "Conformer sampling RMSD in Ã..", "Hashed version of the full standard InChI, consisting of 27 characters.", 
-            "IsomericÂ SMILESÂ string.Â  It isÂ a SMILES string withÂ stereochemical and isotopic specifications.", 
-            "Molecular formula.", "Number of anionic centers (at pH 7) of a conformer.", 
-            "Number of atoms with defined planar (sp2) stereo.", "Number of atoms with defined tetrahedral (sp3) stereo.", 
-            "Number of atoms with enriched isotope(s)", "Number of atoms with undefined planar (sp2) stereo.", 
-            "Number of atoms with undefined tetrahedral (sp3) stereo.", "Number of cationic centers (at pH 7) of a conformer.Â ", 
-            "Number of covalently bound units.", "Number of hydrogen-bond acceptors in the structure.", 
-            "Number of hydrogen-bond acceptors of a conformer.", "Number of hydrogen-bond donors in the structure.", 
-            "Number of hydrogen-bond donors of a conformer.", "Number of hydrophobes of a conformer.", 
-            "Number of non-hydrogen atoms.", "Number of rings of a conformer.", 
-            "Number of rotatable bonds.", "Standard IUPAC International Chemical Identifier (InChI).Â  It does not allow for user selectable options in dealing with the stereochemistry and tautomer layers of the InChI string.", 
-            "The mass of a molecule, calculated using the mass of the most abundant isotope of each element.", 
-            "The mass of the most likely isotopic composition for a single molecule, corresponding to the most intense ion/molecule peak in a mass spectrum.", 
-            "The molecular weight is the sum of all atomic weights of the constituent atoms in a compound, measured in g/mol. In the absence of explicit isotope labelling, averaged natural abundance is assumed. If an atom bears an explicit isotope label, 100% isotopic purity is assumed at this location.", 
-            "The number of conformers in the conformer model for a compound.", 
-            "The total (or net) charge of a molecule.", "The x component of the quadrupole moment (Qx) of the first diverse conformer (default conformer) for a compound.", 
-            "The y component of the quadrupole moment (Qy) of the first diverse conformer (default conformer) for a compound.", 
-            "The z component of the quadrupole moment (Qz) of the first diverse conformer (default conformer) for a compound.", 
-            "TheÂ molecular complexityÂ rating of a compound, computed using the Bertz/Hendrickson/Ihlenfeldt formula.", 
-            "Topological polar surface area, computed by the algorithm described inÂ the paper by Ertl et al.", 
-            "Total number of 3D features (the sum of FeatureAcceptorCount3D, FeatureDonorCount3D, FeatureAnionCount3D, FeatureCationCount3D, FeatureRingCount3D and FeatureHydrophobeCount3D)", 
-            "Total number of atoms with tetrahedral (sp3) stereo [e.g., (R)- or (S)-configuration]", 
-            "Total number of bonds with planar (sp2) stereo [e.g., (E)- or (Z)-configuration]."
-          ), 
-        class = "factor")), 
-    class = "data.frame", 
-    row.names = c(NA, 
-                  -40L))
+  ramclustObj$pubchem.cmpds <- st
+  ramclustObj$pubchem.props <- tmp
+  ramclustObj$pubchem.fp    <- fp
+  
+  if(get.synonyms) {
+    syns <- as.list(rep(NA, length(ramclustObj$ann)))
+    for(i in 1:length(syns)) {
+      if(is.na(st$InChIKey[i]))
+      Sys.sleep(0.2)
+      link <- paste0(
+        "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/", 
+        paste(st$InChIKey[i], collapse = ","), 
+        "/synonyms/JSON")
+      out<- tryCatch(suppressWarnings(jsonlite::fromJSON(link)), error = function(x) {return(NULL)})
+      if(is.null(out$InformationList$Information)) next
+      syns[[i]] <- unlist(out$InformationList$Information$Synonym)
+    }
+    ramclustObj$pubchem.synonyms <- syns
+  }
+  
+  ## this can be improved by direcly referencing other websites such as CHEBI or HMDB.
+  if(get.description) {
+    desc <- as.list(rep(NA, length(ramclustObj$ann)))
+    for(i in 1:length(desc)) {
+      # for(i in 1:20) {
+      if(is.na(st$InChIKey[i]))
+        Sys.sleep(0.2)
+      link <- paste0(
+        "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/", 
+        paste(st$InChIKey[i], collapse = ","), 
+        "/description/JSON")
+      out<- tryCatch(suppressWarnings(jsonlite::fromJSON(link)), error = function(x) {return(NULL)})
+      if(is.null(out$InformationList$Information$Description)) next
+      tmp.desc <- out$InformationList$Information$Description
+      use <- which(!is.na(out$InformationList$Information$Description))[1]
+      if(length(use) == 0) next
+      desc[[i]] <- out$InformationList$Information$Description[use]
+      if(is.null(out$InformationList$Information$DescriptionURL)) next
+      desc[[i]] <- paste(desc[[i]], out$InformationList$Information$DescriptionURL[use])
+    }
+    ramclustObj$pubchem.description <- desc
+  }
   
   return(ramclustObj)
-  
-  
-  
   
 }
 

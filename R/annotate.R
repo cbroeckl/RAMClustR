@@ -256,6 +256,7 @@ annotate<-function(ramclustObj = NULL,
           ramclustObj$annconf[i]<-2
           ramclustObj$dbid[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"resources"]
           tar.inchikey <- unlist(strsplit(ramclustObj$inchikey[i], "-"))[1]
+          ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
           form <- reference.data[which(reference.data[,"Short.InChIKey"] == tar.inchikey)[1], "Formula"]
           ramclustObj$msfinder.formula[i] <- form
         }
@@ -487,9 +488,12 @@ annotate<-function(ramclustObj = NULL,
     # names(ramclustObj$msfinder.structure) <- ramclustObj$cmpd
     
     ## look up smiles and inchi from MSFinder reference data using inchikey
+    
+    ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
     inchikey <- grep("inchikey", names(reference.data),  ignore.case = TRUE)
     
     if(length(inchikey) == 2) {
+      ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
       inchikey.short<- inchikey[grep("short", names(reference.data)[inchikey], ignore.case = TRUE)]
       inchikey <- inchikey[which(inchikey != inchikey.short)]
     }
@@ -505,8 +509,10 @@ annotate<-function(ramclustObj = NULL,
         tmpinch<-ramclustObj$msfinder.structure[[i]][1, "inchikey"]
         tmpinch.short<-unlist(strsplit(tmpinch, "-"))[1]
         if(use.short.inchikey & exists("inchikey.short")) {
+          ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
           drow<-grep(tmpinch.short, reference.data[,inchikey.short])
         } else {
+          ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
           drow<-grep(tmpinch, reference.data[,inchikey])
         }
         # d[drow,]
@@ -523,10 +529,12 @@ annotate<-function(ramclustObj = NULL,
         }
         
         if(length(drow) == 1) {
+          ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
           ramclustObj$ann[i]<-reference.data[drow, "Title"]
         }
         
         if(length(drow) > 1) {
+          ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
           n<-reference.data[drow, "Title"]
           nl<-nchar(n)
           ramclustObj$ann[i]<-n[which.min(nl)]

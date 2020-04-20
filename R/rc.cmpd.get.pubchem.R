@@ -271,6 +271,10 @@ rc.cmpd.get.pubchem <- function(
     ramclustObj$pubchem.description <- desc
   }
   
+  ramclustObj$history$pubchem <- paste0(
+    "Pubchem data was retrieved using the PUG rest interface (Kim 2019)."
+  )
+  
   return(ramclustObj)
   
 }

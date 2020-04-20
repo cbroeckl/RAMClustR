@@ -4,12 +4,21 @@
 \alias{rc.cmpd.get.pubchem}
 \title{rc.cmpd.get.pubchem}
 \usage{
-rc.cmpd.get.pubchem(ramclustObj = NULL, all.properties = TRUE)
+rc.cmpd.get.pubchem(
+  ramclustObj = NULL,
+  all.properties = TRUE,
+  get.synonyms = TRUE,
+  get.descriptions = TRUE
+)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object. must contain a $inchikey slot and/or or a $MSfinder.structure slot in which to look for a pubchem CID.}
 
 \item{all.properties}{logical - if TRUE, a long list of properties is returned.  if FALSE, a short list.  FALSE is faster.}
+
+\item{get.synonyms}{logical - if TRUE, pubchem synonyms are returned based on pubchem inchikey.}
+
+\item{get.descriptions}{logical - if TRUE, pubchem description is provided, with URL, if available.}
 }
 \value{
 returns a ramclustR object.  new vector of $smiles and $inchi with length equal to number of compounds.

@@ -5,6 +5,8 @@
 #' 
 #' @param ramclustObj ramclustR object. must contain a $inchikey slot and/or or a $MSfinder.structure slot in which to look for a pubchem CID. 
 #' @param all.properties logical - if TRUE, a long list of properties is returned.  if FALSE, a short list.  FALSE is faster.
+#' @param get.synonyms logical - if TRUE, pubchem synonyms are returned based on pubchem inchikey. 
+#' @param get.descriptions logical - if TRUE, pubchem description is provided, with URL, if available. 
 #' @return returns a ramclustR object.  new vector of $smiles and $inchi with length equal to number of compounds.  
 #' @importFrom jsonlite fromJSON
 #' @concept ramclustR
@@ -25,7 +27,9 @@
 
 rc.cmpd.get.pubchem <- function(
   ramclustObj = NULL,
-  all.properties = TRUE
+  all.properties = TRUE,
+  get.synonyms = TRUE,
+  get.descriptions = TRUE
 ) {
   
   if(is.null(ramclustObj)) {
@@ -245,7 +249,7 @@ rc.cmpd.get.pubchem <- function(
   }
   
   ## this can be improved by direcly referencing other websites such as CHEBI or HMDB.
-  if(get.description) {
+  if(get.descriptions) {
     desc <- as.list(rep(NA, length(ramclustObj$ann)))
     for(i in 1:length(desc)) {
       # for(i in 1:20) {

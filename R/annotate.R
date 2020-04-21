@@ -218,7 +218,7 @@ annotate<-function(ramclustObj = NULL,
         #ramclustObj$rs.prob[i]	<- sub("", "", md[grep("", md)])
         tmp.inchi <- as.character(gsub("InChIKey: ", "", md[grep("InChIKey: ", md)]))
         tmp.inchi <- gsub("InChIKey=", "", tmp.inchi)
-        if(nchar(tmp.inchi) > 0) {ramclustObj$inchikey[i] <- tmp.inchi; rm(tmp.inch)} else {ramclustObj$inchikey[i] <- NA}
+        if(nchar(tmp.inchi) > 0) {ramclustObj$inchikey[i] <- tmp.inchi; rm(tmp.inchi)} else {ramclustObj$inchikey[i] <- NA}
         if(length(grep("Library Match Num Peaks:", md))==1) {
           ramclustObj$rs.spec[[ind]]	<- matrix(as.numeric(unlist(strsplit(md[(grep("Library Match Num Peaks:", md)+1)], " "))), ncol=2, byrow=TRUE)
         }

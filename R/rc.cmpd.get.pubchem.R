@@ -46,20 +46,31 @@ rc.cmpd.get.pubchem <- function(
   if(all.properties) {
     fp <- vector(length = length(ramclustObj$cmpd))
   }
+  
+  if(is.null(ramclustObj$msfinder.structure)) {
+    msfinder <- FALSE
+  } else {
+    msfinder <- TRUE
+  }
   for(i in 1:length(ramclustObj$inchikey)) {
+    if(is.na(ramclustObj$inchikey[i])) {next}
+    
     Sys.sleep(0.2)
     #  for(i in 1:4) {
     cat("cmpd", i, '\n')
-    if(is.na(ramclustObj$inchikey[i])) {next} 
     
+    cid <- NA
     ## get CID from inchikey
-    if(!is.null(ramclustObj$msfinder.structure[[i]]$resources) &
-       grepl("PubChem=", ramclustObj$msfinder.structure[[i]]$resources)) {
+    if(msfinder) {
+      if(is.null(ramclustObj$msfinder.structure[[i]]$resources)) next
+      if(!grepl("PubChem=", ramclustObj$msfinder.structure[[i]]$resources)) next
       cid <- unlist(strsplit(ramclustObj$msfinder.structure[[i]]$resources, ","))
       cid <- cid[grep("PubChem=", cid)]
       cid <- gsub("PubChem=", "", cid)
       cid <- unlist(strsplit(cid, ";"))[1]
-    } else {
+    }
+    
+    if(is.na(cid)) {
       link <- paste0(
         "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/", 
         ramclustObj$inchikey[i], 
@@ -72,7 +83,10 @@ rc.cmpd.get.pubchem <- function(
           bond.block, 
           "/cids/JSON")
         out<- tryCatch(suppressWarnings(jsonlite::fromJSON(link)), error = function(x) {return(NULL)})
-      }
+        
+    }
+      
+      
       if(is.null(out)) next
       if(is.null(out$IdentifierList)) next
       if(is.null(out$IdentifierList$CID)) next
@@ -233,10 +247,11 @@ rc.cmpd.get.pubchem <- function(
   ramclustObj$pubchem.fp    <- fp
   
   if(get.synonyms) {
+    cat('retreiving synonyms', '\n')
     syns <- as.list(rep(NA, length(ramclustObj$ann)))
     for(i in 1:length(syns)) {
       if(is.na(st$InChIKey[i]))
-      Sys.sleep(0.2)
+        Sys.sleep(0.2)
       link <- paste0(
         "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/", 
         paste(st$InChIKey[i], collapse = ","), 
@@ -250,6 +265,7 @@ rc.cmpd.get.pubchem <- function(
   
   ## this can be improved by direcly referencing other websites such as CHEBI or HMDB.
   if(get.descriptions) {
+    cat('retreiving descriptions', '\n')
     desc <- as.list(rep(NA, length(ramclustObj$ann)))
     for(i in 1:length(desc)) {
       # for(i in 1:20) {

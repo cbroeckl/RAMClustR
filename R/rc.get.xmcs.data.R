@@ -33,11 +33,11 @@
 #' @export
 
 rc.get.xcms.data  <- function(xcmsObj=NULL,
-                       taglocation="filepaths",
-                       MStag=NULL,
-                       MSMStag=NULL, 
-                       ExpDes=NULL,
-                       mzdec=3
+                              taglocation="filepaths",
+                              MStag=NULL,
+                              MSMStag=NULL, 
+                              ExpDes=NULL,
+                              mzdec=3
 ) {
   
   ########
@@ -49,7 +49,7 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
             "and your exported spectra will be labelled incorrectly")
   }
   
-
+  
   ## add xcms processing history narrative here
   
   ## check xcms object presence
@@ -88,47 +88,71 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
     }
   }
   
-  ## get files for MS2 data and total file number
-  if(taglocation == 'filepaths') {
-    if(!newXCMS) {
-      nfiles    <-  length(xcmsObj@filepaths)
-      msmsfiles <-  grep(MSMStag, xcmsObj@filepaths, ignore.case=TRUE)
+  if(!is.null(MSMStag)) {
+    if(taglocation == 'filepaths') {
+      if(!newXCMS) {
+        nfiles    <-  length(xcmsObj@filepaths)
+        if(!is.null(MSMStag)) {
+          msmsfiles <-  grep(MSMStag, xcmsObj@filepaths, ignore.case=TRUE)
+        }
+      }
+      if(newXCMS) {
+        nfiles    <-length(xcmsObj@processingData@files)
+        if(!is.null(MSMStag)){
+          msmsfiles <-grep(MSMStag, xcmsObj@processingData@files, ignore.case=TRUE)
+        }
+      }
     }
-    if(newXCMS) {
-      nfiles    <-length(xcmsObj@processingData@files)
-      msmsfiles <-grep(MSMStag, xcmsObj@processingData@files, ignore.case=TRUE)
+    if(taglocation == 'pheno') {
+      if(!newXCMS) {
+        nfiles    <- length(xcmsObj@phenoData)
+        if(!is.null(MSMStag)) {
+          msmsfiles <- grep(MSMStag, row.names(xcmsObj@phenoData), ignore.case=TRUE)
+        }
+      }
+      if(newXCMS) {
+        nfiles    <- length(xcmsObj@phenoData[[1]])
+        if(!is.null(MSMStag)) {
+          msmsfiles <- grep(MSMStag, as.vector(xcmsObj@phenoData[[1]]), ignore.case=TRUE)
+        }
+      }
     }
-  }
-  if(taglocation == 'pheno') {
+    
+  } else {
     if(!newXCMS) {
-      nfiles    <- length(xcmsObj@phenoData)
-      msmsfiles <- grep(MSMStag, row.names(xcmsObj@phenoData), ignore.case=TRUE)
+      nfiles    <- nrow(xcmsObj@phenoData)
     }
     if(newXCMS) {
       nfiles    <- length(xcmsObj@phenoData[[1]])
-      msmsfiles <- grep(MSMStag, as.vector(xcmsObj@phenoData[[1]]), ignore.case=TRUE)
     }
   }
   
   if(!newXCMS) st<-round(median(xcmsObj@peaks[,"rtmax"]-xcmsObj@peaks[,"rtmin"])/2, digits=2)
   if(newXCMS) st<-round(median(xcmsObj@msFeatureData$chromPeaks[,"rtmax"]-xcmsObj@msFeatureData$chromPeaks[,"rtmin"])/2, digits=2)
-
-  if(length(msmsfiles) == 0)  {
-    warning('no MSMS files found - assuming all data is MS1', '\n')
+  
+  if(is.null(MSMStag)) {
     msfiles <- 1:nfiles
     mslev <- 1
-  } else {
-    msfiles <- (1:nfiles)[-msmsfiles]
-    mslev <- 2
+  } 
+  if(!is.null(MSMStag)) {
+    
+    if(length(msmsfiles) == 0)  {
+      stop('no MSMS files found', '\n')
+    } else {
+      msfiles <- (1:nfiles)[-msmsfiles]
+      mslev <- 2
+    }
+
   }
   
-  ## check to make sure same number of MS and MSMS files
-  if(length(msfiles) != length(msmsfiles)) {
-    stop('detected ', length(msfiles), " ms files and ", length(msmsfiles), " msms files - ", '\n', "       number of MSMS files MUST be identical to number of MS files")
-  } 
   
-  if(!newXCMS) {sampnames<-row.names(xcmsObj@phenoData)}  ## is this right??
-  if(newXCMS)  {sampnames <- as.vector(xcmsObj@phenoData[[1]])}
+  ## check to make sure same number of MS and MSMS files
+  if(mslev == 2) {
+    if(length(msfiles) != length(msmsfiles)) {
+      stop('detected ', length(msfiles), " ms files and ", length(msmsfiles), " msms files - ", '\n', "       number of MSMS files MUST be identical to number of MS files")
+    } 
+  }
+  
   if(!newXCMS) {data <- t(xcms::groupval(xcmsObj, value="into"))}
   if(newXCMS)  {data <- t(xcms::featureValues(xcmsObj, value = "into"))}
   
@@ -139,12 +163,18 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
     filepaths <- fileNames(xcmsObj)
     filenames <- basename(filepaths)
     phenotype <- xcmsObj@phenoData@data
-    phenotype <- data.frame(phenotype, filenames, filepaths)
+    phenotype <- data.frame(sample.names = phenotype, filenames, filepaths)
     if(mslev == 2) {
       phenotype <- phenotype[1:(nrow(phenotype)/2),]
     }
   } else {
-    stop("fix this - need to extract pheno from old xcms format")
+    filepaths <- xcmsObj@filepaths
+    filenames <- basename(filepaths)
+    phenotype <- xcmsObj@phenoData[,1]
+    phenotype <- data.frame(sample.names = phenotype, filenames, filepaths)
+    if(mslev == 2) {
+      phenotype <- phenotype[1:(nrow(phenotype)/2),]
+    }
   }
   
   
@@ -228,7 +258,7 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
     }
     ramclustObj$msmsint <- msmsint
   }
-
+  
   return(ramclustObj)
 }
 

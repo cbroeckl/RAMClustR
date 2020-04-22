@@ -34,7 +34,7 @@ write.methods <- function (ramclustObj = NULL,
   }
   
   cit.list <- c(
-    'R' = paste0(
+    'R Core Team' = paste0(
       citation()$author, 
       " (", citation()$year, "). ",
       citation()$title, ". ",
@@ -93,7 +93,7 @@ write.methods <- function (ramclustObj = NULL,
     }
   }
   
-  if(grepl("R Core Team", ramclustObj$history)) {
+  if(grepl("R Core Team", history)) {
     cat(paste0(
       citation()$author, 
       " (", citation()$year, "). ",

@@ -174,14 +174,21 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
       y <- data1.qc.batch.fc[,1:ncol(data1.qc.batch.fc)]
       ## only correct those featues with significant trendline
       
+      
       pval <- sapply(1:ncol(y), FUN = function(z) {
-        cor.test(x, y[,z])$p.val
+        tryCatch({
+          cor.test(x, y[,z])$p.val
+        }, error = function(x) {1})
       })
       pval <- p.adjust(pval, method = "fdr")
       
       rsqval <- as.vector(cor(x,y[,1:ncol(y)])^2)
       
       do.ord.correct <- which((pval < p.cut) & (rsqval > rsq.cut))
+      
+      if(length(do.ord.correct) == 0) next
+      
+      y <- data1.qc.batch.fc[,do.ord.correct]
       
       p <- predict(
         object = lm(y~x),
@@ -191,7 +198,7 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
       
       # z <- 300; plot(x, y[,z]); Sys.sleep(2); plot(x, p[use.qc,z])
       
-      data1[use,do.ord.correct] <- p[,do.ord.correct]
+      data1[use,do.ord.correct] <- p[,1:ncol(p)]
       
     }
     data1[which(data1 < 0, arr.ind = TRUE)] <- 0

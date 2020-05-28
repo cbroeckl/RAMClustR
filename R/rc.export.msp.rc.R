@@ -56,6 +56,7 @@ rc.export.msp.rc <- function(
     ion.mode = "N"
   }
   
+  ExpDes <- RC$ExpDes
   out.list <- as.list(rep(NA, length(ramclustObj$cmpd)*mslev))
   
   for (m in 1:as.numeric(mslev)){

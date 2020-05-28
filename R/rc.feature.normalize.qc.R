@@ -172,9 +172,10 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
 
       x <- order[use.qc]
       y <- data1.qc.batch.fc[,1:ncol(data1.qc.batch.fc)]
+      
+      
+      
       ## only correct those featues with significant trendline
-      
-      
       pval <- sapply(1:ncol(y), FUN = function(z) {
         tryCatch({
           cor.test(x, y[,z])$p.val
@@ -194,7 +195,7 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
         object = lm(y~x),
         newdata = data.frame(x = use)
       )
-      p <- data1[use,] / p
+      p <- data1[use,do.ord.correct] / p
       
       # z <- 300; plot(x, y[,z]); Sys.sleep(2); plot(x, p[use.qc,z])
       
@@ -248,9 +249,10 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
         y <- data2.qc.batch.fc[,1:ncol(data2.qc.batch.fc)]
         
         ## only correct those featues with significant trendline
-        
         pval <- sapply(1:ncol(y), FUN = function(z) {
-          cor.test(x, y[,z])$p.val
+          tryCatch({
+            cor.test(x, y[,z])$p.val
+          }, error = function(x) {1})
         })
         pval <- p.adjust(pval, method = "fdr")
         
@@ -258,16 +260,19 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
         
         do.ord.correct <- which((pval < p.cut) & (rsqval > rsq.cut))
         
+        if(length(do.ord.correct) == 0) next
+        
+        y <- data2.qc.batch.fc[,do.ord.correct]
+        
         p <- predict(
           object = lm(y~x),
           newdata = data.frame(x = use)
         )
-        p <- data2[use,] / p
+        p <- data1[use,do.ord.correct] / p
         
         # z <- 300; plot(x, y[,z]); Sys.sleep(2); plot(x, p[use.qc,z])
         
-        data2[use,do.ord.correct] <- p[,do.ord.correct]
-        
+        data2[use,do.ord.correct] <- p[,1:ncol(p)]
       }
       data2[which(data2 < 0, arr.ind = TRUE)] <- 0
       ramclustObj$MSMSdata <- data2

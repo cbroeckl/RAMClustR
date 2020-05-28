@@ -211,6 +211,12 @@ ramclustR  <- function(xcmsObj=NULL,
       byrow=TRUE, ncol=2)
     times<-as.numeric(rtmz[,timepos])
     mzs<-as.numeric(rtmz[,which(c(1:2)!=timepos)])
+    if(any(is.na(times))) {
+      stop("column(s) ", which(is.na(times)), " rt cannot be made numeric. ")
+    }
+    if(any(is.na(mzs))) {
+      stop("column(s) ", which(is.na(times)), " mz cannot be made numeric. ")
+    }
     rm(rtmz)
   }
   

@@ -58,6 +58,7 @@ annotate<-function(ramclustObj = NULL,
     stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
   }
   
+  ## rest annotation slots to ensure that all annotation data reflects new processing
   if(reset) {
     ramclustObj$msfinder.formula <- rep(NA, length(ramclustObj$cmpd))
     ramclustObj$annconf <- rep(4, length(ramclustObj$cmpd))
@@ -76,6 +77,7 @@ annotate<-function(ramclustObj = NULL,
     ramclustObj$rs.prob <- NULL
   }
   
+  ## make sure taxonomy inchikeys are properly formatted
   if(!is.null(taxonomy.inchi)) {
     if(is.data.frame(taxonomy.inchi)) {
       tax.df <- taxonomy.inchi
@@ -91,9 +93,6 @@ annotate<-function(ramclustObj = NULL,
     }
   }
   
-  
-  
-  
   if(!is.null(taxonomy.inchi)) {
     if(is.factor(taxonomy.inchi)) {
       taxonomy.inchi <- as.character(taxonomy.inchi)
@@ -105,7 +104,11 @@ annotate<-function(ramclustObj = NULL,
   
   use.short.inchikey = TRUE
   
+  ## look for structure data files from MSFinder
+  ## and select most advanced version. 
+  ## new MSFinder uses binary format, not easily read.  move away from this approach.
   sfile<-list.files(paste0(msfinder.dir, "/Resources"), pattern = "ExistStructureDB_vs")
+  
   # if(length(sfile)==0) {
   #   stop("no structure DB file found in msfinder.dir / Resources")
   # }
@@ -132,9 +135,12 @@ annotate<-function(ramclustObj = NULL,
     }
   }
   
+  ## read in reference data
   ## this is not stable.  vers 3.30 of MSFinder is now using a binary format. 
   reference.data<-read.delim2(paste0(msfinder.dir, "/Resources/", sfile), header = TRUE, na.strings = "N/A", quote = "", stringsAsFactors = FALSE)
   
+  
+  ## determine what annotation data we have available
   if(any(names(ramclustObj)=="rs.out")) {
     ramsearch = TRUE
   } else {ramsearch = FALSE}
@@ -156,6 +162,7 @@ annotate<-function(ramclustObj = NULL,
     mssearch = TRUE
   } else {mssearch = FALSE}
   
+  ## add new (or replace existing) slots for holding annotation data from external tools
   if(!any(names(ramclustObj) == "inchikey")) {ramclustObj$inchikey <- rep(NA, length(ramclustObj$cmpd))}
   if(!any(names(ramclustObj) == "inchi")) {ramclustObj$inchi<- rep(NA, length(ramclustObj$cmpd))}
   if(!any(names(ramclustObj) == "smiles"))  {ramclustObj$smiles <- rep(NA, length(ramclustObj$cmpd))}
@@ -164,17 +171,16 @@ annotate<-function(ramclustObj = NULL,
     ramclustObj$synonyms <- as.list(rep(NA, length(ramclustObj$cmpd)))
   }
   
+  ## establish databases (MSFinder) that are considered of higher priority. 
   if(!is.null(ramclustObj$msfinder.dbs) & is.null(database.priority)) {
     database.priority <- ramclustObj$msfinder.dbs
   }
   
+  ## if ramsearch has been imported, annotate those compounds first
+  ## this is prioritized due to the manual nature of the process.  
   if(ramsearch) {
-    ##these items will be filled and added to the RC object
-    out <- ramclustObj$rs.out 
-    if(is.null(ramclustObj$inchikey)) {
-      ramclustObj$inchikey <- rep(NA, length(ramclustObj$cmpd))
-    }
     
+    ##these items will be filled and added to the RC object
     ramclustObj$rs.spec	<-as.list(rep("", max(ramclustObj$featclus)))
     ramclustObj$rs.lib	<-rep("", max(ramclustObj$featclus))
     ramclustObj$rs.specn	<-as.integer(rep(-1, max(ramclustObj$featclus)))
@@ -206,6 +212,11 @@ annotate<-function(ramclustObj = NULL,
       if(ramclustObj$cmpd[ind] != cname) {
         stop(paste("something is amiss with compound ", i, ": the names do not match", sep=""))
       }
+      
+      ## note that inchikey returned from GOLM is the metabolite inchikey, not derivative inchikey
+      ## inchikey for NIST? This incongruity may cause issues later
+      ## i.e. modeling retention time/index from compound properties would benefit from derivative inchikey
+      ## while metabolic networks benefit from metabolite inchikey.  both would be valuable.  
       if((nchar(sub("Annotation: ", "", md[2]))>0) & max(newmf, -1, na.rm=TRUE) >= mf ) {
         ramclustObj$ann[ind] 	<- as.character(sub("Annotation: ", "", md[grep("Annotation: ", md)]))
         ramclustObj$rs.specn[ind] 	<- as.character(sub("Matched Spectrum: ", "", md[grep("Matched Spectrum: ", md)]))
@@ -228,12 +239,15 @@ annotate<-function(ramclustObj = NULL,
     
   }
   
+  ## Annotate based on spectral matches next
+  ## these are from MSFinder.  
   if(mssearch) {
     spec.formula.warnings <- vector(length = 0, mode = 'numeric')
     if(is.null(ramclustObj$msfinder.formula)) {
       ramclustObj$msfinder.formula <- rep(NA, length(ramclustObj$msfinder.structure.details))
     }
     
+    ## get best score from all spectral matches
     msfinder.mssearch.score<-as.numeric(sapply(1:length(ramclustObj$msfinder.mssearch.details), FUN = function(x) {
       if(is.null(nrow(ramclustObj$msfinder.mssearch.details[[x]]$summary))) {
         NA 
@@ -264,9 +278,10 @@ annotate<-function(ramclustObj = NULL,
     }
   }
   
+  
+  ## MSFinder structure section
   if(structure) {
-    
-    
+
     tmpdb <- as.list(rep("", length(ramclustObj$msfinder.structure.details)))
     summary <- as.list(rep("", length(ramclustObj$msfinder.structure.details)))
     dbs <- vector(length = 0, mode = 'character')
@@ -303,6 +318,8 @@ annotate<-function(ramclustObj = NULL,
       }
     }
     
+    ## set database priority, if not manually set, to the databases selected when running msfinder.
+    ## else use the full db list
     suppressWarnings(
       if (is.null(database.priority)) {
         if(!is.null(ramclustObj$msfinder.formula.dbs)) {
@@ -351,8 +368,10 @@ annotate<-function(ramclustObj = NULL,
     priority.dbs <- database.priority
     
     
-    ## create template
+    ## create template to hold called annotations
     template <- matrix(nrow = 0, ncol = 0)
+    
+    ## annotation section : fill template.
     for(i in 1:length(ramclustObj$ann)) {
       db.m <- data.frame(lapply(1:length(database.priority), FUN = function(x) grepl(database.priority[x], ramclustObj$msfinder.formula.details[[i]][,"resourcenames"])))
       db.m <- apply(db.m, 1, FUN = 'any')
@@ -367,8 +386,6 @@ annotate<-function(ramclustObj = NULL,
       }
       if(ncol(template > 0)) break
     }
-    
-    
     
     for(i in 1:length(ramclustObj$ann)) {
       # cat(i, " ")
@@ -387,13 +404,14 @@ annotate<-function(ramclustObj = NULL,
         #   }
         # }
         
+        ## which formulas can be found in a priorty database?  If none, skip to next compound
         db.m <- data.frame(lapply(1:length(database.priority), FUN = function(x) grepl(database.priority[x], ramclustObj$msfinder.formula.details[[i]][,"resourcenames"])))
         db.m <- apply(db.m, 1, FUN = 'any')
         if(!any(db.m)) next
         form.tab <- ramclustObj$msfinder.formula.details[[i]][db.m,]
         tmp <- template
         
-        # tmp <- data.frame(tmp)
+        # organize results
         for(j in 1:nrow(form.tab)) {
           if(!any(names(ramclustObj$msfinder.structure.details[[i]]) == form.tab$name[j])) next
           if(nrow(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]]) == 0) next
@@ -429,16 +447,16 @@ annotate<-function(ramclustObj = NULL,
                  "databasescore", "substructureassignmentscore", "rtsimilarityscore", 
                  "risimilarityscore", "f.totalscore") 
         
-        # if(database.score) {
-        #   use <- use[use!="databasescore"]
-        # } 
+         # if(database.score) {
+         #   use <- use[use!="databasescore"]
+         # }
+         # 
+         # 
+         # if(rescore.structure) {
+         #   tmp$totalscore <- rowSums(tmp[,use])
+         # }
         
-        
-        # if(rescore.structure) {
-        #   tmp$totalscore <- rowSums(tmp[,use])
-        # }
-        
-        ## if compound inchikey (id) is in taxonomy.inchi vector, add 1 to total score.
+        ## if compound inchikey (id) is in taxonomy.inchi vector, adjust total score.
         if(!is.null(taxonomy.inchi)) {
           taxonomy.score <- as.numeric(tmp[,"id"] %in% taxonomy.inchi)
           if(citation.score & any(taxonomy.score > 0)) {
@@ -749,24 +767,24 @@ annotate<-function(ramclustObj = NULL,
   ramclustObj$inchikey[which(ramclustObj$inchikey == "NA")] <- NA
   
   ramclustObj$history$annotate <- paste( 
-                               "Annotations were assigned using the RAMClustR annotate function.", 
-                               " Annotation priority was assigned from higest priority to lowest:", 
-                               if(any(names(ramclustObj) == "rs.lib")) {" RAMsearch, "},
-                               if(any(names(ramclustObj) == "msfinder.mssearch.details")) {" MSFinder spectrum search, "},
-                               if(any(names(ramclustObj) == "msfinder.structure.details")) {" MSFinder structure, "},
-                               if(any(names(ramclustObj) == "msfinder.formula.details")) {" MSFinder formula, "},
-                               if(any(names(ramclustObj) == "M.ann")) {" interpretMSSpectrum M."},
-                               sep = ""
+    "Annotations were assigned using the RAMClustR annotate function.", 
+    " Annotation priority was assigned from higest priority to lowest:", 
+    if(any(names(ramclustObj) == "rs.lib")) {" RAMsearch, "},
+    if(any(names(ramclustObj) == "msfinder.mssearch.details")) {" MSFinder spectrum search, "},
+    if(any(names(ramclustObj) == "msfinder.structure.details")) {" MSFinder structure, "},
+    if(any(names(ramclustObj) == "msfinder.formula.details")) {" MSFinder formula, "},
+    if(any(names(ramclustObj) == "M.ann")) {" interpretMSSpectrum M."},
+    sep = ""
   )
   
   
   if(structure) {
     search.dbs <- search.dbs[-which(search.dbs == "NA")]
     ramclustObj$history$annotate2 <- paste(" MSFinder strucutures were considered from databases including", 
-                                 paste(search.dbs, collapse = " "), ".", 
-                                 " Database priority was set to ", 
-                                 paste(priority.dbs, collapse = " "), ".",
-                                 sep = "")
+                                           paste(search.dbs, collapse = " "), ".", 
+                                           " Database priority was set to ", 
+                                           paste(priority.dbs, collapse = " "), ".",
+                                           sep = "")
   }
   
   if(mssearch) {

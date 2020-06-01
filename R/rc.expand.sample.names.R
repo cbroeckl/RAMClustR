@@ -36,7 +36,10 @@ rc.expand.sample.names <- function(
     length(des[[x]])
   })
   if(length(table(l)) != 1) {
-    stop("delimited sample names have variable lengths: ", print(table(l)))
+    cat("delimited sample names have variable lengths ranging from: ", '\n',
+        range(l)[1], " to ", range(l)[2], '\n')
+    ch <- which(l != median(l))
+    stop("please fix sample names:", '\n', paste(" ", sn[ch], sep = '\n'))
   }
   des <- data.frame(t(data.frame(des, check.names = FALSE)), 
                     stringsAsFactors = FALSE, check.names = FALSE)

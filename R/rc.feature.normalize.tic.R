@@ -3,7 +3,6 @@
 #' extractor for xcms objects in preparation for clustering  
 #'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
-#' @param qc.tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.
 #' @details This function offers normalization by total extracted ion signal.  it is recommended to first run 'rc.feature.filter.blanks' to remove non-sample derived signal.
 #' @return  ramclustR object with total extracted ion normalized data.   
 #'  
@@ -29,10 +28,16 @@ rc.feature.normalize.tic  <- function(
          '       see rc.get.xcms.data function for one approach to do so', '\n')
   }
   
-  ramclustObj$MSdata <- (ramclustObj$MSdata/rowSums(ramclustObj$MSdata))*mean(rowSums(ramclustObj$MSdata), na.rm=TRUE)
+  msint <- rowSums(ramclustObj$MSdata, na.rm=TRUE)
+  msint.mean <- mean(msint)
+  ramclustObj$MSdata <- (ramclustObj$MSdata/msint)*msint.mean
+
   if(!is.null(ramclustObj$MSMSdata)) {
+    msmsint <- rowSums(ramclustObj$MSMSdata, na.rm=TRUE)
+    msmsint.mean <- mean(msmsint)
     ramclustObj$MSMSdata<-(ramclustObj$MSMSdata/rowSums(ramclustObj$MSMSdata))*mean(rowSums(ramclustObj$MSMSdata), na.rm=TRUE)
   }
+  
   
   
   ramclustObj$history$normalize.tic <- paste0(

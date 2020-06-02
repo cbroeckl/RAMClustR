@@ -26,7 +26,7 @@
 
 rc.qc<-function(ramclustObj=NULL,
                 qc.tag="QC",
-                remove.qc = TRUE,
+                remove.qc = FALSE,
                 npc=4,
                 scale="pareto",
                 outfile.basename ="ramclustQC"
@@ -45,10 +45,8 @@ rc.qc<-function(ramclustObj=NULL,
     outfile.basename <- ramclustQC
   }
   
-  do.sets <- c("MSdata", "MSMSdata", "SpecAbund")
-  if(is.null(ramclustObj$MSMSdata)) {
-    do.sets <- do.sets[!(do.sets %in% "MSMSdata")]
-  } 
+  do.sets <- c("MSdata", "SpecAbund")
+
   if(is.null(ramclustObj$SpecAbund)) {
     do.sets <- do.sets[!(do.sets %in% "SpecAbund")]
   } 
@@ -59,9 +57,7 @@ rc.qc<-function(ramclustObj=NULL,
       nrow(ramclustObj[[x]])
     })
   
-  if(!all.equal(
-    do.sets.rows, do.sets.rows)
-  ) {
+  if(!sd(do.sets.rows) == 0) {
     stop("number of rows in MSdata, SpecAbund, and phenoData sets are not identical.")
   }
   
@@ -112,7 +108,12 @@ rc.qc<-function(ramclustObj=NULL,
   cols[qc]<-2
   
   for(x in do.sets) {
+    
+    ## PCA plot
     td <- ramclustObj[[x]]
+    if(!is.null(ramclustObj$MSMSdata) & x == "MSdata") {
+      td <- td + ramclustObj$MSMSdata
+    }
     PCA<-pcaMethods::pca(td, scale=scale, nPcs=npc, center=TRUE)
     sc<-PCA@scores
     write.csv(sc, file = paste0("QC/", outfile.basename, "_", x, "_pcascores.csv"))
@@ -132,6 +133,7 @@ rc.qc<-function(ramclustObj=NULL,
       )
       legend(qc.tag, text.col=2, x="topright", bty="n")
     }
+    
     ## histogram of QC relative standard deviations for all compounds/clusters
     sds<-apply(td[qc,], 2, FUN="sd", na.rm=TRUE)
     #cat(sds, '\n')

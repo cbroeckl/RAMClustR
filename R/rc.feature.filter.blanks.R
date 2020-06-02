@@ -169,7 +169,8 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
   ramclustObj$history$feature.filter.blanks <- {
     paste0(
       "Features which failed to demonstrate signal intensity of at least ",
-      sn, " fold greater than QC samples were removed from the feature dataset."
+      sn, " fold greater in QC samples than in blanks were removed from the feature dataset. ", 
+      length(which(!keep))," of ", length(keep), " features were removed."
     )
   }  
   return(ramclustObj)

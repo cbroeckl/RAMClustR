@@ -280,10 +280,10 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
   }
   
   ramclustObj$history$normalize.batch.qc <- paste0(
-    "Features were ",
+    "Features were normalized ",
     if(!is.null(ramclustObj$history$normalize.tic)) {"additionally "}, 
-    "normalized to adjaced qc feature intensities to account for instrument signal intensity drift.", 
-    " Ony features with a run order vs intensity pvalue less than ", p.cut,
+    "by linearly regressing run order versus qc feature intensities to account for instrument signal intensity drift.", 
+    " Only features with a regression pvalue less than ", p.cut,
     " and an r-squared greater than ", rsq.cut, " were corrected."
   )
   

@@ -45,10 +45,19 @@
 #' @export 
 
 
-do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive", 
-                         mzabs.error = 0.005, ppm.error = 10, ads = NULL, nls = NULL, 
-                         scoring = "auto", plot.findmain = TRUE, writeMat = TRUE, 
-                         writeMS = TRUE, use.z = TRUE) 
+do.findmain <- function (
+  ramclustObj = NULL, 
+  cmpd = NULL, 
+  mode = "positive", 
+  mzabs.error = 0.005, 
+  ppm.error = 10, 
+  ads = NULL, 
+  nls = NULL,
+  scoring = "auto", 
+  plot.findmain = TRUE, 
+  writeMat = TRUE,
+  writeMS = TRUE, 
+  use.z = TRUE) 
 {
   
   if(is.null(ramclustObj)) {
@@ -61,8 +70,7 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
   }
   if (use.z & any(names(ramclustObj) == "fm")) {
     use.mass <- "fm"
-  }
-  else {
+  } else {
     use.mass <- "fmz"
   }
   if (is.null(ads)) {
@@ -173,26 +181,40 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
     s <- data.frame(mz = ramclustObj[[use.mass]][which(ramclustObj$featclus == 
                                                          cl)], int = ramclustObj$msint[which(ramclustObj$featclus == 
                                                                                                cl)])
-    out <- InterpretMSSpectrum::findMAIN(s, rules = c(ads), adducthyp = ads[grep("[M", 
-                                                                                 ads, fixed = TRUE)], ionmode = mode, mzabs = mzabs.error, 
-                                         ppm = ppm.error)
+    s <- s[order(s$mz),]
+    out <- InterpretMSSpectrum::findMAIN(
+      s, 
+      rules = c(ads), 
+      adducthyp = ads[grep("[M",ads, fixed = TRUE)], 
+      ionmode = mode, 
+      mzabs = mzabs.error, 
+      ppm = ppm.error
+      )
     summarytable <- summary(out)
-    summarytable[which(is.na(summarytable[, "medppm"])), 
-                 "medppm"] <- 2 * ppm.error
-    summarytable[which(summarytable[, "medppm"] == 0), "medppm"] <- 0.01 * ppm.error
+    
+    # summarytable[which(is.na(summarytable[, "medppm"])), 
+    #              "medppm"] <- 2 * ppm.error
+    # summarytable[which(summarytable[, "medppm"] == 0), "medppm"] <- ppm.error
     M.findmain[cl] <- summarytable[1, "neutral_mass"]
     M.ppm.findmain[cl] <- summarytable[1, "medppm"]
     M.ann.findmain[[cl]] <- out[[1]]
     M.nann.findmain[cl] <- summarytable[1, "adducts_explained"]
     M.space.findmain[cl] <- summarytable[1, "total_score"]/summarytable[2, "total_score"]
-    out <- InterpretMSSpectrum::findMAIN(s, adductmz = NULL, ionmode = mode, 
-                                         rules = c(ads, nls), adducthyp = ads[grep("[M", 
-                                                                                   ads, fixed = TRUE)], ms2spec = NULL, mzabs = mzabs.error, 
-                                         ppm = ppm.error, mainpkthr = 0.1, collapseResults = FALSE)
+    out <- InterpretMSSpectrum::findMAIN(
+      s, 
+      adductmz = NULL, 
+      ionmode = mode, 
+      rules = c(ads, nls), 
+      adducthyp = ads[grep("[M", ads, fixed = TRUE)], 
+      ms2spec = NULL, 
+      mzabs = mzabs.error,
+      ppm = ppm.error, 
+      mainpkthr = 0.1, 
+      collapseResults = FALSE)
     summarytable <- summary(out)
-    summarytable[which(is.na(summarytable[, "medppm"])), 
-                 "medppm"] <- 2 * ppm.error
-    summarytable[which(summarytable[, "medppm"] == 0), "medppm"] <- 0.01 * ppm.error
+    # summarytable[which(is.na(summarytable[, "medppm"])), 
+    #              "medppm"] <- 2 * ppm.error
+    # summarytable[which(summarytable[, "medppm"] == 0), "medppm"] <- ppm.error
     summaryscores <- sapply(1:length(out), FUN = function(x) {
       is.adduct <- which(out[[x]][, "adduct"] %in% ads)
       det.adducts <- out[[x]][is.adduct, "adduct"]
@@ -255,7 +277,7 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
                        (2 * mzabs.error))
     for (i in resolve) {
       ppm.rat <- (ramclustObj$M.ppm.ramclustr[i]^0.5/ramclustObj$M.ppm.findmain[i]^0.5)
-      if(ppm.rat == 0) {ppm.rat <- ppm.rat + 0.1}
+      if(is.na(ppm.rat)) {ppm.rat <-1}
       ppm.rat <- 1/ppm.rat
       sel.rat <- (ramclustObj$M.space.ramclustr[i]/ramclustObj$M.space.findmain[i])
       nann.rat <- (ramclustObj$M.nann.ramclustr[i]/ramclustObj$M.nann.findmain[i])
@@ -281,7 +303,9 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
 
   
   for(i in 1:length(ramclustObj$precursor.mz)) {
+    if(is.vector(ramclustObj$M.ann[[i]])) next
     for(j in 1:length(ads)) {
+      
       m <- which(ramclustObj$M.ann[[i]]$label == ads[[j]])
       if(length(m) == 0) next
       ramclustObj$precursor.mz[i] <- ramclustObj$M.ann[[i]][m, "mz"]
@@ -300,23 +324,27 @@ do.findmain <- function (ramclustObj = NULL, cmpd = NULL, mode = "positive",
     par(xpd = TRUE)
     for (cl in cmpd) {
       InterpretMSSpectrum::PlotSpec(x = ramclustObj$M.ann.ramclustr[[cl]], 
-               txt = ramclustObj$M.ann.ramclustr[[cl]][, c("mz", 
-                                                           "adduct")], cutoff = 0, masslab = 0, ylim = c(0, 
-                                                                                                         1.1 * max(ramclustObj$M.ann.ramclustr[[cl]][, 
-                                                                                                                                                     2])))
-      title(main = list(paste(cl, ":", "M.ramclustr =", 
-                              round(ramclustObj$M.ramclustr[cl], digits = 4), 
-                              "( +/-", round(ramclustObj$M.ppm.ramclustr[cl], 
-                                             digits = 1), "ppm )"), font = if (ramclustObj$use.findmain[cl]) {
+               txt = ramclustObj$M.ann.ramclustr[[cl]][, c("mz", "adduct")], 
+               cutoff = 0, masslab = 0, 
+               ylim = c(0,  1.1 * max(ramclustObj$M.ann.ramclustr[[cl]][, 2]))
+               )
+      title(main = list(
+        paste(
+          cl, ":", "M.ramclustr =", 
+          round(ramclustObj$M.ramclustr[cl], digits = 4), 
+          "( +/-", round(ramclustObj$M.ppm.ramclustr[cl], 
+          digits = 1), "ppm )"), font = if (ramclustObj$use.findmain[cl]) {
                                                1
                                              } else {
                                                2
-                                             }, col = if (ramclustObj$use.findmain[cl]) {
+                                             }, 
+        col = if (ramclustObj$use.findmain[cl]) {
                                                1
                                              } else {
                                                2
-                                             }))
-      PlotSpec(x = ramclustObj$M.ann.findmain[[cl]], txt = ramclustObj$M.ann.findmain[[cl]][, 
+                                             })
+        )
+      InterpretMSSpectrum::PlotSpec(x = ramclustObj$M.ann.findmain[[cl]], txt = ramclustObj$M.ann.findmain[[cl]][, 
                                                                                             c("mz", "adduct")], cutoff = 0, masslab = 0, 
                ylim = c(0, 1.1 * max(ramclustObj$M.ann.ramclustr[[cl]][, 
                                                                        2])))

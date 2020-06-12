@@ -76,15 +76,17 @@ rc.qc<-function(ramclustObj=NULL,
   ## create directory
   dir.create("QC")
   
-  ## create file to collect figures. 
-  pdf(file=paste("QC/", "ramclust_clustering_diagnostic.pdf", sep=""), useDingbats=FALSE, width=8, height=8)  
-  
+
   #visualize clustering
   ## if clustering was perfect, we should see a normal distribution of 
   ## correlational r values 1 step from the diagonal
   ## imperfect clustering introduces right skew
   ## load("datasets/RCobject.Rdata")
   if(!is.null(ramclustObj$clrt)) {
+    
+    ## create file to collect figures. 
+    pdf(file=paste("QC/", "ramclust_clustering_diagnostic.pdf", sep=""), useDingbats=FALSE, width=8, height=8)  
+    
     o<-order(ramclustObj$clrt)
     c<-cor(ramclustObj$SpecAbund[,o])
     d<-diag(as.matrix((c[2:(nrow(c)), 1:ncol(c)-1])))
@@ -97,8 +99,9 @@ rc.qc<-function(ramclustObj=NULL,
     # this is slow for larger numbers of clusters
     gplots::heatmap.2(c^2, trace="none", dendrogram="none", Rowv=FALSE, Colv=FALSE, main="pearsons r^2, clusters sorted by rt", cex.main=0.5,
                       cexRow=0.02 + 1/log10(length(o)), cexCol=0.02 + 1/log10(length(o)))
+    dev.off()
   }
-  dev.off()
+  
   
   ## PCA of QC samples
   

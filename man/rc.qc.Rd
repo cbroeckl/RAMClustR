@@ -7,7 +7,7 @@
 rc.qc(
   ramclustObj = NULL,
   qc.tag = "QC",
-  remove.qc = TRUE,
+  remove.qc = FALSE,
   npc = 4,
   scale = "pareto",
   outfile.basename = "ramclustQC"

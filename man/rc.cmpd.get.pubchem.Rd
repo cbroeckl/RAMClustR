@@ -14,11 +14,11 @@ rc.cmpd.get.pubchem(
 \arguments{
 \item{ramclustObj}{ramclustR object. must contain a $inchikey slot and/or or a $MSfinder.structure slot in which to look for a pubchem CID.}
 
-\item{all.properties}{logical - if TRUE, a long list of properties is returned.  if FALSE, a short list.  FALSE is faster.}
+\item{all.properties}{logical - if TRUE, a long list of properties is returned.  if FALSE, a short list.  FALSE is faster, TRUE more comprehensive.}
 
 \item{get.synonyms}{logical - if TRUE, pubchem synonyms are returned based on pubchem inchikey.}
 
-\item{get.descriptions}{logical - if TRUE, pubchem description is provided, with URL, if available.}
+\item{get.descriptions}{logical - if TRUE, pubchem text description is provided, with URL, if available.}
 }
 \value{
 returns a ramclustR object.  new vector of $smiles and $inchi with length equal to number of compounds.
@@ -27,7 +27,7 @@ returns a ramclustR object.  new vector of $smiles and $inchi with length equal 
 use PubChem API to look up pubchem data for compounds assigned annotates.
 }
 \details{
-Uses pubchem rest to retrieve standard pubchem properties for a compound.  The $inchikey slot and, if available, the MSFinder.structure are used to look up descriptions in pubchem. Highest priority is for a listed pubchem CID from MSFinder.  Next the full inchikey is used.  If no match is returned from pubchem, the first block (bonds) is used.  Note that this discards stereochemistry. PubChem CID, a pubchem URL, smiles (canonical), inchi and other parameters are returned.  if smiles and inchi slots are alread present (from MSFinder, for example) pubchem smiles and inchi are used to fill in missing values only - not to replace MSFinder derived values.
+Uses pubchem rest to retrieve standard pubchem properties for a compound.  The $inchikey slot and, if available, the MSFinder.structure CID value are used to look up descriptions in pubchem. Highest priority is for a listed pubchem CID from MSFinder.  Next the full inchikey is used.  If no match is returned from pubchem, the first block (bonds) is used.  Note that this discards stereochemistry. PubChem CID, a pubchem URL, smiles (canonical), inchi and other parameters are returned.  if smiles and inchi slots are alread present (from MSFinder, for example) pubchem smiles and inchi are used to fill in missing values only - not to replace MSFinder derived values.
 }
 \references{
 Kim S, Thiessen PA, Bolton EE, Bryant SH. PUG-SOAP and PUG-REST: web services for programmatic access to chemical information in PubChem. Nucleic Acids Res. 2015;43(W1):W605-11.

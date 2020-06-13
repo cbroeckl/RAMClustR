@@ -8,8 +8,6 @@ rc.feature.normalize.tic(ramclustObj = NULL)
 }
 \arguments{
 \item{ramclustObj}{ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)}
-
-\item{qc.tag}{character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.}
 }
 \value{
 ramclustR object with total extracted ion normalized data.

@@ -189,13 +189,13 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
       
       if(length(do.ord.correct) == 0) next
       
-      y <- data1.qc.batch.fc[,do.ord.correct]
+      y <- data1.qc.batch.fc[,do.ord.correct, drop = FALSE]
       
       p <- predict(
         object = lm(y~x),
         newdata = data.frame(x = use)
       )
-      p <- data1[use,do.ord.correct] / p
+      p <- data1[use,do.ord.correct, drop = FALSE] / p
       
       # z <- 300; plot(x, y[,z]); Sys.sleep(2); plot(x, p[use.qc,z])
       
@@ -262,13 +262,13 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
         
         if(length(do.ord.correct) == 0) next
         
-        y <- data2.qc.batch.fc[,do.ord.correct]
+        y <- data2.qc.batch.fc[,do.ord.correct, drop = FALSE]
         
         p <- predict(
           object = lm(y~x),
           newdata = data.frame(x = use)
         )
-        p <- data1[use,do.ord.correct] / p
+        p <- data1[use,do.ord.correct, drop = FALSE] / p
         
         # z <- 300; plot(x, y[,z]); Sys.sleep(2); plot(x, p[use.qc,z])
         

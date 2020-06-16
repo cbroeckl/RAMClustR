@@ -173,5 +173,8 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
       ncol(d1) - length(keep)," of ", ncol(d1), " features were removed."
     )
   }  
+  
+  cat(ramclustObj$history$feature.filter.blanks)
+  
   return(ramclustObj)
 }

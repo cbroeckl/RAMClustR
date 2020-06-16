@@ -142,6 +142,23 @@ rc.qc<-function(ramclustObj=NULL,
     #cat(sds, '\n')
     means<-apply(td[qc,], 2, FUN="mean", na.rm=TRUE)
     cvs<-sds/means
+    
+    if(x == "MSdata") {
+      ramclustObj$qc.cv.feature <- cvs
+      ramclustObj$qc.cv.feature.msdata <- cvs
+      if(!is.null(ramclustObj$MSMSdata)) {
+        sds<-apply(ramclustObj$MSMSdata, 2, FUN="sd", na.rm=TRUE)
+        #cat(sds, '\n')
+        means<-apply(ramclustObj$MSMSdata, 2, FUN="mean", na.rm=TRUE)
+        msms.cvs<-sds/means
+        ramclustObj$qc.cv.feature.msmsdata <- msms.cvs
+        cvs <- pmin(ramclustObj$qc.cv.feature.msdata, msms.cvs)
+        ramclustObj$qc.cv.feature <- cvs
+      }
+      
+    } else {
+      ramclustObj$qc.cv.cmpd <- cvs
+    }
     qs<-quantile(cvs, probs=seq(0,1,0.2), na.rm=TRUE)
     hist(cvs, breaks=50, main="")
     title(paste("histogram of", x,  "CVs from QC samples"), line=2.7)

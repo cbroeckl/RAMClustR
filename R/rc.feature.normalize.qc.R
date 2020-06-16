@@ -95,6 +95,8 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
     mslev <- 2
   }
   
+  ord.corrected <- rep(FALSE, ncol(data1))
+  
   data1.median <- apply(data1, 2, "median", na.rm = TRUE)
   data1.min <- apply(data1, 2, 'min', na.rm = TRUE)
   
@@ -189,6 +191,9 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
       
       if(length(do.ord.correct) == 0) next
       
+      ## record which features have experienced correction
+      ord.corrected[do.ord.correct] <- TRUE
+      
       y <- data1.qc.batch.fc[,do.ord.correct, drop = FALSE]
       
       p <- predict(
@@ -262,6 +267,8 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
         
         if(length(do.ord.correct) == 0) next
         
+        ## record which features have experienced correction
+        ord.corrected[do.ord.correct] <- TRUE
         y <- data2.qc.batch.fc[,do.ord.correct, drop = FALSE]
         
         p <- predict(
@@ -284,13 +291,17 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
     if(!is.null(ramclustObj$history$normalize.tic)) {"additionally "}, 
     "by linearly regressing run order versus qc feature intensities to account for instrument signal intensity drift.", 
     " Only features with a regression pvalue less than ", p.cut,
-    " and an r-squared greater than ", rsq.cut, " were corrected."
+    " and an r-squared greater than ", rsq.cut, " were corrected.", 
+    "  Of ", length(ord.corrected), " features, ", length(which(ord.corrected)), 
+    if(length(which(ord.corrected)) >1) {" were corrected"} else {" was corrected"},
+    " for run order effects", 
+    if(length(batches)>1) {
+      " in at least one batch.  Batch effects were normalized to median intensity for each feature."
+      } else {"."}
   )
   
-  if(output.plot) {
-    warning('no ouput plots enabled.', '\n')
-  }
   
+  cat(ramclustObj$history$normalize.batch.qc)
   
   return(ramclustObj)
 }

@@ -120,6 +120,9 @@ rc.feature.filter.cv  <- function(
     if(is.null(RC$MSMSdata)) {" in MSdata set"} else {" in MS or MSMSdata sets"},
     " were retained. ",   length(which(!keep))," of ", length(keep), " features were removed."
   )
+  
+  cat(ramclustObj$history$filter.features)
+  
   return(ramclustObj)
 }
 

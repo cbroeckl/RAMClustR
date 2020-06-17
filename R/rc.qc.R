@@ -104,6 +104,7 @@ rc.qc<-function(ramclustObj=NULL,
   
   
   ## PCA of QC samples
+  ## histogram of feature and/or compound CVs for QC samples
   
   qc <- which(qc)
   
@@ -114,9 +115,9 @@ rc.qc<-function(ramclustObj=NULL,
     
     ## PCA plot
     td <- ramclustObj[[x]]
-    if(!is.null(ramclustObj$MSMSdata) & x == "MSdata") {
-      td <- td + ramclustObj$MSMSdata
-    }
+    # if(!is.null(ramclustObj$MSMSdata) & x == "MSdata") {
+    #   td <- td + ramclustObj$MSMSdata
+    # }
     PCA<-pcaMethods::pca(td, scale=scale, nPcs=npc, center=TRUE)
     sc<-PCA@scores
     write.csv(sc, file = paste0("QC/", outfile.basename, "_", x, "_pcascores.csv"))
@@ -147,9 +148,9 @@ rc.qc<-function(ramclustObj=NULL,
       ramclustObj$qc.cv.feature <- cvs
       ramclustObj$qc.cv.feature.msdata <- cvs
       if(!is.null(ramclustObj$MSMSdata)) {
-        sds<-apply(ramclustObj$MSMSdata, 2, FUN="sd", na.rm=TRUE)
+        sds<-apply(ramclustObj$MSMSdata[qc,], 2, FUN="sd", na.rm=TRUE)
         #cat(sds, '\n')
-        means<-apply(ramclustObj$MSMSdata, 2, FUN="mean", na.rm=TRUE)
+        means<-apply(ramclustObj$MSMSdata[qc,], 2, FUN="mean", na.rm=TRUE)
         msms.cvs<-sds/means
         ramclustObj$qc.cv.feature.msmsdata <- msms.cvs
         cvs <- pmin(ramclustObj$qc.cv.feature.msdata, msms.cvs)

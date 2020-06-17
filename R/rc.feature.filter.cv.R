@@ -40,8 +40,7 @@ rc.feature.filter.cv  <- function(
     stop('cannot perform feature removal after clustering', '\n', 
          '       please run rc.feature.cv.filter before clustering', '\n')
   }
-  
-  
+
   do.sets <- c("MSdata", "MSMSdata")
   if(is.null(ramclustObj$MSMSdata)) {
     do.sets <- do.sets[!(do.sets %in% "MSMSdata")]
@@ -78,41 +77,67 @@ rc.feature.filter.cv  <- function(
   for(x in do.sets) {
     td <- ramclustObj[[x]]
     sds<-apply(td[qc,], 2, FUN="sd", na.rm=TRUE)
-    #cat(sds, '\n')
     means<-apply(td[qc,], 2, FUN="mean", na.rm=TRUE)
     cvs<-sds/means
+    if(x == "MSdata") {
+      ramclustObj$qc.cv.feature.msdata <- cvs
+    } else {
+      ramclustObj$qc.cv.feature.msmsdata <- cvs
+      ramclustObj$qc.cv.feature <- pmin(
+        ramclustObj$qc.cv.feature.msdata,
+        ramclustObj$qc.cv.feature.msmsdata
+      )
+    }
     hist(cvs, main = x, xlab = "CV")
     keep[which(cvs <= max.cv)] <- TRUE
+    cat(x, ": ", length(which(cvs <= max.cv)), "passed the CV filter", '\n')
     hist(cvs[which(cvs <= max.cv)], add = TRUE, col = "gray")
   }
   
   ## filter to keep only 'good' features
-  
-  ramclustObj$MSdata <- ramclustObj$MSdata[,keep]
-  ramclustObj$msint <- ramclustObj$msint[keep]
-  if(!is.null(ramclustObj$MSdata_raw)) {
-    ramclustObj$MSdata_raw <- ramclustObj$MSdata_raw[,keep]
+  l <- sapply(1:length(ramclustObj), FUN = function(x) length(ramclustObj[[x]]))
+  l <- which(l == ncol(ramclustObj$MSdata))
+  for(i in l) {
+    ramclustObj[[i]] <- ramclustObj[[i]][keep]
   }
   
-  if(!is.null(ramclustObj$MSMSdata)) {
-    ramclustObj$MSMSdata <- ramclustObj$MSMSdata[,keep]
-    ramclustObj$msmsint <- ramclustObj$msmsint[keep]
-    if(!is.null(ramclustObj$MSMSdata_raw)) {
-      ramclustObj$MSMSdata_raw <- ramclustObj$MSMSdata_raw[,keep]
-    }
+  nc <- sapply(1:length(ramclustObj), FUN = function(x) ncol(ramclustObj[[x]]))
+  n <- sapply(1:length(nc), FUN = function(x) is.null(nc[[x]]))
+  for(i in 1:length(n)) {
+    if(n[i]) nc[[i]] <- 0
+  }
+  nc <- unlist(nc)
+  nc <- which(nc == ncol(ramclustObj$MSdata))
+  for(i in nc) {
+    ramclustObj[[i]] <- ramclustObj[[i]][,keep]
   }
   
-  ramclustObj$frt <- ramclustObj$frt[keep]
-  ramclustObj$fmz <- ramclustObj$fmz[keep]
-  ramclustObj$featnames <- ramclustObj$featnames[keep]
-  ramclustObj$xcmsOrd <- ramclustObj$xcmsOrd[keep]
   
-  if(!is.null(ramclustObj$qc$MSdata)) {
-    ramclustObj$qc$MSdata_raw <- ramclustObj$qc$MSdata_raw[,keep]
-  }
-  if(!is.null(ramclustObj$qc$MSMSdata)) {
-    ramclustObj$qc$MSMSdata_raw <- ramclustObj$qc$MSMSdata_raw[,keep]
-  }
+  # ramclustObj$MSdata <- ramclustObj$MSdata[,keep]
+  # ramclustObj$msint <- ramclustObj$msint[keep]
+  # if(!is.null(ramclustObj$MSdata_raw)) {
+  #   ramclustObj$MSdata_raw <- ramclustObj$MSdata_raw[,keep]
+  # }
+  # 
+  # if(!is.null(ramclustObj$MSMSdata)) {
+  #   ramclustObj$MSMSdata <- ramclustObj$MSMSdata[,keep]
+  #   ramclustObj$msmsint <- ramclustObj$msmsint[keep]
+  #   if(!is.null(ramclustObj$MSMSdata_raw)) {
+  #     ramclustObj$MSMSdata_raw <- ramclustObj$MSMSdata_raw[,keep]
+  #   }
+  # }
+  # 
+  # ramclustObj$frt <- ramclustObj$frt[keep]
+  # ramclustObj$fmz <- ramclustObj$fmz[keep]
+  # ramclustObj$featnames <- ramclustObj$featnames[keep]
+  # ramclustObj$xcmsOrd <- ramclustObj$xcmsOrd[keep]
+  # 
+  # if(!is.null(ramclustObj$qc$MSdata)) {
+  #   ramclustObj$qc$MSdata_raw <- ramclustObj$qc$MSdata_raw[,keep]
+  # }
+  # if(!is.null(ramclustObj$qc$MSMSdata)) {
+  #   ramclustObj$qc$MSMSdata_raw <- ramclustObj$qc$MSMSdata_raw[,keep]
+  # }
   
   ramclustObj$history$filter.features <- paste0(
     "Features were filtered based on their qc sample CV values.",

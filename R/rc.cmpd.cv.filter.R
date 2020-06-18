@@ -1,4 +1,4 @@
-#' rc.feature.filter.cv
+#' rc.cmpd.filter.cv
 #'
 #' extractor for xcms objects in preparation for clustering  
 #'
@@ -20,10 +20,10 @@
 #' @author Corey Broeckling
 #' @export
 
-rc.feature.filter.cv  <- function(
+rc.cmpd.filter.cv  <- function(
   ramclustObj=NULL,
   qc.tag = "QC",
-  max.cv = 0.5
+  max.cv = 0.3
 ) { 
   
   ## CHECKS
@@ -36,13 +36,12 @@ rc.feature.filter.cv  <- function(
     stop("qc.tag = NULL; qc.tag must be defined to enable QC variance examination.", '\n')
   }
   
-  if(!is.null(ramclustObj$SpecAbund)) {
-    stop('cannot perform feature removal after clustering', '\n', 
-         '       please run rc.feature.cv.filter before clustering', '\n')
+  if(is.null(ramclustObj$SpecAbund)) {
+    stop('cannot perform compound removal before clustering', '\n', 
+         '       please run rc.ramclustr before clustering', '\n')
   }
   
-  
-  do.sets <- c("MSdata", "MSMSdata")
+  do.sets <- c("SpecAbund")
   if(is.null(ramclustObj$MSMSdata)) {
     do.sets <- do.sets[!(do.sets %in% "MSMSdata")]
   } 
@@ -73,53 +72,31 @@ rc.feature.filter.cv  <- function(
   
   ## find 'good' features, acceptable CV at either
   ## MS or MSMS level results in keeping
-  keep <- rep(FALSE, ncol(ramclustObj$MSdata))
-  par(mfrow = c(1, length(do.sets)))
+  keep <- rep(FALSE, ncol(ramclustObj$SpecAbund))
+  # par(mfrow = c(1, length(do.sets)))
   for(x in do.sets) {
     td <- ramclustObj[[x]]
     sds<-apply(td[qc,], 2, FUN="sd", na.rm=TRUE)
     #cat(sds, '\n')
     means<-apply(td[qc,], 2, FUN="mean", na.rm=TRUE)
     cvs<-sds/means
-    hist(cvs, main = x, xlab = "CV")
+    # hist(cvs, main = x, xlab = "CV")
     keep[which(cvs <= max.cv)] <- TRUE
-    hist(cvs[which(cvs <= max.cv)], add = TRUE, col = "gray")
+    # hist(cvs[which(cvs <= max.cv)], add = TRUE, col = "gray")
   }
   
   ## filter to keep only 'good' features
   
-  ramclustObj$MSdata <- ramclustObj$MSdata[,keep]
-  ramclustObj$msint <- ramclustObj$msint[keep]
-  if(!is.null(ramclustObj$MSdata_raw)) {
-    ramclustObj$MSdata_raw <- ramclustObj$MSdata_raw[,keep]
-  }
+  ramclustObj$cmpd.use <- keep
   
-  if(!is.null(ramclustObj$MSMSdata)) {
-    ramclustObj$MSMSdata <- ramclustObj$MSMSdata[,keep]
-    ramclustObj$msmsint <- ramclustObj$msmsint[keep]
-    if(!is.null(ramclustObj$MSMSdata_raw)) {
-      ramclustObj$MSMSdata_raw <- ramclustObj$MSMSdata_raw[,keep]
-    }
-  }
-  
-  ramclustObj$frt <- ramclustObj$frt[keep]
-  ramclustObj$fmz <- ramclustObj$fmz[keep]
-  ramclustObj$featnames <- ramclustObj$featnames[keep]
-  ramclustObj$xcmsOrd <- ramclustObj$xcmsOrd[keep]
-  
-  if(!is.null(ramclustObj$qc$MSdata)) {
-    ramclustObj$qc$MSdata_raw <- ramclustObj$qc$MSdata_raw[,keep]
-  }
-  if(!is.null(ramclustObj$qc$MSMSdata)) {
-    ramclustObj$qc$MSMSdata_raw <- ramclustObj$qc$MSMSdata_raw[,keep]
-  }
-  
-  ramclustObj$history$filter.features <- paste0(
-    "Features were filtered based on their qc sample CV values.",
-    " Only features with CV vaules less than or equal to ", max.cv, 
-    if(is.null(RC$MSMSdata)) {" in MSdata set"} else {" in MS or MSMSdata sets"},
-    " were retained. ",   length(which(!keep))," of ", length(keep), " features were removed."
+  ramclustObj$history$filter.cmpds <- paste0(
+    "Compounds were filtered based on their qc sample CV values.",
+    " All compounds with CV vaules greater than ", max.cv, 
+    " in the cluster intensity (SpecAbund) dataset",
+    " were removed. ",   length(which(!keep))," of ", length(keep), " compounds were removed."
   )
+  
+  cat(ramclustObj$history$filter.cmpds)
+  
   return(ramclustObj)
 }
-

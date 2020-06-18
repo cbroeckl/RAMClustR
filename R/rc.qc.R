@@ -46,7 +46,7 @@ rc.qc<-function(ramclustObj=NULL,
   }
   
   do.sets <- c("MSdata", "SpecAbund")
-
+  
   if(is.null(ramclustObj$SpecAbund)) {
     do.sets <- do.sets[!(do.sets %in% "SpecAbund")]
   } 
@@ -76,7 +76,15 @@ rc.qc<-function(ramclustObj=NULL,
   ## create directory
   dir.create("QC")
   
-
+  ## if cv threshold for compounds has been applied, use it, else create 'all cmpds' vector
+  if(!is.null(ramclustObj$SpecAbund)) {
+    if(!is.null(ramclustObj$cmpd.use)) {
+      cmpd.use <- ramclustObj$cmpd.use
+    } else {
+      cmpd.use <- rep(TRUE, length(ramclustObj$ann))
+    }
+  }
+  
   #visualize clustering
   ## if clustering was perfect, we should see a normal distribution of 
   ## correlational r values 1 step from the diagonal
@@ -85,10 +93,10 @@ rc.qc<-function(ramclustObj=NULL,
   if(!is.null(ramclustObj$clrt)) {
     
     ## create file to collect figures. 
-    pdf(file=paste("QC/", "ramclust_clustering_diagnostic.pdf", sep=""), useDingbats=FALSE, width=8, height=8)  
-    
-    o<-order(ramclustObj$clrt)
-    c<-cor(ramclustObj$SpecAbund[,o])
+    pdf(file=paste("QC/", "ramclust_clustering_diagnostic.pdf", sep=""), 
+        useDingbats=FALSE, width=8, height=8)  
+    o<-order(ramclustObj$clrt[cmpd.use])
+    c<-cor(ramclustObj$SpecAbund[,cmpd.use][,o])
     d<-diag(as.matrix((c[2:(nrow(c)), 1:ncol(c)-1])))
     hist(d, breaks=50, main="")
     title(main="histogram of pearson's r for each cluster to its adjacent cluster (by time)", cex.main=0.8,
@@ -114,7 +122,12 @@ rc.qc<-function(ramclustObj=NULL,
   for(x in do.sets) {
     
     ## PCA plot
-    td <- ramclustObj[[x]]
+    if(x == "SpecAbund") {
+      td <- ramclustObj[[x]][,cmpd.use]
+    } else {
+      td <- ramclustObj[[x]]
+    }
+    
     # if(!is.null(ramclustObj$MSMSdata) & x == "MSdata") {
     #   td <- td + ramclustObj$MSMSdata
     # }
@@ -169,10 +182,10 @@ rc.qc<-function(ramclustObj=NULL,
     
     if(x == "SpecAbund") {
       out <- data.frame(
-        "cmpd" = ramclustObj$cmpd,
-        "annotation" = ramclustObj$ann,
-        "rt" = ramclustObj$clrt, 
-        "rdsd" = ramclustObj$clrtsd,
+        "cmpd" = ramclustObj$cmpd[cmpd.use],
+        "annotation" = ramclustObj$ann[cmpd.use],
+        "rt" = ramclustObj$clrt[cmpd.use], 
+        "rdsd" = ramclustObj$clrtsd[cmpd.use],
         "mean.int" = means,
         "cv" = cvs
       )
@@ -208,8 +221,9 @@ rc.qc<-function(ramclustObj=NULL,
     "rc.qc function within ramclustR. Summary statistics are provided",
     "including the relative standard deviation of QC samples to all",
     "samples in PCA space, as well as the relative standard deviation",
-    "of each feature/compound in QC samples, plotted as a histogram."
-    )
+    "of each feature/compound in QC samples, plotted as a histogram.", 
+    if(!is.null(ramclustObj$cmpd.use)) {" Only compounds which passed the CV filter are reported."}
+  )
   
   return(ramclustObj)
 }

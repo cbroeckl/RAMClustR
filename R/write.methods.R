@@ -17,7 +17,8 @@
 #' @author Corey Broeckling
 #' @export
 
-write.methods <- function (ramclustObj = NULL,
+write.methods <- function (
+  ramclustObj = NULL,
   filename = NULL
 ) {
   

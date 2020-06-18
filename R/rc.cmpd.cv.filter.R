@@ -88,6 +88,7 @@ rc.cmpd.filter.cv  <- function(
   ## filter to keep only 'good' features
   
   ramclustObj$cmpd.use <- keep
+  ramclustObj$qc.cv.cmpd.full <- cvs
   
   ramclustObj$history$filter.cmpds <- paste0(
     "Compounds were filtered based on their qc sample CV values.",

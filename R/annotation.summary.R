@@ -32,6 +32,7 @@ annotation.summary<-function(ramclustObj = NULL,
     }
   } else {
     outfile <- paste0(getwd(), "/spectra/annotationSummary.csv")
+    if(!dir.exists('spectra')) {dir.create('spectra')}
   }
   
   out<- data.frame("cmpd" = ramclustObj$cmpd,
@@ -39,6 +40,13 @@ annotation.summary<-function(ramclustObj = NULL,
                    "annotation" = ramclustObj$ann,
                    "ann.confidence" = ramclustObj$annconf,
                    "median signal" = as.vector(apply(ramclustObj$SpecAbund, 2, "median"))) 
+  
+  if(any(names(ramclustObj) == "cmpd.use")) {
+    out<- data.frame(out, "qc.cv.acceptable" = ramclustObj$cmpd.use)
+  }
+  if(any(names(ramclustObj) == "qc.cv.cmpd.full")) {
+    out<- data.frame(out, "qc.cv" = ramclustObj$qc.cv.cmpd.full)
+  }
   
   if(any(names(ramclustObj) == "M")) {
     out<- data.frame(out, "inferred M" = ramclustObj$M)

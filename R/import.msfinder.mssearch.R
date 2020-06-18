@@ -213,8 +213,8 @@ import.msfinder.mssearch <- function (
   
   ramclustObj$history$msfinder <- paste(
     "MSFinder (Tsugawa 2016) was used for spectral matching,",
-  "formula inference, and tentative structure assignment,",
-  "and results were imported into the RAMClustR object.")
+    "formula inference, and tentative structure assignment,",
+    "and results were imported into the RAMClustR object.")
   
   return(ramclustObj)
   

@@ -308,7 +308,7 @@ rc.ramclustr  <- function(
   }
   
   ramclustObj$history$ramclustr <- paste0(
-    "Features were clustered using the ramclustR algorithm. Paremeter settings were as follows: ",
+    "Features were clustered using the ramclustR algorithm (Broeckling 2014). Parameter settings were as follows: ",
     "st = ", st,
     ", sr = ", sr, 
     ", maxt = ", maxt,

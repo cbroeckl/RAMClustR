@@ -32,6 +32,10 @@ impRamSearch<-function(
   out<-readLines(ramsearchout)
   ramclustObj$rs.out <- out
   
+  ramclustObj$history$ramsearch <- paste0(
+    "Annotation was performed in RAMSearch (Broeckling 2016), and annotations imported in the the ramclustR object. "
+  )
+  
   return(ramclustObj)
 }
 

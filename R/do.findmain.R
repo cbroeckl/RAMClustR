@@ -189,7 +189,7 @@ do.findmain <- function (
       ionmode = mode, 
       mzabs = mzabs.error, 
       ppm = ppm.error
-      )
+    )
     summarytable <- summary(out)
     
     # summarytable[which(is.na(summarytable[, "medppm"])), 
@@ -300,7 +300,7 @@ do.findmain <- function (
       ramclustObj$M.ann[[i]] <- ramclustObj$M.ann.findmain[[i]]
     }
   }
-
+  
   
   for(i in 1:length(ramclustObj$precursor.mz)) {
     if(is.vector(ramclustObj$M.ann[[i]])) next
@@ -324,30 +324,30 @@ do.findmain <- function (
     par(xpd = TRUE)
     for (cl in cmpd) {
       InterpretMSSpectrum::PlotSpec(x = ramclustObj$M.ann.ramclustr[[cl]], 
-               txt = ramclustObj$M.ann.ramclustr[[cl]][, c("mz", "adduct")], 
-               cutoff = 0, masslab = 0, 
-               ylim = c(0,  1.1 * max(ramclustObj$M.ann.ramclustr[[cl]][, 2]))
-               )
+                                    txt = ramclustObj$M.ann.ramclustr[[cl]][, c("mz", "adduct")], 
+                                    cutoff = 0, masslab = 0, 
+                                    ylim = c(0,  1.1 * max(ramclustObj$M.ann.ramclustr[[cl]][, 2]))
+      )
       title(main = list(
         paste(
           cl, ":", "M.ramclustr =", 
           round(ramclustObj$M.ramclustr[cl], digits = 4), 
           "( +/-", round(ramclustObj$M.ppm.ramclustr[cl], 
-          digits = 1), "ppm )"), font = if (ramclustObj$use.findmain[cl]) {
-                                               1
-                                             } else {
-                                               2
-                                             }, 
+                         digits = 1), "ppm )"), font = if (ramclustObj$use.findmain[cl]) {
+                           1
+                         } else {
+                           2
+                         }, 
         col = if (ramclustObj$use.findmain[cl]) {
-                                               1
-                                             } else {
-                                               2
-                                             })
-        )
+          1
+        } else {
+          2
+        })
+      )
       InterpretMSSpectrum::PlotSpec(x = ramclustObj$M.ann.findmain[[cl]], txt = ramclustObj$M.ann.findmain[[cl]][, 
-                                                                                            c("mz", "adduct")], cutoff = 0, masslab = 0, 
-               ylim = c(0, 1.1 * max(ramclustObj$M.ann.ramclustr[[cl]][, 
-                                                                       2])))
+                                                                                                                 c("mz", "adduct")], cutoff = 0, masslab = 0, 
+                                    ylim = c(0, 1.1 * max(ramclustObj$M.ann.ramclustr[[cl]][, 
+                                                                                            2])))
       title(main = list(paste(cl, ":", "M.findmain =", 
                               round(ramclustObj$M.findmain[cl], digits = 4), 
                               "( +/-", round(ramclustObj$M.ppm.findmain[cl], 
@@ -500,12 +500,14 @@ do.findmain <- function (
                                ".ms"))
     }
   }
-  ramclustObj$history$do.findmain <- paste(" Molecular weight was inferred from in-source spectra (Broeckling 2016) using the do.findmain function, which calls the ", 
-                               "interpretMSSpectrum package (Jaeger 2016). ", "Parameters for do.findmain were set to: ", 
-                               "mode = ", mode, ", mzabs.error = ", mzabs.error, ", ppm.error = ", 
-                               ppm.error, ", ads = ", paste(ads, collapse = " "), ", nls = ", 
-                               paste(nls, collapse = " "), ", scoring = ", scoring, 
-                               ", and use.z = ", use.z, ".", '\n', '\n', sep = "")
+  ramclustObj$history$do.findmain <- paste(
+    " Molecular weight was inferred from in-source spectra (Broeckling 2016) using the do.findmain function, which calls the ", 
+    "interpretMSSpectrum package (Jaeger 2016). ", 
+    "Parameters for do.findmain were set to: ", 
+    "mode = ", mode, ", mzabs.error = ", mzabs.error, ", ppm.error = ", 
+    ppm.error, ", ads = ", paste(ads, collapse = " "), ", nls = ", 
+    paste(nls, collapse = " "), ", scoring = ", scoring, 
+    ", and use.z = ", use.z, ".", sep = "")
   cat("finished", "\n")
   return(ramclustObj)
   

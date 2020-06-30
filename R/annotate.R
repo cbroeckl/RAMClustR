@@ -179,6 +179,8 @@ annotate<-function(ramclustObj = NULL,
   ## if ramsearch has been imported, annotate those compounds first
   ## this is prioritized due to the manual nature of the process.  
   if(ramsearch) {
+    out <- ramclustObj$rs.out
+    
     
     ##these items will be filled and added to the RC object
     ramclustObj$rs.spec	<-as.list(rep("", max(ramclustObj$featclus)))

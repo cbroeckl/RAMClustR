@@ -2,7 +2,6 @@
 #'
 #' After running RAMSearch (msp) and MSFinder on .mat or .msp files, import the spectral search results
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
-#' @param msfinder.dir full path to MSFinder directory - used for naming refinement.
 #' @param standardize.names logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)
 #' @param min.msms.score numerical: what is the minimum MSFinder similarity score acceptable.  default = 6.5
 #' @param database.priority character.  Formula assignment prioritization based on presence in one or more (structure) databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just databases in MSFinder parameters).  If any database is set, the best formula match to any of those databases is selected, rather than the best formula match overall.  If NULL, this will be set to include all selected databases (from ramclustObj$msfinder.dbs, retreieved from search output during import.msfinder.formulas(), when available) or 'all'.  
@@ -36,23 +35,15 @@
 #' @export 
 
 annotate<-function(ramclustObj = NULL,
-                   msfinder.dir = "C:/MSFinder/MSFINDER ver 3.24",
                    standardize.names = FALSE,
                    min.msms.score = 6.5,
                    database.priority = NULL,
-                   # database.score = TRUE,
                    citation.score = TRUE, 
-                   # rescore.structure = TRUE,
-                   # form.structure.scoring = TRUE,
                    find.inchikey = TRUE,
                    taxonomy.inchi = NULL,
                    reset = TRUE
 ) {
   
-  
-  if(!dir.exists(msfinder.dir)) {
-    stop("msfinder directory does not exist: please set 'msfinder.dir' option as your full msfinder directory path")
-  }
   
   if(is.null(ramclustObj)) {
     stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
@@ -103,42 +94,6 @@ annotate<-function(ramclustObj = NULL,
   }
   
   use.short.inchikey = TRUE
-  
-  ## look for structure data files from MSFinder
-  ## and select most advanced version. 
-  ## new MSFinder uses binary format, not easily read.  move away from this approach.
-  sfile<-list.files(paste0(msfinder.dir, "/Resources"), pattern = "ExistStructureDB_vs")
-  
-  # if(length(sfile)==0) {
-  #   stop("no structure DB file found in msfinder.dir / Resources")
-  # }
-  # 
-  if(length(sfile) > 1) {
-    sfile <- sfile[which.max(as.numeric(gsub(".esd", "", gsub("ExistStructureDB_vs", "", sfile))))]
-  }
-  
-  if(length(sfile) == 0) {
-    
-    sfile<-list.files(paste0(msfinder.dir, "/Resources"), pattern = "MsfinderStructureDB-VS")
-    if(length(sfile)==0) {
-      stop("no structure DB file found in msfinder.dir / Resources")
-    }
-    
-    if(length(sfile) > 1) {
-      r <- grep("_bin", sfile, fixed = TRUE)
-      if(length(r) > 0) {
-        sfile <- sfile[-r]
-      }
-      if(length(sfile) > 1) {
-        sfile <- sfile[which.max(as.numeric(gsub(".esd", "", gsub("MsfinderStructureDB-VS", "", sfile))))] 
-      }
-    }
-  }
-  
-  ## read in reference data
-  ## this is not stable.  vers 3.30 of MSFinder is now using a binary format. 
-  reference.data<-read.delim2(paste0(msfinder.dir, "/Resources/", sfile), header = TRUE, na.strings = "N/A", quote = "", stringsAsFactors = FALSE)
-  
   
   ## determine what annotation data we have available
   if(any(names(ramclustObj)=="rs.out")) {
@@ -283,7 +238,7 @@ annotate<-function(ramclustObj = NULL,
   
   ## MSFinder structure section
   if(structure) {
-
+    
     tmpdb <- as.list(rep("", length(ramclustObj$msfinder.structure.details)))
     summary <- as.list(rep("", length(ramclustObj$msfinder.structure.details)))
     dbs <- vector(length = 0, mode = 'character')
@@ -375,6 +330,7 @@ annotate<-function(ramclustObj = NULL,
     
     ## annotation section : fill template.
     for(i in 1:length(ramclustObj$ann)) {
+      # cat(i, "  ")
       db.m <- data.frame(lapply(1:length(database.priority), FUN = function(x) grepl(database.priority[x], ramclustObj$msfinder.formula.details[[i]][,"resourcenames"])))
       db.m <- apply(db.m, 1, FUN = 'any')
       if(!any(db.m))  next
@@ -392,20 +348,7 @@ annotate<-function(ramclustObj = NULL,
     for(i in 1:length(ramclustObj$ann)) {
       # cat(i, " ")
       if(is.na(ramclustObj$msfinder.formula[i])) {
-        # keep <- vector(length = 0)
-        # for(j in 1:length(ramclustObj$msfinder.structure.details[[i]])) {
-        #   # if(!is.na(keep)) break
-        #   for(k in 1:length(database.priority)) {
-        #     # if(!is.na(keep)) break
-        #     if(is.list(ramclustObj$msfinder.structure.details[[i]])) {
-        #       if(any(grepl(database.priority[k], ramclustObj$msfinder.structure.details[[i]][[j]][["structures"]][,"resources"]))) {
-        #         keep <- c(keep, j)
-        #         # if(!is.na(keep)) break
-        #       }
-        #     }
-        #   }
-        # }
-        
+
         ## which formulas can be found in a priorty database?  If none, skip to next compound
         db.m <- data.frame(lapply(1:length(database.priority), FUN = function(x) grepl(database.priority[x], ramclustObj$msfinder.formula.details[[i]][,"resourcenames"])))
         db.m <- apply(db.m, 1, FUN = 'any')
@@ -442,21 +385,14 @@ annotate<-function(ramclustObj = NULL,
               tmp[,j] <- 0
             }
           }
+        } else {
+          next
         }
         
         use <- c("totalhrrulesscore", "totalbondcleavagescore", "totalmassaccuracyscore", 
                  "totalfragmentlinkagescore", "totalbonddissociationenergyscore", 
                  "databasescore", "substructureassignmentscore", "rtsimilarityscore", 
                  "risimilarityscore", "f.totalscore") 
-        
-         # if(database.score) {
-         #   use <- use[use!="databasescore"]
-         # }
-         # 
-         # 
-         # if(rescore.structure) {
-         #   tmp$totalscore <- rowSums(tmp[,use])
-         # }
         
         ## if compound inchikey (id) is in taxonomy.inchi vector, adjust total score.
         if(!is.null(taxonomy.inchi)) {
@@ -480,16 +416,6 @@ annotate<-function(ramclustObj = NULL,
           tmp$totalscore <- tmp$totalscore + (tmp$totalscore * 0.2 *  taxonomy.score)
         }
         
-        # if(!database.score) {tmp[,"totalscore"] <- tmp[,"totalscore"] - (0.5*tmp[,"databasescore"])}
-        # tmp[,"combined.score"] <- tmp[,"f.totalscore"] * tmp[,"totalscore"]
-        # if(form.structure.scoring) {
-        #   tmp <- tmp[order(tmp$combined.score, decreasing = TRUE),]
-        # } else {
-        #   tmp <- tmp[order(tmp$totalscore, decreasing = TRUE),]
-        # }
-        #
-        # }
-        
         summary[[i]] <- tmp
         tar.inchikey <- tmp$id[1]
         ramclustObj$msfinder.formula[i] <- tmp$f.name[1]
@@ -499,71 +425,17 @@ annotate<-function(ramclustObj = NULL,
         ramclustObj$msfinder.structure.fragments[[i]] <- {
           ramclustObj$msfinder.structure.details[[i]][[tmp$f.name[1]]][["fragments"]][[tmp$id[1]]]
         }
-        rm(tmp)
-      }
-    } 
-    names(summary) <- ramclustObj$cmpd
-    ramclustObj$msfinder.summary <- summary
-    # ramclustObj$msfinder.structure<- as.list(rep(NA, length(ramclustObj$msfinder.structure.details)))
-    # names(ramclustObj$msfinder.structure) <- ramclustObj$cmpd
-    
-    ## look up smiles and inchi from MSFinder reference data using inchikey
-    
-    ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
-    inchikey <- grep("inchikey", names(reference.data),  ignore.case = TRUE)
-    
-    if(length(inchikey) == 2) {
-      ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
-      inchikey.short<- inchikey[grep("short", names(reference.data)[inchikey], ignore.case = TRUE)]
-      inchikey <- inchikey[which(inchikey != inchikey.short)]
-    }
-    
-    if(length(inchikey) > 2) {
-      stop("too many inchikey columns in MSFinder table - please report error to ", utils::maintainer('RAMClustR'),  '\n')
-    }
-    
-    for(i in 1:length(ramclustObj$ann)) {
-      if(i > length(ramclustObj$msfinder.structure)) next
-      if( is.data.frame(ramclustObj$msfinder.structure[[i]]) && (ramclustObj$cmpd[i] == ramclustObj$ann[i]) )  {
-        
-        tmpinch<-ramclustObj$msfinder.structure[[i]][1, "inchikey"]
-        tmpinch.short<-unlist(strsplit(tmpinch, "-"))[1]
-        if(use.short.inchikey & exists("inchikey.short")) {
-          ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
-          drow<-grep(tmpinch.short, reference.data[,inchikey.short])
-        } else {
-          ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
-          drow<-grep(tmpinch, reference.data[,inchikey])
-        }
-        # d[drow,]
-        # tmp<- ramclustObj$msfinder.structure[[i]][1, "inchikey"]
-        
         ramclustObj$inchikey[i]<-ramclustObj$msfinder.structure[[i]][1,"inchikey"]
         ramclustObj$ann[i]<-ramclustObj$msfinder.structure[[i]][1,"name"]
         ramclustObj$smiles[i]<-ramclustObj$msfinder.structure[[i]][1,"smiles"]
         ramclustObj$annconf[i]<-2
         ramclustObj$dbid[i]<-ramclustObj$msfinder.structure[[i]][1,"resources"]
-        
-        if(length(drow) == 0) {
-          ramclustObj$ann[i]<-ramclustObj$msfinder.structure[[i]][1, "name"]
-        }
-        
-        if(length(drow) == 1) {
-          ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
-          ramclustObj$ann[i]<-reference.data[drow, "Title"]
-        }
-        
-        if(length(drow) > 1) {
-          ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
-          n<-reference.data[drow, "Title"]
-          nl<-nchar(n)
-          ramclustObj$ann[i]<-n[which.min(nl)]
-          ramclustObj$annconf[i]<-2
-        }
-        
-        
+        rm(tmp)
       }
-    }
+    } 
+    
+    names(summary) <- ramclustObj$cmpd
+    ramclustObj$msfinder.summary <- summary
   }
   
   if(find.inchikey) {
@@ -573,14 +445,16 @@ annotate<-function(ramclustObj = NULL,
       fill.inchis <- get.inchikey.from.name(
         cmpd.names = ramclustObj$ann[do], 
         citation.weights = FALSE)
-      if(nrow(fill.inchis) == 0) break
-      fill.inchis <- fill.inchis[!is.na(fill.inchis$inchikey),]
-      for(i in 1:length(do)) {
-        mtch <- which(ramclustObj$ann[do[i]] == fill.inchis[,"cmpd.name"])
-        # if(length(mtch) > 0) {break}
-        if(length(mtch)==0) {next}
-        ramclustObj$inchikey[do[i]] <- fill.inchis[mtch[1], "inchikey"]
+      if(nrow(fill.inchis) > 0)  {
+        fill.inchis <- fill.inchis[!is.na(fill.inchis$inchikey),]
+        for(i in 1:length(do)) {
+          mtch <- which(ramclustObj$ann[do[i]] == fill.inchis[,"cmpd.name"])
+          # if(length(mtch) > 0) {break}
+          if(length(mtch)==0) {next}
+          ramclustObj$inchikey[do[i]] <- fill.inchis[mtch[1], "inchikey"]
+        }
       }
+      
     }
   }
   

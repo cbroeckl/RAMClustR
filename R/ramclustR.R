@@ -55,7 +55,7 @@
 #' @importFrom graphics abline axis boxplot hist "legend" "par" "plot" "points" "title"
 #' @importFrom stats aggregate cor fitted lm loess median predict quantile sd weighted.mean
 #' @importFrom utils edit read.csv read.delim2 write.csv packageVersion
-#' @importFrom ff ff delete.ff
+#' @importFrom ff ff
 #' @importFrom fastcluster hclust
 #' @importFrom dynamicTreeCut cutreeDynamicTree
 #' @importFrom e1071 skewness
@@ -771,7 +771,7 @@ ramclustR  <- function(xcmsObj=NULL,
   
   ########
   # cleanup
-  ff::delete.ff(ffmat)
+  close(ffmat)
   rm(ffmat)
   gc()
   if(!is.null(fftempdir)) {

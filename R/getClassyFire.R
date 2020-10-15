@@ -3,9 +3,10 @@
 #' use classyfire web API to look up full ClassyFire heirarchy for each inchikey
 #' @details The $inchikey slot is used to look up the 
 #' 
-#' @param ramclustObj ramclustR object to ClassyFy
+#' @param ramclustObj ramclustR object to ClassyFy.  Must supply one of either ramclustObj or inchikey (see below)
+#' @param inchikey vector of text inchikeys to ClassyFy.  Must supply one of either ramclustObj or inchikey.
 #' @param get.all logical; if TRUE, when inchikey classyfire lookup fails, submits for classyfication.  Can be slow. max.wait (below) sets max time to spend on each compound before moving on. default = FALSE.
-#' @param max.wait  numeric; maximum time to wait per compound when 'get.all' = TRUE.   
+#' @param max.wait  numeric; maximum time (seconds) to wait per compound when 'get.all' = TRUE.   
 #' @param posts.per.minute  integer; a limit set when 'get.all' is true.  ClassyFire server accepts no more than 5 posts per minute when calculating new ClassyFire results.  Slows down submission process to keep server from denying access.  
 #' @return returns a ramclustR object.  new dataframe in $classyfire slot with rows equal to number of compounds.  
 #' @importFrom jsonlite fromJSON
@@ -24,11 +25,18 @@
 
 #' @export 
 
-getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10, posts.per.minute = 5) 
+getClassyFire <- function (ramclustObj = NULL, inchikey = NULL, get.all = TRUE, max.wait = 10, posts.per.minute = 5) 
 {
   
+  if(is.null(ramclustObj) & is.null(inchikey)) {
+    stop("must supply ramclustObj or vector of inchikeys as input.  i.e. ramclustObj = RC; inchikey = c('MCPFEAJYKIXPQF-DXZAWUHFSA-N','GLZPCOQZEFWAFX-JXMROGBWSA-N')", '\n')
+  }
+  
   if(is.null(ramclustObj)) {
-    stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+    ramclustObj <- list()
+    ramclustObj$cmpd <- paste0("C", 1:length(inchikey))
+    ramclustObj[['inchikey']] <- inchikey
+
   }
   
   if (is.null(ramclustObj$inchikey)) {
@@ -36,9 +44,11 @@ getClassyFire <- function (ramclustObj = NULL, get.all = TRUE, max.wait = 10, po
          "\n")
   }
   if (get.all & is.null(ramclustObj$smiles)) {
-    stop("obtaining new classyfication (get.all option) requires a smiles notation", 
-         "\n", "and no smiles slot found in ramclustObj.  Please first run 'getSmilesInchi()'", 
-         "\n")
+    warning(" - getting smiles from inchikey", '\n')
+    ramclustObj <- getSmilesInchi(ramclustObj = ramclustObj)
+    # stop("obtaining new classyfication (get.all option) requires a smiles notation", 
+    #      "\n", "and no smiles slot found in ramclustObj.  Please first run 'getSmilesInchi()'", 
+    #      "\n")
   }
   if (any(names(ramclustObj) == "classyfire")) {
     redo <- TRUE} else {redo <- FALSE}

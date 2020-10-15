@@ -1,7 +1,7 @@
 #' rc.cmpd.get.pubchem
 #'
-#' use PubChem API to look up pubchem data for compounds assigned annotates.
-#' @details Uses pubchem rest to retrieve standard pubchem properties for a compound.  The $inchikey slot and, if available, the MSFinder.structure CID value are used to look up descriptions in pubchem. Highest priority is for a listed pubchem CID from MSFinder.  Next the full inchikey is used.  If no match is returned from pubchem, the first block (bonds) is used.  Note that this discards stereochemistry. PubChem CID, a pubchem URL, smiles (canonical), inchi and other parameters are returned.  if smiles and inchi slots are alread present (from MSFinder, for example) pubchem smiles and inchi are used to fill in missing values only - not to replace MSFinder derived values. 
+#' use PubChem API to look up pubchem data for compounds assigned annotations.
+#' @details Uses pubchem rest to retrieve standard pubchem properties for a compound.  The $inchikey slot and, if available, the MSFinder.structure CID value are used to look up descriptions in pubchem. Highest priority is for a listed pubchem CID from MSFinder.  Next the full inchikey is used.  If no match is returned from pubchem, the first block (bonds) is used.  Note that this discards stereochemistry. PubChem CID, a pubchem URL, smiles (canonical), inchi and other parameters are returned.  if smiles and inchi slots are alread present (from MSFinder, for example) pubchem smiles and inchi are used to fill in missing values only - not to replace MSFinder derived values. You can create an artificial ramclustObj by creating a list with $inchikey and $cmpd (compound name) slots. 
 #' 
 #' @param ramclustObj ramclustR object. must contain a $inchikey slot and/or or a $MSfinder.structure slot in which to look for a pubchem CID. 
 #' @param all.properties logical - if TRUE, a long list of properties is returned.  if FALSE, a short list.  FALSE is faster, TRUE more comprehensive.
@@ -52,7 +52,7 @@ rc.cmpd.get.pubchem <- function(
   } else {
     msfinder <- TRUE
   }
-  for(i in 1:length(ramclustObj$inchikey)) {
+  for(i in 1:length(ramclustObj$inchikey)) {  ## change back to 1
     if(is.na(ramclustObj$inchikey[i])) {next}
     
     Sys.sleep(0.2)
@@ -237,6 +237,7 @@ rc.cmpd.get.pubchem <- function(
   if(all.properties) {
     fp <- tmp$Fingerprint2D
     tmp <- tmp[, (1:ncol(tmp))[-which(names(tmp) == "Fingerprint2D")]]
+    ramclustObj$pubchem.fp    <- fp
   }
   
   st <-tmp[,1:5]
@@ -244,7 +245,7 @@ rc.cmpd.get.pubchem <- function(
   
   ramclustObj$pubchem.cmpds <- st
   ramclustObj$pubchem.props <- tmp
-  ramclustObj$pubchem.fp    <- fp
+  
   
   if(get.synonyms) {
     cat('retreiving synonyms', '\n')

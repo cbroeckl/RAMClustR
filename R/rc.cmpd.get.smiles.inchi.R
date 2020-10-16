@@ -24,7 +24,7 @@
 #' @export 
 
 
-getSmilesInchi <- function(
+rc.cmpd.get.smiles.inchi <- function(
   ramclustObj = NULL,
   inchikey = NULL,
   ignore.stereo = TRUE

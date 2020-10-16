@@ -52,10 +52,14 @@ rc.cmpd.get.pubchem <- function(
   } else {
     msfinder <- TRUE
   }
+  
+  
   for(i in 1:length(ramclustObj$inchikey)) {  ## change back to 1
     if(is.na(ramclustObj$inchikey[i])) {next}
     
-    Sys.sleep(0.2)
+    time.start <- Sys.time()
+    
+    # Sys.sleep(0.2)
     #  for(i in 1:4) {
     cat("cmpd", i, '\n')
     
@@ -168,6 +172,15 @@ rc.cmpd.get.pubchem <- function(
     names(prop.vals) <- prop.names
     cmpd.props[[i]] <- prop.vals
     
+    # time.start <- Sys.time()
+    time.stop <- Sys.time()
+    proc.time <- formatC(time.stop - time.start)
+    if(attr(proc.time, "units") == "secs") {
+      proc.time <- as.numeric(proc.time[1])
+      if(proc.time < 0.2) {
+        Sys.sleep(0.2 - proc.time)
+      }
+    }
   }
   
   
@@ -251,8 +264,10 @@ rc.cmpd.get.pubchem <- function(
     cat('retreiving synonyms', '\n')
     syns <- as.list(rep(NA, length(ramclustObj$ann)))
     for(i in 1:length(syns)) {
-      if(is.na(st$InChIKey[i]))
-        Sys.sleep(0.2)
+      if(is.na(st$InChIKey[i])) next
+      
+      time.start <- Sys.time()
+      
       link <- paste0(
         "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/", 
         paste(st$InChIKey[i], collapse = ","), 
@@ -260,18 +275,28 @@ rc.cmpd.get.pubchem <- function(
       out<- tryCatch(suppressWarnings(jsonlite::fromJSON(link)), error = function(x) {return(NULL)})
       if(is.null(out$InformationList$Information)) next
       syns[[i]] <- unlist(out$InformationList$Information$Synonym)
+      
+      # time.start <- Sys.time()
+      time.stop <- Sys.time()
+      proc.time <- formatC(time.stop - time.start)
+      if(attr(proc.time, "units") == "secs") {
+        proc.time <- as.numeric(proc.time[1])
+        if(proc.time < 0.2) {
+          Sys.sleep(0.2 - proc.time)
+        }
+      }
     }
     ramclustObj$pubchem.synonyms <- syns
   }
   
-  ## this can be improved by direcly referencing other websites such as CHEBI or HMDB.
+  ## this may be improved by direcly referencing other websites such as CHEBI or HMDB.
   if(get.descriptions) {
     cat('retreiving descriptions', '\n')
     desc <- as.list(rep(NA, length(ramclustObj$ann)))
     for(i in 1:length(desc)) {
-      # for(i in 1:20) {
-      if(is.na(st$InChIKey[i]))
-        Sys.sleep(0.2)
+      
+      time.start <- Sys.time()
+      
       link <- paste0(
         "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/", 
         paste(st$InChIKey[i], collapse = ","), 
@@ -284,6 +309,16 @@ rc.cmpd.get.pubchem <- function(
       desc[[i]] <- out$InformationList$Information$Description[use]
       if(is.null(out$InformationList$Information$DescriptionURL)) next
       desc[[i]] <- paste(desc[[i]], out$InformationList$Information$DescriptionURL[use])
+      
+      # time.start <- Sys.time()
+      time.stop <- Sys.time()
+      proc.time <- formatC(time.stop - time.start)
+      if(attr(proc.time, "units") == "secs") {
+        proc.time <- as.numeric(proc.time[1])
+        if(proc.time < 0.2) {
+          Sys.sleep(0.2 - proc.time)
+        }
+      }
     }
     ramclustObj$pubchem.description <- desc
   }

@@ -24,10 +24,10 @@ rc.cmpd.get.pubchem(
 returns a ramclustR object.  new vector of $smiles and $inchi with length equal to number of compounds.
 }
 \description{
-use PubChem API to look up pubchem data for compounds assigned annotates.
+use PubChem API to look up pubchem data for compounds assigned annotations.
 }
 \details{
-Uses pubchem rest to retrieve standard pubchem properties for a compound.  The $inchikey slot and, if available, the MSFinder.structure CID value are used to look up descriptions in pubchem. Highest priority is for a listed pubchem CID from MSFinder.  Next the full inchikey is used.  If no match is returned from pubchem, the first block (bonds) is used.  Note that this discards stereochemistry. PubChem CID, a pubchem URL, smiles (canonical), inchi and other parameters are returned.  if smiles and inchi slots are alread present (from MSFinder, for example) pubchem smiles and inchi are used to fill in missing values only - not to replace MSFinder derived values.
+Uses pubchem rest to retrieve standard pubchem properties for a compound.  The $inchikey slot and, if available, the MSFinder.structure CID value are used to look up descriptions in pubchem. Highest priority is for a listed pubchem CID from MSFinder.  Next the full inchikey is used.  If no match is returned from pubchem, the first block (bonds) is used.  Note that this discards stereochemistry. PubChem CID, a pubchem URL, smiles (canonical), inchi and other parameters are returned.  if smiles and inchi slots are alread present (from MSFinder, for example) pubchem smiles and inchi are used to fill in missing values only - not to replace MSFinder derived values. You can create an artificial ramclustObj by creating a list with $inchikey and $cmpd (compound name) slots.
 }
 \references{
 Kim S, Thiessen PA, Bolton EE, Bryant SH. PUG-SOAP and PUG-REST: web services for programmatic access to chemical information in PubChem. Nucleic Acids Res. 2015;43(W1):W605-11.

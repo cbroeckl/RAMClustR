@@ -416,6 +416,9 @@ annotate<-function(ramclustObj = NULL,
           tmp$totalscore <- tmp$totalscore + (tmp$totalscore * 0.2 *  taxonomy.score)
         }
         
+        ## need to sort by 'totalscore' - best match is first
+        tmp <- tmp[order(tmp[,"totalscore"], decreasing = TRUE),]
+        
         summary[[i]] <- tmp
         tar.inchikey <- tmp$id[1]
         ramclustObj$msfinder.formula[i] <- tmp$f.name[1]

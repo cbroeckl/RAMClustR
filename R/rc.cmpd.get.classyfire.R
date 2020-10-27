@@ -25,7 +25,8 @@
 
 #' @export 
 
-rc.cmpd.get.classyfire <- function (ramclustObj = NULL, inchikey = NULL, get.all = TRUE, max.wait = 10, posts.per.minute = 5) 
+rc.cmpd.get.classyfire <- function (ramclustObj = NULL, inchikey = NULL, get.all = TRUE, 
+                                    max.wait = 10, posts.per.minute = 5) 
 {
   
   if(is.null(ramclustObj) & is.null(inchikey)) {
@@ -61,7 +62,23 @@ rc.cmpd.get.classyfire <- function (ramclustObj = NULL, inchikey = NULL, get.all
                                          parent = rep(NA, length(ramclustObj$inchikey)), 
                                          description = rep(NA, length(ramclustObj$inchikey)))
   }
+  
+  
   url = "http://classyfire.wishartlab.com"
+  
+  ## check server
+  out <- tryCatch(jsonlite::fromJSON(paste0(url, "/entities/", "RYYVLZVUVIJVGH-UHFFFAOYSA-N", 
+                                            ".json")), error = function(y) {
+                                              return(NA)
+                                            })
+  if(length(out) == 1) {
+    if(is.na(out)) {
+      stop("  classyfire server appears to be down", '\n')
+    }
+  }
+                                              
+  
+  
   cat("performing inchikey based lookup:", '\n')
   for (i in 1:length(ramclustObj$inchikey)) {
     

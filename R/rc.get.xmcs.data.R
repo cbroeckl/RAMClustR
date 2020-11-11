@@ -8,6 +8,7 @@
 #' @param taglocation character: "filepaths" by default, "phenoData[,1]" is another option. referse to xcms slot
 #' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
 #' @param mzdec integer: number of decimal places for storing m/z values
+#' @param ensure.no.na logical: if TRUE, any 'NA' values in msint and/or msmsint are replaced with numerical values based on 10% of feature min + noise.  Used to ensure that spectra are not written with NA values. 
 #' @details This function creates a ramclustObj which will be used as input for clustering.
 #' @return  an empty ramclustR object.  this object is formatted as an hclust object with additional slots for holding feature and compound data. details on these found below. 
 #' @return   $frt: feature retention time, in whatever units were fed in (xcms uses seconds, by default)
@@ -37,7 +38,8 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
                               MStag=NULL,
                               MSMStag=NULL, 
                               ExpDes=NULL,
-                              mzdec=3
+                              mzdec=3,
+                              ensure.no.na = TRUE
 ) {
   
   ########
@@ -236,11 +238,19 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   dimnames(data)[[2]]<-featnames
   dimnames(data)[[1]]<-filenames
   
+  global.min <- apply(data, 2, "min", na.rm = TRUE)
+  
   ramclustObj$MSdata <- data[msfiles,]
   ramclustObj$MSdata_raw <- ramclustObj$MSdata
   msint<-rep(0, length(ramclustObj$fmz))
   for(i in 1:ncol(ramclustObj$MSdata)){
     msint[i]<-weighted.mean(ramclustObj$MSdata[,i], ramclustObj$MSdata[,i], na.rm = TRUE)
+  }
+  if(any(is.na(msint)) & ensure.no.na) {
+    rp <- which(is.na(msint))
+    r <- global.min[rp]
+    r <- abs(jitter(r, factor = 0.01*r))
+    msint[rp] <- r
   }
   
   if(mslev == 2) {
@@ -259,8 +269,18 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
     for(i in 1:ncol(ramclustObj$MSMSdata)){
       msmsint[i]<-weighted.mean(ramclustObj$MSMSdata[,i], ramclustObj$MSMSdata[,i], na.rm = TRUE)
     }
+    
+    if(any(is.na(msmsint)) & ensure.no.na) {
+      rp <- which(is.na(msmsint))
+      r <- global.min[rp]
+      r <- abs(jitter(r, factor = 0.01*r))
+      msmsint[rp] <- r
+    }
+    
     ramclustObj$msmsint <- msmsint
   }
+  
+
   
   return(ramclustObj)
 }

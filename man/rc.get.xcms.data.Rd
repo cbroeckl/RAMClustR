@@ -10,7 +10,8 @@ rc.get.xcms.data(
   MStag = NULL,
   MSMStag = NULL,
   ExpDes = NULL,
-  mzdec = 3
+  mzdec = 3,
+  ensure.no.na = TRUE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ rc.get.xcms.data(
 \item{ExpDes}{either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output}
 
 \item{mzdec}{integer: number of decimal places for storing m/z values}
+
+\item{ensure.no.na}{logical: if TRUE, any 'NA' values in msint and/or msmsint are replaced with numerical values based on 10% of feature min + noise.  Used to ensure that spectra are not written with NA values.}
 }
 \value{
 an empty ramclustR object.  this object is formatted as an hclust object with additional slots for holding feature and compound data. details on these found below.

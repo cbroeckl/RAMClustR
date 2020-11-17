@@ -49,7 +49,7 @@ $msint: weighted.mean intensity of feature in ms level data
 $msmsint:weighted.mean intensity of feature in msms level data
 }
 \description{
-extractor for xcms objects in preparation for clustering
+extractor for xcms objects in preparation for normalization and clustering
 }
 \details{
 This function creates a ramclustObj which will be used as input for clustering.

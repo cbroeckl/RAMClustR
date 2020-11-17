@@ -1,6 +1,6 @@
 #' rc.get.xcms.data
 #'
-#' extractor for xcms objects in preparation for clustering  
+#' extractor for xcms objects in preparation for normalization and clustering  
 #'
 #' @param xcmsObj xcmsObject: containing grouped feature data for clustering by ramclustR
 #' @param MStag character: character string in 'taglocation' to designate files as either MS / DIA(MSe, MSall, AIF, etc) e.g. "01.mzML"
@@ -154,6 +154,7 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
       stop('detected ', length(msfiles), " ms files and ", length(msmsfiles), " msms files - ", '\n', "       number of MSMS files MUST be identical to number of MS files")
     } 
   }
+  
   
   if(!newXCMS) {data <- t(xcms::groupval(xcmsObj, value="into"))}
   if(newXCMS)  {data <- t(xcms::featureValues(xcmsObj, value = "into"))}

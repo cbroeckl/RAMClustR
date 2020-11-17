@@ -8,7 +8,7 @@
 #' @param taglocation character: "filepaths" by default, "phenoData[,1]" is another option. referse to xcms slot
 #' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
 #' @param mzdec integer: number of decimal places for storing m/z values
-#' @param ensure.no.na logical: if TRUE, any 'NA' values in msint and/or msmsint are replaced with numerical values based on 10% of feature min + noise.  Used to ensure that spectra are not written with NA values. 
+#' @param ensure.no.na logical: if TRUE, any 'NA' values in msint and/or msmsint are replaced with numerical values based on 10 percent of feature min plus noise.  Used to ensure that spectra are not written with NA values. 
 #' @details This function creates a ramclustObj which will be used as input for clustering.
 #' @return  an empty ramclustR object.  this object is formatted as an hclust object with additional slots for holding feature and compound data. details on these found below. 
 #' @return   $frt: feature retention time, in whatever units were fed in (xcms uses seconds, by default)

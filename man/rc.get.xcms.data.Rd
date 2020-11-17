@@ -27,7 +27,7 @@ rc.get.xcms.data(
 
 \item{mzdec}{integer: number of decimal places for storing m/z values}
 
-\item{ensure.no.na}{logical: if TRUE, any 'NA' values in msint and/or msmsint are replaced with numerical values based on 10% of feature min + noise.  Used to ensure that spectra are not written with NA values.}
+\item{ensure.no.na}{logical: if TRUE, any 'NA' values in msint and/or msmsint are replaced with numerical values based on 10 percent of feature min plus noise.  Used to ensure that spectra are not written with NA values.}
 }
 \value{
 an empty ramclustR object.  this object is formatted as an hclust object with additional slots for holding feature and compound data. details on these found below.

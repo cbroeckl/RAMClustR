@@ -1,0 +1,143 @@
+﻿@article{RN1551,
+   author = {Broeckling, C. D. and Afsar, F. A. and Neumann, S. and Ben-Hur, A. and Prenni, J. E.},
+   title = {RAMClust: A novel feature clustering method enables spectral-matching-based annotation for metabolomics data},
+   journal = {Analytical Chemistry},
+   volume = {86},
+   number = {14},
+   pages = {6812--6817},
+   ISSN = {0003-2700},
+   DOI = {10.1021/ac501530d},
+   url = {https://pubs.acs.org/doi/pdf/10.1021/ac501530d},
+   year = {2014},
+   type = {Journal Article}
+}
+
+@article{RN1638,
+   author = {Broeckling, C. D. and Ganna, A. and Layer, M. and Brown, K. and Sutton, B. and Ingelsson, E. and Peers, G. and Prenni, J. E.},
+   title = {Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction},
+   journal = {Analytical Chemistry},
+   volume = {88},
+   number = {18},
+   ISSN = {15206882},
+   DOI = {10.1021/acs.analchem.6b02479},
+   url = {https://pubs.acs.org/doi/pdf/10.1021/acs.analchem.6b02479},
+   year = {2016},
+   type = {Journal Article}
+}
+
+@article{RN759,
+   author = {Feunang, Yannick Djoumbou and Eisner, Roman and Knox, Craig and Chepelev, Leonid and Hastings, Janna and Owen, Gareth and Fahy, Eoin and Steinbeck, Christoph and Subramanian, Shankar and Bolton, Evan and Greiner, Russell and Wishart, David S.},
+   title = {ClassyFire: automated chemical classification with a comprehensive, computable taxonomy},
+   journal = {Journal of Cheminformatics},
+   volume = {8},
+   pages = {61},
+   DOI = {10.1186/S13321-016-0174-Y},
+   url = {http://www.ncbi.nlm.nih.gov/pubmed/27867422 http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=PMC5096306},
+   year = {2016},
+   type = {Journal Article}
+}
+
+@article{RN940,
+   author = {Jaeger, Carsten and Hoffmann, Friederike and Schmitt, Clemens A. and Lisec, Jan},
+   title = {Automated Annotation and Evaluation of In-Source Mass Spectra in GC/Atmospheric Pressure Chemical Ionization-MS-Based Metabolomics},
+   journal = {Analytical Chemistry},
+   volume = {88},
+   number = {19},
+   pages = {9386--9390},
+   DOI = {10.1021/acs.analchem.6b02743},
+   url = {http://pubs.acs.org/doi/10.1021/acs.analchem.6b02743},
+   year = {2016},
+   type = {Journal Article}
+}
+
+@article{RN838,
+   author = {Jaeger, Carsten and Mret, Michal and Schmitt, Clemens A. and Lisec, Jan},
+   title = {Compound annotation in liquid chromatography/high-resolution mass spectrometry based metabolomics: robust adduct ion determination as a prerequisite to structure prediction in electrospray ionization mass spectra},
+   journal = {Rapid Communications in Mass Spectrometry},
+   volume = {31},
+   number = {15},
+   pages = {1261--1266},
+   DOI = {10.1002/rcm.7905},
+   url = {http://doi.wiley.com/10.1002/rcm.7905},
+   year = {2017},
+   type = {Journal Article}
+}
+
+@article{RN1540,
+   author = {Kim, Sunghwan and Chen, Jie and Cheng, Tiejun and Gindulyte, Asta and He, Jia and He, Siqian and Li, Qingliang and Shoemaker, Benjamin A. and Thiessen, Paul A. and Yu, Bo and Zaslavsky, Leonid and Zhang, Jian and Bolton, Evan E.},
+   title = {PubChem 2019 update: improved access to chemical data},
+   journal = {Nucleic Acids Research},
+   volume = {47},
+   number = {D1},
+   pages = {D1102--D1109},
+   DOI = {10.1093/nar/gky1033},
+   url = {https://academic.oup.com/nar/article/47/D1/D1102/5146201},
+   year = {2019},
+   type = {Journal Article}
+}
+
+@article{RN794,
+   author = {Smith, Colin A. and Want, Elizabeth J. and O'Maille, Grace and Abagyan, Ruben and Siuzdak, Gary},
+   title = {XCMS: Processing mass spectrometry data for metabolite profiling using nonlinear peak alignment, matching, and identification},
+   journal = {Analytical Chemistry},
+   volume = {78},
+   number = {3},
+   pages = {779--787},
+   ISSN = {0003-2700},
+   DOI = {10.1021/ac051437y},
+   year = {2006},
+   type = {Journal Article}
+}
+
+@article{RN706,
+   author = {Tautenhahn, Ralf and Bttcher, Christoph and Neumann, Steffen},
+   title = {Highly sensitive feature detection for high resolution LC/MS},
+   journal = {BMC Bioinformatics},
+   volume = {9},
+   pages = {504},
+   DOI = {10.1186/1471-2105-9-504},
+   url = {http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-9-504},
+   year = {2008},
+   type = {Journal Article}
+}
+
+@article{RN355,
+   author = {Tsugawa, Hiroshi and Ikeda, Kazutaka and Takahashi, Mikiko and Satoh, Aya and Mori, Yoshifumi and Uchino, Haruki and Okahashi, Nobuyuki and Yamada, Yutaka and Tada, Ipputa and Bonini, Paolo and Higashi, Yasuhiro and Okazaki, Yozo and Zhou, Zhiwei and Zhu, Zheng Jiang and Koelmel, Jeremy and Cajka, Tomas and Fiehn, Oliver and Saito, Kazuki and Arita, Masanori and Arita, Makoto},
+   title = {A lipidome atlas in MS-DIAL 4},
+   journal = {Nature Biotechnology},
+   volume = {38},
+   number = {10},
+   pages = {1159--1163},
+   ISSN = {15461696},
+   DOI = {10.1038/s41587-020-0531-2},
+   url = {https://pubmed.ncbi.nlm.nih.gov/32541957/},
+   year = {2020},
+   type = {Journal Article}
+}
+
+@article{RN943,
+   author = {Tsugawa, Hiroshi and Kind, Tobias and Nakabayashi, Ryo and Yukihira, Daichi and Tanaka, Wataru and Cajka, Tomas and Saito, Kazuki and Fiehn, Oliver and Arita, Masanori},
+   title = {Hydrogen Rearrangement Rules: Computational MS/MS Fragmentation and Structure Elucidation Using MS-FINDER Software},
+   journal = {Analytical Chemistry},
+   volume = {88},
+   number = {16},
+   pages = {7946--7958},
+   DOI = {10.1021/acs.analchem.6b00770},
+   url = {http://pubs.acs.org/doi/abs/10.1021/acs.analchem.6b00770},
+   year = {2016},
+   type = {Journal Article}
+}
+
+@article{RN1419,
+   author = {Wishart, David S. and Feunang, Yannick Djoumbou and Marcu, Ana and Guo, An Chi and Liang, Kevin and Vzquez-Fresno, Rosa and Sajed, Tanvir and Johnson, Daniel and Li, Carin and Karu, Naama and Sayeeda, Zinat and Lo, Elvis and Assempour, Nazanin and Berjanskii, Mark and Singhal, Sandeep and Arndt, David and Liang, Yonjie and Badran, Hasan and Grant, Jason and Serra-Cayuela, Arnau and Liu, Yifeng and Mandal, Rupa and Neveu, Vanessa and Pon, Allison and Knox, Craig and Wilson, Michael and Manach, Claudine and Scalbert, Augustin},
+   title = {HMDB 4.0: the human metabolome database for 2018},
+   journal = {Nucleic Acids Research},
+   volume = {46},
+   number = {D1},
+   pages = {D608--D617},
+   DOI = {10.1093/nar/gkx1089},
+   url = {http://www.ncbi.nlm.nih.gov/pubmed/29140435 http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=PMC5753273 http://academic.oup.com/nar/article/46/D1/D608/4616873},
+   year = {2018},
+   type = {Journal Article}
+}
+

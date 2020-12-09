@@ -16,28 +16,28 @@ get.inchikey.from.name <- function(
   require(RCurl)
   require(XML)
   require(data.table)
-
+  
   ## from rpubchem
   .check.cas <- function(cas)
   {
     if (is.null(cas) || is.na(cas))
       return(NA)
-
+    
     ## Input: character vector of CAS RNs
     ## Output: logical vector indicating valid CAS RNs
-
+    
     # Check each element of CAS vector against CAS format with regex.
     cas.format <- regexpr("\\d{2,7}-\\d\\d-\\d", cas, perl=TRUE) > 0 & !is.na(cas)
-
+    
     # If format matches, do checksum validation.
     cas[cas.format] <- sapply(cas[cas.format], function(x) {
       # remove non-numeric
       x <- gsub("[^0-9]", "", x)
-
+      
       # list of integers
       names(x) <- x
       xl <- lapply(strsplit(x, ""), as.integer)
-
+      
       # checksum validation
       sapply(xl, function(y) {
         cas.length <- length(y)
@@ -47,11 +47,11 @@ get.inchikey.from.name <- function(
         expected.check.digit == actual.check.digit
       })
     })
-
+    
     # return TRUE if format matches and checksum validated
     ifelse(cas.format, cas, FALSE)
   }
-
+  
   ## from rpubchem
   get.synonyms <- function(name, idtype = NULL, quiet=TRUE)
   {
@@ -66,10 +66,10 @@ get.inchikey.from.name <- function(
     ## If you have a large data set that you need to compute with, please contact us
     ## for help on optimizing your task, as there are likely more efficient ways to
     ## approach such bulk queries.
-
+    
     curlHandle <- getCurlHandle()
     out <- data.frame(stringsAsFactors=FALSE)
-
+    
     for (compound in name) {
       tryCatch(
         {
@@ -84,7 +84,7 @@ get.inchikey.from.name <- function(
             field <- "cid="
             endpoint <- "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/%s/synonyms/XML"
           } else stop("Invalid idtype specified")
-
+          
           res <- dynCurlReader()
           curlPerform(##postfields=paste0(field, compound),
             url=sprintf(endpoint, URLencode(compound)),
@@ -112,17 +112,17 @@ get.inchikey.from.name <- function(
         finally=Sys.sleep(0.2) # See usage policy.
       )
     }
-
+    
     # CAS validation
     if (nrow(out) > 0)
       out$CAS <- .check.cas(out$Synonym)
-
+    
     # Cleanup
     rm(curlHandle)
     gc()
     return(out)
   }
-
+  
   greek <- read.csv(paste(find.package("RAMClustR"), "/params/greek.csv", sep=""), header=TRUE, encoding = "UTF-8", stringsAsFactors = FALSE)
   
   for(i in 1:nrow(greek)) {
@@ -137,16 +137,16 @@ get.inchikey.from.name <- function(
   #     }
   #   }
   # }
-
+  
   
   
   cmpd.names <- trimws(cmpd.names)
   out <- data.frame('cmpd.name' = cmpd.names,
                     'CID' = rep(NA, length(cmpd.names)),
                     'inchikey' = rep(NA, length(cmpd.names)))
-
+  
   cat("looking up pubchem CIDs", '\n')
-
+  
   syns <- rpubchem::get.synonyms(name = cmpd.names, quiet = FALSE)
   if(nrow(syns) == 0) {
     return(as.data.frame(matrix(nrow = 0, ncol = 4)))

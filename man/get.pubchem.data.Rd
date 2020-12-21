@@ -8,10 +8,14 @@ get.pubchem.data(
   cmpd.names = NULL,
   cmpd.cid = NULL,
   cmpd.inchikey = NULL,
+  use.parent.cid = TRUE,
   manual.entry = FALSE,
-  vendor.data = TRUE,
+  get.vendors = TRUE,
   priority.vendors = c("Sigma Aldrich", "Alfa Chemistry", "Acros Organics", "VWR",
-    "Alfa Aesar")
+    "Alfa Aesar", "molport", "Key Organics", "BLD Pharm"),
+  get.properties = TRUE,
+  all.props = TRUE,
+  get.bioassays = TRUE
 )
 }
 \arguments{
@@ -21,14 +25,22 @@ get.pubchem.data(
 
 \item{cmpd.inchikey}{character vector.  i.e. c("RYYVLZVUVIJVGH-UHFFFAOYSA-N", "YAPQBXQYLJRXSA-UHFFFAOYSA-N", "GZCGUPFRVQAUEE-SLPGGIOYSA-N")}
 
+\item{use.parent.cid}{logical.  If TRUE, the CID for each supplied name/inchikey is used to retreive its parent CID (i.e. the parent of sodium palmitate is palmitic acid).  The parent CID is used to retrieve all other names, properties.}
+
 \item{manual.entry}{logical.  if TRUE, user input is enabled for compounds not matched by name. A browser window will open with the pubchem search results in your default browser.}
 
-\item{vendor.data}{logical.  if TRUE, vendor data is returned for each compound with a matched CID.  Includes vendor count and vendor product URL, if available}
+\item{get.vendors}{logical.  if TRUE, vendor data is returned for each compound with a matched CID.  Includes vendor count and vendor product URL, if available}
 
 \item{priority.vendors}{charachter vector.  i.e. c("MyFavoriteCompany", "MySecondFavoriteCompany").  If these vendors are found, the URL returned is from priority vendors. Priority is given by order input by user.}
+
+\item{get.properties}{logical.  if TRUE, physicochemical property data are returned for each compound with a matched CID.}
+
+\item{all.props}{logical.  If TRUE, all pubchem properties (https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest$_Toc494865567) are returned.  If false, only a subset (faster).}
+
+\item{get.bioassays}{logical. If TRUE, return a table summarizing existing bioassay data for that CID.}
 }
 \value{
-returns a data.frame with several columns: "compound", "CID", "CanonicalSMILES", "IsomericSMILES", "InChI", "InChIKey", "pubchem.url", "pubchem.vendors.url", "n.vendors", "vendor.url"
+returns a list with one or more of $puchem (compound name and identifiers) - one row in dataframe per CID; $properties contains pysicochemical properties - one row in dataframe per CID; $vendors contains the number of vendors for a given compound and selects a vendor based on 'priortity.vendors' supplied, or randomly choses a vendor with a HTML link - one row in dataframe per CID;  $bioassays contains a summary of bioassay activity data from pubchem - zero to many rows in dataframe per CID
 }
 \description{
 use pubchem rest and view APIs to retreive structures, CIDs (if a name or inchikey is given), and optionally vendor data, when available.

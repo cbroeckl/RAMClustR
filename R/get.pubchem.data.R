@@ -5,24 +5,78 @@
 #' @param cmpd.names character vector.  i.e. c("caffeine", "theobromine", "glucose")
 #' @param cmpd.cid numeric integer vector.  i.e. c(2519, 5429, 107526)
 #' @param cmpd.inchikey character vector.  i.e. c("RYYVLZVUVIJVGH-UHFFFAOYSA-N", "YAPQBXQYLJRXSA-UHFFFAOYSA-N", "GZCGUPFRVQAUEE-SLPGGIOYSA-N")
+#' @param use.parent.cid logical.  If TRUE, the CID for each supplied name/inchikey is used to retreive its parent CID (i.e. the parent of sodium palmitate is palmitic acid).  The parent CID is used to retrieve all other names, properties.
 #' @param manual.entry logical.  if TRUE, user input is enabled for compounds not matched by name. A browser window will open with the pubchem search results in your default browser. 
-#' @param vendor.data logical.  if TRUE, vendor data is returned for each compound with a matched CID.  Includes vendor count and vendor product URL, if available
+#' @param get.vendors logical.  if TRUE, vendor data is returned for each compound with a matched CID.  Includes vendor count and vendor product URL, if available
 #' @param priority.vendors charachter vector.  i.e. c("MyFavoriteCompany", "MySecondFavoriteCompany").  If these vendors are found, the URL returned is from priority vendors. Priority is given by order input by user. 
-#' @return returns a data.frame with several columns: "compound", "CID", "CanonicalSMILES", "IsomericSMILES", "InChI", "InChIKey", "pubchem.url", "pubchem.vendors.url", "n.vendors", "vendor.url"
+#' @param get.properties logical.  if TRUE, physicochemical property data are returned for each compound with a matched CID.
+#' @param all.props logical.  If TRUE, all pubchem properties (https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest$_Toc494865567) are returned.  If false, only a subset (faster).
+#' @param get.bioassays logical. If TRUE, return a table summarizing existing bioassay data for that CID. 
+
+#' @return returns a list with one or more of $puchem (compound name and identifiers) - one row in dataframe per CID; $properties contains pysicochemical properties - one row in dataframe per CID; $vendors contains the number of vendors for a given compound and selects a vendor based on 'priortity.vendors' supplied, or randomly choses a vendor with a HTML link - one row in dataframe per CID;  $bioassays contains a summary of bioassay activity data from pubchem - zero to many rows in dataframe per CID
 #' @author Corey Broeckling
 #' @export 
 get.pubchem.data <- function(
   cmpd.names = NULL,
   cmpd.cid = NULL,
   cmpd.inchikey = NULL,
+  use.parent.cid = TRUE,
   manual.entry = FALSE,
-  vendor.data = TRUE,
-  priority.vendors = c("Sigma Aldrich", "Alfa Chemistry", "Acros Organics", "VWR", "Alfa Aesar")
+  get.vendors = TRUE,
+  priority.vendors = c("Sigma Aldrich", "Alfa Chemistry", "Acros Organics", "VWR", 
+                       "Alfa Aesar", "molport", "Key Organics", "BLD Pharm"),
+  get.properties = TRUE,
+  all.props = TRUE,
+  get.bioassays = TRUE
+  
 ) {
   
+  
+  ## check that lengths of cmpd.* make sense, and standardize
+  l <- c("cmpd.names" = length(cmpd.names), 
+         "cmpd.cid" = length(cmpd.cid), 
+         "cmpd.inchikey" = length(cmpd.inchikey)
+  )
+  if(l["cmpd.names"] != max(l) & l["cmpd.names"] > 0) {
+    stop(
+      paste(" Length cmpd.names = ", l['cmpd.names'], "while length", names(l)[which.max(l)], "=", max(l), '\n',
+            " - these must be either exactly the same length or one must be NULL", sep = " ")
+    )
+  }
+  
+  if(l["cmpd.cid"] != max(l) & l["cmpd.cid"] > 0) {
+    stop(
+      paste(" Length cmpd.cid = ", l['cmpd.cid'], "while length", names(l)[which.max(l)], "=", max(l), '\n',
+            " - these must be either exactly the same length or one must be NULL", sep = " ")
+    )
+  }
+  
+  if(l["cmpd.inchikey"] != max(l) & l["cmpd.inchikey"] > 0) {
+    stop(
+      paste(" Length cmpd.inchikey = ", l['cmpd.inchikey'], "while length", names(l)[which.max(l)], "=", max(l), '\n',
+            " - these must be either exactly the same length or one must be NULL", sep = " ")
+    )
+  }
+  
+  if(l["cmpd.names"] < max(l)) cmpd.names <- rep(NA, max(l))
+  if(l["cmpd.cid"] < max(l)) cmpd.cid <- rep(NA, max(l))
+  if(l["cmpd.inchikey"] < max(l)) cmpd.inchikey <- rep(NA, max(l))
+  
+  ## store orignal data in data.frame
+  d <- data.frame("user.cmpd" = cmpd.names, 
+                  "user.cid" = cmpd.cid,
+                  "user.inchikey" = cmpd.inchikey)
+  pubchem <- list()
+  
+  ## clean up text
   cmpd.names <- trimws(cmpd.names)
-  cmpd.names <- cmpd.names[which(nchar(cmpd.names)>1)]
+  cmpd.names[which(nchar(cmpd.names) < 1)] <- NA
   cmpd.names <- gsub(" ", "-", cmpd.names)
+  cmpd.inchikey <- trimws(cmpd.inchikey)
+  cmpd.inchikey[which(nchar(cmpd.inchikey) < 1)] <- NA
+  cmpd.cid <- trimws(cmpd.cid)
+  cmpd.cid[which(nchar(cmpd.cid) < 1)] <- NA
+  
   
   greek <- read.csv(paste(find.package("RAMClustR"), "/params/greek.csv", sep=""), header=TRUE, encoding = "UTF-8", stringsAsFactors = FALSE)
   
@@ -30,42 +84,62 @@ get.pubchem.data <- function(
     cmpd.names <- gsub(greek[i,2], greek[i,1], cmpd.names)
   }  
   
-  syns <- as.list(cmpd.names)
-  for(i in 1:length(cmpd.names)) {
-    #  for(i in (i+1):length(cas)) {
-    Sys.sleep(0.6)
-    
-    out <- tryCatch(
-      {
-        jsonlite::read_json(paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/",
-                                   cmpd.names[i],
-                                   "/synonyms/JSON"))
-      },
-      error=function(cond) {
-        message(paste("URL invalid:", cmpd.names[i]))
-        return(NA)
-      },
-      warning=function(cond) {
-        message(cmpd.names[i], " failed; " )
-        return(NA)
-      },
-      finally={
+  
+  
+  ## get missing CIDs from inchikeys first
+  ## if more than one inchikey per compound, lowest value CID is used
+  do <- which(is.na(cmpd.cid) & !is.na(cmpd.inchikey))
+  if(length(do) > 0) {
+    do <- cmpd.inchikey[do]
+    do.l <- split(do, ceiling(seq_along(do)/50))
+    for(i in 1:length(do.l)) {
+      keep <- which(!do.l[[i]]=="NA")
+      
+      html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/",
+                     paste0(do.l[[i]][keep], collapse = ","),
+                     "/property/", "inchikey", "/JSON")
+      out <- jsonlite::read_json(html)
+      tmp <- lapply(1:length(out$PropertyTable$Properties),
+                    FUN = function(x) {
+                      unlist(out$PropertyTable$Properties[[x]])
+                    })
+      tmp <- data.frame(t(data.frame(tmp, stringsAsFactors = FALSE)), stringsAsFactors = FALSE)
+      tmp <- tmp[order(tmp[,"CID"], decreasing = TRUE),]
+      
+      for(x in 1:nrow(tmp)) {
+        rp <- which(cmpd.inchikey == tmp[x,"InChIKey"])[1]
+        if(!is.na(rp)) {cmpd.cid[rp] <- tmp[x, "CID"]}
       }
-    )    
-    syns[[i]]  <- out
+    }
   }
   
-  cid <- rep(NA, length(syns))
-  for(x in 1:length(syns)) {
-    if(is.na(syns[[x]])) next
-    if(!is.na(syns[[x]]$InformationList$Information[[1]]$CID)) {
-      cid[x] <- syns[[x]]$InformationList$Information[[1]]$CID
+  ## get missing CIDs from names next
+  do.ind <- which(is.na(cmpd.cid) & !is.na(cmpd.names))
+  do <- cmpd.names[do.ind]
+  if(length(do) > 0) {
+    for(i in 1:length(do)) {
+      Sys.sleep(0.4)
+      html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/",
+                     do[i],
+                     "/property/", "inchikey", "/JSON")
+      out <- jsonlite::read_json(html)
+      tmp <- lapply(1:length(out$PropertyTable$Properties),
+                    FUN = function(x) {
+                      unlist(out$PropertyTable$Properties[[x]])
+                    })
+      tmp <- data.frame(t(data.frame(tmp, stringsAsFactors = FALSE)), stringsAsFactors = FALSE)
+      tmp <- tmp[order(tmp[,"CID"], decreasing = TRUE),]
+      cmpd.cid[do.ind[i]] <- tmp[1, "CID"]
     }
   }
   
   
+  ##
+  cid <- cmpd.cid
+  
+  ### offer opportunity to revise CIDs with manual input, if need be. use name only (inchikey should be unambiguous)
   if(manual.entry){
-    missing <- which(is.na(cid)) 
+    missing <- which(is.na(cid) & !is.na(cmpd.names)) 
     
     cat(length(missing), "missing CIDs", '\n',
         "  enter '1' to skip these compounds", '\n', 
@@ -86,57 +160,177 @@ get.pubchem.data <- function(
       }
     }
   }
-  
   cid[which((cid == "NA"))] <= NA
+  d <- data.frame(d, "cmpd.cid" = cmpd.cid, stringsAsFactors = FALSE)
   
-  d <- data.frame('compound' = cmpd.names, 'cid' = cid, stringsAsFactors = FALSE)
-  cid.u <- unique(d$cid)
-  cid.l <- split(cid.u, ceiling(seq_along(cid.u)/50))
-  
-  for(i in 1:length(cid.l)) {
-    keep <- which(!cid.l[[i]]=="NA")
-    
-    html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
-                   paste0(cid.l[[i]][keep], collapse = ","),
-                   "/property/CanonicalSMILES,IsomericSMILES,InChI,InChIKey,/JSON")
-    out <- jsonlite::read_json(html)
-    for(j in 1:length(out$PropertyTable$Properties)) {
-      tmp <- data.frame(out$PropertyTable$Properties[[j]], stringsAsFactors = FALSE)
-      d[which(d$cid == tmp$CID),names(tmp)] <- tmp
-    }
-  }
-  
-  d <- d[,-which(names(d) == 'cid')]
-  
-  if(vendor.data) {
-    do <- which(!is.na(d$CID))
-    urls <- paste0("https://pubchem.ncbi.nlm.nih.gov/compound/", d$CID[do])
-    d$pubchem.url <- rep("", nrow(d))
-    d$pubchem.url[do] <- urls
-    d$pubchem.vendors.url <- rep("", nrow(d))
-    urls <- paste0(urls, "#section=Chemical-Vendors")
-    d$pubchem.vendors.url[do] <- urls
-    n.vendors <- rep(0, nrow(d))
-    vendor.urls <- rep(NA, nrow(d))
-    for(i in 1:nrow(d)) {
-      if(is.na(d$CID[i])) next
+  ## find.parent.cid, if TRUE
+  if(use.parent.cid) {
+    parent.cid <- cmpd.cid
+    do.ind <- which(is.na(cmpd.cid) & !is.na(cmpd.names))
+    for(i in 1:length(do.ind)) {
+      Sys.sleep(0.3)
+      html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
+                     cmpd.cid[i],
+                     "/cids/TXT?cids_type=parent")
       out <- tryCatch(
         {
-          jsonlite::read_json(paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/categories/compound/",
-                                     d$CID[i],
-                                     "/JSON"))
+          readLines(html)
         },
         error=function(cond) {
-          message(paste("URL invalid:", cmpd.names[i]))
           return(NA)
         },
         warning=function(cond) {
-          message(cmpd.names[i], " failed; " )
           return(NA)
         },
         finally={
         }
       )
+      if(is.na(out[1])) next
+      out <- sort(as.numeric(out))
+      parent.cid[do.ind[i]] <- out[1]
+    }
+    cid <- parent.cid
+    d <- data.frame(d, "parent.cid" = parent.cid, stringsAsFactors = FALSE)
+  }
+  
+  d <- data.frame(d, 'cid' = cid, stringsAsFactors = FALSE)
+  #  pubchem$compounds <- d
+  
+  cid.l <- split(cid, ceiling(seq_along(cid)/50))
+  
+  ## pubchem URL
+  do <- which(!is.na(d$cid))
+  urls <- paste0("https://pubchem.ncbi.nlm.nih.gov/compound/", d$cid[do])
+  d$pubchem.url <- rep("", nrow(d))
+  d$pubchem.url[do] <- urls
+  
+  ## get pubchem name
+  pubchem.name <- rep(NA, length(cid))
+  for(i in 1:length(cid.l)) {
+    
+    keep <- which(!cid.l[[i]]=="NA")
+    urls <- paste0("https://pubchem.ncbi.nlm.nih.gov/compound/", d$CID[do])
+    d$pubchem.url <- rep("", nrow(d))
+    d$pubchem.url[do] <- urls
+    html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
+                   paste0(cid.l[[i]][keep], collapse = ","),
+                   "/description/", "JSON")
+    out <- jsonlite::read_json(html)
+    for(j in 1:length(out$InformationList$Information)) {
+      tmp <- out$InformationList$Information[[j]]
+      if(is.null(tmp$Title)) next
+      tmp.title <- tmp$Title
+      pubchem.name[which(cid == tmp$CID)] <- tmp.title
+    }
+  }
+  
+  d <- data.frame(d, "pubchem.name" = pubchem.name, stringsAsFactors = FALSE)
+  pubchem$pubchem <- d
+  
+  ## Get properties
+  if(get.properties) {
+    if(all.props) {
+      props <- c(
+        'MolecularFormula',
+        'MolecularWeight',
+        'CanonicalSMILES',
+        'IsomericSMILES',
+        'InChI',
+        'InChIKey',
+        'IUPACName',
+        'XLogP',
+        'ExactMass',
+        'MonoisotopicMass',
+        'TPSA',
+        'Complexity',
+        'Charge',
+        'HBondDonorCount',
+        'HBondAcceptorCount',
+        'RotatableBondCount',
+        'HeavyAtomCount',
+        'IsotopeAtomCount',
+        'AtomStereoCount',
+        'DefinedAtomStereoCount',
+        'UndefinedAtomStereoCount',
+        'BondStereoCount',
+        'DefinedBondStereoCount',
+        'UndefinedBondStereoCount',
+        'CovalentUnitCount',
+        'Volume3D',
+        'XStericQuadrupole3D',
+        'YStericQuadrupole3D',
+        'ZStericQuadrupole3D',
+        'FeatureCount3D',
+        'FeatureAcceptorCount3D',
+        'FeatureDonorCount3D',
+        'FeatureAnionCount3D',
+        'FeatureCationCount3D',
+        'FeatureRingCount3D',
+        'FeatureHydrophobeCount3D',
+        'ConformerModelRMSD3D',
+        'EffectiveRotorCount3D',
+        'ConformerCount3D',
+        'Fingerprint2D'
+      )
+    } else {
+      props <- c(
+        'MolecularFormula',
+        'MolecularWeight',
+        'CanonicalSMILES',
+        'IsomericSMILES',
+        'InChI',
+        'InChIKey',
+        'XLogP',
+        'ExactMass',
+        'MonoisotopicMass',
+        'TPSA',
+        'HBondDonorCount',
+        'HBondAcceptorCount'
+      )
+    }
+    
+    properties <- d[,0]
+    for(i in 1:length(cid.l)) {
+      keep <- which(!cid.l[[i]]=="NA")
+      
+      html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
+                     paste0(cid.l[[i]][keep], collapse = ","),
+                     "/property/", paste0(props, collapse =","), "/JSON")
+      out <- jsonlite::read_json(html)
+      for(j in 1:length(out$PropertyTable$Properties)) {
+        tmp <- data.frame(out$PropertyTable$Properties[[j]], stringsAsFactors = FALSE)
+        properties[which(cid == tmp$CID),names(tmp)] <- tmp
+      }
+    }
+    dimnames(properties)[[2]][1] <- "cid"
+    pubchem$properties <- properties
+  }
+  
+  if(get.vendors) {
+    vendors <- d[,"cid", drop = FALSE]
+    do <- which(!is.na(d$cid))
+    urls <- paste0(urls[do], "#section=Chemical-Vendors")
+    n.vendors <- rep(0, nrow(d))
+    vendor.urls <- rep(NA, nrow(d))
+    for(i in do) {
+      out <- tryCatch(
+        {
+          jsonlite::read_json(paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/categories/compound/",
+                                     cid[i],
+                                     "/JSON"))
+        },
+        error=function(cond) {
+          # message(paste("URL invalid:", cmpd.names[i]))
+          return(NA)
+        },
+        warning=function(cond) {
+          # message(cmpd.names[i], " failed; " )
+          return(NA)
+        },
+        finally={
+        }
+      )
+      if(is.na(out)) next
       cats <- sapply(1:length(out$SourceCategories$Categories), FUN = function(x) {
         out$SourceCategories$Categories[[x]]$Category
       })
@@ -144,13 +338,13 @@ get.pubchem.data <- function(
       if(length(cat.select) == 0) next
       n.vendors[i] <- length(out$SourceCategories$Categories[[cat.select]]$Sources)
       
-      vendors <- sapply(1:length(out$SourceCategories$Categories[[cat.select]]$Sources),
-                        FUN = function(x) {
-                          out$SourceCategories$Categories[[cat.select]]$Sources[[x]]$"SourceName"
-                        }
+      vendor.names <- sapply(1:length(out$SourceCategories$Categories[[cat.select]]$Sources),
+                             FUN = function(x) {
+                               out$SourceCategories$Categories[[cat.select]]$Sources[[x]]$"SourceName"
+                             }
       )
       for(j in priority.vendors) {
-        use <- agrep(j, vendors,  max.distance = 0.2)
+        use <- agrep(j, vendor.names,  max.distance = 0.2)
         if(length(use) > 0) {
           vendor.url <- out$SourceCategories$Categories[[cat.select]]$Sources[[use[1]]]$SourceRecordURL[1]
           if(length(vendor.url) == 0) vendor.url <- ""
@@ -159,18 +353,38 @@ get.pubchem.data <- function(
         }
       }
       if(is.na(vendor.urls[i]))  {
-        vendor.url <- out$SourceCategories$Categories[[cat.select]]$Sources[[sample((1:length(vendors)), 1)]]$"SourceRecordURL"[1]
+        vendor.url <- out$SourceCategories$Categories[[cat.select]]$Sources[[sample((1:length(vendor.names)), 1)]]$"SourceRecordURL"[1]
         if(length(vendor.url) == 0) vendor.url <- ""
         vendor.urls[i] <- vendor.url
       }
-      
+      vendors$pubchem.vendors.url[do] <- urls
     }
     
-    d <- data.frame(d, "n.vendors" = n.vendors, 
-                    "vendor.url" = vendor.urls, 
-                    stringsAsFactors = FALSE)
+    vendors <- data.frame(vendors, "n.vendors" = n.vendors, 
+                          "vendor.url" = vendor.urls, 
+                          stringsAsFactors = FALSE)
+    pubchem$vendors <- vendors
     
   }
-
-  return(d)
+  
+  if(get.bioassays) {
+    for(i in 1:length(cid.l)) {
+      keep <- which(!cid.l[[i]]=="NA")
+      url <- paste0(
+        "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
+        paste(cid.l[[i]], collapse = ","),
+        "/assaysummary/CSV"
+      )
+      bd <- read.csv(url)
+      if(i == 1) {
+        bioassays <- bd
+      } else {
+        bioassays <- rbind(bioassays, bd)
+      }
+    }
+    dimnames(bioassays)[[2]][which(dimnames(bioassays)[[2]] == "CID")] <- "cid"
+    pubchem$bioassays <- bioassays
+  }
+  
+  return(pubchem)
 }

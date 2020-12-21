@@ -16,6 +16,7 @@
 #' @return returns a list with one or more of $puchem (compound name and identifiers) - one row in dataframe per CID; $properties contains pysicochemical properties - one row in dataframe per CID; $vendors contains the number of vendors for a given compound and selects a vendor based on 'priortity.vendors' supplied, or randomly choses a vendor with a HTML link - one row in dataframe per CID;  $bioassays contains a summary of bioassay activity data from pubchem - zero to many rows in dataframe per CID
 #' @author Corey Broeckling
 #' @export 
+#' 
 get.pubchem.data <- function(
   cmpd.names = NULL,
   cmpd.cid = NULL,

@@ -109,6 +109,7 @@ get.pubchem.data <- function(
           return(NA)
         },
         warning=function(cond) {
+          return(NA)
         },
         finally={
         }
@@ -137,6 +138,7 @@ get.pubchem.data <- function(
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/",
                      do[i],
                      "/property/", "inchikey", "/JSON")
+      # html <- "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/8007-46-3/property/inchikey/JSON"
       out <- tryCatch(
         {
           jsonlite::read_json(html)
@@ -145,6 +147,7 @@ get.pubchem.data <- function(
           return(NA)
         },
         warning=function(cond) {
+          return(NA)
         },
         finally={
         }

@@ -50,7 +50,7 @@ get.pubchem.data <- function(
     finally={
       warning=function(cond) {
         return(NA)
-      }
+
     }
   )
   if(is.na(out[1])) {
@@ -140,6 +140,7 @@ get.pubchem.data <- function(
           return(NA)
         },
         finally={
+          return(NA)
         }
       )
       if(is.na(out[1])) next
@@ -246,6 +247,7 @@ get.pubchem.data <- function(
           return(NA)
         },
         finally={
+          return(NA)
         }
       )
       if(is.na(out[1])) next
@@ -395,6 +397,7 @@ get.pubchem.data <- function(
           return(NA)
         },
         finally={
+          return(NA)
         }
       )
       if(is.na(out)) next

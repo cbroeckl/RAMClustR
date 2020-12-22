@@ -141,3 +141,24 @@
    type = {Journal Article}
 }
 
+@article{plumb2006uplc,
+  title={UPLC/MSE; a new approach for generating molecular fragment information for biomarker structure elucidation},
+  author={Plumb, Robert S and Johnson, Kelly A and Rainville, Paul and Smith, Brian W and Wilson, Ian D and Castro-Perez, Jose M and Nicholson, Jeremy K},
+  journal={Rapid Communications in Mass Spectrometry: An International Journal Devoted to the Rapid Dissemination of Up-to-the-Minute Research in Mass Spectrometry},
+  volume={20},
+  number={13},
+  pages={1989--1994},
+  year={2006},
+  publisher={Wiley Online Library}
+}
+
+@article{broeckling2013assigning,
+  title={Assigning precursor--product ion relationships in indiscriminant MS/MS data from non-targeted metabolite profiling studies},
+  author={Broeckling, Corey D and Heuberger, Adam L and Prince, Jonathan A and Ingelsson, Erik and Prenni, Jessica E},
+  journal={Metabolomics},
+  volume={9},
+  number={1},
+  pages={33--43},
+  year={2013},
+  publisher={Springer}
+}

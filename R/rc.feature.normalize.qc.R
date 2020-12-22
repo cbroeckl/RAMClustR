@@ -131,7 +131,7 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
   batches <- unique(batch) 
   
   ## 
-  for(i in 1:unique(batch)) {
+  for(i in unique(batch)) {
     ##identify which samples are from batch i
     use <- which((batch == i))
     
@@ -212,7 +212,7 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
   }
   
   if(!is.null(ramclustObj$MSMSdata)) {
-    for(i in 1:unique(batch)) {
+    for(i in unique(batch)) {
       ##identify which samples are from batch i
       use <- which((batch == i))
       

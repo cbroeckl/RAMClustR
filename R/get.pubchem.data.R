@@ -35,6 +35,32 @@ get.pubchem.data <- function(
 ) {
   
   
+  ## test connection to pubchem servers
+  html <- "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/58-08-2/property/inchikey/JSON"
+  out <- tryCatch(
+    {
+      jsonlite::read_json(html)
+    },
+    error=function(cond) {
+      return(NA)
+    },
+    warning=function(cond) {
+      return(NA)
+    },
+    finally={
+      warning=function(cond) {
+        return(NA)
+      }
+    }
+  )
+  if(is.na(out[1])) {
+    stop("PUBCHEM connection could not be established. This may be due to:", '\n',
+         "  -  lack of internet acces", '\n',
+         "  -  puchem server is down", '\n',
+         "  -  pubchem server has blocked access for this IP address (try restarting your R and Rstudion session", '\n')
+  }
+  
+  
   ## check that lengths of cmpd.* make sense, and standardize
   l <- c("cmpd.names" = length(cmpd.names), 
          "cmpd.cid" = length(cmpd.cid), 
@@ -153,6 +179,9 @@ get.pubchem.data <- function(
           return(NA)
         },
         finally={
+          warning=function(cond) {
+            return(NA)
+          }
         }
       )
       if(is.na(out[1])) next
@@ -198,6 +227,7 @@ get.pubchem.data <- function(
   
   ## find.parent.cid, if TRUE
   if(use.parent.cid) {
+    cat("getting parent cid from cid", '\n')
     parent.cid <- cmpd.cid
     do.ind <- which(is.na(cmpd.cid) & !is.na(cmpd.names))
     for(i in 1:length(do.ind)) {
@@ -239,6 +269,7 @@ get.pubchem.data <- function(
   
   ## get pubchem name
   pubchem.name <- rep(NA, length(cid))
+  cat("getting parent pubchem compound name from cid", '\n')
   for(i in 1:length(cid.l)) {
     
     keep <- which(!cid.l[[i]]=="NA")
@@ -262,6 +293,7 @@ get.pubchem.data <- function(
   
   ## Get properties
   if(get.properties) {
+    cat("getting physicochemical properties and structure representations from cid", '\n')
     if(all.props) {
       props <- c(
         'MolecularFormula',
@@ -340,6 +372,7 @@ get.pubchem.data <- function(
   }
   
   if(get.vendors) {
+    cat("getting vendor data from cid", '\n')
     vendors <- d[,"cid", drop = FALSE]
     do <- which(!is.na(d$cid))
     urls <- paste0(urls[do], "#section=Chemical-Vendors")
@@ -402,6 +435,7 @@ get.pubchem.data <- function(
   }
   
   if(get.bioassays) {
+    cat("getting bioasssay from cid", '\n')
     for(i in 1:length(cid.l)) {
       keep <- which(!cid.l[[i]]=="NA")
       
@@ -419,8 +453,10 @@ get.pubchem.data <- function(
           return( data.frame("cid" = rep(NA, 0)))
         },
         warning=function(cond) {
+          return( data.frame("cid" = rep(NA, 0)))
         },
         finally={
+        
         }
       )
       if(nrow(bd)==0) next

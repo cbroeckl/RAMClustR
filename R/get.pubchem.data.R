@@ -52,10 +52,11 @@ get.pubchem.data <- function(
     }
   )
   if(is.na(out[1])) {
-    stop("PUBCHEM connection could not be established. This may be due to:", '\n',
+    stop("pubchem rest connection could not be established. This may be due to:", '\n',
          "  -  lack of internet acces", '\n',
          "  -  puchem server is down", '\n',
-         "  -  pubchem server has blocked access for this IP address (try restarting your R and Rstudion session", '\n')
+         "  -  pubchem server has blocked access for this IP address (try restarting your R and Rstudio session)",
+         '\n')
   }
   
   

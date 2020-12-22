@@ -52,7 +52,7 @@ get.pubchem.data <- function(
       warning("pubchem rest triggered a warning.", '\n')
     },
     finally={
-      return(NA)
+      
     }
   )
   rm(out)
@@ -136,7 +136,7 @@ get.pubchem.data <- function(
           return(NA)
         },
         finally={
-          return(NA)
+          
         }
       )
       if(is.na(out[1])) next
@@ -176,9 +176,7 @@ get.pubchem.data <- function(
           return(NA)
         },
         finally={
-          warning=function(cond) {
-            return(NA)
-          }
+        
         }
       )
       if(is.na(out[1])) next
@@ -243,7 +241,7 @@ get.pubchem.data <- function(
           return(NA)
         },
         finally={
-          return(NA)
+          
         }
       )
       if(is.na(out[1])) next
@@ -393,7 +391,7 @@ get.pubchem.data <- function(
           return(NA)
         },
         finally={
-          return(NA)
+         
         }
       )
       if(is.na(out)) next
@@ -455,7 +453,7 @@ get.pubchem.data <- function(
           return( data.frame("cid" = rep(NA, 0)))
         },
         finally={
-          return( data.frame("cid" = rep(NA, 0)))
+          
         }
       )
       if(nrow(bd)==0) next

@@ -385,21 +385,20 @@ get.pubchem.data <- function(
           read.csv(url)
         },
         error=function(cond) {
-          return(NA)
+          return( data.frame("cid" = rep(NA, 0)))
         },
         warning=function(cond) {
-          return(NA)
         },
         finally={
         }
       )
-      if(is.na(bd)) next
+      if(nrow(bd)==0) next
       if(any(ls()=="bioassays")) {
-        cat('registered TRUE')
+        # cat('registered TRUE')
         bioassays <- rbind(bioassays, bd)
         
       } else {
-        cat('registered FALSE')
+        # cat('registered FALSE')
         bioassays <- bd       
       }
     }

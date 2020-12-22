@@ -93,9 +93,11 @@ get.pubchem.data <- function(
   ## if more than one inchikey per compound, lowest value CID is used
   do <- which(is.na(cmpd.cid) & !is.na(cmpd.inchikey))
   if(length(do) > 0) {
+    cat("getting cid from inchikey", '\n')
     do <- cmpd.inchikey[do]
     do.l <- split(do, ceiling(seq_along(do)/50))
     for(i in 1:length(do.l)) {
+      Sys.sleep(0.5)
       keep <- which(!do.l[[i]]=="NA")
       if(length(keep)==0) next
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/",
@@ -133,8 +135,9 @@ get.pubchem.data <- function(
   do.ind <- which(is.na(cmpd.cid) & !is.na(cmpd.names))
   do <- cmpd.names[do.ind]
   if(length(do) > 0) {
+    cat("getting cid from names", '\n')
     for(i in 1:length(do)) {
-      Sys.sleep(0.25)
+      Sys.sleep(0.5)
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/",
                      do[i],
                      "/property/", "inchikey", "/JSON")

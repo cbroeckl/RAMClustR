@@ -47,7 +47,7 @@ get.pubchem.data <- function(
     warning=function(cond) {
       return(NA)
     },
-    finally={
+    finally=function(cond){
         return(NA)
     }
   )

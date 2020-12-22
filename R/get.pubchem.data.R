@@ -48,9 +48,7 @@ get.pubchem.data <- function(
       return(NA)
     },
     finally={
-      warning=function(cond) {
         return(NA)
-
     }
   )
   if(is.na(out[1])) {

@@ -97,11 +97,23 @@ get.pubchem.data <- function(
     do.l <- split(do, ceiling(seq_along(do)/50))
     for(i in 1:length(do.l)) {
       keep <- which(!do.l[[i]]=="NA")
-      
+      if(length(keep)==0) next
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/",
                      paste0(do.l[[i]][keep], collapse = ","),
                      "/property/", "inchikey", "/JSON")
-      out <- jsonlite::read_json(html)
+      out <- tryCatch(
+        {
+          jsonlite::read_json(html)
+        },
+        error=function(cond) {
+          return(NA)
+        },
+        warning=function(cond) {
+        },
+        finally={
+        }
+      )
+      if(is.na(out[1])) next
       tmp <- lapply(1:length(out$PropertyTable$Properties),
                     FUN = function(x) {
                       unlist(out$PropertyTable$Properties[[x]])
@@ -125,7 +137,19 @@ get.pubchem.data <- function(
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/",
                      do[i],
                      "/property/", "inchikey", "/JSON")
-      out <- jsonlite::read_json(html)
+      out <- tryCatch(
+        {
+          jsonlite::read_json(html)
+        },
+        error=function(cond) {
+          return(NA)
+        },
+        warning=function(cond) {
+        },
+        finally={
+        }
+      )
+      if(is.na(out[1])) next
       tmp <- lapply(1:length(out$PropertyTable$Properties),
                     FUN = function(x) {
                       unlist(out$PropertyTable$Properties[[x]])

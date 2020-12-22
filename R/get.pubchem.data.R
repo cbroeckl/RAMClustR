@@ -15,8 +15,10 @@
 
 #' @return returns a list with one or more of $puchem (compound name and identifiers) - one row in dataframe per CID; $properties contains pysicochemical properties - one row in dataframe per CID; $vendors contains the number of vendors for a given compound and selects a vendor based on 'priortity.vendors' supplied, or randomly choses a vendor with a HTML link - one row in dataframe per CID;  $bioassays contains a summary of bioassay activity data from pubchem - zero to many rows in dataframe per CID
 #' @author Corey Broeckling
+#' 
 #' @export 
 #' 
+
 get.pubchem.data <- function(
   cmpd.names = NULL,
   cmpd.cid = NULL,
@@ -371,20 +373,43 @@ get.pubchem.data <- function(
   if(get.bioassays) {
     for(i in 1:length(cid.l)) {
       keep <- which(!cid.l[[i]]=="NA")
+      
       url <- paste0(
         "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
         paste(cid.l[[i]], collapse = ","),
         "/assaysummary/CSV"
       )
-      bd <- read.csv(url)
-      if(i == 1) {
-        bioassays <- bd
-      } else {
+      
+      bd <- tryCatch(
+        {
+          read.csv(url)
+        },
+        error=function(cond) {
+          return(NA)
+        },
+        warning=function(cond) {
+          return(NA)
+        },
+        finally={
+        }
+      )
+      if(is.na(bd)) next
+      if(any(ls()=="bioassays")) {
+        cat('registered TRUE')
         bioassays <- rbind(bioassays, bd)
+        
+      } else {
+        cat('registered FALSE')
+        bioassays <- bd       
       }
     }
-    dimnames(bioassays)[[2]][which(dimnames(bioassays)[[2]] == "CID")] <- "cid"
-    pubchem$bioassays <- bioassays
+    if(any(ls()=="bioassays")) {
+      dimnames(bioassays)[[2]][which(dimnames(bioassays)[[2]] == "CID")] <- "cid"
+      pubchem$bioassays <- bioassays
+    } else {
+      bioassays <- data.frame("cid" = rep(NA, 0))
+      pubchem$bioassays <- bioassays
+    }
   }
   
   return(pubchem)

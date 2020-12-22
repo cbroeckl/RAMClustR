@@ -456,7 +456,7 @@ get.pubchem.data <- function(
           return( data.frame("cid" = rep(NA, 0)))
         },
         finally={
-        
+          return( data.frame("cid" = rep(NA, 0)))
         }
       )
       if(nrow(bd)==0) next

@@ -121,7 +121,7 @@ get.pubchem.data <- function(
   do <- cmpd.names[do.ind]
   if(length(do) > 0) {
     for(i in 1:length(do)) {
-      Sys.sleep(0.4)
+      Sys.sleep(0.25)
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/",
                      do[i],
                      "/property/", "inchikey", "/JSON")
@@ -171,7 +171,7 @@ get.pubchem.data <- function(
     parent.cid <- cmpd.cid
     do.ind <- which(is.na(cmpd.cid) & !is.na(cmpd.names))
     for(i in 1:length(do.ind)) {
-      Sys.sleep(0.3)
+      Sys.sleep(0.25)
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
                      cmpd.cid[i],
                      "/cids/TXT?cids_type=parent")
@@ -316,6 +316,7 @@ get.pubchem.data <- function(
     n.vendors <- rep(0, nrow(d))
     vendor.urls <- rep(NA, nrow(d))
     for(i in do) {
+      Sys.sleep(0.25)
       out <- tryCatch(
         {
           jsonlite::read_json(paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/categories/compound/",

@@ -154,10 +154,13 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
     ## calculate global:batch QC fold change and apply correction
     ## this will bring the median signal intensity to similar scales
     ## across batches.  
-    
-    # consider only applying correction for features demonstrating
-    # significant (anova) batch effect.  
     data1.qc.batch.fc <- data1.qc.batch.median / data1.qc.median
+    ## assume all fc values > 1000 are artifacts
+    odd <- which(data1.qc.batch.fc > 100 | data1.qc.batch.fc < 1/100)
+    data1.qc.batch.fc[odd] <- 1
+    cols <- rep(1, length(data1.qc.batch.fc)); cols[odd] <- 2
+    plot(log10(data1.qc.batch.median), log10(data1.qc.median), main = i, col = cols, pch = 19)
+    Sys.sleep(3)
     data1[use,] <- data1.batch/data1.qc.batch.fc
     
     if(do.order) {

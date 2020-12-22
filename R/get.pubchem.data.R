@@ -35,29 +35,29 @@ get.pubchem.data <- function(
 ) {
   
   
-  ## test connection to pubchem servers
-  html <- "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/58-08-2/property/inchikey/JSON"
-  out <- tryCatch(
-    {
-      jsonlite::read_json(html)
-    },
-    error=function(cond) {
-      return(NA)
-    },
-    warning=function(cond) {
-      return(NA)
-    },
-    finally=function(cond){
-        return(NA)
-    }
-  )
-  if(is.na(out[1])) {
-    stop("pubchem rest connection could not be established. This may be due to:", '\n',
-         "  -  lack of internet acces", '\n',
-         "  -  puchem server is down", '\n',
-         "  -  pubchem server has blocked access for this IP address (try restarting your R and Rstudio session)",
-         '\n')
-  }
+  # ## test connection to pubchem servers
+  # html <- "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/58-08-2/property/inchikey/JSON"
+  # out <- tryCatch(
+  #   {
+  #     jsonlite::read_json(html)
+  #   },
+  #   error=function(cond) {
+  #     return(NA)
+  #   },
+  #   warning=function(cond) {
+  #     return(NA)
+  #   },
+  #   finally=function(cond){
+  #       return(NA)
+  #   }
+  # )
+  # if(is.na(out[1])) {
+  #   stop("pubchem rest connection could not be established. This may be due to:", '\n',
+  #        "  -  lack of internet acces", '\n',
+  #        "  -  puchem server is down", '\n',
+  #        "  -  pubchem server has blocked access for this IP address (try restarting your R and Rstudio session)",
+  #        '\n')
+  # }
   
   
   ## check that lengths of cmpd.* make sense, and standardize

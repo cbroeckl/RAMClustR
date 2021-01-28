@@ -10,7 +10,8 @@ rc.qc(
   remove.qc = FALSE,
   npc = 4,
   scale = "pareto",
-  outfile.basename = "ramclustQC"
+  outfile.basename = "ramclustQC",
+  view.hist = TRUE
 )
 }
 \arguments{

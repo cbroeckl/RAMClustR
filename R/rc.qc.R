@@ -29,7 +29,8 @@ rc.qc<-function(ramclustObj=NULL,
                 remove.qc = FALSE,
                 npc=4,
                 scale="pareto",
-                outfile.basename ="ramclustQC"
+                outfile.basename ="ramclustQC",
+                view.hist = TRUE
                 
 ){
   
@@ -131,6 +132,8 @@ rc.qc<-function(ramclustObj=NULL,
     # if(!is.null(ramclustObj$MSMSdata) & x == "MSdata") {
     #   td <- td + ramclustObj$MSMSdata
     # }
+    
+    if(min(dim(td)) < npc) {npc <- min(dim(td))}
     PCA<-pcaMethods::pca(td, scale=scale, nPcs=npc, center=TRUE)
     sc<-PCA@scores
     write.csv(sc, file = paste0("QC/", outfile.basename, "_", x, "_pcascores.csv"))
@@ -179,6 +182,15 @@ rc.qc<-function(ramclustObj=NULL,
     title("20% quantiles in red on top axis", col.main =2, cex.main=0.7, line=2)
     axis(side=3, col=2, col.ticks=2, col.axis=2, round(qs, digits=3), labels=TRUE, las=2, cex.axis=0.4)
     dev.off()
+    
+    if(view.hist) {
+      hist(cvs, breaks=50, main="")
+      title(paste("histogram of", x,  "CVs from QC samples"), line=2.7)
+      title("20% quantiles in red on top axis", col.main =2, cex.main=0.7, line=2)
+      axis(side=3, col=2, col.ticks=2, col.axis=2, round(qs, digits=3), labels=TRUE, las=2, cex.axis=0.4)
+      
+    }
+    
     
     if(x == "SpecAbund") {
       out <- data.frame(

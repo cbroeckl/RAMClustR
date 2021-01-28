@@ -301,7 +301,16 @@ rc.ramclustr  <- function(
     g<-Sys.time()
   }
   
-  dimnames(ramclustObj$SpecAbund)[[1]]<-ramclustObj$phenoData$sample.names
+  if(!is.null(ramclustObj$phenoData$sample.names)) {
+    dimnames(ramclustObj$SpecAbund)[[1]]<-ramclustObj$phenoData$sample.names
+  }
+  if(!is.null(ramclustObj$phenoData$sample.names.sn)) {
+    dimnames(ramclustObj$SpecAbund)[[1]]<-ramclustObj$phenoData$sample.names.sn
+  }
+  if(is.null(dimnames(ramclustObj$SpecAbund)[[1]])) {
+    stop('this appears to be an older format ramclustR object and does not have a "phenoData" slot with sample names')
+  }
+  
   
   if(nrow(ramclustObj$MSdata) < 5 & rt.only.low.n) {
     warning('\n', "too few samples to use correlational similarity, clustering by retention time only", '\n')

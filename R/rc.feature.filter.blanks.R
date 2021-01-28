@@ -68,8 +68,14 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
     stop("no qc samples found. ", '\n')
   }
   
-  blank <- grep(blank.tag, ramclustObj$phenoData$sample.names)
-  blank <- blank[which(blank <= nrow(d1))]
+  if(length(blank.tag) == 1) {
+    blank <- grep(blank.tag[1], ramclustObj$phenoData$sample.names)
+    blank <- blank[which(blank <= nrow(d1))]
+  } 
+  if(length(blank.tag) == 2) {
+    blank <- grep(blank.tag[1], ramclustObj$phenoData[[blank.tag[2]]])
+    blank <- blank[which(blank <= nrow(d1))]
+  }
   if(length(blank) == 0) {
     stop("no blank samples found. ", '\n')
   }

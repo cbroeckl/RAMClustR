@@ -27,10 +27,16 @@ rc.expand.sample.names <- function(
   factor.names = TRUE
 ) {
   
-  if(is.null(ramclustObj$phenoData$sample.names)) {
+
+  if(!is.null(ramclustObj$phenoData$sample.names)) {
+    sn <- as.character(ramclustObj$phenoData$sample.names)
+  }
+  if(!is.null(ramclustObj$phenoData$sample.names.sn)) {
+    sn <- as.character(ramclustObj$phenoData$sample.names.sn)
+  }
+  if(is.null(sn)) {
     stop('this appears to be an older format ramclustR object and does not have a "phenoData" slot with sample names')
   }
-  sn <- as.character(ramclustObj$phenoData$sample.names)
   des <-  strsplit(sn, delim)
   l <- sapply(1:length(des), FUN = function(x) {
     length(des[[x]])

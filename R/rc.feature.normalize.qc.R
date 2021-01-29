@@ -63,6 +63,14 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
     qc <- rep(TRUE, nrow(ramclustObj$MSdata))
   }
   
+  
+  params <- c(
+    "qc.tag" = qc.tag,
+    "p.cut" = p.cut,
+    "rsq.cut" = rsq.cut
+  )
+
+  
   ## define QC samples in each set
   if(length(qc.tag) == 1) {
     qc <- grepl(qc.tag[1], ramclustObj$phenoData$sample.names)
@@ -303,6 +311,9 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
       } else {"."}
   )
   
+  
+  if(is.null) {ramclustObj$params <- list()}
+  ramclustObj$params$rc.feature.normalize.qc <- params
   
   cat(ramclustObj$history$normalize.batch.qc)
   

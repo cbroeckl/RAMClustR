@@ -73,6 +73,8 @@ rc.ramclustr  <- function(
     stop("please supply a ramclustR object as input. see rc.get.xcms.data, for example")
   }
   
+
+  
   if(!is.null(fftempdir)) {
     origffdir<-getOption("fftempdir")
     options("fftempdir" = fftempdir)
@@ -103,6 +105,27 @@ rc.ramclustr  <- function(
   }
   if(is.null(maxt)) {maxt <- 100*st}
   if(is.null(sr)) {sr <- 0.7}
+  
+  
+  params <- c(
+    "st"=st, 
+    "sr"=sr, 
+    "maxt"=maxt, 
+    "deepSplit"=deepSplit, 
+    "blocksize"=blocksize,
+    "mult"=mult,
+    "hmax"=hmax,
+    "collapse"=collapse,
+    "minModuleSize"=minModuleSize,
+    "linkage"=linkage,
+    "cor.method"=cor.method,
+    "rt.only.low.n" = rt.only.low.n,
+    "fftempdir" = fftempdir
+  )
+
+  
+  
+  
   ########
   # establish some constants for downstream processing
   data1 <- ramclustObj$MSdata
@@ -329,6 +352,10 @@ rc.ramclustr  <- function(
       "There were too few samples to use correlational similarity, thus clustering was performed using retention time only. "
     } else {""}
   )
+  
+  
+  if(is.null) {ramclustObj$params <- list()}
+  ramclustObj$params$rc.ramclustr <- params
   
   return(ramclustObj)
 }

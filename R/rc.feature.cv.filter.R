@@ -41,6 +41,10 @@ rc.feature.filter.cv  <- function(
          '       please run rc.feature.cv.filter before clustering', '\n')
   }
   
+  params <- c(
+    "qc.tag" = qc.tag,
+    "max.cv" = max.cv
+  )
   
   do.sets <- c("MSdata", "MSMSdata")
   if(is.null(ramclustObj$MSMSdata)) {
@@ -120,6 +124,9 @@ rc.feature.filter.cv  <- function(
     if(is.null(RC$MSMSdata)) {" in MSdata set"} else {" in MS or MSMSdata sets"},
     " were retained. ",   length(which(!keep))," of ", length(keep), " features were removed."
   )
+  
+  if(is.null) {ramclustObj$params <- list()}
+  ramclustObj$params$rc.feature.filter.cv <- params
   
   cat(ramclustObj$history$filter.features)
   

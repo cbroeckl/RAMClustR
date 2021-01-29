@@ -27,6 +27,10 @@ rc.expand.sample.names <- function(
   factor.names = TRUE
 ) {
   
+  params <- c(
+    "delim" = delim
+  )
+
 
   if(!is.null(ramclustObj$phenoData$sample.names)) {
     sn <- as.character(ramclustObj$phenoData$sample.names)
@@ -70,6 +74,10 @@ rc.expand.sample.names <- function(
   }
   rn <- row.names(ramclustObj$phenoData)
   ramclustObj$phenoData <- cbind(ramclustObj$phenoData, des[,1:ncol(des)])
+  
+  if(is.null) {ramclustObj$params <- list()}
+  ramclustObj$params$rc.expand.sample.names <- params
+  
   row.names(ramclustObj$phenoData) <- rn
   return(ramclustObj)
   

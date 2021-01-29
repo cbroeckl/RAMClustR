@@ -40,6 +40,13 @@ rc.cmpd.get.smiles.inchi <- function(
     ramclustObj$cmpd <- paste0("C", 1:length(inchikey))
   }
   
+  params <- c(
+    "ramclustObj" = ramclustObj,
+    "inchikey" = inchikey,
+    "ignore.stereo" = ignore.stereo
+  )
+  
+
   if(is.null(ramclustObj$inchikey)) {
     stop("no inchikey slot found, please 'annotate' first", '\n')
   }
@@ -157,6 +164,9 @@ rc.cmpd.get.smiles.inchi <- function(
       }
     }
   }
+  
+  if(is.null) {ramclustObj$params <- list()}
+  ramclustObj$params$rc.cmpd.get.smiles.inchi <- params
   
   ramclustObj$history.smiles.inchi <- paste(
     "Smiles structures were retrieved for each inchikey without a structure using the Pubchem API (Djoumbou 2016) called from RAMClustR using the getSmilesInchi function."

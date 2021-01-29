@@ -28,6 +28,9 @@ rc.feature.normalize.tic  <- function(
          '       see rc.get.xcms.data function for one approach to do so', '\n')
   }
   
+  params <- c(
+  )
+
   msint <- rowSums(ramclustObj$MSdata, na.rm=TRUE)
   msint.mean <- mean(msint)
   ramclustObj$MSdata <- (ramclustObj$MSdata/msint)*msint.mean
@@ -61,6 +64,9 @@ rc.feature.normalize.tic  <- function(
     }
     ramclustObj$msmsint <- msmsint
   }
+  
+  if(is.null) {ramclustObj$params <- list()}
+  ramclustObj$params$rc.feature.normalize.tic <- params
   
   return(ramclustObj)
 }

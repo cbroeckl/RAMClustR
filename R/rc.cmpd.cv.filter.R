@@ -26,6 +26,11 @@ rc.cmpd.filter.cv  <- function(
   max.cv = 0.3
 ) { 
   
+  params <- c(
+    qc.tag = "QC",
+    max.cv = 0.3
+  )
+  
   ## CHECKS
   if(is.null(ramclustObj)) {
     stop('existing ramclustObj required as input', '\n', 
@@ -89,6 +94,8 @@ rc.cmpd.filter.cv  <- function(
   
   ramclustObj$cmpd.use <- keep
   ramclustObj$qc.cv.cmpd.full <- cvs
+  if(is.null) {ramclustObj$params <- list()}
+  ramclustObj$params$rc.cmpd.cv.filter <- params
   
   ramclustObj$history$filter.cmpds <- paste0(
     "Compounds were filtered based on their qc sample CV values.",

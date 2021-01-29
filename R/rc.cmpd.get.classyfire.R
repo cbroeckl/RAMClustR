@@ -40,6 +40,13 @@ rc.cmpd.get.classyfire <- function (ramclustObj = NULL, inchikey = NULL, get.all
 
   }
   
+  params <- c(
+    "ramclustObj" = ramclustObj, 
+    "inchikey" = inchikey, 
+    "get.all" = get.all, 
+    "max.wait" = max.wait, 
+    "posts.per.minute" = posts.per.minute
+  )
   if (is.null(ramclustObj$inchikey)) {
     stop("no inchikey slot found, please 'annotate' first", 
          "\n")
@@ -247,6 +254,9 @@ rc.cmpd.get.classyfire <- function (ramclustObj = NULL, inchikey = NULL, get.all
   ramclustObj$history$classyfire <- paste(
     "Compounds were assigned to chemical ontogenies using the ClassyFire API (Djoumbou 2016)."
   )
+  
+  if(is.null) {ramclustObj$params <- list()}
+  ramclustObj$params$rc.cmpd.get.classyfire <- params
   
   
   return(ramclustObj)

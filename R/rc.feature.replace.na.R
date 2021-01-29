@@ -46,6 +46,14 @@ rc.feature.replace.na  <- function(
     stop("replace.zero must be logical",'\n')
   }
   
+  params <- c(
+    "replace.int" = replace.int,
+    "replace.noise" = replace.noise,
+    "replace.zero" = replace.zero,
+    "samp.max.missing" = samp.max.missing,
+    "remove.samples" = remove.samples
+  )
+
   
   ########
   # ensure that we have all numeric values, 
@@ -123,6 +131,10 @@ rc.feature.replace.na  <- function(
   #   }
   #   ramclustObj$msmsint <- msmsint
   # }
+  
+  
+  if(is.null) {ramclustObj$params <- list()}
+  ramclustObj$params$rc.feature.replace.na <- params
   
   return(ramclustObj)
 }

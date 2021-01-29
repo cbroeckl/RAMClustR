@@ -31,7 +31,7 @@ rc.cmpd.get.pubchem <- function(
   get.synonyms = TRUE,
   get.descriptions = TRUE
 ) {
-  
+
   if(is.null(ramclustObj)) {
     stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
   }
@@ -39,6 +39,12 @@ rc.cmpd.get.pubchem <- function(
   if(is.null(ramclustObj$inchikey)) {
     stop("no inchikey slot found, please 'annotate' first", '\n')
   }
+  
+  params <- c(
+    "all.properties" = all.properties,
+    "get.synonyms" = get.synonyms,
+    "get.descriptions" = get.descriptions
+  )
   
   # create list for storing values
   cmpd.props <- as.list(vector(length = length(ramclustObj$cmpd)))
@@ -322,6 +328,9 @@ rc.cmpd.get.pubchem <- function(
     }
     ramclustObj$pubchem.description <- desc
   }
+  
+  if(is.null) {ramclustObj$params <- list()}
+  ramclustObj$params$rc.cmpd.get.pubchem <- params
   
   ramclustObj$history$pubchem <- paste0(
     "Pubchem data was retrieved using the PUG rest interface (Kim 2019)."

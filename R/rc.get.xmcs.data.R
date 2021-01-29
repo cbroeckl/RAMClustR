@@ -42,6 +42,7 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
                               ensure.no.na = TRUE
 ) {
   
+  
   ########
   # If experimental design is NULL: 
   if(is.null(ExpDes)) {
@@ -51,7 +52,13 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
             "and your exported spectra will be labelled incorrectly")
   }
   
-  
+  params <- c(
+    "taglocation"="filepaths",
+    "MStag"=MStag,
+    "MSMStag"=MSMStag, 
+    "mzdec"=mzdec,
+    "ensure.no.na" = ensure.no.na
+  )
   ## add xcms processing history narrative here
   
   ## check xcms object presence
@@ -194,6 +201,8 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   ramclustObj$ExpDes       <- ExpDes
   ramclustObj$history      <- list()
   ramclustObj$phenoData    <- phenotype
+  if(is.null) {ramclustObj$params <- list()}
+  ramclustObj$params$rc.get.xcms.data <- params
   ramclustObj$history$input<- {
     paste0(
       "RAMClustR version ",  package.version("RAMClustR"), " in ", R.Version()$version.string, 

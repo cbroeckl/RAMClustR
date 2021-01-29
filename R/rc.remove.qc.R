@@ -25,6 +25,12 @@ rc.remove.qc<-function(ramclustObj=NULL,
                 remove.qc = TRUE
 ){
   
+  params <- c(
+    "qc.tag"=qc.tag,
+    "remove.qc" = remove.qc
+  )
+
+  
   if(is.null(ramclustObj)) {
     stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
   }
@@ -79,6 +85,10 @@ rc.remove.qc<-function(ramclustObj=NULL,
     ramclustObj$history$qc.summary,
     "QC samples were removed from the set for downstream processing."
     )
+  
+  
+  if(is.null) {ramclustObj$params <- list()}
+  ramclustObj$params$rc.remove.qc <- params
   
   return(ramclustObj)
 }

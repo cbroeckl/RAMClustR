@@ -17,11 +17,11 @@ getData<-function(ramclustObj=RC,
                   which.data="SpecAbund",
                   delim="-",
                   cmpdlabel="cmpd",
-                  filter = TRUE
+                  filter = FALSE
 ) {
   if(is.null(ramclustObj$phenoData)) {  
     dat <- ramclustObj[[which.data]]
-    if(filtered) {
+    if(filter) {
       if(!is.null(ramclustObj$cmpd.use)) {
         if(ncol(dat) == length(ramclustObj$cmpd.use)) {
           cmpd.use <- which(ramclustObj$cmpd.use)

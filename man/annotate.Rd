@@ -12,6 +12,9 @@ annotate(
   citation.score = TRUE,
   find.inchikey = TRUE,
   taxonomy.inchi = NULL,
+  use.ri = TRUE,
+  sri = 300,
+  ri.na.factor = 0.6,
   reset = TRUE
 )
 }
@@ -30,6 +33,10 @@ annotate(
 
 \item{taxonomy.inchi}{vector or data frame.  Only when rescore.structure = TRUE.  user can supply a vector of inchikeys.  If used, structures which match first block of inchikey receive an addition score value of 1.}
 
+\item{use.ri}{logical.  default = TRUE.  If retention index is available in ramclustObj (set by rc.calibrate.ri()) and in library spectra from MSFinder, use RI similiarity to rescore}
+
+\item{sri}{numeric.  sigma value for retention index. controls decay rate of retention index curve. decay rate between 0 and 1 exported, and multiplied by spectrum score, totalscore.}
+
 \item{reset}{logical.  If TRUE, removes any previously assigned annotations.}
 
 \item{rescore.structure}{logical.  If TRUE, uses an internal scoring method, rather than default MSFinder method for structure scores.}
@@ -37,6 +44,8 @@ annotate(
 \item{database.score}{logical. Only when rescore.structure = TRUE. default = TRUE.  Should we use the MSFinder database score in assigning structures, as MSFinder does? If false the database score is subtracted out.  The database score increases the chance of returning biologically relevent compound matches, but biases the annotation toward well described/databased compounds.}
 
 \item{form.structure.scoring}{logical. default = TRUE.  Should a combined score using the product of the formula and structure scores be used?  If FALSE, structure score alone is used in annotations.}
+
+\item{ri.na.ri.na.factor}{numeric. between 0 and 1.  0.5 by default.  how should spectrum scores be treated when no retention index is available?  NA values are replaced by retention index similarities of ri.na.factor when use.ri = TRUE.}
 }
 \value{
 an updated ramclustR object, with the at $msfinder.formula, $msfinder.formula.score,  $ann, and $ann.conf slots updated to annotated based on output from 1. ramsearch output, 2. msfinder mssearch, 3. msfinder predicted structure, 4. msfinder predicted formula, and 5. interpretMSSpectrum inferred molecular weight, with listed order as priority.

@@ -11,6 +11,9 @@
 #' @param citation.score logical. get.inchikey.from.name() returns a data frame which (optionally) includes a citation count and derived weights.  we can use these in taxonomy scoring to bias annotation toward compounds that are commonly referred to in pubmed literature. 
 #' @param form.structure.scoring logical. default = TRUE.  Should a combined score using the product of the formula and structure scores be used?  If FALSE, structure score alone is used in annotations. 
 #' @param find.inchikey logical.  default = TRUE. use chemical translation service to try to look up inchikey for chemical name.
+#' @param use.ri logical.  default = TRUE.  If retention index is available in ramclustObj (set by rc.calibrate.ri()) and in library spectra from MSFinder, use RI similiarity to rescore
+#' @param sri numeric.  sigma value for retention index. controls decay rate of retention index curve. decay rate between 0 and 1 exported, and multiplied by spectrum score, totalscore.
+#' @param ri.na.ri.na.factor numeric. between 0 and 1.  0.5 by default.  how should spectrum scores be treated when no retention index is available?  NA values are replaced by retention index similarities of ri.na.factor when use.ri = TRUE.
 #' @param reset logical.  If TRUE, removes any previously assigned annotations.  
 
 #' @details this function imports the output from the MSFinder program to annotate the ramclustR object
@@ -41,6 +44,9 @@ annotate<-function(ramclustObj = NULL,
                    citation.score = TRUE, 
                    find.inchikey = TRUE,
                    taxonomy.inchi = NULL,
+                   use.ri = TRUE,
+                   sri = 300,
+                   ri.na.factor = 0.6,
                    reset = TRUE
 ) {
   
@@ -204,6 +210,7 @@ annotate<-function(ramclustObj = NULL,
       ramclustObj$msfinder.formula <- rep(NA, length(ramclustObj$msfinder.structure.details))
     }
     
+    
     ## get best score from all spectral matches
     msfinder.mssearch.score<-as.numeric(sapply(1:length(ramclustObj$msfinder.mssearch.details), FUN = function(x) {
       if(is.null(nrow(ramclustObj$msfinder.mssearch.details[[x]]$summary))) {
@@ -214,6 +221,55 @@ annotate<-function(ramclustObj = NULL,
     }
     )
     )
+    
+    ## low res EI-GC-MS scoring maxes out at 0.67 for total score, if 
+    ## scores suggest this to be the case, divide all scores by 0.67 to bring
+    ## max score t0 1.
+    
+    if(max(msfinder.mssearch.score, na.rm = TRUE) < 0.68) {
+      for(x in 1:length(ramclustObj$msfinder.mssearch.details)) {
+        if(nrow(ramclustObj$msfinder.mssearch.details[[x]]$summary)==0) next
+        ramclustObj$msfinder.mssearch.details[[x]]$summary[,"totalscore"] <- 
+          ramclustObj$msfinder.mssearch.details[[x]]$summary[,"totalscore"]/0.67
+      }
+      msfinder.mssearch.score<-as.numeric(
+        sapply(1:length(ramclustObj$msfinder.mssearch.details), 
+               FUN = function(x) {
+                 if(is.null(nrow(ramclustObj$msfinder.mssearch.details[[x]]$summary))) {
+                   NA 
+                 } else {
+                   ramclustObj$msfinder.mssearch.details[[x]]$summary[1,"totalscore"]
+                 }
+               }
+        )
+      )
+    }
+    
+    if(use.ri) {
+      if(is.null(ramclustObj$clri)) warning("no retention index available, not using RI weighting")
+    }
+    if(use.ri & !is.null(ramclustObj$clri)) {
+      for(x in 1:length(ramclustObj$msfinder.mssearch.details[[x]])) {
+        spec.sim <- ramclustObj$msfinder.mssearch.details[[x]]$summary$totalscore
+        ramclustObj$msfinder.mssearch.details[[x]]$summary$spectrum.score <- spec.sim
+        ri <- ramclustObj$msfinder.mssearch.details[[x]]$summary$retentionindex
+        ri[which(ri == -1)] <- NA
+        ri.sim <- round(exp(-(( 
+          abs(
+          ri - ramclustObj$clri[x]
+          )
+          )^2)/(2*(sri^2))), 
+                        
+                        digits=3 )
+        ri.sim[which(is.na(ri.sim))] <- ri.na.factor
+        ramclustObj$msfinder.mssearch.details[[x]]$summary$retentionindexsim <- ri.sim
+        ramclustObj$msfinder.mssearch.details[[x]]$summary$totalscore <- {
+          ramclustObj$msfinder.mssearch.details[[x]]$summary$totalscore * ri.sim
+        }
+        ramclustObj$msfinder.mssearch.details[[x]]$summary[order(
+          ramclustObj$msfinder.mssearch.details[[x]]$summary$totalscore, decreasing = TRUE),]
+      }
+    }
     
     ramclustObj$msfinder.mssearch.score<-msfinder.mssearch.score
     
@@ -228,11 +284,50 @@ annotate<-function(ramclustObj = NULL,
           ramclustObj$dbid[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"resources"]
           tar.inchikey <- unlist(strsplit(ramclustObj$inchikey[i], "-"))[1]
           ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
-          form <- reference.data[which(reference.data[,"Short.InChIKey"] == tar.inchikey)[1], "Formula"]
-          ramclustObj$msfinder.formula[i] <- form
+          # form <- reference.data[which(reference.data[,"Short.InChIKey"] == tar.inchikey)[1], "Formula"]
+          # ramclustObj$msfinder.formula[i] <- form
+          
+          ## get molecular formula from inchikey using pubchem
+          
         }
       }
     }
+    inchikey <- which(!is.na(ramclustObj$inchikey) & is.na(ramclustObj$msfinder.formula))
+    inchikey <- unique(ramclustObj$inchikey[inchikey])
+    inchikey <- inchikey[which(nchar(inchikey)==27 & stringr::str_count(inchikey, "-")==2)]
+    if(use.short.inchikey) {
+      inchikey <- sapply(1:length(inchikey), FUN = function(x) {
+        unlist(strsplit(inchikey[x], "-"))[1]
+      })
+      inchikey <- unique(inchikey)
+      inchikey <- inchikey[which(nchar(inchikey)==14)]
+    }
+    if(length(inchikey) > 0) {
+      form <- rep(NA, length(inchikey))
+      for(i in 1:length(inchikey)) {
+        form[i] <- tryCatch(
+          jsonlite::read_json(
+          paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/",
+                 inchikey[i],
+                 "/property/MolecularFormula/JSON"
+          )
+        )$PropertyTable$Properties[[1]]$MolecularFormula[1],
+        error=function(cond) {
+          return(NA)
+        },
+        warning=function(cond) {
+          return(NA)
+        })
+        
+        Sys.sleep(0.2)
+      }
+      for(i in 1:length(form)) {
+        if(is.na(form[i])) next
+        ramclustObj$msfinder.formula[grepl(inchikey[i], ramclustObj$inchikey)] <- form[i] 
+      }
+    }
+    
+    
   }
   
   
@@ -348,7 +443,7 @@ annotate<-function(ramclustObj = NULL,
     for(i in 1:length(ramclustObj$ann)) {
       # cat(i, " ")
       if(is.na(ramclustObj$msfinder.formula[i])) {
-
+        
         ## which formulas can be found in a priorty database?  If none, skip to next compound
         db.m <- data.frame(lapply(1:length(database.priority), FUN = function(x) grepl(database.priority[x], ramclustObj$msfinder.formula.details[[i]][,"resourcenames"])))
         db.m <- apply(db.m, 1, FUN = 'any')

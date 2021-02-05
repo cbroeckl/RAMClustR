@@ -9,7 +9,7 @@ getData(
   which.data = "SpecAbund",
   delim = "-",
   cmpdlabel = "cmpd",
-  filter = TRUE
+  filter = FALSE
 )
 }
 \arguments{

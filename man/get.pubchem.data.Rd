@@ -5,6 +5,7 @@
 \title{get.pubchem.data}
 \usage{
 get.pubchem.data(
+  search.name = NULL,
   cmpd.names = NULL,
   cmpd.cid = NULL,
   cmpd.inchikey = NULL,
@@ -15,7 +16,8 @@ get.pubchem.data(
     "Alfa Aesar", "molport", "Key Organics", "BLD Pharm"),
   get.properties = TRUE,
   all.props = TRUE,
-  get.bioassays = TRUE
+  get.bioassays = TRUE,
+  write.csv = TRUE
 )
 }
 \arguments{
@@ -38,6 +40,8 @@ get.pubchem.data(
 \item{all.props}{logical.  If TRUE, all pubchem properties (https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest$_Toc494865567) are returned.  If false, only a subset (faster).}
 
 \item{get.bioassays}{logical. If TRUE, return a table summarizing existing bioassay data for that CID.}
+
+\item{write.csv}{logical.  If TRUE, write csv files of all returned pubchem data.}
 }
 \value{
 returns a list with one or more of $puchem (compound name and identifiers) - one row in dataframe per CID; $properties contains pysicochemical properties - one row in dataframe per CID; $vendors contains the number of vendors for a given compound and selects a vendor based on 'priortity.vendors' supplied, or randomly choses a vendor with a HTML link - one row in dataframe per CID;  $bioassays contains a summary of bioassay activity data from pubchem - zero to many rows in dataframe per CID

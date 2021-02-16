@@ -20,6 +20,7 @@
 #' 
 
 get.pubchem.data <- function(
+  search.name = NULL,
   cmpd.names = NULL,
   cmpd.cid = NULL,
   cmpd.inchikey = NULL,
@@ -30,7 +31,8 @@ get.pubchem.data <- function(
                        "Alfa Aesar", "molport", "Key Organics", "BLD Pharm"),
   get.properties = TRUE,
   all.props = TRUE,
-  get.bioassays = TRUE
+  get.bioassays = TRUE,
+  write.csv = TRUE
   
 ) {
   
@@ -96,7 +98,7 @@ get.pubchem.data <- function(
   ## clean up text
   cmpd.names <- trimws(cmpd.names)
   cmpd.names[which(nchar(cmpd.names) < 1)] <- NA
-  cmpd.names <- gsub(" ", "-", cmpd.names)
+  cmpd.names <- gsub(" ", "%", cmpd.names)
   cmpd.inchikey <- trimws(cmpd.inchikey)
   cmpd.inchikey[which(nchar(cmpd.inchikey) < 1)] <- NA
   cmpd.cid <- trimws(cmpd.cid)
@@ -212,19 +214,19 @@ get.pubchem.data <- function(
         browseURL(paste0("https://www.ncbi.nlm.nih.gov/pccompound/?term=", cmpd.names[i]))
         readback <- readline()
         if(readback == "q") {break}
-        cid[i] <- readback
+        cmpd.cid[i] <- readback
         
       }
     }
   }
-  cid[which((cid == "NA"))] <= NA
+  cmpd.cid[which((cmpd.cid == "NA"))] <- NA
   d <- data.frame(d, "cmpd.cid" = cmpd.cid, stringsAsFactors = FALSE)
   
   ## find.parent.cid, if TRUE
   if(use.parent.cid) {
     cat("getting parent cid from cid", '\n')
     parent.cid <- cmpd.cid
-    do.ind <- which(is.na(cmpd.cid) & !is.na(cmpd.names))
+    do.ind <- which(!is.na(cmpd.cid) & !is.na(cmpd.names))
     for(i in 1:length(do.ind)) {
       Sys.sleep(0.25)
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
@@ -260,7 +262,7 @@ get.pubchem.data <- function(
   ## pubchem URL
   do <- which(!is.na(d$cid))
   urls <- paste0("https://pubchem.ncbi.nlm.nih.gov/compound/", d$cid[do])
-  d$pubchem.url <- rep("", nrow(d))
+  d$pubchem.url <- rep(NA, nrow(d))
   d$pubchem.url[do] <- urls
   
   ## get pubchem name
@@ -269,9 +271,9 @@ get.pubchem.data <- function(
   for(i in 1:length(cid.l)) {
     
     keep <- which(!cid.l[[i]]=="NA")
-    urls <- paste0("https://pubchem.ncbi.nlm.nih.gov/compound/", d$CID[do])
-    d$pubchem.url <- rep("", nrow(d))
-    d$pubchem.url[do] <- urls
+    # urls <- paste0("https://pubchem.ncbi.nlm.nih.gov/compound/", d$CID[do])
+    # d$pubchem.url <- rep("", nrow(d))
+    # d$pubchem.url[do] <- urls
     html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
                    paste0(cid.l[[i]][keep], collapse = ","),
                    "/description/", "JSON")
@@ -371,9 +373,10 @@ get.pubchem.data <- function(
     cat("getting vendor data from cid", '\n')
     vendors <- d[,"cid", drop = FALSE]
     do <- which(!is.na(d$cid))
-    urls <- paste0(urls[do], "#section=Chemical-Vendors")
-    n.vendors <- rep(0, nrow(d))
+    urls <- paste0(pubchem$pubchem$pubchem.url[do], "#section=Chemical-Vendors")
+    n.vendors <- rep(NA, nrow(d))
     vendor.urls <- rep(NA, nrow(d))
+    pubchem.vendors.url <-rep(NA, nrow(d))
     for(i in do) {
       Sys.sleep(0.25)
       out <- tryCatch(
@@ -411,7 +414,7 @@ get.pubchem.data <- function(
         use <- agrep(j, vendor.names,  max.distance = 0.2)
         if(length(use) > 0) {
           vendor.url <- out$SourceCategories$Categories[[cat.select]]$Sources[[use[1]]]$SourceRecordURL[1]
-          if(length(vendor.url) == 0) vendor.url <- ""
+          if(length(vendor.url) == 0) vendor.url <- NA
           vendor.urls[i] <- vendor.url
           break
         }
@@ -421,10 +424,12 @@ get.pubchem.data <- function(
         if(length(vendor.url) == 0) vendor.url <- ""
         vendor.urls[i] <- vendor.url
       }
-      vendors$pubchem.vendors.url[do] <- urls
+      pubchem.vendors.url[do] <- urls
     }
     
-    vendors <- data.frame(vendors, "n.vendors" = n.vendors, 
+    vendors <- data.frame(vendors, 
+                          "pubchem.vendors.url" = pubchem.vendors.url,
+                          "n.vendors" = n.vendors, 
                           "vendor.url" = vendor.urls, 
                           stringsAsFactors = FALSE)
     pubchem$vendors <- vendors
@@ -438,7 +443,7 @@ get.pubchem.data <- function(
       
       url <- paste0(
         "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
-        paste(cid.l[[i]], collapse = ","),
+        paste(cid.l[[i]][keep], collapse = ","),
         "/assaysummary/CSV"
       )
       
@@ -472,6 +477,20 @@ get.pubchem.data <- function(
     } else {
       bioassays <- data.frame("cid" = rep(NA, 0))
       pubchem$bioassays <- bioassays
+    }
+  }
+  
+  
+  if(write.csv) {
+    if(is.null(search.name)) {search.name = "pubchem.data"}
+    dir.create(search.name)
+    write.csv(pubchem[[1]], file = paste0(search.name,"/",names(pubchem)[1], ".csv"))
+    if(length(pubchem)>1) {
+      for(i in 2:length(pubchem)) {
+        write.csv(pubchem[[i]], 
+                  file = paste0(search.name,"/",names(pubchem)[i], ".csv"),
+                  row.names = FALSE)
+      }
     }
   }
   

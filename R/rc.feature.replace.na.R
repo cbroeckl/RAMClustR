@@ -133,7 +133,7 @@ rc.feature.replace.na  <- function(
   # }
   
   
-  if(is.null) {ramclustObj$params <- list()}
+  if(is.null(ramclustObj$params)) {ramclustObj$params <- list()}
   ramclustObj$params$rc.feature.replace.na <- params
   
   return(ramclustObj)

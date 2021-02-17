@@ -201,7 +201,7 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   ramclustObj$ExpDes       <- ExpDes
   ramclustObj$history      <- list()
   ramclustObj$phenoData    <- phenotype
-  if(is.null) {ramclustObj$params <- list()}
+  if(is.null(ramclustObj$params)) {ramclustObj$params <- list()}
   ramclustObj$params$rc.get.xcms.data <- params
   ramclustObj$history$input<- {
     paste0(

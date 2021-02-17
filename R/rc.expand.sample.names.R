@@ -75,7 +75,7 @@ rc.expand.sample.names <- function(
   rn <- row.names(ramclustObj$phenoData)
   ramclustObj$phenoData <- cbind(ramclustObj$phenoData, des[,1:ncol(des)])
   
-  if(is.null) {ramclustObj$params <- list()}
+  if(is.null(ramclustObj$params)) {ramclustObj$params <- list()}
   ramclustObj$params$rc.expand.sample.names <- params
   
   row.names(ramclustObj$phenoData) <- rn

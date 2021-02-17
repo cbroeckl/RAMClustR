@@ -354,7 +354,7 @@ rc.ramclustr  <- function(
   )
   
   
-  if(is.null) {ramclustObj$params <- list()}
+  if(is.null(ramclustObj$params)) {ramclustObj$params <- list()}
   ramclustObj$params$rc.ramclustr <- params
   
   return(ramclustObj)

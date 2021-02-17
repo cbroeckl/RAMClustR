@@ -152,7 +152,7 @@ rc.feature.filter.cv  <- function(
     " were retained. ",   length(which(!keep))," of ", length(keep), " features were removed."
   )
   
-  if(is.null) {ramclustObj$params <- list()}
+  if(is.null(ramclustObj$params)) {ramclustObj$params <- list()}
   ramclustObj$params$rc.feature.filter.cv <- params
   
   cat(ramclustObj$history$filter.features)

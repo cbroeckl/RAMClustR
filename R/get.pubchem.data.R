@@ -54,7 +54,7 @@ get.pubchem.data <- function(
       warning("pubchem rest triggered a warning.", '\n')
     },
     finally={
-      
+      closeAllConnections()
     }
   )
   rm(out)
@@ -121,7 +121,7 @@ get.pubchem.data <- function(
     do <- cmpd.inchikey[do]
     do.l <- split(do, ceiling(seq_along(do)/50))
     for(i in 1:length(do.l)) {
-      Sys.sleep(0.5)
+      Sys.sleep(0.25)
       keep <- which(!do.l[[i]]=="NA")
       if(length(keep)==0) next
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/",
@@ -138,7 +138,7 @@ get.pubchem.data <- function(
           return(NA)
         },
         finally={
-          
+          closeAllConnections()
         }
       )
       if(is.na(out[1])) next
@@ -162,7 +162,7 @@ get.pubchem.data <- function(
   if(length(do) > 0) {
     cat("getting cid from names", '\n')
     for(i in 1:length(do)) {
-      Sys.sleep(0.5)
+      Sys.sleep(0.25)
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/",
                      do[i],
                      "/property/", "inchikey", "/JSON")
@@ -178,7 +178,7 @@ get.pubchem.data <- function(
           return(NA)
         },
         finally={
-        
+          closeAllConnections()
         }
       )
       if(is.na(out[1])) next
@@ -210,7 +210,7 @@ get.pubchem.data <- function(
         cat(cmpd.names[i], '\n')
         cat("please enter CID number or hit 'enter' to skip to next (no CID found)", '\n',
             "If you wish to quit manual entry, enter 'q' to return current ouput only.", '\n')
-        Sys.sleep(0.2)
+        Sys.sleep(0.25)
         browseURL(paste0("https://www.ncbi.nlm.nih.gov/pccompound/?term=", cmpd.names[i]))
         readback <- readline()
         if(readback == "q") {break}
@@ -243,7 +243,7 @@ get.pubchem.data <- function(
           return(NA)
         },
         finally={
-          
+          closeAllConnections()
         }
       )
       if(is.na(out[1])) next
@@ -269,7 +269,6 @@ get.pubchem.data <- function(
   pubchem.name <- rep(NA, length(cid))
   cat("getting parent pubchem compound name from cid", '\n')
   for(i in 1:length(cid.l)) {
-    
     keep <- which(!cid.l[[i]]=="NA")
     # urls <- paste0("https://pubchem.ncbi.nlm.nih.gov/compound/", d$CID[do])
     # d$pubchem.url <- rep("", nrow(d))
@@ -355,7 +354,6 @@ get.pubchem.data <- function(
     properties <- d[,0]
     for(i in 1:length(cid.l)) {
       keep <- which(!cid.l[[i]]=="NA")
-      
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
                      paste0(cid.l[[i]][keep], collapse = ","),
                      "/property/", paste0(props, collapse =","), "/JSON")
@@ -394,7 +392,7 @@ get.pubchem.data <- function(
           return(NA)
         },
         finally={
-         
+          closeAllConnections()
         }
       )
       if(is.na(out)) next
@@ -440,7 +438,6 @@ get.pubchem.data <- function(
     cat("getting bioasssay from cid", '\n')
     for(i in 1:length(cid.l)) {
       keep <- which(!cid.l[[i]]=="NA")
-      
       url <- paste0(
         "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
         paste(cid.l[[i]][keep], collapse = ","),
@@ -458,7 +455,7 @@ get.pubchem.data <- function(
           return( data.frame("cid" = rep(NA, 0)))
         },
         finally={
-          
+          closeAllConnections()
         }
       )
       if(nrow(bd)==0) next

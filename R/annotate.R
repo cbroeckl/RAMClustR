@@ -5,8 +5,10 @@
 #' @param standardize.names logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)
 #' @param min.msms.score numerical: what is the minimum MSFinder similarity score acceptable.  default = 6.5
 #' @param database.priority character.  Formula assignment prioritization based on presence in one or more (structure) databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just databases in MSFinder parameters).  If any database is set, the best formula match to any of those databases is selected, rather than the best formula match overall.  If NULL, this will be set to include all selected databases (from ramclustObj$msfinder.dbs, retreieved from search output during import.msfinder.formulas(), when available) or 'all'.  
+#' @param database.priority.factor numeric, between 0 and 1.  0.1 by default.  The proportion by which scores for structures not in priority database are assessed. calcluated as score * (1 - database.piority.factor)
 #' @param rescore.structure logical.  If TRUE, uses an internal scoring method, rather than default MSFinder method for structure scores.
 #' @param taxonomy.inchi vector or data frame.  Only when rescore.structure = TRUE.  user can supply a vector of inchikeys.  If used, structures which match first block of inchikey retain full score, while all other structures are penalized by 5% of their score.  
+#' @param taxonomy.inchi.factor numeric, between 0 and 1.  0.1 by default.  The proportion by which scores for structures not in taxonomy.inchi vector are assessed. calcluated as score * (1 - taonomy.inchi.factor)
 #' @param database.score logical. Only when rescore.structure = TRUE. default = TRUE.  Should we use the MSFinder database score in assigning structures, as MSFinder does? If false the database score is subtracted out.  The database score increases the chance of returning biologically relevent compound matches, but biases the annotation toward well described/databased compounds. 
 #' @param citation.score logical. get.inchikey.from.name() returns a data frame which (optionally) includes a citation count and derived weights.  we can use these in taxonomy scoring to bias annotation toward compounds that are commonly referred to in pubmed literature. 
 #' @param form.structure.scoring logical. default = TRUE.  Should a combined score using the product of the formula and structure scores be used?  If FALSE, structure score alone is used in annotations. 
@@ -41,9 +43,11 @@ annotate<-function(ramclustObj = NULL,
                    standardize.names = FALSE,
                    min.msms.score = 6.5,
                    database.priority = NULL,
+                   database.priority.factor = 0.1,
                    citation.score = TRUE, 
                    find.inchikey = TRUE,
                    taxonomy.inchi = NULL,
+                   taxonomy.inchi.factor = 0.1,
                    use.ri = TRUE,
                    sri = 300,
                    ri.na.factor = 0.6,
@@ -256,11 +260,11 @@ annotate<-function(ramclustObj = NULL,
         ri[which(ri == -1)] <- NA
         ri.sim <- round(exp(-(( 
           abs(
-          ri - ramclustObj$clri[x]
+            ri - ramclustObj$clri[x]
           )
-          )^2)/(2*(sri^2))), 
-                        
-                        digits=3 )
+        )^2)/(2*(sri^2))), 
+        
+        digits=3 )
         ri.sim[which(is.na(ri.sim))] <- ri.na.factor
         ramclustObj$msfinder.mssearch.details[[x]]$summary$retentionindexsim <- ri.sim
         ramclustObj$msfinder.mssearch.details[[x]]$summary$totalscore <- {
@@ -271,7 +275,7 @@ annotate<-function(ramclustObj = NULL,
       }
     }
     
-    ramclustObj$msfinder.mssearch.score<-msfinder.mssearch.score
+    ramclustObj$msfinder.mssearch.score <- msfinder.mssearch.score
     
     
     for(i in 1:length(ramclustObj$ann)) {
@@ -307,17 +311,17 @@ annotate<-function(ramclustObj = NULL,
       for(i in 1:length(inchikey)) {
         form[i] <- tryCatch(
           jsonlite::read_json(
-          paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/",
-                 inchikey[i],
-                 "/property/MolecularFormula/JSON"
-          )
-        )$PropertyTable$Properties[[1]]$MolecularFormula[1],
-        error=function(cond) {
-          return(NA)
-        },
-        warning=function(cond) {
-          return(NA)
-        })
+            paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/",
+                   inchikey[i],
+                   "/property/MolecularFormula/JSON"
+            )
+          )$PropertyTable$Properties[[1]]$MolecularFormula[1],
+          error=function(cond) {
+            return(NA)
+          },
+          warning=function(cond) {
+            return(NA)
+          })
         
         Sys.sleep(0.2)
       }
@@ -333,7 +337,6 @@ annotate<-function(ramclustObj = NULL,
   
   ## MSFinder structure section
   if(structure) {
-    
     tmpdb <- as.list(rep("", length(ramclustObj$msfinder.structure.details)))
     summary <- as.list(rep("", length(ramclustObj$msfinder.structure.details)))
     dbs <- vector(length = 0, mode = 'character')
@@ -373,7 +376,7 @@ annotate<-function(ramclustObj = NULL,
     ## set database priority, if not manually set, to the databases selected when running msfinder.
     ## else use the full db list
     suppressWarnings(
-      if (is.null(database.priority)) {
+      if(is.null(database.priority)) {
         if(!is.null(ramclustObj$msfinder.formula.dbs)) {
           if(length(ramclustObj$msfinder.formula.dbs)>0) {
             database.priority <- ramclustObj$msfinder.formula.dbs
@@ -419,118 +422,109 @@ annotate<-function(ramclustObj = NULL,
     search.dbs <- dbs
     priority.dbs <- database.priority
     
-    
     ## create template to hold called annotations
     template <- matrix(nrow = 0, ncol = 0)
     
-    ## annotation section : fill template.
+    ## annotation section 
     for(i in 1:length(ramclustObj$ann)) {
       # cat(i, "  ")
-      db.m <- data.frame(lapply(1:length(database.priority), FUN = function(x) grepl(database.priority[x], ramclustObj$msfinder.formula.details[[i]][,"resourcenames"])))
-      db.m <- apply(db.m, 1, FUN = 'any')
-      if(!any(db.m))  next
-      form.tab <- ramclustObj$msfinder.formula.details[[i]][db.m,]
-      if(is.null(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[1]]])) next
-      for(j in 1:nrow(form.tab)) {
-        if(is.null(names(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]]))) next
-        template.col.names <- c(paste0("f.", names(form.tab)), names(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]]))
-        template <- (matrix(nrow = 0, ncol = (ncol(form.tab) + ncol(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]]))))
-        if(ncol(template > 0)) break
+      # db.m <- data.frame(lapply(1:length(database.priority), FUN = function(x) {
+      #   grepl(database.priority[x], ramclustObj$msfinder.formula.details[[i]][,"resourcenames"])
+      # }
+      # )
+      # )
+      
+      # get all plausible formulas
+      forms <- names(ramclustObj$msfinder.structure.details[[i]])
+      forms <- forms[-which(forms == "Spectral DB search")]
+      if(length(forms) == 0) next
+      
+      for(j in 1:length(forms)) {
+        if(is.null(ramclustObj$msfinder.structure.details[[i]][forms[j]][[1]]$structures)) next
+        tmp <- ramclustObj$msfinder.structure.details[[i]][forms[j]][[1]]$structures
+        if(!exists('str.sum')) {
+          str.sum <- cbind(data.frame("formula" = rep("", 0)), tmp[0, ])
+        } 
+        if(nrow(tmp) == 0) next
+        form.score <- ramclustObj$msfinder.formula.details[[i]]
+        form.score <- as.numeric(form.score[which(form.score$name == forms[j]),"totalscore"])
+        str.sum.tmp <- cbind(data.frame(
+          "formula" = rep(forms[j], nrow(tmp)),
+          "formula.score" = rep(form.score, nrow(tmp)))
+          , tmp)
+        str.sum <- rbind(str.sum, str.sum.tmp)
       }
-      if(ncol(template > 0)) break
-    }
-    
-    for(i in 1:length(ramclustObj$ann)) {
-      # cat(i, " ")
-      if(is.na(ramclustObj$msfinder.formula[i])) {
+      
+      
+      num.cols <- c("retentiontime", "retentionindex", "totalbondenergy",
+                    "totalscore", "totalhrrulesscore", "totalbondcleavagescore", "totalmassaccuracyscore",
+                    "totalfragmentlinkagescore", "totalbonddissociationenergyscore", "databasescore",
+                    "substructureassignmentscore", "rtsimilarityscore", "risimilarityscore"
+      )
+      for(k in num.cols) {
+        str.sum[,k] <- as.numeric(str.sum[,k])
+      }
+      
+      ## make new totalscore which is product of formula score and structure score
+      str.sum$totalscore.structure <- str.sum$totalscore
+      str.sum$totalscore <- str.sum$totalscore.structure * str.sum$formula.score
+      
+      
+      ## adjust scores if priority databases are specified
+      if(!is.null(priority.dbs)) {
+        priority <- lapply(1:length(priority.dbs), FUN = function(k) {grepl(priority.dbs[k], str.sum$resources)})
+        priority <- data.frame(priority)
+        priority <- apply(priority, 1, "any")
+        priority.score <- rep(1-database.priority.factor, length(priority))
+        priority.score[priority] <- 1
+        new.totalscore <- str.sum[,"totalscore"] * priority.score
+        totalscore <- str.sum[,"totalscore"]
+        str.sum <- data.frame(str.sum, 
+                              "db.priority.score" = priority.score,
+                              "msfinder.totalscore" = totalscore)
+        str.sum$totalscore <- new.totalscore
         
-        ## which formulas can be found in a priorty database?  If none, skip to next compound
-        db.m <- data.frame(lapply(1:length(database.priority), FUN = function(x) grepl(database.priority[x], ramclustObj$msfinder.formula.details[[i]][,"resourcenames"])))
-        db.m <- apply(db.m, 1, FUN = 'any')
-        if(!any(db.m)) next
-        form.tab <- ramclustObj$msfinder.formula.details[[i]][db.m,]
-        tmp <- template
-        
-        # organize results
-        for(j in 1:nrow(form.tab)) {
-          if(!any(names(ramclustObj$msfinder.structure.details[[i]]) == form.tab$name[j])) next
-          if(nrow(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]]) == 0) next
-          for(k in 1:nrow(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]])) {
-            if(is.null(dimnames(tmp))) {
-              dimnames(tmp)[[2]] <- c(paste0("f.", names(form.tab)), names(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]]))
-            }
-            nr <- as.vector(c(unlist(form.tab[j,]), unlist(ramclustObj$msfinder.structure.details[[i]][[form.tab$name[j]]][["structures"]][k,]))) 
-            names(nr) <- NULL
-            tmp <- rbind(tmp, nr)
-          }
-        }
-        
-        dimnames(tmp)[[2]] <- template.col.names
-        tmp <- data.frame(tmp, stringsAsFactors = FALSE)
-        for(x in c("f.totalscore", "totalhrrulesscore", "totalbondcleavagescore", "totalmassaccuracyscore", 
-                   "totalfragmentlinkagescore", "totalbonddissociationenergyscore", 
-                   "databasescore", "substructureassignmentscore", "rtsimilarityscore", 
-                   "risimilarityscore", "totalscore")) {
-          tmp[,x] <- as.numeric(tmp[,x])
-        }
-        
-        if(nrow(tmp)>0) {
-          for(j in c("rtsimilarityscore", "risimilarityscore")) {
-            if(max(tmp[,j]) <=0) {
-              tmp[,j] <- 0
-            }
-          }
+      }
+      
+      ## adjust scores if taxonomy inchikeys are provided
+      if(!is.null(taxonomy.inchi)) {
+        priority <- sapply(1:nrow(str.sum), FUN = function(k) {any(grepl(str.sum$inchikey[k], taxonomy.inchi))})
+        priority.score <- rep(1-database.priority.factor, length(priority))
+        priority.score[priority] <- 1
+        new.totalscore <- str.sum[,"totalscore"] * priority.score
+        if(any(names(str.sum) == "msfinder.totalscore")) {
+          totalscore <- str.sum[,"msfinder.totalscore"]
         } else {
-          next
+          totalscore <- str.sum[,"totalscore"]
         }
         
-        use <- c("totalhrrulesscore", "totalbondcleavagescore", "totalmassaccuracyscore", 
-                 "totalfragmentlinkagescore", "totalbonddissociationenergyscore", 
-                 "databasescore", "substructureassignmentscore", "rtsimilarityscore", 
-                 "risimilarityscore", "f.totalscore") 
-        
-        ## if compound inchikey (id) is in taxonomy.inchi vector, adjust total score.
-        if(!is.null(taxonomy.inchi)) {
-          taxonomy.score <- as.numeric(tmp[,"id"] %in% taxonomy.inchi)
-          if(citation.score & any(taxonomy.score > 0)) {
-            if(any(ls()=="tax.df")) {
-              for(z in 1:nrow(tmp)) {
-                if(taxonomy.score[z]!=1) next
-                mtch <- grep(tmp[z,"id"], taxonomy.inchi)[1]
-                if(length(mtch) == 0) {
-                  # cat('BAD: i', i, "; z", z, tmp[z,"id"], "  ", paste(taxonomy.inchi, collapse = " "))
-                  next
-                }
-                # cat('GOOD: i', i, "; z", z, cat(mtch, collapse = " "))
-                taxonomy.score[z] <-tax.df[mtch,"weights"]
-                
-              }
-            }
-          }
-          tmp$taxonomy.score <- taxonomy.score
-          tmp$totalscore <- tmp$totalscore + (tmp$totalscore * 0.2 *  taxonomy.score)
+        str.sum <- data.frame(str.sum, 
+                              "tax.priority.score" = priority.score)
+        if(!any(names(str.sum) == "msfinder.totalscore")) {
+          str.sum <- data.frame(str.sum,"msfinder.totalscore" = totalscore)
         }
-        
-        ## need to sort by 'totalscore' - best match is first
-        tmp <- tmp[order(tmp[,"totalscore"], decreasing = TRUE),]
-        
-        summary[[i]] <- tmp
-        tar.inchikey <- tmp$id[1]
-        ramclustObj$msfinder.formula[i] <- tmp$f.name[1]
-        ramclustObj$msfinder.formula.score[i] <- as.numeric(tmp$f.totalscore[1])
-        best <- which(ramclustObj$msfinder.structure.details[[i]][[tmp$f.name[1]]][["structures"]][,"inchikey"] == tmp$inchikey[1])
-        ramclustObj$msfinder.structure[[i]] <- ramclustObj$msfinder.structure.details[[i]][[tmp$f.name[1]]][["structures"]][best,]
-        ramclustObj$msfinder.structure.fragments[[i]] <- {
-          ramclustObj$msfinder.structure.details[[i]][[tmp$f.name[1]]][["fragments"]][[tmp$id[1]]]
-        }
-        ramclustObj$inchikey[i]<-ramclustObj$msfinder.structure[[i]][1,"inchikey"]
-        ramclustObj$ann[i]<-ramclustObj$msfinder.structure[[i]][1,"name"]
-        ramclustObj$smiles[i]<-ramclustObj$msfinder.structure[[i]][1,"smiles"]
-        ramclustObj$annconf[i]<-2
-        ramclustObj$dbid[i]<-ramclustObj$msfinder.structure[[i]][1,"resources"]
-        rm(tmp)
+        str.sum$totalscore <- new.totalscore
       }
-    } 
+      
+      str.sum <- str.sum[order(str.sum$totalscore, decreasing = TRUE),]
+      # head(str.sum, n = 4)
+      
+      
+      summary[[i]] <- str.sum
+      
+      
+      if(nrow(str.sum) == 0) next
+      
+      ramclustObj$ann[i] <- str.sum[1,"name"]
+      ramclustObj$annconf[i] <- 2
+      ramclustObj$msfinder.formula[i] <- str.sum[1,"formula"]
+      ramclustObj$msfinder.formula.score[i] <- str.sum[1,"formula.score"]
+      ramclustObj$inchikey[i] <- str.sum[1,"inchikey"]
+      ramclustObj$smiles[i] <- str.sum[1,"smiles"]
+      ramclustObj$dbid[i] <- str.sum[1,"resources"]
+      
+      rm(str.sum); rm(tmp)
+    }
     
     names(summary) <- ramclustObj$cmpd
     ramclustObj$msfinder.summary <- summary
@@ -691,54 +685,23 @@ annotate<-function(ramclustObj = NULL,
     ramclustObj$inchikey[which(ramclustObj$inchikey == "undefined")]<-NA
   }
   
+  ramclustObj$inchikey[which(ramclustObj$inchikey == "NA")] <- NA
   
   if(standardize.names) {
     cat("using pubchem PUGrest to retrieve compound names from inchikeys", '\n')
-    for(i in 1:length(ramclustObj$inchikey)) {
-      Sys.sleep(0.2)
-      if(is.na(ramclustObj$inchikey[i])) {next}
-      
-      # https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/InChIKey/BSYNRYMUTXBXSQ-UHFFFAOYSA-N/synonyms/TXT
-      syns <- tryCatch(readLines(paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/InChIKey/",
-                                        ramclustObj$inchikey[i], 
-                                        "/synonyms/TXT")),
-                       error = function(x) {vector(length = 0)}, 
-                       finally = function(x) {vector(length = 0)})
-      if(length(syns) == 0) next
-      
-      if(length(syns) >=2) {
-        ramclustObj$synonyms[[i]] <- syns
-      }
-      ramclustObj$ann[i] <- syns[1]
-      
-    }
-    
+    do.inchi <- which(!is.na(ramclustObj$inchikey))
+    tmp <- get.pubchem.data(cmpd.inchikey = ramclustObj$inchikey[do.inchi],
+                     use.parent.cid = FALSE,
+                     manual.entry = FALSE,
+                     get.vendors = FALSE,
+                     get.properties = FALSE,
+                     get.bioassays = FALSE)
+    keep <- which(!is.na(tmp$pubchem$pubchem.name))
+    ramclustObj$ann[do.inchi[keep]] <- tmp$pubchem$pubchem.name[keep]
   }
   
   ## modify compound names to make them unique
-  nt <- table(ramclustObj$ann)
-  ramclustObj$inchikey[which(is.na(ramclustObj$inchikey))] <- "NA"
-  while(any(nt > 1)) {
-    do<-which(nt>1)[1]
-    mtch<-which(ramclustObj$ann == names(nt)[do])
-    if(length(unique(ramclustObj$inchikey[mtch]))==1){
-      ramclustObj$ann[mtch] <- paste(ramclustObj$ann[mtch], c(1:length(mtch)), sep = "_")
-    } else {
-      for(j in 1:length(mtch)) {
-        if(any(names(ramclustObj)=="synonyms")) {
-          cur<-which(ramclustObj$synonyms[[mtch[j]]] == names(do))
-          if(length(cur)>0) {
-            if(length(ramclustObj$synonyms[[mtch[j]]]) > cur){
-              ramclustObj$ann[mtch[j]] <- ramclustObj$synonyms[[mtch[j]]][cur+1]
-            } else {ramclustObj$ann[mtch[j]] <- paste(ramclustObj$ann[mtch[j]], j, sep = "__")}
-          } else {ramclustObj$ann[mtch[j]] <- paste(ramclustObj$ann[mtch[j]], j, sep = "__")}
-        }
-      }
-    }
-    nt <- table(ramclustObj$ann)
-  }
-  
-  ramclustObj$inchikey[which(ramclustObj$inchikey == "NA")] <- NA
+  ramclustObj$ann <- make.unique(ramclustObj$ann)
   
   ramclustObj$history$annotate <- paste( 
     "Annotations were assigned using the RAMClustR annotate function.", 

@@ -267,7 +267,7 @@ get.pubchem.data <- function(
   
   ## get pubchem name
   pubchem.name <- rep(NA, length(cid))
-  cat("getting parent pubchem compound name from cid", '\n')
+  cat("getting pubchem compound name from cid", '\n')
   for(i in 1:length(cid.l)) {
     keep <- which(!cid.l[[i]]=="NA")
     # urls <- paste0("https://pubchem.ncbi.nlm.nih.gov/compound/", d$CID[do])

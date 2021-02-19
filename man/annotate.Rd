@@ -9,9 +9,11 @@ annotate(
   standardize.names = FALSE,
   min.msms.score = 6.5,
   database.priority = NULL,
+  database.priority.factor = 0.1,
   citation.score = TRUE,
   find.inchikey = TRUE,
   taxonomy.inchi = NULL,
+  taxonomy.inchi.factor = 0.1,
   use.ri = TRUE,
   sri = 300,
   ri.na.factor = 0.6,
@@ -27,11 +29,15 @@ annotate(
 
 \item{database.priority}{character.  Formula assignment prioritization based on presence in one or more (structure) databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just databases in MSFinder parameters).  If any database is set, the best formula match to any of those databases is selected, rather than the best formula match overall.  If NULL, this will be set to include all selected databases (from ramclustObj$msfinder.dbs, retreieved from search output during import.msfinder.formulas(), when available) or 'all'.}
 
+\item{database.priority.factor}{numeric, between 0 and 1.  0.1 by default.  The proportion by which scores for structures not in priority database are assessed. calcluated as score * (1 - database.piority.factor)}
+
 \item{citation.score}{logical. get.inchikey.from.name() returns a data frame which (optionally) includes a citation count and derived weights.  we can use these in taxonomy scoring to bias annotation toward compounds that are commonly referred to in pubmed literature.}
 
 \item{find.inchikey}{logical.  default = TRUE. use chemical translation service to try to look up inchikey for chemical name.}
 
-\item{taxonomy.inchi}{vector or data frame.  Only when rescore.structure = TRUE.  user can supply a vector of inchikeys.  If used, structures which match first block of inchikey receive an addition score value of 1.}
+\item{taxonomy.inchi}{vector or data frame.  Only when rescore.structure = TRUE.  user can supply a vector of inchikeys.  If used, structures which match first block of inchikey retain full score, while all other structures are penalized by 5% of their score.}
+
+\item{taxonomy.inchi.factor}{numeric, between 0 and 1.  0.1 by default.  The proportion by which scores for structures not in taxonomy.inchi vector are assessed. calcluated as score * (1 - taonomy.inchi.factor)}
 
 \item{use.ri}{logical.  default = TRUE.  If retention index is available in ramclustObj (set by rc.calibrate.ri()) and in library spectra from MSFinder, use RI similiarity to rescore}
 

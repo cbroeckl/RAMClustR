@@ -255,7 +255,7 @@ rc.cmpd.get.classyfire <- function (ramclustObj = NULL, inchikey = NULL, get.all
     "Compounds were assigned to chemical ontogenies using the ClassyFire API (Djoumbou 2016)."
   )
   
-  if(is.null) {ramclustObj$params <- list()}
+  if(is.null(ramclustObj$params)) {ramclustObj$params <- list()}
   ramclustObj$params$rc.cmpd.get.classyfire <- params
   
   

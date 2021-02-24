@@ -11,7 +11,8 @@ rc.feature.normalize.qc(
   qc.tag = NULL,
   output.plot = FALSE,
   p.cut = 0.05,
-  rsq.cut = 0.1
+  rsq.cut = 0.1,
+  p.adjust = "none"
 )
 }
 \arguments{

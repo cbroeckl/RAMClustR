@@ -32,7 +32,8 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
                                    qc.tag = NULL,
                                    output.plot = FALSE,
                                    p.cut = 0.05,
-                                   rsq.cut = 0.1
+                                   rsq.cut = 0.1,
+                                   p.adjust = "none"
 ) {
   
   ## CHECKS
@@ -167,8 +168,8 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
     odd <- which(data1.qc.batch.fc > 100 | data1.qc.batch.fc < 1/100)
     data1.qc.batch.fc[odd] <- 1
     cols <- rep(1, length(data1.qc.batch.fc)); cols[odd] <- 2
-    plot(log10(data1.qc.batch.median), log10(data1.qc.median), main = i, col = cols, pch = 19)
-    Sys.sleep(3)
+    #plot(log10(data1.qc.batch.median), log10(data1.qc.median), main = i, col = cols, pch = 19)
+    #Sys.sleep(3)
     data1[use,] <- data1.batch/data1.qc.batch.fc
     
     if(do.order) {
@@ -194,7 +195,7 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
           cor.test(x, y[,z])$p.val
         }, error = function(x) {1})
       })
-      pval <- p.adjust(pval, method = "fdr")
+      pval <- p.adjust(pval, method = p.adjust)
       
       rsqval <- as.vector(cor(x,y[,1:ncol(y)])^2)
       
@@ -312,7 +313,7 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
   )
   
   
-  if(is.null) {ramclustObj$params <- list()}
+  if(is.null(ramclustObj$params)) {ramclustObj$params <- list()}
   ramclustObj$params$rc.feature.normalize.qc <- params
   
   cat(ramclustObj$history$normalize.batch.qc)

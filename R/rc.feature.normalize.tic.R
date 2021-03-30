@@ -65,7 +65,7 @@ rc.feature.normalize.tic  <- function(
     ramclustObj$msmsint <- msmsint
   }
   
-  if(is.null) {ramclustObj$params <- list()}
+  if(is.null(ramclustObj$params)) {ramclustObj$params <- list()}
   ramclustObj$params$rc.feature.normalize.tic <- params
   
   return(ramclustObj)

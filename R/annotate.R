@@ -471,7 +471,7 @@ annotate<-function(ramclustObj = NULL,
       
       
       ## adjust scores if priority databases are specified
-      if(!is.null(priority.dbs)) {
+      if(!is.null(priority.dbs) & (nrow(str.sum)>0)) {
         priority <- lapply(1:length(priority.dbs), FUN = function(k) {grepl(priority.dbs[k], str.sum$resources)})
         priority <- data.frame(priority)
         priority <- apply(priority, 1, "any")
@@ -487,7 +487,7 @@ annotate<-function(ramclustObj = NULL,
       }
       
       ## adjust scores if taxonomy inchikeys are provided
-      if(!is.null(taxonomy.inchi)) {
+      if(!is.null(taxonomy.inchi)& (nrow(str.sum)>0)) {
         priority <- sapply(1:nrow(str.sum), FUN = function(k) {any(grepl(str.sum$inchikey[k], taxonomy.inchi))})
         priority.score <- rep(1-database.priority.factor, length(priority))
         priority.score[priority] <- 1

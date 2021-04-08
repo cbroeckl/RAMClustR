@@ -270,6 +270,7 @@ get.pubchem.data <- function(
   cat("getting pubchem compound name from cid", '\n')
   for(i in 1:length(cid.l)) {
     keep <- which(!cid.l[[i]]=="NA")
+    if(length(keep) == 0) next
     # urls <- paste0("https://pubchem.ncbi.nlm.nih.gov/compound/", d$CID[do])
     # d$pubchem.url <- rep("", nrow(d))
     # d$pubchem.url[do] <- urls
@@ -288,7 +289,7 @@ get.pubchem.data <- function(
   d <- data.frame(d, "pubchem.name" = pubchem.name, stringsAsFactors = FALSE)
   pubchem$pubchem <- d
   
-  ## Get properties
+            ## Get properties
   if(get.properties) {
     cat("getting physicochemical properties and structure representations from cid", '\n')
     if(all.props) {
@@ -354,6 +355,7 @@ get.pubchem.data <- function(
     properties <- d[,0]
     for(i in 1:length(cid.l)) {
       keep <- which(!cid.l[[i]]=="NA")
+      if(length(keep) == 0) next
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
                      paste0(cid.l[[i]][keep], collapse = ","),
                      "/property/", paste0(props, collapse =","), "/JSON")
@@ -438,6 +440,7 @@ get.pubchem.data <- function(
     cat("getting bioasssay from cid", '\n')
     for(i in 1:length(cid.l)) {
       keep <- which(!cid.l[[i]]=="NA")
+      if(length(keep) == 0) next
       url <- paste0(
         "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
         paste(cid.l[[i]][keep], collapse = ","),

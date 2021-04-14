@@ -226,7 +226,8 @@ get.pubchem.data <- function(
   if(use.parent.cid) {
     cat("getting parent cid from cid", '\n')
     parent.cid <- cmpd.cid
-    do.ind <- which(!is.na(cmpd.cid) & !is.na(cmpd.names))
+    # do.ind <- which(!is.na(cmpd.cid) & !is.na(cmpd.names))
+    do.ind <- which(!is.na(cmpd.cid))
     for(i in 1:length(do.ind)) {
       Sys.sleep(0.25)
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",

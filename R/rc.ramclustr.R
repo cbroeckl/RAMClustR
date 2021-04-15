@@ -73,7 +73,7 @@ rc.ramclustr  <- function(
     stop("please supply a ramclustR object as input. see rc.get.xcms.data, for example")
   }
   
-
+  
   
   if(!is.null(fftempdir)) {
     origffdir<-getOption("fftempdir")
@@ -122,7 +122,7 @@ rc.ramclustr  <- function(
     "rt.only.low.n" = rt.only.low.n,
     "fftempdir" = fftempdir
   )
-
+  
   
   
   
@@ -134,7 +134,7 @@ rc.ramclustr  <- function(
   } else {
     data2 <- data1
   }
-
+  
   n<-ncol(data1)
   vlength<-(n*(n-1))/2
   nblocks<-floor(n/blocksize)
@@ -229,9 +229,12 @@ rc.ramclustr  <- function(
       stopc<-n} else {
         stopc<-(k+1)*blocksize}
     temp<-ffmat[startc:nrow(ffmat),startc:stopc]
+    if(!is.matrix(temp)) next
+    
     temp<-temp[which(row(temp)-col(temp)>0)]
     if(exists("startv")==FALSE) startv<-1
     stopv<-startv+length(temp)-1
+    
     tmp.ramclustObj[startv:stopv]<-temp
     gc()
     startv<-stopv+1
@@ -287,7 +290,7 @@ rc.ramclustr  <- function(
   ramclustObj$call <- tmp.ramclustObj$call
   ramclustObj$dist.method <- tmp.ramclustObj$dist.method
   ramclustObj$featclus<-clus
-
+  
   clrt<-aggregate(ramclustObj$frt, by=list(ramclustObj$featclus), FUN="mean")
   ramclustObj$clrt<-clrt[which(clrt[,1]!=0),2]
   clrtsd<-aggregate(ramclustObj$frt, by=list(ramclustObj$featclus), FUN="sd")
@@ -308,7 +311,7 @@ rc.ramclustr  <- function(
   ramclustObj$ann<-ramclustObj$cmpd
   ramclustObj$annconf<-rep(4, length(ramclustObj$clrt))
   ramclustObj$annnotes<-rep("", length(ramclustObj$clrt))
-
+  
   ########
   # collapse feature dataset into spectrum dataset
   if(collapse=="TRUE") {

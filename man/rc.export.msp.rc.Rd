@@ -10,6 +10,8 @@ rc.export.msp.rc(ramclustObj = NULL, one.file = TRUE, mzdec = 1)
 \item{ramclustObj}{ramclustR object to annotate.}
 
 \item{one.file}{logical, should all msp spectra be written to one file? If false, each spectrum is an individual file.}
+
+\item{mzdec}{integer.  Number of decimal points to export mass values with.}
 }
 \value{
 nothing, just exports files to the working directory

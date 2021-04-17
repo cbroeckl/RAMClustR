@@ -26,6 +26,8 @@ rc.qc(
 \item{scale}{"pareto" by default: PCA scaling method used}
 
 \item{outfile.basename}{base name of output files. Extensions added internally. default = "ramclustQC"}
+
+\item{view.hist}{logical.  should histograms be plotted?}
 }
 \value{
 new RC object. Saves output summary plots to pdf and .csv summary tables to new 'QC' directory. If remove.qc = TRUE, moves QC samples to new $QC slot from original position.

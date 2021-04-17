@@ -3,12 +3,13 @@
 #' extractor for xcms objects in preparation for clustering  
 #'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
-#' @param qc.inj.range integer how many injections around each injection are to be scanned for presence of QC samples when using batch.qc normalization?  A good rule of thumb is between 1 and 3 times the typical injection span between QC injections.  i.e. if you inject QC ever 7 samples, set this to between 7 and 21.  smaller values provide more local precision but make normalization sensitive to individual poor outliers (though these are first removed using the boxplot function outlier detection), while wider values provide less local precision in normalization but better stability to individual peak areas.
 #' @param batch integer vector with length equal to number of injections in xset or csv file
 #' @param order integer vector with length equal to number of injections in xset or csv file
 #' @param p.cut numeric when run order correction is applied, only features showing a run order vs signal with a linear p-value (after FDR correction) < p.cut will be adjusted.  also requires r-squared < rsq.cut.
 #' @param rsq.cut numeric when run order correction is applied, only features showing a run order vs signal with a linear r-squared > rsq.cut will be adjusted. also requires p values < p.cut.
 #' @param qc.tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.
+#' @param p.adjust which p-value adjustment should be used? default = "none", see ?p.adjust
+#' @param output.plot logical: if TRUE (default), plots are output to PDF.
 #' @details This function offers normalization by run order, batch number, and QC sample signal intensity.
 #' @details Each input vector should be the same length, and equal to the number of samples in the $MSdata set.
 #' @details Input vector order is assumed to be the same as the sample order in the $MSdata set.  
@@ -192,7 +193,7 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
       ## only correct those featues with significant trendline
       pval <- sapply(1:ncol(y), FUN = function(z) {
         tryCatch({
-          cor.test(x, y[,z])$p.val
+          stats::cor.test(x, y[,z])$p.val
         }, error = function(x) {1})
       })
       pval <- p.adjust(pval, method = p.adjust)
@@ -268,7 +269,7 @@ rc.feature.normalize.qc  <- function(ramclustObj=NULL,
         ## only correct those featues with significant trendline
         pval <- sapply(1:ncol(y), FUN = function(z) {
           tryCatch({
-            cor.test(x, y[,z])$p.val
+            stats::cor.test(x, y[,z])$p.val
           }, error = function(x) {1})
         })
         pval <- p.adjust(pval, method = "fdr")

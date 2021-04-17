@@ -40,14 +40,14 @@ cmpd.summary <- function(ramclustObj = NULL,
        ylim = c(0,1.15)*range(tmp[,"int"]),
        main = ramclustObj$cmpd[cmpd],
        xlab = "mz", ylab = "int")
-  abline(h = 0, col = gray(0.2))
-  text(x = tmp[,1], 
+  abline(h = 0, col = grDevices::gray(0.2))
+  graphics::text(x = tmp[,1], 
        y = tmp[,2],
        labels = tmp[,"adduct"],
        pos = 3, offset = 1)
   tmp <- tmp[which(tmp$int > 0.03*max(tmp$int)),]
-  text(x = tmp[,1], 
+  graphics::text(x = tmp[,1], 
        y = tmp[,2],
        labels = as.character(tmp[,"mz"]),
-       pos = 3, offset = 0.2, cex = 0.7, col = gray(0.2))
+       pos = 3, offset = 0.2, cex = 0.7, col = grDevices::gray(0.2))
 }

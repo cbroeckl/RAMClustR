@@ -8,9 +8,7 @@ rc.feature.replace.na(
   ramclustObj = NULL,
   replace.int = 0.1,
   replace.noise = 0.1,
-  replace.zero = TRUE,
-  samp.max.missing = 0.8,
-  remove.samples = TRUE
+  replace.zero = TRUE
 )
 }
 \arguments{

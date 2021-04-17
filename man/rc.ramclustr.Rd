@@ -38,6 +38,8 @@ rc.ramclustr(
 
 \item{hmax}{numeric: precut the tree at this height, default 0.3 - see ?cutreeDynamicTree}
 
+\item{collapse}{logical: if true (default), feature quantitative values are collapsed into spectra quantitative values.}
+
 \item{minModuleSize}{integer: how many features must be part of a cluster to be returned? default = 2}
 
 \item{linkage}{character: heirarchical clustering linkage method - see ?hclust}

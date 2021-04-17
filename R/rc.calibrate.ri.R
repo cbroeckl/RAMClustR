@@ -56,33 +56,33 @@ rc.calibrate.ri  <- function(
   calibrant.data$ri <- as.numeric(calibrant.data$ri)
   
   pl.data <- calibrant.data[,c("rt", "ri")]
-  fit <- lm(ri ~ poly(rt, poly.order), data = pl.data)
+  fit <- lm(pl.data$ri ~ poly(pl.data$rt, poly.order), data = pl.data)
   mean.error <- round(mean(100*abs(fit$fitted.values - pl.data$ri) / pl.data$ri), digits = 2)
   nd <- data.frame("rt" = ramclustObj$clrt,
                    "ri" = rep(NA, length(ramclustObj$clrt)))
-  clri <- as.vector(predict.lm(fit, newdata = nd))
+  clri <- as.vector(stats::predict.lm(fit, newdata = nd))
   type <- c(rep("cal", nrow(pl.data)), rep("cmpd", length(clri)))
   pl.data <- rbind(pl.data, nd)
   ri.fit <- c(fit$fitted.values, rep(NA, length(clri)))
   pl.data <- data.frame(type, pl.data, ri.fit)
   pl.data[((nrow(calibrant.data)+1):nrow(pl.data)),"ri"] <- clri
   pl.data$type <- factor(pl.data$type, levels = c("cmpd", "cal"))
-  suppressWarnings(p <- ggplot(pl.data, aes(x=rt, y=ri)) + 
-    geom_point(aes(shape = type, size = type)) + 
-    geom_line(aes(x=rt, y=ri.fit), 
-              data = pl.data[1:nrow(calibrant.data),],
-              size = 0.8, col = 2) +
-    ggtitle(paste("Calibration: polynomical order =", poly.order)) + 
-    geom_text(x = 1.15*min(pl.data$rt),
-              y = 0.925*max(pl.data$ri), 
-              hjust=0,
-              label=paste("Mean RI error: ", mean.error, "%")) +
-    theme_bw()
+  suppressWarnings(p <- ggplot2::ggplot(pl.data, ggplot2::aes(x=rt, y=ri)) + 
+                     ggplot2::geom_point(ggplot2::aes(shape = type, size = type)) + 
+                     ggplot2::geom_line(ggplot2::aes(x=rt, y=ri.fit), 
+                                        data = pl.data[1:nrow(calibrant.data),],
+                                        size = 0.8, col = 2) +
+                     ggplot2::ggtitle(paste("Calibration: polynomical order =", poly.order)) + 
+                     ggplot2::geom_text(x = 1.15*min(pl.data$rt),
+                               y = 0.925*max(pl.data$ri), 
+                               hjust=0,
+                               label=paste("Mean RI error: ", mean.error, "%")) +
+                     ggplot2::theme_bw()
   )
   suppressWarnings( print(p) )
   if(max(ramclustObj$clrt) > (max(calibrant.data$rt)* 1.1) | 
      min(ramclustObj$clrt) < (min(calibrant.data$rt)* 0.9)
-     ) {
+  ) {
     warning(" -- calibration range cannot accurantely assign RI values outside the calibrant range.")
   }
   
@@ -96,7 +96,7 @@ rc.calibrate.ri  <- function(
   ## same for features
   nd <- data.frame("rt" = ramclustObj$frt,
                    "ri" = rep(NA, length(ramclustObj$frt)))
-  fri <- as.vector(predict.lm(fit, newdata = nd))
+  fri <- as.vector(stats::predict.lm(fit, newdata = nd))
   ramclustObj$fri <- fri
   
   ramclustObj$ri.calibrant <- calibrant.data

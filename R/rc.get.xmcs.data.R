@@ -170,7 +170,7 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   
   ## get phenotype file name associations for storage in new RC object
   if(newXCMS) {
-    filepaths <- fileNames(xcmsObj)
+    filepaths <- MSnbase::fileNames(xcmsObj)
     filenames <- basename(filepaths)
     phenotype <- xcmsObj@phenoData@data
     phenotype <- data.frame(sample.names = phenotype, filenames, filepaths)
@@ -205,7 +205,7 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   ramclustObj$params$rc.get.xcms.data <- params
   ramclustObj$history$input<- {
     paste0(
-      "RAMClustR version ",  package.version("RAMClustR"), " in ", R.Version()$version.string, 
+      "RAMClustR version ",  utils::packageDescription("RAMClustR")$Version, " in ", R.Version()$version.string, 
       ") was used to normalize, filter, and group features into spectra.",
       "XCMS (Smith 2006)(Tautenhahn 2008) output data was transferred to a ramclustR object using the rc.get.xcms.data function. ",
       "Feature data was extracted using the xcms ", if(newXCMS) {

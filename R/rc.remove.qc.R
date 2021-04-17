@@ -20,16 +20,16 @@
 #' @author Corey Broeckling
 #' @export
 
-rc.remove.qc<-function(ramclustObj=NULL,
-                qc.tag="QC",
-                remove.qc = TRUE
+rc.remove.qc<-function(
+  ramclustObj=NULL,
+  qc.tag="QC"
 ){
   
   params <- c(
     "qc.tag"=qc.tag,
     "remove.qc" = remove.qc
   )
-
+  
   
   if(is.null(ramclustObj)) {
     stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
@@ -84,7 +84,7 @@ rc.remove.qc<-function(ramclustObj=NULL,
   ramclustObj$history$qc.summary <- paste(
     ramclustObj$history$qc.summary,
     "QC samples were removed from the set for downstream processing."
-    )
+  )
   
   
   if(is.null) {ramclustObj$params <- list()}

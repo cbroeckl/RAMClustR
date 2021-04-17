@@ -4,7 +4,7 @@
 \alias{rc.remove.qc}
 \title{rc.remove.qc}
 \usage{
-rc.remove.qc(ramclustObj = NULL, qc.tag = "QC", remove.qc = TRUE)
+rc.remove.qc(ramclustObj = NULL, qc.tag = "QC")
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to analyze}

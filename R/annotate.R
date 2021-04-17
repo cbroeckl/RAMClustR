@@ -6,16 +6,12 @@
 #' @param min.msms.score numerical: what is the minimum MSFinder similarity score acceptable.  default = 6.5
 #' @param database.priority character.  Formula assignment prioritization based on presence in one or more (structure) databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just databases in MSFinder parameters).  If any database is set, the best formula match to any of those databases is selected, rather than the best formula match overall.  If NULL, this will be set to include all selected databases (from ramclustObj$msfinder.dbs, retreieved from search output during import.msfinder.formulas(), when available) or 'all'.  
 #' @param database.priority.factor numeric, between 0 and 1.  0.1 by default.  The proportion by which scores for structures not in priority database are assessed
-#' @param rescore.structure logical.  If TRUE, uses an internal scoring method, rather than default MSFinder method for structure scores.
 #' @param taxonomy.inchi vector or data frame.  Only when rescore.structure = TRUE.  user can supply a vector of inchikeys.  If used, structures which match first block of inchikey retain full score, while all other structures are penalized.  
 #' @param taxonomy.inchi.factor numeric, between 0 and 1.  0.1 by default.  The proportion by which scores for structures not in taxonomy.inchi vector are assessed
-#' @param database.score logical. Only when rescore.structure = TRUE. default = TRUE.  Should we use the MSFinder database score in assigning structures, as MSFinder does? If false the database score is subtracted out.  The database score increases the chance of returning biologically relevent compound matches, but biases the annotation toward well described/databased compounds. 
-#' @param citation.score logical. get.inchikey.from.name() returns a data frame which (optionally) includes a citation count and derived weights.  we can use these in taxonomy scoring to bias annotation toward compounds that are commonly referred to in pubmed literature. 
-#' @param form.structure.scoring logical. default = TRUE.  Should a combined score using the product of the formula and structure scores be used?  If FALSE, structure score alone is used in annotations. 
 #' @param find.inchikey logical.  default = TRUE. use chemical translation service to try to look up inchikey for chemical name.
 #' @param use.ri logical.  default = TRUE.  If retention index is available in ramclustObj (set by 'rc.calibrate.ri') and in library spectra from MSFinder, use RI similiarity to rescore.
 #' @param sri numeric.  sigma value for retention index. controls decay rate of retention index curve. decay rate between 0 and 1 exported, and multiplied by spectrum score, totalscore.
-#' @param ri.na.ri.na.factor numeric. between 0 and 1.  0.5 by default.  how should spectrum scores be treated when no retention index is available?  NA values are replaced by retention index similarities of ri.na.factor when use.ri = TRUE.
+#' @param ri.na.factor numeric. between 0 and 1.  0.5 by default.  how should spectrum scores be treated when no retention index is available?  NA values are replaced by retention index similarities of ri.na.factor when use.ri = TRUE.
 #' @param reset logical.  If TRUE, removes any previously assigned annotations.  
 
 #' @details this function imports the output from the MSFinder program to annotate the ramclustR object
@@ -44,7 +40,6 @@ annotate<-function(ramclustObj = NULL,
                    min.msms.score = 6.5,
                    database.priority = NULL,
                    database.priority.factor = 0.1,
-                   citation.score = TRUE, 
                    find.inchikey = TRUE,
                    taxonomy.inchi = NULL,
                    taxonomy.inchi.factor = 0.1,
@@ -86,7 +81,7 @@ annotate<-function(ramclustObj = NULL,
       if(citation.score) {
         if(!any(names(tax.df) == "weights")) {
           stop("no citation weights provided, consider using 
-               'get.inchikey.from.name(, citation.weights = TRUE)'
+               'rc.cmpd.get.pubchem'
                or setting 'citation.score = FALSE' in the 'annotate' function",  '\n')
           cat('it didnt stop??')
         }
@@ -534,19 +529,8 @@ annotate<-function(ramclustObj = NULL,
     
     do <- which( (ramclustObj$ann != ramclustObj$cmpd) &  is.na(ramclustObj$inchikey))
     if(length(do)>0) {
-      fill.inchis <- get.inchikey.from.name(
-        cmpd.names = ramclustObj$ann[do], 
-        citation.weights = FALSE)
-      if(nrow(fill.inchis) > 0)  {
-        fill.inchis <- fill.inchis[!is.na(fill.inchis$inchikey),]
-        for(i in 1:length(do)) {
-          mtch <- which(ramclustObj$ann[do[i]] == fill.inchis[,"cmpd.name"])
-          # if(length(mtch) > 0) {break}
-          if(length(mtch)==0) {next}
-          ramclustObj$inchikey[do[i]] <- fill.inchis[mtch[1], "inchikey"]
-        }
-      }
-      
+      fill.inchis <- rc.cmpd.get.pubchem(cmpd.names = ramclustObj$ann[do])
+      ramclustObj$inchikey[do] <- fill.inchis$properties$InChIKey
     }
   }
   
@@ -690,7 +674,7 @@ annotate<-function(ramclustObj = NULL,
   if(standardize.names) {
     cat("using pubchem PUGrest to retrieve compound names from inchikeys", '\n')
     do.inchi <- which(!is.na(ramclustObj$inchikey))
-    tmp <- get.pubchem.data(cmpd.inchikey = ramclustObj$inchikey[do.inchi],
+    tmp <- RAMClustR::rc.cmpd.get.pubchem(cmpd.inchikey = ramclustObj$inchikey[do.inchi],
                      use.parent.cid = FALSE,
                      manual.entry = FALSE,
                      get.vendors = FALSE,

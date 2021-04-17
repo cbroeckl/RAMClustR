@@ -5,7 +5,7 @@
 \title{getData}
 \usage{
 getData(
-  ramclustObj = RC,
+  ramclustObj = NULL,
   which.data = "SpecAbund",
   delim = "-",
   cmpdlabel = "cmpd",

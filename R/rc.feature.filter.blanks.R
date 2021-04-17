@@ -132,7 +132,7 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
       }
     }
     
-    if(is.list(RC[[i]])) {
+    if(is.list(ramclustObj[[i]])) {
       if(length(ramclustObj[[i]]) == ncol(d1)) {
         ramclustObj[[i]] <- ramclustObj[[i]][keep]
       }
@@ -156,7 +156,7 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
       }
     }
     
-    if(is.matrix(RC[[i]])) {
+    if(is.matrix(ramclustObj[[i]])) {
       
     }
   }

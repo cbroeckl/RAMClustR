@@ -6,42 +6,72 @@
 \usage{
 rc.cmpd.get.pubchem(
   ramclustObj = NULL,
-  all.properties = TRUE,
+  search.name = NULL,
+  cmpd.names = NULL,
+  cmpd.cid = NULL,
+  cmpd.inchikey = NULL,
+  use.parent.cid = FALSE,
+  manual.entry = FALSE,
+  get.vendors = FALSE,
+  priority.vendors = c("Sigma Aldrich", "Alfa Chemistry", "Acros Organics", "VWR",
+    "Alfa Aesar", "molport", "Key Organics", "BLD Pharm"),
+  get.properties = TRUE,
+  all.props = TRUE,
   get.synonyms = TRUE,
-  get.descriptions = TRUE
+  find.short.lipid.name = TRUE,
+  find.short.synonym = TRUE,
+  max.name.length = 20,
+  assign.short.name = TRUE,
+  get.bioassays = FALSE,
+  write.csv = TRUE
 )
 }
 \arguments{
-\item{ramclustObj}{ramclustR object. must contain a $inchikey slot and/or or a $MSfinder.structure slot in which to look for a pubchem CID.}
+\item{ramclustObj}{RAMClust Object input.  if used, ramclustObj$CID, ramclustObj$inchikey, and ramclustObj$ann are used as input, in that order, and ramclustObj is returned with $pubchem slot appended.}
 
-\item{all.properties}{logical - if TRUE, a long list of properties is returned.  if FALSE, a short list.  FALSE is faster, TRUE more comprehensive.}
+\item{search.name}{character.  optional name to assign to pubchem search to name output .csv files.}
 
-\item{get.synonyms}{logical - if TRUE, pubchem synonyms are returned based on pubchem inchikey.}
+\item{cmpd.names}{character vector.  i.e. c("caffeine", "theobromine", "glucose")}
 
-\item{get.descriptions}{logical - if TRUE, pubchem text description is provided, with URL, if available.}
+\item{cmpd.cid}{numeric integer vector.  i.e. c(2519, 5429, 107526)}
+
+\item{cmpd.inchikey}{character vector.  i.e. c("RYYVLZVUVIJVGH-UHFFFAOYSA-N", "YAPQBXQYLJRXSA-UHFFFAOYSA-N", "GZCGUPFRVQAUEE-SLPGGIOYSA-N")}
+
+\item{use.parent.cid}{logical.  If TRUE, the CID for each supplied name/inchikey is used to retreive its parent CID (i.e. the parent of sodium palmitate is palmitic acid).  The parent CID is used to retrieve all other names, properties.}
+
+\item{manual.entry}{logical.  if TRUE, user input is enabled for compounds not matched by name. A browser window will open with the pubchem search results in your default browser.}
+
+\item{get.vendors}{logical.  if TRUE, vendor data is returned for each compound with a matched CID.  Includes vendor count and vendor product URL, if available}
+
+\item{priority.vendors}{charachter vector.  i.e. c("MyFavoriteCompany", "MySecondFavoriteCompany").  If these vendors are found, the URL returned is from priority vendors. Priority is given by order input by user.}
+
+\item{get.properties}{logical.  if TRUE, physicochemical property data are returned for each compound with a matched CID.}
+
+\item{all.props}{logical.  If TRUE, all pubchem properties (https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest$_Toc494865567) are returned.  If false, only a subset (faster).}
+
+\item{get.synonyms}{= TRUE. logical.  if TRUE, retrieve pubchem synonyms.  returned to $synonyms slot}
+
+\item{find.short.lipid.name}{= TRUE. logical.  If TRUE, and get.synonyms = TRUE, looks for lipid short hand names in synonymns list (i.e. PC(36:6)). returned to $short.name slot.  Short names are assigned only if assign.short.names = TRUE.}
+
+\item{find.short.synonym}{= TRUE. logical.  If TRUE, and get.synonyms = TRUE, looks for lipid short synonymns, with prioritization for names with fewer numeric characters (i.e. database accession numbers or CAS numbers). returned to $short.name slot.  Short names are assigned only if assign.short.names = TRUE.}
+
+\item{max.name.length}{= 20.  integer.  If names are longer than this value, short names will be searched for, else, retain original name.}
+
+\item{assign.short.name}{= TRUE.  If TRUE, short names from find.short.lipid.name and/or find.short.synonym = TRUE, short names are assigned the be the default annotation name ($ann slot), and original annotations are moved to $long.name slot.}
+
+\item{get.bioassays}{logical. If TRUE, return a table summarizing existing bioassay data for that CID.}
+
+\item{write.csv}{logical.  If TRUE, write csv files of all returned pubchem data.}
 }
 \value{
-returns a ramclustR object.  new vector of $smiles and $inchi with length equal to number of compounds.
+returns a list with one or more of $puchem (compound name and identifiers) - one row in dataframe per CID; $properties contains pysicochemical properties - one row in dataframe per CID; $vendors contains the number of vendors for a given compound and selects a vendor based on 'priortity.vendors' supplied, or randomly choses a vendor with a HTML link - one row in dataframe per CID;  $bioassays contains a summary of bioassay activity data from pubchem - zero to many rows in dataframe per CID
 }
 \description{
-use PubChem API to look up pubchem data for compounds assigned annotations.
+use pubchem rest and view APIs to retreive structures, CIDs (if a name or inchikey is given), synonyms, and optionally vendor data, when available.
 }
 \details{
-Uses pubchem rest to retrieve standard pubchem properties for a compound.  The $inchikey slot and, if available, the MSFinder.structure CID value are used to look up descriptions in pubchem. Highest priority is for a listed pubchem CID from MSFinder.  Next the full inchikey is used.  If no match is returned from pubchem, the first block (bonds) is used.  Note that this discards stereochemistry. PubChem CID, a pubchem URL, smiles (canonical), inchi and other parameters are returned.  if smiles and inchi slots are alread present (from MSFinder, for example) pubchem smiles and inchi are used to fill in missing values only - not to replace MSFinder derived values. You can create an artificial ramclustObj by creating a list with $inchikey and $cmpd (compound name) slots.
-}
-\references{
-Kim S, Thiessen PA, Bolton EE, Bryant SH. PUG-SOAP and PUG-REST: web services for programmatic access to chemical information in PubChem. Nucleic Acids Res. 2015;43(W1):W605-11.
+useful for moving from chemical name to digital structure represtation. greek letters are assumed to be 'UTF-8' encoded, and are converted to latin text before searching.   if you are reading in your compound name list, do so with 'encoding' set to 'UTF-8'.
 }
 \author{
 Corey Broeckling
 }
-\concept{MSFinder}
-\concept{RAMClustR}
-\concept{clustering}
-\concept{feature}
-\concept{inchi}
-\concept{inchikey}
-\concept{mass spectrometry}
-\concept{metabolomics}
-\concept{ramclustR}
-\concept{smiles}

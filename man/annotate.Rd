@@ -10,7 +10,6 @@ annotate(
   min.msms.score = 6.5,
   database.priority = NULL,
   database.priority.factor = 0.1,
-  citation.score = TRUE,
   find.inchikey = TRUE,
   taxonomy.inchi = NULL,
   taxonomy.inchi.factor = 0.1,
@@ -31,8 +30,6 @@ annotate(
 
 \item{database.priority.factor}{numeric, between 0 and 1.  0.1 by default.  The proportion by which scores for structures not in priority database are assessed}
 
-\item{citation.score}{logical. get.inchikey.from.name() returns a data frame which (optionally) includes a citation count and derived weights.  we can use these in taxonomy scoring to bias annotation toward compounds that are commonly referred to in pubmed literature.}
-
 \item{find.inchikey}{logical.  default = TRUE. use chemical translation service to try to look up inchikey for chemical name.}
 
 \item{taxonomy.inchi}{vector or data frame.  Only when rescore.structure = TRUE.  user can supply a vector of inchikeys.  If used, structures which match first block of inchikey retain full score, while all other structures are penalized.}
@@ -43,15 +40,9 @@ annotate(
 
 \item{sri}{numeric.  sigma value for retention index. controls decay rate of retention index curve. decay rate between 0 and 1 exported, and multiplied by spectrum score, totalscore.}
 
+\item{ri.na.factor}{numeric. between 0 and 1.  0.5 by default.  how should spectrum scores be treated when no retention index is available?  NA values are replaced by retention index similarities of ri.na.factor when use.ri = TRUE.}
+
 \item{reset}{logical.  If TRUE, removes any previously assigned annotations.}
-
-\item{rescore.structure}{logical.  If TRUE, uses an internal scoring method, rather than default MSFinder method for structure scores.}
-
-\item{database.score}{logical. Only when rescore.structure = TRUE. default = TRUE.  Should we use the MSFinder database score in assigning structures, as MSFinder does? If false the database score is subtracted out.  The database score increases the chance of returning biologically relevent compound matches, but biases the annotation toward well described/databased compounds.}
-
-\item{form.structure.scoring}{logical. default = TRUE.  Should a combined score using the product of the formula and structure scores be used?  If FALSE, structure score alone is used in annotations.}
-
-\item{ri.na.ri.na.factor}{numeric. between 0 and 1.  0.5 by default.  how should spectrum scores be treated when no retention index is available?  NA values are replaced by retention index similarities of ri.na.factor when use.ri = TRUE.}
 }
 \value{
 an updated ramclustR object, with the at $msfinder.formula, $msfinder.formula.score,  $ann, and $ann.conf slots updated to annotated based on output from 1. ramsearch output, 2. msfinder mssearch, 3. msfinder predicted structure, 4. msfinder predicted formula, and 5. interpretMSSpectrum inferred molecular weight, with listed order as priority.

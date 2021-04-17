@@ -13,7 +13,7 @@
 
 #' @export 
 
-getData<-function(ramclustObj=RC,
+getData<-function(ramclustObj=NULL,
                   which.data="SpecAbund",
                   delim="-",
                   cmpdlabel="cmpd",

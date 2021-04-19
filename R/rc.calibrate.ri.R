@@ -67,9 +67,9 @@ rc.calibrate.ri  <- function(
   pl.data <- data.frame(type, pl.data, ri.fit)
   pl.data[((nrow(calibrant.data)+1):nrow(pl.data)),"ri"] <- clri
   pl.data$type <- factor(pl.data$type, levels = c("cmpd", "cal"))
-  suppressWarnings(p <- ggplot2::ggplot(pl.data, ggplot2::aes(x=rt, y=ri)) + 
+  suppressWarnings(p <- ggplot2::ggplot(pl.data, ggplot2::aes(x=pl.data$rt, y=pl.data$ri)) + 
                      ggplot2::geom_point(ggplot2::aes(shape = type, size = type)) + 
-                     ggplot2::geom_line(ggplot2::aes(x=rt, y=ri.fit), 
+                     ggplot2::geom_line(ggplot2::aes(x=pl.data$rt, y=ri.fit), 
                                         data = pl.data[1:nrow(calibrant.data),],
                                         size = 0.8, col = 2) +
                      ggplot2::ggtitle(paste("Calibration: polynomical order =", poly.order)) + 

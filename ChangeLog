@@ -1,3 +1,8 @@
+2021-04-19 Corey Broeckling v1.2.0
+  * added pubchem retreival functionality
+  * added blank filter to remove background features
+  * added normalization to QC samples
+
 2020-04-14 Corey Broeckling v1.1.0
   * splitting ramclustR function into several smaller functions
   * adjust $history to a list.  

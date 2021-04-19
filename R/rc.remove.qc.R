@@ -26,8 +26,7 @@ rc.remove.qc<-function(
 ){
   
   params <- c(
-    "qc.tag"=qc.tag,
-    "remove.qc" = remove.qc
+    "qc.tag"=qc.tag
   )
   
   
@@ -73,13 +72,13 @@ rc.remove.qc<-function(
   
   qc <- which(qc)
   
-  if(remove.qc) {
-    ramclustObj$qc <- list()
-    for(x in c("phenoData", do.sets)) {
-      ramclustObj$qc[[x]] <- ramclustObj[[x]][qc,]
-      ramclustObj[[x]] <- ramclustObj[[x]][-qc,]
-    }
+  
+  ramclustObj$qc <- list()
+  for(x in c("phenoData", do.sets)) {
+    ramclustObj$qc[[x]] <- ramclustObj[[x]][qc,]
+    ramclustObj[[x]] <- ramclustObj[[x]][-qc,]
   }
+  
   
   ramclustObj$history$qc.summary <- paste(
     ramclustObj$history$qc.summary,

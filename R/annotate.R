@@ -78,14 +78,6 @@ annotate<-function(ramclustObj = NULL,
     if(is.data.frame(taxonomy.inchi)) {
       tax.df <- taxonomy.inchi
       taxonomy.inchi <- tax.df[,"inchikey"]
-      if(citation.score) {
-        if(!any(names(tax.df) == "weights")) {
-          stop("no citation weights provided, consider using 
-               'rc.cmpd.get.pubchem'
-               or setting 'citation.score = FALSE' in the 'annotate' function",  '\n')
-          cat('it didnt stop??')
-        }
-      }
     }
   }
   

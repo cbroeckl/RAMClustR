@@ -250,7 +250,7 @@ rc.cmpd.get.pubchem <- function(
     parent.cid <- cmpd.cid
     # do.ind <- which(!is.na(cmpd.cid) & !is.na(cmpd.names))
     do.ind <- which(!is.na(cmpd.cid))
-    for(i in 1:length(do.ind)) {
+    for(i in do.ind) {
       Sys.sleep(0.25)
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
                      cmpd.cid[i],
@@ -271,7 +271,8 @@ rc.cmpd.get.pubchem <- function(
       )
       if(is.na(out[1])) next
       out <- sort(as.numeric(out))
-      parent.cid[do.ind[i]] <- out[1]
+      parent.cid[i] <- out[1]
+      rm(out)
     }
     cid <- parent.cid
     d <- data.frame(d, "parent.cid" = parent.cid, stringsAsFactors = FALSE)

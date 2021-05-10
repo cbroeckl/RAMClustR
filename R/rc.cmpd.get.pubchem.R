@@ -42,7 +42,7 @@ rc.cmpd.get.pubchem <- function(
   get.synonyms = TRUE,
   find.short.lipid.name = TRUE,
   find.short.synonym = TRUE,
-  max.name.length = 20,
+  max.name.length = 30,
   assign.short.name = TRUE,
   get.bioassays = FALSE,
   write.csv = TRUE
@@ -378,6 +378,7 @@ rc.cmpd.get.pubchem <- function(
     
     properties <- d[,0]
     for(i in 1:length(cid.l)) {
+      Sys.sleep(0.5)
       keep <- which(!cid.l[[i]]=="NA")
       if(length(keep) == 0) next
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
@@ -481,6 +482,23 @@ rc.cmpd.get.pubchem <- function(
       for(j in 1:length(out$InformationList$Information)) {
         on <- which(cid ==  cid.l[[i]][keep[j]])
         if(length(on)==0) next
+        if(length(on) > 1) {
+          if(!(any(ls() == "multi.cid"))) {
+            multi.cid <- rep(1, 1)
+            names(multi.cid)[1] <- cid.l[[i]][keep[j]]
+            on <- on[1]
+          } else {
+            if(any(names(multi.cid) == cid.l[[i]][keep[j]])) {
+              which.multi <- which(names(multi.cid) == cid.l[[i]][keep[j]])
+              multi.cid[which.multi] <- multi.cid[which.multi] + 1
+              on <- on[multi.cid[which.multi]]
+            } else {
+              multi.cid <- c(multi.cid, 1)
+              names(multi.cid)[length(multi.cid)] <- cid.l[[i]][keep[j]]
+              on <- on[1]
+            }
+          }
+        }
         tmp <- out$InformationList$Information[[j]]
         if(is.null(tmp$Synonym)) next
         syns <- unlist(tmp$Synonym)
@@ -578,6 +596,12 @@ rc.cmpd.get.pubchem <- function(
     }
   }
   
+  for(i in 1:length(pubchem)) {
+    if(!is.data.frame(pubchem[[i]])) next
+    if(nrow(pubchem[[i]]) == length(ramclustObj$cmpd)) {
+      pubchem[[i]] <- data.frame("cmpd" = ramclustObj$cmpd, pubchem[[i]])
+    }
+  }
   
   if(write.csv) {
     if(is.null(search.name)) {search.name = "pubchem.data"}

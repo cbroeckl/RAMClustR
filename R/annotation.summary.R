@@ -39,7 +39,7 @@ annotation.summary<-function(ramclustObj = NULL,
                    "rt" = ramclustObj$clrt,
                    "annotation" = ramclustObj$ann,
                    "ann.confidence" = ramclustObj$annconf,
-                   "median signal" = as.vector(apply(ramclustObj$SpecAbund, 2, "median"))) 
+                   "median signal" = as.vector(apply(ramclustObj$SpecAbund, 2, "median", na.rm = TRUE))) 
   
   if(any(names(ramclustObj) == "cmpd.use")) {
     out<- data.frame(out, "qc.cv.acceptable" = ramclustObj$cmpd.use)
@@ -61,6 +61,16 @@ annotation.summary<-function(ramclustObj = NULL,
     out<- data.frame(out, "inchikey" = ramclustObj$inchikey)
   }
   if(any(names(ramclustObj) == "inchi")) {
+    if(any(names(ramclustObj) == "pubchem")) {
+      if((any(names(ramclustObj$pubchem) == "properties"))) {
+        if((any(names(ramclustObj$pubchem$properties) == "InChI"))) {
+          r.inch <- which(is.na(ramclustObj$inchi))
+          if(length(r.inch) > 0) {
+            ramclustObj$inchi[r.inch] <- ramclustObj$pubchem$properties[r.inch,"InChI"]
+          }
+        }
+      }
+    }
     out<- data.frame(out, "inchi" = ramclustObj$inchi)
   }
   if(any(names(ramclustObj) == "hmdb.url")) {
@@ -71,12 +81,32 @@ annotation.summary<-function(ramclustObj = NULL,
     out<- data.frame(out, "lm.url" = ramclustObj$lm.url)
   }
   if(any(names(ramclustObj) == "pubchem.url")) {
+    if(any(names(ramclustObj) == "pubchem")) {
+      if((any(names(ramclustObj$pubchem) == "pubchem"))) {
+        if((any(names(ramclustObj$pubchem$properties) == "pubchem.url"))) {
+          r.pcurl <- which(is.na(ramclustObj$pubchem.url))
+          if(length(r.pcurl) > 0) {
+            ramclustObj$inchi[r.pcurl] <- ramclustObj$pubchem$properties[r.pcurl,"pubchem.url"]
+          }
+        }
+      }
+    }
     out<- data.frame(out, "pubchem.url" = ramclustObj$pubchem.url)
   }
   if(any(names(ramclustObj) == "chebi.url")) {
     out<- data.frame(out, "chebi.url" = ramclustObj$chebi.url)
   }
   if(any(names(ramclustObj) == "synonyms")) {
+    if(any(names(ramclustObj) == "pubchem")) {
+      if((any(names(ramclustObj$pubchem) == "synonyms"))) {
+        r.syn <- which(is.na(ramclustObj$synonyms))
+        if(length(r.syn) > 0) {
+          for(z in r.syn) {
+            ramclustObj$synonyms[[z]] <- ramclustObj$pubchem$synonyms[[z]]
+          }
+        }
+      }
+    }
     out<- data.frame(out, "synonyms" = sapply(1:length(ramclustObj$synonyms), 
                                               FUN = function(x) {
                                                 paste(ramclustObj$synonyms[[x]], collapse = " __ ")

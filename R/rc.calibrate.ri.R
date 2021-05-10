@@ -42,13 +42,13 @@ rc.calibrate.ri  <- function(
                       stringsAsFactors = FALSE,
                       encoding = "UTF-8")
       if(!all(c("ri", "rt") %in% names(tmp))) {
-        stop("calibrant data must have column names minimally containing 'ri' and 'rt'")
+        stop("calibrant data must have column names minimally containing 'rt' and 'ri'")
       }
       calibrant.data <- tmp
     }
   } else {
     if(!all(c("ri", "rt") %in% names(tmp))) {
-      stop("calibrant data must have column names minimally containing 'ri' and 'rt'")
+      stop("calibrant data must have column names minimally containing 'rt' and 'ri'")
     }
   }
   
@@ -56,7 +56,7 @@ rc.calibrate.ri  <- function(
   calibrant.data$ri <- as.numeric(calibrant.data$ri)
   
   pl.data <- calibrant.data[,c("rt", "ri")]
-  fit <- lm(pl.data$ri ~ poly(pl.data$rt, poly.order), data = pl.data)
+  fit <- lm(ri ~ poly(rt, poly.order), data = pl.data)
   mean.error <- round(mean(100*abs(fit$fitted.values - pl.data$ri) / pl.data$ri), digits = 2)
   nd <- data.frame("rt" = ramclustObj$clrt,
                    "ri" = rep(NA, length(ramclustObj$clrt)))
@@ -69,7 +69,7 @@ rc.calibrate.ri  <- function(
   pl.data$type <- factor(pl.data$type, levels = c("cmpd", "cal"))
   suppressWarnings(p <- ggplot2::ggplot(pl.data, ggplot2::aes(x=pl.data$rt, y=pl.data$ri)) + 
                      ggplot2::geom_point(ggplot2::aes(shape = type, size = type)) + 
-                     ggplot2::geom_line(ggplot2::aes(x=pl.data$rt, y=ri.fit), 
+                     ggplot2::geom_line(ggplot2::aes(x=pl.data$rt[1:nrow(calibrant.data)], y=ri.fit[1:nrow(calibrant.data)]), 
                                         data = pl.data[1:nrow(calibrant.data),],
                                         size = 0.8, col = 2) +
                      ggplot2::ggtitle(paste("Calibration: polynomical order =", poly.order)) + 

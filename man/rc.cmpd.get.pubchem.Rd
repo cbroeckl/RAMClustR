@@ -20,7 +20,7 @@ rc.cmpd.get.pubchem(
   get.synonyms = TRUE,
   find.short.lipid.name = TRUE,
   find.short.synonym = TRUE,
-  max.name.length = 20,
+  max.name.length = 30,
   assign.short.name = TRUE,
   get.bioassays = FALSE,
   write.csv = TRUE

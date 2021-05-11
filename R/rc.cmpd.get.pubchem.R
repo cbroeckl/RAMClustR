@@ -67,7 +67,7 @@ rc.cmpd.get.pubchem <- function(
       warning("pubchem rest triggered a warning.", '\n')
     },
     finally={
-      closeAllConnections()
+      cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
     }
   )
   rm(out)
@@ -160,7 +160,7 @@ rc.cmpd.get.pubchem <- function(
           return(NA)
         },
         finally={
-          closeAllConnections()
+          cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
         }
       )
       if(is.na(out[1])) next
@@ -200,7 +200,7 @@ rc.cmpd.get.pubchem <- function(
           return(NA)
         },
         finally={
-          closeAllConnections()
+          cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
         }
       )
       if(is.na(out[1])) next
@@ -266,7 +266,7 @@ rc.cmpd.get.pubchem <- function(
           return(NA)
         },
         finally={
-          closeAllConnections()
+          cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
         }
       )
       if(is.na(out[1])) next
@@ -419,7 +419,7 @@ rc.cmpd.get.pubchem <- function(
           return(NA)
         },
         finally={
-          closeAllConnections()
+          cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
         }
       )
       if(is.na(out)) next
@@ -574,7 +574,7 @@ rc.cmpd.get.pubchem <- function(
           return( data.frame("cid" = rep(NA, 0)))
         },
         finally={
-          closeAllConnections()
+          cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
         }
       )
       if(nrow(bd)==0) next

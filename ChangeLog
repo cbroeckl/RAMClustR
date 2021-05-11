@@ -1,3 +1,6 @@
+2021-04-19 Corey Broeckling v1.2.1
+  * removed closeAllConnections() call from rc.cmpd.get.pubchem for CRAN compatibility
+
 2021-04-19 Corey Broeckling v1.2.0
   * added pubchem retreival functionality
   * added blank filter to remove background features

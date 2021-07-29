@@ -286,14 +286,15 @@ annotate<-function(ramclustObj = NULL,
     inchikey <- which(!is.na(ramclustObj$inchikey) & is.na(ramclustObj$msfinder.formula))
     inchikey <- unique(ramclustObj$inchikey[inchikey])
     inchikey <- inchikey[which(nchar(inchikey)==27 & stringr::str_count(inchikey, "-")==2)]
-    if(use.short.inchikey) {
-      inchikey <- sapply(1:length(inchikey), FUN = function(x) {
-        unlist(strsplit(inchikey[x], "-"))[1]
-      })
-      inchikey <- unique(inchikey)
-      inchikey <- inchikey[which(nchar(inchikey)==14)]
-    }
+
     if(length(inchikey) > 0) {
+      if(use.short.inchikey) {
+        inchikey <- sapply(1:length(inchikey), FUN = function(x) {
+          unlist(strsplit(inchikey[x], "-"))[1]
+        })
+        inchikey <- unique(inchikey)
+        inchikey <- inchikey[which(nchar(inchikey)==14)]
+      }
       form <- rep(NA, length(inchikey))
       for(i in 1:length(inchikey)) {
         form[i] <- tryCatch(

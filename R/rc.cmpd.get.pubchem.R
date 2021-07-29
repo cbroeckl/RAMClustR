@@ -506,7 +506,9 @@ rc.cmpd.get.pubchem <- function(
         
         if(find.short.lipid.name) {
           if(length(pubchem$synonyms[[on]]) > 1) {
-            tars <- pubchem$synonyms[[on]][which(stringr::str_detect(pubchem$synonyms[[on]], "\\([0-9]{1,2}\\:[0-9]{1,2}\\)"))]
+            tars <- pubchem$synonyms[[on]][which(
+              stringr::str_detect(pubchem$synonyms[[on]], "\\([0-9]{1,2}\\:[0-9]{1,2}\\)") && (nchar(pubchem$synonyms[[on]]) <= max.name.length)
+              )]
             if(length(tars) > 0) {
               nc <- nchar(tars)
               pubchem$short.name[on] <- tars[which.min(nc)]

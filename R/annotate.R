@@ -424,7 +424,10 @@ annotate<-function(ramclustObj = NULL,
       
       # get all plausible formulas
       forms <- names(ramclustObj$msfinder.structure.details[[i]])
-      forms <- forms[-which(forms == "Spectral DB search")]
+      if(any(forms == "Spectral DB search")) {
+        forms <- forms[-which(forms == "Spectral DB search")]
+      }
+      
       if(length(forms) == 0) next
       
       for(j in 1:length(forms)) {

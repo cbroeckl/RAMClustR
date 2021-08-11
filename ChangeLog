@@ -1,3 +1,8 @@
+2021-08-11 Corey Broeckling v1.2.2
+  * fixed clri bug in write.msp
+  * fixed annotation bug - no structures from MSFinder were being assigned
+  * fixed a neutral loss format error used for findMain
+
 2021-04-19 Corey Broeckling v1.2.1
   * removed closeAllConnections() call from rc.cmpd.get.pubchem for CRAN compatibility
 

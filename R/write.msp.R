@@ -71,10 +71,16 @@ write.msp <- function(
     out <- paste0(
       "NAME:", ramclustObj$cmpd[i], '\n', 
       "IONMODE:", ion.mode, '\n',
-      "RETENTIONTIME:", round(ramclustObj$clrt[i], 2), '\n',
-      "RETENTIONINDEX:", round(ramclustObj$clri[i], 2),  '\n',
-      "SPECTRUMTYPE:Centroid", '\n'
+      "SPECTRUMTYPE:Centroid", '\n',
+      "RETENTIONTIME:", round(ramclustObj$clrt[i], 2), '\n'
     )
+    
+    if(any(names(ramclustObj)=="clri")) {paste0(
+      out,
+      "RETENTIONINDEX:", round(ramclustObj$clri[i], 2),  '\n'
+    )
+    }
+    
     if(ms2) {
       out <- paste0(out, 
                     "PRECURSORMZ:", ramclustObj$precursor.mz[i],'\n', 

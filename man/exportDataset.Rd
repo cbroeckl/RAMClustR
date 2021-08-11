@@ -8,7 +8,7 @@ exportDataset(
   ramclustObj = NULL,
   which.data = "SpecAbund",
   label.by = "ann",
-  filter = TRUE
+  appendFactors = TRUE
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ exportDataset(
 
 \item{label.by}{either 'ann' or 'cmpd', generally.  name of ramclustObj slot used as csv header for each column (compound)}
 
-\item{filter}{logical, TRUE by default. when $cmpd.use slot is present (from rc.cmpd.filter.cv function), only cmpds that passed cv filtering are used. If you wish to change that behavior, rerun the rc.cmpd.filter.cv function with a really high CV threshold.}
+\item{appendFactors}{logical.  If TRUE (default) the factor data frame is appended to the left side of the dataset.}
 }
 \value{
 nothing is returned.  file exported as csf to 'datasets/*.csv'

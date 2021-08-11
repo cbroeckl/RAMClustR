@@ -5,6 +5,7 @@
 #' @param ramclustObj ramclustR object to export from
 #' @param which.data name of dataset to export.  SpecAbund, SpecAbundAve, MSdata, or MSMSdata
 #' @param label.by either 'ann' or 'cmpd', generally.  name of ramclustObj slot used as csv header for each column (compound)
+#' @param appendFactors logical.  If TRUE (default) the factor data frame is appended to the left side of the dataset. 
 #' @return nothing is returned.  file exported as csf to 'datasets/*.csv'
 #' @concept ramclustR
 #' @concept RAMClustR
@@ -26,7 +27,6 @@ exportDataset<-function(
   d <- RAMClustR::getData(
     ramclustObj = ramclustObj, 
     which.data = which.data, 
-    filter = filter,
     cmpdlabel = label.by
   )
   

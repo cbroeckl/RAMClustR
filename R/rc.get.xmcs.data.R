@@ -61,6 +61,7 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   )
   ## add xcms processing history narrative here
   
+  
   ## check xcms object presence
   if(is.null(xcmsObj)){
     stop('please supply an xcms object as input', '\n')

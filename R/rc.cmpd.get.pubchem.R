@@ -120,7 +120,7 @@ rc.cmpd.get.pubchem <- function(
   ## clean up text
   cmpd.names <- trimws(cmpd.names)
   cmpd.names[which(nchar(cmpd.names) < 1)] <- NA
-  cmpd.names <- gsub(" ", "%", cmpd.names)
+  cmpd.names <- gsub(" ", "%20", cmpd.names)
   cmpd.inchikey <- trimws(cmpd.inchikey)
   cmpd.inchikey[which(nchar(cmpd.inchikey) < 1)] <- NA
   cmpd.cid <- trimws(cmpd.cid)

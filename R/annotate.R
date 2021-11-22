@@ -37,7 +37,7 @@
 
 annotate<-function(ramclustObj = NULL,
                    standardize.names = FALSE,
-                   min.msms.score = 6.5,
+                   min.msms.score = 0.65,
                    database.priority = NULL,
                    database.priority.factor = 0.1,
                    find.inchikey = TRUE,
@@ -113,6 +113,10 @@ annotate<-function(ramclustObj = NULL,
   if(any(names(ramclustObj) == "msfinder.mssearch.details")) {
     mssearch = TRUE
   } else {mssearch = FALSE}
+  
+  if(any(names(ramclustObj) == "sirius")) {
+    sirius = TRUE
+  } else {sirius = FALSE}
   
   ## add new (or replace existing) slots for holding annotation data from external tools
   if(!any(names(ramclustObj) == "inchikey")) {ramclustObj$inchikey <- rep(NA, length(ramclustObj$cmpd))}
@@ -193,8 +197,7 @@ annotate<-function(ramclustObj = NULL,
     
   }
   
-  ## Annotate based on spectral matches next
-  ## these are from MSFinder.  
+  ## Annotate based on msfinder spectral matches next
   if(mssearch) {
     spec.formula.warnings <- vector(length = 0, mode = 'numeric')
     if(is.null(ramclustObj$msfinder.formula)) {
@@ -322,6 +325,11 @@ annotate<-function(ramclustObj = NULL,
     
   }
   
+  
+  ## Sirius section
+  if(sirius) {
+    
+  }
   
   ## MSFinder structure section
   if(structure) {

@@ -42,6 +42,7 @@ import.sirius <- function (
   all.dirs.map <- rep(NA, length(ramclustObj$cmpd)) 
   for(i in 1:length(all.dirs.map)) {
     use <- grep(ramclustObj$cmpd[i], all.dirs)
+    ## need to modify this to select newest directory.
     if(length(use) !=1) {stop("directory confusion: expected 1 match and found ", length(use), " for cmpd ", ramclustObj$cmpd[i], '\n')}
     all.dirs.map[i] <- all.dirs[use]
   }
@@ -91,26 +92,15 @@ import.sirius <- function (
     if(!file.exists(paste0(all.dirs.map[i], "/formula_candidates.tsv"))) next
     form <- read.delim(paste0(all.dirs.map[i], "/formula_candidates.tsv"))
     form <- data.frame("annotated" = rep(FALSE, nrow(form)), form)
-    use <- grep(ramclustObj$cmpd[i], sirius.formula.ids$id)
+    use <- grep(basename(all.dirs.map[i]), sirius.formula.ids$id)
+    sirius.formula[[i]] <- form
     if(length(use) < 1) next
-    if(length(use) > 1) stop("too many formula identifications", '\n')
+    if(length(use) > 1) stop("too many formula identifications 1:", all.dirs.map[i], sirius.formula.ids$id, '\n')
     use <- which(form$molecularFormula == sirius.formula.ids$molecularFormula[use])
     if(length(use) < 1 ) next
-    if(length(use) > 1 ) stop("too many formula identifications", '\n')
+    if(length(use) > 1 ) stop("too many formula identifications 2:", all.dirs.map[i], sirius.formula.ids$id, '\n')
     form$annotated[use] <- TRUE
     sirius.formula[[i]] <- form
-    
-    if(!file.exists(paste0(all.dirs.map[i], "/structure_candidates.tsv"))) next
-    struc <- suppressWarnings(read.delim(paste0(all.dirs.map[i], "/structure_candidates.tsv")))
-    struc <- data.frame("annotated" = rep(FALSE, nrow(struc)), struc)
-    use <- grep(ramclustObj$cmpd[i], sirius.structure.ids$id)
-    if(length(use) < 1) next
-    if(length(use) > 1) stop("too many structure identifications", '\n')
-    use <- which(struc$InChIkey2D == sirius.structure.ids$InChIkey2D[use])
-    if(length(use) < 1 ) next
-    if(length(use) > 1 ) stop("too many structure identifications", '\n')
-    struc$annotated[use] <- TRUE
-    sirius.structure[[i]] <- struc
     
     fpts <- list.files(paste0(all.dirs.map[i], "/fingerprints/"))
     fpt <- fpts[grep(form[which(form$annotated), "molecularFormula"], fpts)]
@@ -118,7 +108,6 @@ import.sirius <- function (
       fpt <- as.vector(read.delim(paste0(all.dirs.map[i], "/fingerprints/", fpt), header = FALSE)[,1])
       sirius.fingerprint[,ramclustObj$cmpd[i]] <- fpt
     }
-
     
     cnps <- list.files(paste0(all.dirs.map[i], "/canopus/"))
     cnp <- fpts[grep(form[which(form$annotated), "molecularFormula"], cnps)]
@@ -126,6 +115,22 @@ import.sirius <- function (
       cnp <- as.vector(read.delim(paste0(all.dirs.map[i], "/canopus/", cnp), header = FALSE)[,1])
       sirius.canopus[,ramclustObj$cmpd[i]] <- cnp
     }
+    
+    if(!file.exists(paste0(all.dirs.map[i], "/structure_candidates.tsv"))) next
+    struc <- suppressWarnings(read.delim(paste0(all.dirs.map[i], "/structure_candidates.tsv")))
+    struc <- data.frame("annotated" = rep(FALSE, nrow(struc)), struc)
+    sirius.structure[[i]] <- struc
+    use <- grep(basename(all.dirs.map[i]), sirius.structure.ids$id)
+    if(length(use) < 1)  {
+      if(nrow(struc) == 0) {next}
+      stop(i)
+      }
+    if(length(use) > 1) stop("too many structure identifications", '\n')
+    use <- which(struc$InChIkey2D == sirius.structure.ids$InChIkey2D[use])
+    if(length(use) < 1 ) next
+    if(length(use) > 1 ) stop("too many structure identifications", '\n')
+    struc$annotated[use] <- TRUE
+    sirius.structure[[i]] <- struc
 
   }
   

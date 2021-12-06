@@ -111,10 +111,11 @@ rc.cmpd.get.pubchem <- function(
   if(l["cmpd.cid"] < max(l)) cmpd.cid <- rep(NA, max(l))
   if(l["cmpd.inchikey"] < max(l)) cmpd.inchikey <- rep(NA, max(l))
   
-  ## store orignal data in data.frame
+  ## store original data in data.frame
   d <- data.frame("user.cmpd" = cmpd.names, 
                   "user.cid" = cmpd.cid,
                   "user.inchikey" = cmpd.inchikey)
+  
   pubchem <- list()
   
   ## clean up text
@@ -141,9 +142,10 @@ rc.cmpd.get.pubchem <- function(
   if(length(do) > 0) {
     cat("getting cid from inchikey", '\n')
     do <- cmpd.inchikey[do]
-    do.l <- split(do, ceiling(seq_along(do)/50))
+    do.l <- split(do, ceiling(seq_along(do)/1))
     for(i in 1:length(do.l)) {
-      Sys.sleep(1)
+      cat(do.l[[i]][keep], '\n')
+      Sys.sleep(0.2)
       keep <- which(!do.l[[i]]=="NA")
       if(length(keep)==0) next
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/",
@@ -181,10 +183,12 @@ rc.cmpd.get.pubchem <- function(
   ## get missing CIDs from names next
   do.ind <- which(is.na(cmpd.cid) & !is.na(cmpd.names))
   do <- cmpd.names[do.ind]
+  # cat(do)
   if(length(do) > 0) {
     cat("getting cid from names", '\n')
     for(i in 1:length(do)) {
-      Sys.sleep(0.25)
+      Sys.sleep(0.2)
+      # cat(do[i])
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/",
                      do[i],
                      "/property/", "inchikey", "/JSON")
@@ -211,6 +215,7 @@ rc.cmpd.get.pubchem <- function(
       tmp <- data.frame(t(data.frame(tmp, stringsAsFactors = FALSE)), stringsAsFactors = FALSE)
       tmp <- tmp[order(tmp[,"CID"], decreasing = TRUE),]
       cmpd.cid[do.ind[i]] <- tmp[1, "CID"]
+      # cat(i, tmp[1, "CID"], do[i], '\n')
     }
   }
   
@@ -229,10 +234,9 @@ rc.cmpd.get.pubchem <- function(
     
     if(readback == '2') {
       for(i in missing) {
-        cat(cmpd.names[i], '\n')
         cat("please enter CID number or hit 'enter' to skip to next (no CID found)", '\n',
             "If you wish to quit manual entry, enter 'q' to return current ouput only.", '\n')
-        Sys.sleep(0.25)
+        Sys.sleep(0.2)
         utils::browseURL(paste0("https://www.ncbi.nlm.nih.gov/pccompound/?term=", cmpd.names[i]))
         readback <- readline()
         if(readback == "q") {break}
@@ -241,7 +245,9 @@ rc.cmpd.get.pubchem <- function(
       }
     }
   }
+  
   cmpd.cid[which((cmpd.cid == "NA"))] <- NA
+  cid <- cmpd.cid
   d <- data.frame(d, "cmpd.cid" = cmpd.cid, stringsAsFactors = FALSE)
   
   ## find.parent.cid, if TRUE
@@ -251,7 +257,7 @@ rc.cmpd.get.pubchem <- function(
     # do.ind <- which(!is.na(cmpd.cid) & !is.na(cmpd.names))
     do.ind <- which(!is.na(cmpd.cid))
     for(i in do.ind) {
-      Sys.sleep(0.25)
+      Sys.sleep(0.2)
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
                      cmpd.cid[i],
                      "/cids/TXT?cids_type=parent")
@@ -281,7 +287,7 @@ rc.cmpd.get.pubchem <- function(
   d <- data.frame(d, 'cid' = cid, stringsAsFactors = FALSE)
   #  pubchem$compounds <- d
   
-  cid.l <- split(cid, ceiling(seq_along(cid)/50))
+  cid.l <- split(cid, ceiling(seq_along(cid)/1))
   
   ## pubchem URL
   do <- which(!is.na(d$cid))
@@ -301,7 +307,23 @@ rc.cmpd.get.pubchem <- function(
     html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
                    paste0(cid.l[[i]][keep], collapse = ","),
                    "/description/", "JSON")
-    out <- jsonlite::read_json(html)
+    # out <- jsonlite::read_json(html)
+    out <- tryCatch(
+      {
+        jsonlite::read_json(html)
+      },
+      error=function(cond) {
+        return(NA)
+      },
+      warning=function(cond) {
+        return(NA)
+      },
+      finally={
+        cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
+      }
+    )
+    if(is.na(out[1])) next
+    
     for(j in 1:length(out$InformationList$Information)) {
       tmp <- out$InformationList$Information[[j]]
       if(is.null(tmp$Title)) next
@@ -313,7 +335,7 @@ rc.cmpd.get.pubchem <- function(
   d <- data.frame(d, "pubchem.name" = pubchem.name, stringsAsFactors = FALSE)
   pubchem$pubchem <- d
   
-            ## Get properties
+  ## Get properties
   if(get.properties) {
     cat("getting physicochemical properties and structure representations from cid", '\n')
     if(all.props) {
@@ -378,13 +400,30 @@ rc.cmpd.get.pubchem <- function(
     
     properties <- d[,0]
     for(i in 1:length(cid.l)) {
-      Sys.sleep(0.5)
+      Sys.sleep(0.2)
       keep <- which(!cid.l[[i]]=="NA")
       if(length(keep) == 0) next
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
                      paste0(cid.l[[i]][keep], collapse = ","),
                      "/property/", paste0(props, collapse =","), "/JSON")
-      out <- jsonlite::read_json(html)
+      # out <- jsonlite::read_json(html)
+      out <- tryCatch(
+        {
+          jsonlite::read_json(html)
+        },
+        error=function(cond) {
+          # message(paste("URL invalid:", cmpd.names[i]))
+          return(NA)
+        },
+        warning=function(cond) {
+          # message(cmpd.names[i], " failed; " )
+          return(NA)
+        },
+        finally={
+          cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
+        }
+      )
+      if(is.na(out)) next
       for(j in 1:length(out$PropertyTable$Properties)) {
         tmp <- data.frame(out$PropertyTable$Properties[[j]], stringsAsFactors = FALSE)
         properties[which(cid == tmp$CID),names(tmp)] <- tmp
@@ -403,7 +442,7 @@ rc.cmpd.get.pubchem <- function(
     vendor.urls <- rep(NA, nrow(d))
     pubchem.vendors.url <-rep(NA, nrow(d))
     for(i in do) {
-      Sys.sleep(0.25)
+      Sys.sleep(0.2)
       out <- tryCatch(
         {
           jsonlite::read_json(paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/categories/compound/",
@@ -477,8 +516,25 @@ rc.cmpd.get.pubchem <- function(
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
                      paste0(cid.l[[i]][keep], collapse = ","),
                      "/synonyms/JSON")
-      out <- jsonlite::read_json(html)
-
+      #out <- jsonlite::read_json(html)
+      out <- tryCatch(
+        {
+          jsonlite::read_json(html)
+        },
+        error=function(cond) {
+          # message(paste("URL invalid:", cmpd.names[i]))
+          return(NA)
+        },
+        warning=function(cond) {
+          # message(cmpd.names[i], " failed; " )
+          return(NA)
+        },
+        finally={
+          cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
+        }
+      )
+      if(is.na(out)) next
+      
       for(j in 1:length(out$InformationList$Information)) {
         on <- which(cid ==  cid.l[[i]][keep[j]])
         if(length(on)==0) next
@@ -508,7 +564,7 @@ rc.cmpd.get.pubchem <- function(
           if(length(pubchem$synonyms[[on]]) > 1) {
             tars <- pubchem$synonyms[[on]][which(
               stringr::str_detect(pubchem$synonyms[[on]], "\\([0-9]{1,2}\\:[0-9]{1,2}\\)") && (nchar(pubchem$synonyms[[on]]) <= max.name.length)
-              )]
+            )]
             if(length(tars) > 0) {
               nc <- nchar(tars)
               pubchem$short.name[on] <- tars[which.min(nc)]
@@ -626,5 +682,5 @@ rc.cmpd.get.pubchem <- function(
   } else {
     return(pubchem)
   }
-
+  
 }

@@ -197,11 +197,11 @@ rc.qc<-function(ramclustObj=NULL,
         "cmpd" = ramclustObj$cmpd[cmpd.use],
         "annotation" = ramclustObj$ann[cmpd.use],
         "rt" = ramclustObj$clrt[cmpd.use], 
-        "rdsd" = ramclustObj$clrtsd[cmpd.use],
         "mean.int" = means,
         "cv" = cvs
       )
     } else {
+      if(is.null(ramclustObj$fmz)) next
       out <- data.frame(
         "mz" = ramclustObj$fmz,
         "rt" = ramclustObj$frt,
@@ -216,7 +216,7 @@ rc.qc<-function(ramclustObj=NULL,
         )
       }
     }
-    write.csv(out, file = paste0("QC/", outfile.basename, "_", x, "_cv_summar.csv"))
+    write.csv(out, file = paste0("QC/", outfile.basename, "_", x, "_cv_summary.csv"))
   }
   
   if(remove.qc) {

@@ -85,8 +85,16 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
   ## sn higher than the process blank
   
   #  MS1 mean signal intensities
-  ms1.qc.mean <- apply(d1[qc,], 2, FUN = "mean", na.rm = TRUE)
-  ms1.blank.mean <- apply(d1[blank,], 2, FUN = "mean",  na.rm = TRUE)
+  if(length(qc) > 1) {
+    ms1.qc.mean <- apply(d1[qc,], 2, FUN = "mean", na.rm = TRUE)
+  } else {
+    ms1.qc.mean <- d1[qc,]
+  } 
+  if(length(blank)>1) {
+    ms1.blank.mean <- apply(d1[blank,], 2, FUN = "mean",  na.rm = TRUE)
+  } else {
+    ms1.blank.mean <- d1[blank,]
+  }
   absent.in.blank <- which(is.nan(ms1.blank.mean))
   
   # filters
@@ -139,6 +147,7 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
     }
     
     if(is.data.frame(ramclustObj[[i]])) {
+      cat("df", names(ramclustObj)[i], '\n')
       if(dim(ramclustObj[[i]])[2] == ncol(d1)) {
         ramclustObj[[i]] <- ramclustObj[[i]][,keep]
       }
@@ -148,6 +157,7 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
     }
     
     if(is.matrix(ramclustObj[[i]])) {
+      cat("ma", names(ramclustObj)[i], '\n')
       if(dim(ramclustObj[[i]])[2] == ncol(d1)) {
         ramclustObj[[i]] <- ramclustObj[[i]][,keep]
       }

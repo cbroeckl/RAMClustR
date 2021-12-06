@@ -54,8 +54,15 @@ annotation.summary<-function(ramclustObj = NULL,
   if(any(names(ramclustObj) == "zmax")) {
     out<- data.frame(out, "zmax" = ramclustObj$zmax)
   }
-  if(any(names(ramclustObj) == "msfinder.formula")) {
-    out<- data.frame(out, "MSFinder inferred formula" = ramclustObj$msfinder.formula)
+  if(any(names(ramclustObj) == "formula")) {
+    out<- data.frame(out, "molecular formula" = ramclustObj$msfinder.formula)
+  } else {
+    if(any(names(ramclustObj) == "msfinder.formula")) {
+      out<- data.frame(out, "MSFinder inferred formula" = ramclustObj$msfinder.formula)
+    }
+  }
+  if(any(names(ramclustObj) == "pubchem.cid")) {
+    out<- data.frame(out, "pubchem.cid" = ramclustObj$pubchem.cid)
   }
   if(any(names(ramclustObj) == "inchikey")) {
     out<- data.frame(out, "inchikey" = ramclustObj$inchikey)

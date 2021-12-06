@@ -37,7 +37,7 @@
 
 annotate<-function(ramclustObj = NULL,
                    standardize.names = FALSE,
-                   min.msms.score = 0.65,
+                   min.msms.score = 0.8,
                    database.priority = NULL,
                    database.priority.factor = 0.1,
                    find.inchikey = TRUE,
@@ -54,14 +54,16 @@ annotate<-function(ramclustObj = NULL,
     stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
   }
   
-  ## rest annotation slots to ensure that all annotation data reflects new processing
+  ## reset annotation slots to ensure that all annotation data reflects new processing
   if(reset) {
     ramclustObj$msfinder.formula <- rep(NA, length(ramclustObj$cmpd))
+    ramclustObj$formula <- rep(NA, length(ramclustObj$cmpd))
     ramclustObj$annconf <- rep(4, length(ramclustObj$cmpd))
     ramclustObj$ann <- ramclustObj$cmpd
     ramclustObj$inchikey <- rep(NA, length(ramclustObj$cmpd))
-    ramclustObj$inchi <- NULL
-    ramclustObj$smiles <- NULL
+    ramclustObj$inchi <- rep(NA, length(ramclustObj$cmpd))
+    ramclustObj$smiles <- rep(NA, length(ramclustObj$cmpd))
+    ramclustObj$pubchem.cid <- rep(NA, length(ramclustObj$cmpd))
     ramclustObj$dbid <- NULL
     ramclustObj$synonyms <- NULL
     ramclustObj$classyfire <- NULL
@@ -72,6 +74,12 @@ annotate<-function(ramclustObj = NULL,
     ramclustObj$rs.rmf <- NULL
     ramclustObj$rs.prob <- NULL
   }
+  
+  
+  suppressWarnings(
+    have.internet <- !as.logical(system(paste("ping -n 1", "www.google.com"), show.output.on.console = FALSE))
+  )
+  
   
   ## make sure taxonomy inchikeys are properly formatted
   if(!is.null(taxonomy.inchi)) {
@@ -274,22 +282,23 @@ annotate<-function(ramclustObj = NULL,
           ramclustObj$inchikey[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"inchikey"]
           ramclustObj$smiles[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"smiles"]
           ramclustObj$ann[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"name"]
-          ramclustObj$annconf[i]<-2
+          ramclustObj$annconf[i]<-"2a"
           ramclustObj$dbid[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"resources"]
-          tar.inchikey <- unlist(strsplit(ramclustObj$inchikey[i], "-"))[1]
-          ### ### ###  MOVE AWAY FROM REFERENCE.DATA  ### ### ### 
-          # form <- reference.data[which(reference.data[,"Short.InChIKey"] == tar.inchikey)[1], "Formula"]
-          # ramclustObj$msfinder.formula[i] <- form
-          
-          ## get molecular formula from inchikey using pubchem
-          
+          if(grepl("PUBCHEM", ramclustObj$dbid[i])) {
+            cid <- unlist(strsplit(ramclustObj$dbid[i], ";"))
+            cid <- cid[grep("PUBCHEM", cid)[1]]
+            cid <- trimws(gsub("PUBCHEM", "", cid))
+            if(cid != "CID") {
+              ramclustObj$pubchem.cid[i] <- cid
+            }
+          }
         }
       }
     }
     inchikey <- which(!is.na(ramclustObj$inchikey) & is.na(ramclustObj$msfinder.formula))
     inchikey <- unique(ramclustObj$inchikey[inchikey])
     inchikey <- inchikey[which(nchar(inchikey)==27 & stringr::str_count(inchikey, "-")==2)]
-
+    
     if(length(inchikey) > 0) {
       if(use.short.inchikey) {
         inchikey <- sapply(1:length(inchikey), FUN = function(x) {
@@ -299,36 +308,85 @@ annotate<-function(ramclustObj = NULL,
         inchikey <- inchikey[which(nchar(inchikey)==14)]
       }
       form <- rep(NA, length(inchikey))
+      tmp.cid <- rep(NA, length(inchikey))
       for(i in 1:length(inchikey)) {
-        form[i] <- tryCatch(
+        tmp.pc <- tryCatch(
           jsonlite::read_json(
             paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/",
                    inchikey[i],
                    "/property/MolecularFormula/JSON"
             )
-          )$PropertyTable$Properties[[1]]$MolecularFormula[1],
+          ),  # $PropertyTable$Properties[[1]]$MolecularFormula[1]
           error=function(cond) {
             return(NA)
           },
           warning=function(cond) {
             return(NA)
           })
+        form[i] <- tmp.pc$PropertyTable$Properties[[1]]$MolecularFormula[1]
+        tmp.cid[i] <- tmp.pc$PropertyTable$Properties[[1]]$CID[1]
         
         Sys.sleep(0.2)
       }
       for(i in 1:length(form)) {
         if(is.na(form[i])) next
-        ramclustObj$msfinder.formula[grepl(inchikey[i], ramclustObj$inchikey)] <- form[i] 
+        ramclustObj$msfinder.formula[grepl(inchikey[i], ramclustObj$inchikey)] <- form[i]
+        ramclustObj$formula[grepl(inchikey[i], ramclustObj$inchikey)] <- form[i]
+        ramclustObj$pubchem.cid[grepl(inchikey[i], ramclustObj$inchikey)] <- tmp.cid[i]
       }
     }
-    
-    
   }
   
   
   ## Sirius section
   if(sirius) {
-    
+    do.ann <- 1:length(ramclustObj$ann)
+    for(i in 1:length(do.ann)) {
+      if(ramclustObj$ann[i] != ramclustObj$cmpd[i]) next
+      if(is.data.frame(ramclustObj$sirius$formula[[i]])) {  ## if formula empty, do not annotate
+        if(any(ramclustObj$sirius$formula[[i]]$annotated)) {  ## if formula is annotated proceed
+          use.form <- which(ramclustObj$sirius$formula[[i]]$annotated)
+          ramclustObj$formula[i] <- ramclustObj$sirius$formula[[i]]$molecularFormula[use.form]
+          ramclustObj$ann[i]     <- ramclustObj$sirius$formula[[i]]$molecularFormula[use.form]
+          ramclustObj$annconf[i] <- "4"
+          if(is.data.frame(ramclustObj$sirius$structure[[i]])) {  ## if structure is empty, do not annotate further.
+            if(any(ramclustObj$sirius$structure[[i]]$annotated)) {   ## if structure is annotated, proceed
+              st.use <- which(ramclustObj$sirius$structure[[i]]$annotated)
+              
+              # if(have.internet) {
+              #   cid <- ramclustObj$sirius$structure[[i]][st.use, "pubchemids"]
+              #   cid <- unlist(strsplit(cid, ";"))
+              #   tmp.pc <- rc.cmpd.get.pubchem(cmpd.cid = cid[1], write.csv = FALSE, get.vendors = FALSE, get.bioassays = FALSE, get.synonyms = FALSE)
+              #   ramclustObj$ann[i] <- tmp.pc$pubchem$pubchem.name
+              #   ramclustObj$inchikey[i] <- tmp.pc$properties$InChIKey
+              #   ramclustObj$annconf[i] <- "2b"
+              #   ramclustObj$smiles[i] <- tmp.pc$properties$CanonicalSMILES
+              #   ramclustObj$inchi[i] <- tmp.pc$properties$InChI
+              #   ramclustObj$formula[i] <- tmp.pc$properties$MolecularFormula
+              #   ramclustObj$pubchem.cid <- tmp.pc$pubchem$cid
+              #   
+              # } else {
+              ramclustObj$ann[i] <- ramclustObj$sirius$structure[[i]][st.use, "name"]
+              ramclustObj$inchikey[i] <- ramclustObj$sirius$structure[[i]][st.use, "InChIkey2D"]
+              ramclustObj$annconf[i] <- "2b"
+              ramclustObj$smiles[i] <- ramclustObj$sirius$structure[[i]][st.use, "smiles"]
+              ramclustObj$inchi[i] <- ramclustObj$sirius$structure[[i]][st.use, "InChI"]
+              ramclustObj$formula[i] <- ramclustObj$sirius$structure[[i]][st.use, "molecularFormula"]
+              tmp.cid <- ramclustObj$sirius$structure[[i]][st.use, "pubchemids"]
+              if(grepl(";", tmp.cid)) {
+                tmp.cid <- unlist(strsplit(tmp.cid, ";"))[1]
+              }
+              ramclustObj$pubchem.cid <- tmp.cid
+              
+              #}
+              
+              
+              
+            }
+          }
+        }
+      }
+    }
   }
   
   ## MSFinder structure section
@@ -533,7 +591,14 @@ annotate<-function(ramclustObj = NULL,
     
     do <- which( (ramclustObj$ann != ramclustObj$cmpd) &  is.na(ramclustObj$inchikey))
     if(length(do)>0) {
-      fill.inchis <- rc.cmpd.get.pubchem(cmpd.names = ramclustObj$ann[do])
+      fill.inchis <- rc.cmpd.get.pubchem(cmpd.names = ramclustObj$ann[do],  ## just set cid.l to 1
+                                         use.parent.cid = FALSE,
+                                         manual.entry = FALSE,
+                                         get.vendors = FALSE,
+                                         get.properties = TRUE,
+                                         all.props = FALSE,
+                                         get.bioassays = FALSE,
+                                         get.synonyms = FALSE)
       ramclustObj$inchikey[do] <- fill.inchis$properties$InChIKey
     }
   }
@@ -675,15 +740,44 @@ annotate<-function(ramclustObj = NULL,
   
   ramclustObj$inchikey[which(ramclustObj$inchikey == "NA")] <- NA
   
-  if(standardize.names) {
+  ## replace 2d inchikey with 3d based on pubchem
+  if(have.internet) {
+    do.inch <- which(nchar(ramclustObj$inchikey) > 0 & nchar(ramclustObj$inchikey) < 27)
+    for(i in 1:length(do.inch)) {
+      
+      tmp.inchikey <- tryCatch(
+        readLines(
+          paste0(
+            "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/",
+            ramclustObj$inchikey[do.inch[i]],
+            "/property/inchikey/txt"
+          )
+        ),  # $PropertyTable$Properties[[1]]$MolecularFormula[1]
+        error=function(cond) {
+          return(NA)
+        },
+        warning=function(cond) {
+          return(NA)
+        })
+      suppressWarnings(if(!is.na(tmp.inchikey)) {
+        ramclustObj$inchikey[do.inch[i]] <- tmp.inchikey[1]
+      })
+      Sys.sleep(0.2)
+    }
+  }
+  
+  
+  if(standardize.names & have.internet) {
     cat("using pubchem PUGrest to retrieve compound names from inchikeys", '\n')
     do.inchi <- which(!is.na(ramclustObj$inchikey))
-    tmp <- RAMClustR::rc.cmpd.get.pubchem(cmpd.inchikey = ramclustObj$inchikey[do.inchi],
-                     use.parent.cid = FALSE,
-                     manual.entry = FALSE,
-                     get.vendors = FALSE,
-                     get.properties = FALSE,
-                     get.bioassays = FALSE)
+    tmp <- rc.cmpd.get.pubchem(cmpd.inchikey = ramclustObj$inchikey[do.inchi],
+                               use.parent.cid = FALSE,
+                               manual.entry = FALSE,
+                               get.vendors = FALSE,
+                               get.properties = FALSE,
+                               all.props = FALSE,
+                               get.bioassays = FALSE,
+                               get.synonyms = FALSE)
     keep <- which(!is.na(tmp$pubchem$pubchem.name))
     ramclustObj$ann[do.inchi[keep]] <- tmp$pubchem$pubchem.name[keep]
   }

@@ -23,12 +23,12 @@
 rc.cmpd.filter.cv  <- function(
   ramclustObj=NULL,
   qc.tag = "QC",
-  max.cv = 0.3
+  max.cv = 0.5
 ) { 
   
   params <- c(
     qc.tag = "QC",
-    max.cv = 0.3
+    max.cv = max.cv
   )
   
   ## CHECKS
@@ -46,23 +46,13 @@ rc.cmpd.filter.cv  <- function(
          '       please run rc.ramclustr before clustering', '\n')
   }
   
-  do.sets <- c("SpecAbund")
-  if(is.null(ramclustObj$MSMSdata)) {
-    do.sets <- do.sets[!(do.sets %in% "MSMSdata")]
-  } 
-  
-  do.sets.rows <- sapply(
-    c(do.sets, "phenoData"), 
-    FUN = function(x) {
-      nrow(ramclustObj[[x]])
-    })
-  
-  if(!all.equal(
-    do.sets.rows, do.sets.rows)
-  ) {
-    stop("number of rows in MSdata, SpecAbund, and phenoData sets are not identical.")
+
+  if(is.null(ramclustObj$SpecAbundAve)) {
+    do.sets <- "SpecAbund"
+  } else {
+    do.sets <- c("SpecAbund", "SpecAbundAve")
   }
-  
+
   ## define QC samples in each set
   if(length(qc.tag) == 1) {
     qc <- grepl(qc.tag[1], ramclustObj$phenoData$sample.names)
@@ -90,11 +80,22 @@ rc.cmpd.filter.cv  <- function(
     # hist(cvs[which(cvs <= max.cv)], add = TRUE, col = "gray")
   }
   
-  ## filter to keep only 'good' features
+  ## subset all vectors, matrices, data.frames and lists to keep only those of interest
+  for(x in names(ramclustObj)) {
+    if(is.vector(ramclustObj[[x]]) | (is.list(ramclustObj[[x]])) & !is.data.frame(ramclustObj[[x]])) {
+      if(length(ramclustObj[[x]]) == length(cvs)) {
+        ramclustObj[[x]] <- ramclustObj[[x]][keep]
+      }
+    }
+    
+    if(is.matrix(ramclustObj[[x]]) | is.data.frame(ramclustObj[[x]])) {
+      if(dim(ramclustObj[[x]])[[2]] == length(cvs)) {
+        ramclustObj[[x]] <- ramclustObj[[x]][,keep]
+      }
+    }
+  }
   
-  ramclustObj$cmpd.use <- keep
-  ramclustObj$qc.cv.cmpd.full <- cvs
-  if(is.null) {ramclustObj$params <- list()}
+  if(is.null(ramclustObj$params)) {ramclustObj$params <- list()}
   ramclustObj$params$rc.cmpd.cv.filter <- params
   
   ramclustObj$history$filter.cmpds <- paste0(

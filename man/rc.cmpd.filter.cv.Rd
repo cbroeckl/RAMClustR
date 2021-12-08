@@ -4,7 +4,7 @@
 \alias{rc.cmpd.filter.cv}
 \title{rc.cmpd.filter.cv}
 \usage{
-rc.cmpd.filter.cv(ramclustObj = NULL, qc.tag = "QC", max.cv = 0.3)
+rc.cmpd.filter.cv(ramclustObj = NULL, qc.tag = "QC", max.cv = 0.5)
 }
 \arguments{
 \item{ramclustObj}{ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)}

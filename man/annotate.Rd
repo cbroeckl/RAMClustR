@@ -7,7 +7,7 @@
 annotate(
   ramclustObj = NULL,
   standardize.names = FALSE,
-  min.msms.score = 6.5,
+  min.msms.score = 0.8,
   database.priority = NULL,
   database.priority.factor = 0.1,
   find.inchikey = TRUE,

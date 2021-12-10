@@ -107,8 +107,20 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
   
   ## do the same for MS2
   if(msms) {
-    ms2.qc.mean <- apply(d2[qc,], 2, FUN = "mean", na.rm = TRUE)
-    ms2.blank.mean <- apply(d2[blank,], 2, FUN = "mean",  na.rm = TRUE)
+    if(length(qc) > 1) {
+      ms2.qc.mean <- apply(d2[qc,], 2, FUN = "mean", na.rm = TRUE)
+    } else {
+      ms1.qc.mean <- d2[qc,]
+    } 
+    if(length(blank)>1) {
+      ms2.blank.mean <- apply(d2[blank,], 2, FUN = "mean",  na.rm = TRUE)
+    } else {
+      ms2.blank.mean <- d2[blank,]
+    }
+    
+    
+    # ms2.qc.mean <- apply(d2[qc,], 2, FUN = "mean", na.rm = TRUE)
+    # ms2.blank.mean <- apply(d2[blank,], 2, FUN = "mean",  na.rm = TRUE)
     absent.in.blank <- which(is.nan(ms2.blank.mean))
     
     # which signal is at least 3x larger in QC
@@ -117,7 +129,7 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
     keep.ms2.b <- which((!is.nan(ms2.qc.mean)) & is.nan(ms2.blank.mean))
     # union of these two are keepers
     keep.ms2 <- union(keep.ms2.a, keep.ms2.b)
-    length(keep.ms2)/ncol(d1)
+    # length(keep.ms2)/ncol(d1)
     keep <- union(keep, keep.ms2)
   }
   

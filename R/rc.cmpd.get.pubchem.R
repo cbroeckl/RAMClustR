@@ -49,6 +49,30 @@ rc.cmpd.get.pubchem <- function(
   
 ) {
   
+  ## function to close failed pubchem queries to prevent 
+  ## all connections are in use error
+  closePubchemConnections <- function (desc.rem = "pubchem") {
+    # i <- sink.number(type = "message")
+    # if (i > 0L) 
+    #   sink(stderr(), type = "message")
+    # n <- sink.number()
+    # if (n > 0L) 
+    #   for (i in seq_len(n)) sink()
+    # gc()
+    # 
+    d <- showConnections(all = TRUE)
+    desc <- d[,"description"]
+    desc <- desc[grepl(desc.rem, desc)]
+    set <- as.integer(as.numeric(names(desc)))
+    if(length(set) > 0) {
+      for (i in seq_along(set)) close(getConnection(set[i]))
+    }
+    # set <- getAllConnections()
+    # set <- set[set > 2L]
+    gc()
+    invisible()
+  }
+  
   
   ## test connection to pubchem servers
   html <- "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/58-08-2/property/inchikey/JSON"
@@ -57,6 +81,7 @@ rc.cmpd.get.pubchem <- function(
       jsonlite::read_json(html)
     },
     error=function(cond) {
+      closePubchemConnections()
       stop("pubchem rest connection could not be established. This may be due to:", '\n',
            "  -  lack of internet access", '\n',
            "  -  puchem server is down", '\n',
@@ -144,9 +169,9 @@ rc.cmpd.get.pubchem <- function(
     do <- cmpd.inchikey[do]
     do.l <- split(do, ceiling(seq_along(do)/1))
     for(i in 1:length(do.l)) {
-      cat(do.l[[i]][keep], '\n')
-      Sys.sleep(0.2)
       keep <- which(!do.l[[i]]=="NA")
+      # cat(do.l[[i]][keep], '\n')
+      Sys.sleep(0.2)
       if(length(keep)==0) next
       html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/",
                      paste0(do.l[[i]][keep], collapse = ","),
@@ -156,12 +181,15 @@ rc.cmpd.get.pubchem <- function(
           jsonlite::read_json(html)
         },
         error=function(cond) {
+          closePubchemConnections()
           return(NA)
         },
         warning=function(cond) {
+          closePubchemConnections()
           return(NA)
         },
         finally={
+          closePubchemConnections()
           cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
         }
       )
@@ -198,12 +226,15 @@ rc.cmpd.get.pubchem <- function(
           jsonlite::read_json(html)
         },
         error=function(cond) {
+          closePubchemConnections()
           return(NA)
         },
         warning=function(cond) {
+          closePubchemConnections()
           return(NA)
         },
         finally={
+          closePubchemConnections()
           cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
         }
       )
@@ -266,13 +297,15 @@ rc.cmpd.get.pubchem <- function(
           readLines(html)
         },
         error=function(cond) {
+          closePubchemConnections()
           return(NA)
         },
         warning=function(cond) {
+          closePubchemConnections()
           return(NA)
         },
         finally={
-          cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
+          closePubchemConnections()
         }
       )
       if(is.na(out[1])) next
@@ -313,13 +346,15 @@ rc.cmpd.get.pubchem <- function(
         jsonlite::read_json(html)
       },
       error=function(cond) {
+        closePubchemConnections()
         return(NA)
       },
       warning=function(cond) {
+        closePubchemConnections()
         return(NA)
       },
       finally={
-        cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
+        closePubchemConnections()
       }
     )
     if(is.na(out[1])) next
@@ -412,16 +447,16 @@ rc.cmpd.get.pubchem <- function(
           jsonlite::read_json(html)
         },
         error=function(cond) {
-          # message(paste("URL invalid:", cmpd.names[i]))
+          closePubchemConnections()
           return(NA)
         },
         warning=function(cond) {
-          # message(cmpd.names[i], " failed; " )
+          closePubchemConnections()
           return(NA)
         },
         finally={
-          cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
-        }
+          closePubchemConnections()
+          }
       )
       if(is.na(out)) next
       for(j in 1:length(out$PropertyTable$Properties)) {
@@ -450,15 +485,15 @@ rc.cmpd.get.pubchem <- function(
                                      "/JSON"))
         },
         error=function(cond) {
-          # message(paste("URL invalid:", cmpd.names[i]))
+          closePubchemConnections()
           return(NA)
         },
         warning=function(cond) {
-          # message(cmpd.names[i], " failed; " )
+          closePubchemConnections()
           return(NA)
         },
         finally={
-          cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
+          closePubchemConnections()
         }
       )
       if(is.na(out)) next
@@ -522,15 +557,15 @@ rc.cmpd.get.pubchem <- function(
           jsonlite::read_json(html)
         },
         error=function(cond) {
-          # message(paste("URL invalid:", cmpd.names[i]))
+          closePubchemConnections()
           return(NA)
         },
         warning=function(cond) {
-          # message(cmpd.names[i], " failed; " )
+          closePubchemConnections()
           return(NA)
         },
         finally={
-          cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
+          closePubchemConnections()
         }
       )
       if(is.na(out)) next
@@ -626,13 +661,15 @@ rc.cmpd.get.pubchem <- function(
           read.csv(url)
         },
         error=function(cond) {
+          closePubchemConnections()
           return( data.frame("cid" = rep(NA, 0)))
         },
         warning=function(cond) {
+          closePubchemConnections()
           return( data.frame("cid" = rep(NA, 0)))
         },
         finally={
-          cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
+          closePubchemConnections()
         }
       )
       if(nrow(bd)==0) next

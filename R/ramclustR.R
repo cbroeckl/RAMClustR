@@ -657,8 +657,31 @@ ramclustR  <- function(xcmsObj=NULL,
   n<-ncol(data1)
   
   ########
+  
+  # save(list = c("n", "data1", "data2", "times", "blocksize", "mult", "maxt", "st", "sr", "rt.only.low.n", "cor.method", "fftempdir"
+  # ), file = "testing/input.Rda")
+
   # calucalte similarity matrix
-  ramclustObj <- calculate.similarity(ramclustObj, n, data1, data2, times, blocksize, mult, maxt, st, sr, rt.only.low.n, cor.method, featnames,fftempdir)
+  ramclustObj <- calculate.similarity(n, data1, data2, times, blocksize, mult, maxt, st, sr, rt.only.low.n, cor.method, fftempdir)
+  
+  # save(list = c("ramclustObj"), file = "testing/output.Rda")
+  
+  ########
+  # convert vector to distance formatted object
+  ramclustObj <-
+    structure(
+      ramclustObj,
+      Size = (n),
+      Diag = FALSE,
+      Upper = FALSE,
+      method = "RAMClustR",
+      Labels = featnames,
+      class = "dist"
+    )
+  gc()
+  
+  c <- Sys.time()
+  cat("RAMClust distances converted to distance object", '\n')
   
   ########
   # cluster using fastcluster package,

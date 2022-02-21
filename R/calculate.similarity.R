@@ -1,5 +1,4 @@
-calculate.similarity <- function(ramclustObj,
-                                 n,
+calculate.similarity <- function(n,
                                  data1,
                                  data2,
                                  times,
@@ -10,7 +9,6 @@ calculate.similarity <- function(ramclustObj,
                                  sr,
                                  rt.only.low.n,
                                  cor.method,
-                                 featnames,
                                  fftempdir) {
   ########
   # establish some constants for downstream processing
@@ -29,8 +27,7 @@ calculate.similarity <- function(ramclustObj,
   # make list of all row and column blocks to evaluate
   eval1 <- expand.grid(0:nblocks, 0:nblocks)
   names(eval1) <- c("j", "k") #j for cols, k for rows
-  eval1 <-
-    eval1[which(eval1[, "j"] <= eval1[, "k"]), ] #upper triangle only
+  eval1 <- eval1[which(eval1[, "j"] <= eval1[, "k"]), ] #upper triangle only
   bl <- nrow(eval1)
   cat(paste("calculating ramclustR similarity: nblocks = ", bl, '\n'))
   
@@ -53,24 +50,17 @@ calculate.similarity <- function(ramclustObj,
       stopr <- (k + 1) * blocksize
     }
     if (startc <= startr) {
-      mint <-
-        min(abs(outer(range(times[startr:stopr]), range(times[startc:stopc]), FUN =
-                        "-")))
+      mint <- min(abs(outer(range(times[startr:stopr]), range(times[startc:stopc]), FUN = "-")))
       if (mint <= maxt) {
-        temp1 <-
-          round(exp(-(((
-            abs(outer(times[startr:stopr], times[startc:stopc], FUN = "-"))
-          )) ^ 2) / (2 * (st ^ 2))),
-          
-          digits = 20)
+        temp1 <- round(exp(-(((abs(outer(times[startr:stopr], times[startc:stopc], FUN = "-"))
+                               )) ^ 2) / (2 * (st ^ 2))),
+                       digits = 20)
         
         if (nrow(data1) < 5 & rt.only.low.n) {
-          temp2 <-
-            matrix(
-              data = 1,
-              nrow = length(startr:stopr),
-              ncol = length(startc:stopc)
-            )
+          temp2 <- matrix(data = 1,
+                          nrow = length(startr:stopr),
+                          ncol = length(startc:stopc)
+                         )
         } else {
           temp2 <-
             round (exp(-((
@@ -149,23 +139,6 @@ calculate.similarity <- function(ramclustObj,
   }
   rm(startv)
   gc()
-  
-  ########
-  # convert vector to distance formatted object
-  ramclustObj <-
-    structure(
-      ramclustObj,
-      Size = (n),
-      Diag = FALSE,
-      Upper = FALSE,
-      method = "RAMClustR",
-      Labels = featnames,
-      class = "dist"
-    )
-  gc()
-  
-  c <- Sys.time()
-  cat("RAMClust distances converted to distance object", '\n')
   
   ########
   # cleanup

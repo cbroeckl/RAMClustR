@@ -27,7 +27,7 @@ calculate.similarity <- function(numcols,
   vlength <- (numcols * (numcols - 1)) / 2
   nblocks <- floor(numcols / blocksize)
   
-  cat(paste("Calculating ramclustR similarity using", factorial(nblocks+1), "nblocks.\n"))
+  cat(paste("Calculating ramclustR similarity using", sum((nblocks+1):1), "nblocks.\n"))
   
   ramclustObj <- vector(mode = "integer", length = vlength)
   block = 1

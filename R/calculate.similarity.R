@@ -78,7 +78,7 @@ calculate.similarity <- function(numcols,
         } else {
           # overall similarity
           sim_matrix <- matrix(data = 1,
-                               row = length(start_row:stop_row),
+                               nrow = length(start_row:stop_row),
                                ncol = length(start_col:stop_col)
           )
         }

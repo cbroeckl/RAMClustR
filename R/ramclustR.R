@@ -356,10 +356,10 @@ ramclustR  <- function(xcmsObj=NULL,
   }
   
   
-  # history <- paste(history, "RAMClustR (version ",
-  #                  packageVersion("RAMClustR"),
-  #                  ") was utilized to cluster features into spectra (Broeckling 2014).",
-  #                  sep = "")  
+  history <- paste(history, "RAMClustR (version ",
+                   packageVersion("RAMClustR"),
+                   ") was utilized to cluster features into spectra (Broeckling 2014).",
+                   sep = "")
   
   if(mslev == 2) {
     history <- paste(history,
@@ -662,7 +662,7 @@ ramclustR  <- function(xcmsObj=NULL,
   # ), file = "testing/input.Rda")
 
   # calucalte similarity matrix
-  ramclustObj <- calculate.similarity(n, data1, data2, times, blocksize, mult, maxt, st, sr, rt.only.low.n, cor.method, fftempdir)
+  ramclustObj <- calculate.similarity(n, data1, data2, times, blocksize, mult, maxt, st, sr, rt.only.low.n, cor.method)
   
   # save(list = c("ramclustObj"), file = "testing/output.Rda")
   

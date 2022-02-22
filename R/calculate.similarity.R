@@ -1,4 +1,17 @@
-calculate.similarity <- function(n,
+compute.start <- function(position, blocksize, numcols) {
+  return(min((1 + (position * blocksize)), numcols))
+}
+
+compute.stop <- function(position, blocksize, numcols) {
+  if ((position + 1) * blocksize > numcols) {
+    stop_pos <- numcols
+  } else {
+    stop_pos <- (position + 1) * blocksize
+  }
+  return(stop_pos)
+}
+
+calculate.similarity <- function(numcols,
                                  data1,
                                  data2,
                                  times,
@@ -8,146 +21,94 @@ calculate.similarity <- function(n,
                                  st,
                                  sr,
                                  rt.only.low.n,
-                                 cor.method,
-                                 fftempdir) {
+                                 cor.method) {
   ########
   # establish some constants for downstream processing
-  vlength <- (n * (n - 1)) / 2
-  nblocks <- floor(n / blocksize)
+  vlength <- (numcols * (numcols - 1)) / 2
+  nblocks <- floor(numcols / blocksize)
   
-  ########
-  # set off ff matrix system for holding data.
-  # manages RAM demands a bit.
-  ffmat <- ff::ff(vmode = "double",
-                  dim = c(n, n),
-                  initdata = 0) ##reset to 1 if necessary
-  gc()
+  cat(paste("Calculating ramclustR similarity using", factorial(nblocks+1), "nblocks.\n"))
   
-  ########
-  # make list of all row and column blocks to evaluate
-  eval1 <- expand.grid(0:nblocks, 0:nblocks)
-  names(eval1) <- c("j", "k") #j for cols, k for rows
-  eval1 <- eval1[which(eval1[, "j"] <= eval1[, "k"]), ] #upper triangle only
-  bl <- nrow(eval1)
-  cat(paste("calculating ramclustR similarity: nblocks = ", bl, '\n'))
-  
-  ########
-  # Define the RCsim function used to calculate feature similarities on selected blocks of data
-  RCsim <- function(bl)  {
-    cat(bl, ' ')
-    j <- eval1[bl, "j"]  #columns
-    k <- eval1[bl, "k"]  #rows
-    startc <- min((1 + (j * blocksize)), n)
-    if ((j + 1) * blocksize > n) {
-      stopc <- n
-    } else {
-      stopc <- (j + 1) * blocksize
-    }
-    startr <- min((1 + (k * blocksize)), n)
-    if ((k + 1) * blocksize > n) {
-      stopr <- n
-    } else {
-      stopr <- (k + 1) * blocksize
-    }
-    if (startc <= startr) {
-      mint <- min(abs(outer(range(times[startr:stopr]), range(times[startc:stopc]), FUN = "-")))
-      if (mint <= maxt) {
-        temp1 <- round(exp(-(((abs(outer(times[startr:stopr], times[startc:stopc], FUN = "-"))
-                               )) ^ 2) / (2 * (st ^ 2))),
-                       digits = 20)
-        
-        if (nrow(data1) < 5 & rt.only.low.n) {
-          temp2 <- matrix(data = 1,
-                          nrow = length(startr:stopr),
-                          ncol = length(startc:stopc)
-                         )
-        } else {
-          temp2 <-
-            round (exp(-((
-              1 - (pmax(
-                cor(data1[, startr:stopr], data1[, startc:stopc], method = cor.method),
-                cor(data1[, startr:stopr], data2[, startc:stopc], method =
-                      cor.method),
-                cor(data2[, startr:stopr], data2[, startc:stopc], method =
-                      cor.method)
-              ))
-            ) ^ 2) / (2 * (sr ^ 2))),
-            
-            digits = 20)
-        }
-        #ffcor[startr:stopr, startc:stopc]<-temp
-        temp <- 1 - (temp1 * temp2)
-        temp[which(is.nan(temp))] <- 1
-        temp[which(is.na(temp))] <- 1
-        temp[which(is.infinite(temp))] <- 1
-        ffmat[startr:stopr, startc:stopc] <- temp
-        rm(temp1)
-        rm(temp2)
-        rm(temp)
-        gc()
-      }
-      if (mint > maxt) {
-        ffmat[startr:stopr, startc:stopc] <- 1
-      }
-    }
-    gc()
-  }
-  
-  ########
-  # Call the similarity scoring function
-  system.time(sapply(1:bl, RCsim))
-  
-  b <- Sys.time()
-  
-  ########
-  # Report progress and timing
-  cat('\n',
-      "RAMClust feature similarity matrix calculated and stored:",
-      '\n')
-  gc()
-  
-  
-  ########
-  # extract lower diagonal of ffmat as vector
-  blocksize <- mult * round(blocksize ^ 2 / n)
-  nblocks <- floor(n / blocksize)
-  remaind <- n - (nblocks * blocksize)
-  
-  ########
-  # create vector for storing dissimilarities
   ramclustObj <- vector(mode = "integer", length = vlength)
+  block = 1
   
-  ########
-  # fill vector with dissimilarities
-  for (k in 0:(nblocks)) {
-    startc <- 1 + (k * blocksize)
-    if ((k + 1) * blocksize > n) {
-      stopc <- n
-    } else {
-      stopc <- (k + 1) * blocksize
+  for (row in 0:(nblocks)) {
+    for (col in row:(nblocks)) {
+      cat(block, " ")
+      block <- block + 1
+      
+      start_col <- compute.start(row, blocksize, numcols)
+      stop_col <- compute.stop(row, blocksize, numcols)
+      
+      start_row <- compute.start(col, blocksize, numcols)
+      stop_row <- compute.stop(col, blocksize, numcols)
+      
+      if (start_col <= start_row) {
+        mint <- min(abs(outer(range(times[start_row:stop_row]), 
+                              range(times[start_col:stop_col]), 
+                              FUN = "-")))
+        if (mint <= maxt) {
+          # RT similarity
+          RT_sim <- round(exp(-(((abs(outer(times[start_row:stop_row], 
+                                            times[start_col:stop_col], 
+                                            FUN = "-"))
+          )) ^ 2) / (2 * (st ^ 2))), digits = 20)
+          
+          if (nrow(data1) < 5 & rt.only.low.n) {
+            # correlational similarity
+            corr_sim <- matrix(data = 1,
+                               nrow = length(start_row:stop_row),
+                               ncol = length(start_col:stop_col)
+            )
+          } else {
+            max_value <- pmax(cor(data1[, start_row:stop_row], data1[, start_col:stop_col], method = cor.method),
+                              cor(data1[, start_row:stop_row], data2[, start_col:stop_col], method = cor.method),
+                              cor(data2[, start_row:stop_row], data2[, start_col:stop_col], method = cor.method)
+            )
+            # correlational similarity
+            corr_sim <- round(exp(-((1 - max_value) ^ 2) / (2 * (sr ^ 2))), digits = 20)
+          }
+          
+          # overall similarity
+          sim_matrix <- 1 - (RT_sim * corr_sim)
+          # remove nans and infs
+          sim_matrix[which(is.nan(sim_matrix)) | 
+                       which(is.na(sim_matrix)) | 
+                       which(is.infinite(sim_matrix))] <- 1
+        } else {
+          # overall similarity
+          sim_matrix <- matrix(data = 1,
+                               row = length(start_row:stop_row),
+                               ncol = length(start_col:stop_col)
+          )
+        }
+      }
+      
+      # merge computed similarity matrices to single matrix (extend rows)
+      if (exists("column") == FALSE) {
+        column <- sim_matrix
+      } else {
+        column <- rbind(column, sim_matrix)
+      }
     }
-    temp <- ffmat[startc:nrow(ffmat), startc:stopc]
-    temp <- temp[which(row(temp) - col(temp) > 0)]
+    
+    # remove values above the diagonal and convert to vector by columns
+    column <- column[which(row(column) - col(column) > 0)]
+    
     if (exists("startv") == FALSE)
       startv <- 1
-    stopv <- startv + length(temp) - 1
-    ramclustObj[startv:stopv] <- temp
-    gc()
+    stopv <- startv + length(column) - 1
+    
+    # assign obtained vector to result
+    ramclustObj[startv:stopv] <- column
     startv <- stopv + 1
-    rm(temp)
-    gc()
+    
+    # remove column to start next iteration with clean slate
+    rm(column)
   }
-  rm(startv)
-  gc()
   
-  ########
-  # cleanup
-  close(ffmat)
-  rm(ffmat)
+  cat('\n RAMClust feature similarity matrix calculated and stored.\n')
   gc()
-  if (!is.null(fftempdir)) {
-    options("fftempdir" = origffdir)
-  }
   
   return(ramclustObj)
 }

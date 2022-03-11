@@ -6,6 +6,7 @@
 #' @param cmpd.names character vector.  i.e. c("caffeine", "theobromine", "glucose")
 #' @param cmpd.cid numeric integer vector.  i.e. c(2519, 5429, 107526)
 #' @param cmpd.inchikey character vector.  i.e. c("RYYVLZVUVIJVGH-UHFFFAOYSA-N", "YAPQBXQYLJRXSA-UHFFFAOYSA-N", "GZCGUPFRVQAUEE-SLPGGIOYSA-N")
+#' @param cmpd.smiles character vector.  i.e. c("CN1C=NC2=C1C(=O)N(C(=O)N2C)C", "CN1C=NC2=C1C(=O)NC(=O)N2C")
 #' @param use.parent.cid logical.  If TRUE, the CID for each supplied name/inchikey is used to retreive its parent CID (i.e. the parent of sodium palmitate is palmitic acid).  The parent CID is used to retrieve all other names, properties.
 #' @param manual.entry logical.  if TRUE, user input is enabled for compounds not matched by name. A browser window will open with the pubchem search results in your default browser. 
 #' @param get.vendors logical.  if TRUE, vendor data is returned for each compound with a matched CID.  Includes vendor count and vendor product URL, if available
@@ -32,13 +33,14 @@ rc.cmpd.get.pubchem <- function(
   cmpd.names = NULL,
   cmpd.cid = NULL,
   cmpd.inchikey = NULL,
+  cmpd.smiles = NULL,
   use.parent.cid = FALSE,
   manual.entry = FALSE,
   get.vendors = FALSE,
   priority.vendors = c("Sigma Aldrich", "Alfa Chemistry", "Acros Organics", "VWR", 
                        "Alfa Aesar", "molport", "Key Organics", "BLD Pharm"),
   get.properties = TRUE,
-  all.props = TRUE,
+  all.props = FALSE,
   get.synonyms = TRUE,
   find.short.lipid.name = TRUE,
   find.short.synonym = TRUE,
@@ -52,14 +54,6 @@ rc.cmpd.get.pubchem <- function(
   ## function to close failed pubchem queries to prevent 
   ## all connections are in use error
   closePubchemConnections <- function (desc.rem = "pubchem") {
-    # i <- sink.number(type = "message")
-    # if (i > 0L) 
-    #   sink(stderr(), type = "message")
-    # n <- sink.number()
-    # if (n > 0L) 
-    #   for (i in seq_len(n)) sink()
-    # gc()
-    # 
     d <- showConnections(all = TRUE)
     desc <- d[,"description"]
     desc <- desc[grepl(desc.rem, desc)]
@@ -67,8 +61,6 @@ rc.cmpd.get.pubchem <- function(
     if(length(set) > 0) {
       for (i in seq_along(set)) close(getConnection(set[i]))
     }
-    # set <- getAllConnections()
-    # set <- set[set > 2L]
     gc()
     invisible()
   }
@@ -99,7 +91,6 @@ rc.cmpd.get.pubchem <- function(
   
   if(!is.null(ramclustObj)) {
     cmpd.names <- ramclustObj$ann
-    ## add CID here if(is.null())
     if(!is.null(ramclustObj$inchikey)) {
       cmpd.inchikey <- ramclustObj$inchikey
     }
@@ -109,7 +100,8 @@ rc.cmpd.get.pubchem <- function(
   ## check that lengths of cmpd.* make sense, and standardize
   l <- c("cmpd.names" = length(cmpd.names), 
          "cmpd.cid" = length(cmpd.cid), 
-         "cmpd.inchikey" = length(cmpd.inchikey)
+         "cmpd.inchikey" = length(cmpd.inchikey),
+         "cmpd.smiles" = length(cmpd.smiles)
   )
   if(l["cmpd.names"] != max(l) & l["cmpd.names"] > 0) {
     stop(
@@ -132,14 +124,23 @@ rc.cmpd.get.pubchem <- function(
     )
   }
   
+  if(l["cmpd.smiles"] != max(l) & l["cmpd.smiles"] > 0) {
+    stop(
+      paste(" Length cmpd.smiles = ", l['cmpd.smiles'], "while length", names(l)[which.max(l)], "=", max(l), '\n',
+            " - these must be either exactly the same length or one must be NULL", sep = " ")
+    )
+  }
+  
   if(l["cmpd.names"] < max(l)) cmpd.names <- rep(NA, max(l))
   if(l["cmpd.cid"] < max(l)) cmpd.cid <- rep(NA, max(l))
   if(l["cmpd.inchikey"] < max(l)) cmpd.inchikey <- rep(NA, max(l))
+  if(l["cmpd.smiles"] < max(l)) cmpd.smiles <- rep(NA, max(l))
   
   ## store original data in data.frame
   d <- data.frame("user.cmpd" = cmpd.names, 
                   "user.cid" = cmpd.cid,
-                  "user.inchikey" = cmpd.inchikey)
+                  "user.inchikey" = cmpd.inchikey,
+                  "use.smiles" = cmpd.smiles)
   
   pubchem <- list()
   
@@ -151,13 +152,39 @@ rc.cmpd.get.pubchem <- function(
   cmpd.inchikey[which(nchar(cmpd.inchikey) < 1)] <- NA
   cmpd.cid <- trimws(cmpd.cid)
   cmpd.cid[which(nchar(cmpd.cid) < 1)] <- NA
+  cmpd.smiles <- trimws(cmpd.smiles)
+  cmpd.smiles[which(nchar(cmpd.smiles) < 1)] <- NA
   
   
   greek <- read.csv(paste(find.package("RAMClustR"), "/params/greek.csv", sep=""), header=TRUE, encoding = "UTF-8", stringsAsFactors = FALSE)
   
+  
+  
   for(i in 1:nrow(greek)) {
     cmpd.names <- gsub(greek[i,2], greek[i,1], cmpd.names)
   }  
+  
+  if(!all(is.na(cmpd.smiles))) {
+    html.smiles <- cmpd.smiles
+    html.translation <- rbind(
+      c("[", "%5B"),
+      c("]", "%5D"),
+      c("@", "%40"),
+      c("/", "%2F"),
+      c("\\", "%5C"),
+      c("=", "%3D")
+    )
+    
+    for(i in 1:length(html.smiles)) {
+      if(is.na(html.smiles[i])) {next}
+      html.smiles[i] <- as.character(html.smiles[i])
+      html.smiles[i] <- trimws(unlist(strsplit(html.smiles[i], "|", fixed = TRUE))[1])
+      for(j in 1:nrow(html.translation)) {
+        html.smiles[i] <- gsub(html.translation[j,1], html.translation[j,2], html.smiles[i], fixed = TRUE)
+      }
+    }
+    
+  }
   
   
   
@@ -205,6 +232,37 @@ rc.cmpd.get.pubchem <- function(
         rp <- which(cmpd.inchikey == tmp[x,"InChIKey"])[1]
         if(!is.na(rp)) {cmpd.cid[rp] <- tmp[x, "CID"]}
       }
+    }
+  }
+  
+  
+  ## get missing CIDs from smiles next
+  do.ind <- which(is.na(cmpd.cid) & !is.na(cmpd.smiles))
+  do <- html.smiles[do.ind]
+  if(length(do) > 0) {
+    for(i in 1:length(do)) {
+      html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/", do[i], "/cids/TXT")
+      tmp <- tryCatch(
+        {
+          as.integer(as.character(readLines(html)))
+        },
+        error=function(cond) {
+          
+          stop("pubchem rest connection could not be established. This may be due to:", '\n',
+               "  -  lack of internet access", '\n',
+               "  -  puchem server is down", '\n',
+               "  -  pubchem server has blocked access for this IP address (try restarting your R and Rstudio session)",
+               '\n')
+        },
+        warning=function(x) {
+          NA
+        },
+        finally={
+          cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
+        }
+        
+      )
+      if(!is.na(tmp)) cmpd.cid[do.ind[i]] <- tmp 
     }
   }
   
@@ -266,9 +324,10 @@ rc.cmpd.get.pubchem <- function(
     if(readback == '2') {
       for(i in missing) {
         cat("please enter CID number or hit 'enter' to skip to next (no CID found)", '\n',
-            "If you wish to quit manual entry, enter 'q' to return current ouput only.", '\n')
+            "If you wish to quit manual entry, enter 'q' to return current ouput only.", '\n',
+            cmpd.names[i], '\n')
         Sys.sleep(0.2)
-        utils::browseURL(paste0("https://www.ncbi.nlm.nih.gov/pccompound/?term=", cmpd.names[i]))
+        utils::browseURL(paste0("https://pubchem.ncbi.nlm.nih.gov/#query=", cmpd.names[i]))
         readback <- readline()
         if(readback == "q") {break}
         cmpd.cid[i] <- readback
@@ -456,7 +515,7 @@ rc.cmpd.get.pubchem <- function(
         },
         finally={
           closePubchemConnections()
-          }
+        }
       )
       if(is.na(out)) next
       for(j in 1:length(out$PropertyTable$Properties)) {

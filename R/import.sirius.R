@@ -8,6 +8,7 @@
 #' @return an updated ramclustR object, with new slots at $msfinder.sirius
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
+#' @importFrom utils edit read.csv read.delim read.delim2
 #' @concept ramclustR
 #' @concept RAMClustR
 #' @concept metabolomics
@@ -51,11 +52,11 @@ import.sirius <- function (
   names(sirius.formula) <- ramclustObj$cmpd
   sirius.structure<- sirius.formula
   
-  sirius.formula.ids <- read.delim("formula_identifications.tsv")
-  sirius.structure.ids <- read.delim("compound_identifications.tsv")
+  sirius.formula.ids <- utils::read.delim("formula_identifications.tsv")
+  sirius.structure.ids <- utils::read.delim("compound_identifications.tsv")
   
   if(is.null(ion.mode)) {
-    ion.mode <- RC$ExpDes[[2]][which(row.names(RC$ExpDes[[2]])=="msmode"),1]
+    ion.mode <- ramclustObj$ExpDes[[2]][which(row.names(ramclustObj$ExpDes[[2]])=="msmode"),1]
     if(startsWith(ion.mode, "N") | startsWith(ion.mode, "n")) {
       ion.mode <- "N"
     } else {
@@ -64,11 +65,11 @@ import.sirius <- function (
   }
   
   if(ion.mode == "P") {
-    suppressWarnings(sirius.fingerprint <- read.delim("csi_fingerid.tsv", quote = "\\"))
-    suppressWarnings(sirius.canopus <- read.delim2("canopus.tsv", quote="", fill=FALSE))
+    suppressWarnings(sirius.fingerprint <- utils::read.delim("csi_fingerid.tsv", quote = "\\"))
+    suppressWarnings(sirius.canopus <- utils::read.delim2("canopus.tsv", quote="", fill=FALSE))
   } else {
-    suppressWarnings(sirius.fingerprint <- read.delim("csi_fingerid_neg.tsv", quote = "\\"))
-    suppressWarnings(sirius.canopus <- read.delim("canopus_neg.tsv", quote="", fill=FALSE))
+    suppressWarnings(sirius.fingerprint <- utils::read.delim("csi_fingerid_neg.tsv", quote = "\\"))
+    suppressWarnings(sirius.canopus <- utils::read.delim("canopus_neg.tsv", quote="", fill=FALSE))
   }
   
   tmp <- matrix(nrow = nrow(sirius.fingerprint), ncol = length(ramclustObj$cmpd))
@@ -90,7 +91,7 @@ import.sirius <- function (
     }
     
     if(!file.exists(paste0(all.dirs.map[i], "/formula_candidates.tsv"))) next
-    form <- read.delim(paste0(all.dirs.map[i], "/formula_candidates.tsv"))
+    form <- utils::read.delim(paste0(all.dirs.map[i], "/formula_candidates.tsv"))
     form <- data.frame("annotated" = rep(FALSE, nrow(form)), form)
     use <- grep(basename(all.dirs.map[i]), sirius.formula.ids$id)
     sirius.formula[[i]] <- form
@@ -105,19 +106,19 @@ import.sirius <- function (
     fpts <- list.files(paste0(all.dirs.map[i], "/fingerprints/"))
     fpt <- fpts[grep(form[which(form$annotated), "molecularFormula"], fpts)]
     if(length(fpt)==1) {
-      fpt <- as.vector(read.delim(paste0(all.dirs.map[i], "/fingerprints/", fpt), header = FALSE)[,1])
+      fpt <- as.vector(utils::read.delim(paste0(all.dirs.map[i], "/fingerprints/", fpt), header = FALSE)[,1])
       sirius.fingerprint[,ramclustObj$cmpd[i]] <- fpt
     }
     
     cnps <- list.files(paste0(all.dirs.map[i], "/canopus/"))
     cnp <- fpts[grep(form[which(form$annotated), "molecularFormula"], cnps)]
     if(length(cnp)==1) {
-      cnp <- as.vector(read.delim(paste0(all.dirs.map[i], "/canopus/", cnp), header = FALSE)[,1])
+      cnp <- as.vector(utils::read.delim(paste0(all.dirs.map[i], "/canopus/", cnp), header = FALSE)[,1])
       sirius.canopus[,ramclustObj$cmpd[i]] <- cnp
     }
     
     if(!file.exists(paste0(all.dirs.map[i], "/structure_candidates.tsv"))) next
-    struc <- suppressWarnings(read.delim(paste0(all.dirs.map[i], "/structure_candidates.tsv")))
+    struc <- suppressWarnings(utils::read.delim(paste0(all.dirs.map[i], "/structure_candidates.tsv")))
     struc <- data.frame("annotated" = rep(FALSE, nrow(struc)), struc)
     sirius.structure[[i]] <- struc
     use <- grep(basename(all.dirs.map[i]), sirius.structure.ids$id)

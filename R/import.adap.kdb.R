@@ -8,6 +8,7 @@
 #' @param annotate logical.  TRUE by default.  for now please leave default
 #' @param manual.name when looking up inchikey/names, should manual input be used to fill ambiguous names? generally recommend TRUE
 #' @return returns a ramclustR structured object suitable for down stream processing steps. 
+#' @importFrom readxl read_xlsx
 #' @author Corey Broeckling
 #' 
 #' @export 
@@ -15,22 +16,23 @@
 
 import.adap.kdb <- function(
   ramclustObj = NULL,
-  annotations = 'spectra/simple_export.xlsx',
+  annotations = NULL,
   min.score = 700,
   annotate = TRUE,
   manual.name = TRUE
 ) {
   
+  
   ## import annotations file
   if(is.null(annotations)) {
-    annotations <- xlsx::read.xlsx(
-      "ADAP_BIG/simple_export.xlsx",  sheetIndex = 2,
-      startRow = 2
+    annotations <- readxl::read_xlsx(
+      "ADAP_BIG/simple_export.xlsx",  sheet = 2,
+      skip = 1
     )
   } else {
-    annotations <- xlsx::read.xlsx(
-      annotations,  sheetIndex = 2,
-      startRow = 2)
+    annotations <- readxl::read_xlsx(
+      annotations,  sheet = 2,
+      skip = 1)
   } 
   
   unannotated <- unique(c(

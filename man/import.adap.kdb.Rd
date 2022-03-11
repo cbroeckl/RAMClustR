@@ -6,7 +6,7 @@
 \usage{
 import.adap.kdb(
   ramclustObj = NULL,
-  annotations = "spectra/simple_export.xlsx",
+  annotations = NULL,
   min.score = 700,
   annotate = TRUE,
   manual.name = TRUE

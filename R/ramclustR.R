@@ -54,7 +54,7 @@
 #' @importFrom grDevices dev.off pdf
 #' @importFrom graphics abline axis boxplot hist "legend" "par" "plot" "points" "title"
 #' @importFrom stats aggregate cor fitted lm loess median predict quantile sd weighted.mean
-#' @importFrom utils edit read.csv read.delim2 write.csv packageVersion
+#' @importFrom utils edit read.csv read.delim read.delim2 write.csv packageVersion
 #' @importFrom ff ff
 #' @importFrom fastcluster hclust
 #' @importFrom dynamicTreeCut cutreeDynamicTree

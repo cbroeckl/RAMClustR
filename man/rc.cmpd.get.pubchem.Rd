@@ -10,13 +10,14 @@ rc.cmpd.get.pubchem(
   cmpd.names = NULL,
   cmpd.cid = NULL,
   cmpd.inchikey = NULL,
+  cmpd.smiles = NULL,
   use.parent.cid = FALSE,
   manual.entry = FALSE,
   get.vendors = FALSE,
   priority.vendors = c("Sigma Aldrich", "Alfa Chemistry", "Acros Organics", "VWR",
     "Alfa Aesar", "molport", "Key Organics", "BLD Pharm"),
   get.properties = TRUE,
-  all.props = TRUE,
+  all.props = FALSE,
   get.synonyms = TRUE,
   find.short.lipid.name = TRUE,
   find.short.synonym = TRUE,
@@ -36,6 +37,8 @@ rc.cmpd.get.pubchem(
 \item{cmpd.cid}{numeric integer vector.  i.e. c(2519, 5429, 107526)}
 
 \item{cmpd.inchikey}{character vector.  i.e. c("RYYVLZVUVIJVGH-UHFFFAOYSA-N", "YAPQBXQYLJRXSA-UHFFFAOYSA-N", "GZCGUPFRVQAUEE-SLPGGIOYSA-N")}
+
+\item{cmpd.smiles}{character vector.  i.e. c("CN1C=NC2=C1C(=O)N(C(=O)N2C)C", "CN1C=NC2=C1C(=O)NC(=O)N2C")}
 
 \item{use.parent.cid}{logical.  If TRUE, the CID for each supplied name/inchikey is used to retreive its parent CID (i.e. the parent of sodium palmitate is palmitic acid).  The parent CID is used to retrieve all other names, properties.}
 

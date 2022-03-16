@@ -2,7 +2,7 @@ Package: RAMClustR
 Type: Package
 Title: Mass Spectrometry Metabolomics Feature Clustering and Interpretation
 Version: 1.2.3
-Date: 2021-08-11
+Date: 2022-03-16
 Author: Corey D. Broeckling, Fayyaz Afsar, Steffan Neumann, Asa Ben-Hur,  Jessica Prenni.
 Maintainer: "Broeckling,Corey" <Corey.Broeckling@ColoState.EDU>
 Imports: dynamicTreeCut, fastcluster, ff, InterpretMSSpectrum, BiocManager, httr, jsonlite, preprocessCore, e1071, gplots, pcaMethods, stringr, xml2, utils, webchem, stringi, RCurl, MSnbase, ggplot2, readxl

@@ -232,8 +232,8 @@ ramclustR  <- function(xcmsObj=NULL,
     
     OK <- FALSE
     
-    if(class(xcmsObj)=="xcmsSet") {OK <- TRUE} 
-    if(class(xcmsObj) == "XCMSnExp") {
+    if(inherits(xcmsObj, "xcmsSet")) {OK <- TRUE} 
+    if(inherits(xcmsObj, "XCMSnExp")) {
       OK <- TRUE
       newXCMS <- TRUE
     }

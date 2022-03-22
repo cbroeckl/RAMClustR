@@ -1,0 +1,32 @@
+name: ramclustr-dev
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-base >= 4.1
+  - r-devtools
+  - r-biocmanager
+  - r-dynamictreecut
+  - r-fastcluster
+  - r-gplots
+  - r-ggplot2
+  - r-devtools
+  - r-ff
+  - bioconductor-msnbase
+  - bioconductor-xcms
+  - r-rcurl
+  - r-webchem
+  - r-stringi
+  - r-jsonlite
+  - r-stringr
+  - r-xml2
+  - r-e1071
+  - r-interpretmsspectrum
+  - r-languageserver
+  - r-testthat
+  - r-readxl
+  - radian
+  - r-rmarkdown
+  - qpdf
+  - r-rhub

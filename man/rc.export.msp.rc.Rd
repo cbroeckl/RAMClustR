@@ -20,7 +20,7 @@ nothing, just exports files to the working directory
 Cluster annotation function: inference of 'M' - molecular weight of the compound giving rise to each spectrum - using the InterpretMSSpectrum::findMain function
 }
 \details{
-exports files to a directory called 'spectra'.  If one.file = FALSE, a new directory 'spectra/msp' is created to hold the invididual msp files. if do.findman has been run, spectra are written as ms2 spectra, else as ms1.
+exports files to a directory called 'spectra'.  If one.file = FALSE, a new directory 'spectra/msp' is created to hold the individual msp files. if do.findman has been run, spectra are written as ms2 spectra, else as ms1.
 }
 \author{
 Corey Broeckling

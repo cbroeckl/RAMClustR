@@ -1,11 +1,11 @@
-#' evalute ramSearch, MSFinder mssearch, MSFinder Structure, MSFinder Formula, and findmain output to annotate spectra of ramclustR object
+#' evaluate ramSearch, MSFinder mssearch, MSFinder Structure, MSFinder Formula, and findmain output to annotate spectra of ramclustR object
 #'
 #' After running RAMSearch (msp) and MSFinder on .mat or .msp files, import the spectral search results
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param msfinder.dir full path to MSFinder directory - used for naming refinement
 #' @param standardize.names logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)
 #' @param min.msms.score numerical: what is the minimum MSFinder similarity score acceptable.  default = 3.5
-#' @param database.priority character.  Formula assignment prioritization based on presence in one or more databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just selected databases).  If any database is set, the best formula match to that (those) database(s) is selected, rather than the best formula match overall.  
+#' @param database.priority character.  Formula assignment prioritization based on presence in one or more databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisely. Can also be set to 'all' (note that MSFinder reports all databases matched, not just selected databases).  If any database is set, the best formula match to that (those) database(s) is selected, rather than the best formula match overall.  
 #' @param any.database.priority logical.  First priority in formula assignment is based on any of the 'database.priority' values.  Secondary priority from all other databases (determined in original MSFinder search) if TRUE.  If false, formula assignment score from MSFinder used independent of structure search results.
 #' @param reset logical.  If TRUE, removes any previously assigned annotations.  
 #' @details this function imports the output from the MSFinder program to annotate the ramclustR object

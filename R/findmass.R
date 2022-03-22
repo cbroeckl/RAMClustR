@@ -1,12 +1,12 @@
 #' findmass
 #'
 #' see if any features match a given mass, and whether they are plausibly M0
-#' @details  a convenience function to perform a targeted search of all feaures for a mass of interest.  Also performs a crude plausibility check as to whether the matched feature could be M0, based on the assumption of approximately 1 carbon per 17 m/z units and natural isottopic abundance of 1.1% 13C.  Note that this function returns the cluster to which the feature is assigned, but that the M0_plausibility is independent of cluster membership.
+#' @details  a convenience function to perform a targeted search of all feaures for a mass of interest.  Also performs a crude plausibility check as to whether the matched feature could be M0, based on the assumption of approximately 1 carbon per 17 m/z units and natural isotopic abundance of 1.1% 13C.  Note that this function returns the cluster to which the feature is assigned, but that the M0_plausibility is independent of cluster membership.
 #' 
 #' @param ramclustObj R object: the ramclustR object to explore
 #' @param mz numeric: mz value to search for
 #' @param mztol numeric: absolute mass tolerance around mz
-#' @param rttol numeric: when examining isotope patterns, feaure retention time tolerance around features matching mz +- mztol
+#' @param rttol numeric: when examining isotope patterns, feature retention time tolerance around features matching mz +- mztol
 #' @param zmax integer: maximum charge state to consider.  default is 6.  
 #' @param m.check logical:  check whether the matching masses are plausibly M0.  That is, we look for ions 1 proton mass (from charge state 1:zmax) below the target m/z at the same time that have intensities consistent with target ion being a non-M0 isotope.
 #' @return returns a table to the console listing masses which match, their retention time and intensity, and whether it appears to be plausible as M0

@@ -11,22 +11,22 @@
 #' @param nls  character: vector of allowed neutral losses, i.e. c("[M+H-H2O]+").  if NULL, an extensive list derived from CAMERA's will be used. 
 #' @param scoring character: one of 'imss' , 'ramclustr', or 'auto'. default = 'auto'. see details.
 #' @param plot.findmain logical: should pdf polts be generated for evaluation? detfault = TRUE. PDF saved to working.directory/spectra
-#' @param writeMat logical: should indidual .mat files (for MSFinder) be generated in a 'mat' subdirectory in the 'spectra' folder? default = TRUE.
-#' @param writeMS logical: should indidual .ms files (for Sirius) be generated in a 'ms' subdirectory in the 'spectra' folder? default = TRUE.  Note that no import functions are yet written for Sirius output.
-#' @param use.z logical: if you have previously run the 'assign.z' function from ramclustR, there will be a slot reflecting the feature mass after accounting for charge (fm) - if TRUE this is used instead of feature m/z (fmz) in interpreting MS data and exporing spectra for annotation.  
+#' @param writeMat logical: should individual .mat files (for MSFinder) be generated in a 'mat' subdirectory in the 'spectra' folder? default = TRUE.
+#' @param writeMS logical: should individual .ms files (for Sirius) be generated in a 'ms' subdirectory in the 'spectra' folder? default = TRUE.  Note that no import functions are yet written for Sirius output.
+#' @param use.z logical: if you have previously run the 'assign.z' function from ramclustR, there will be a slot reflecting the feature mass after accounting for charge (fm) - if TRUE this is used instead of feature m/z (fmz) in interpreting MS data and exporting spectra for annotation.  
 #' @details a partially annotated ramclustR object.  base structure is that of a standard R heirarchical clustering output, with additional slots described in ramclustR documentation (?ramclustR).  New slots added after using the interpretMSSpectrum functionality include those described below. 
 #' @return    $M:  The inferred molecular weight of the compound giving rise to the each spectrum
 #' @return    $M.ppm:  The ppm error of all the MS signals annotated, high error values should be considered 'red flags'. 
-#' @return    $M.ann:  The annotated spectrum supporting the intepretation of M
+#' @return    $M.ann:  The annotated spectrum supporting the interpretation of M
 #' @return    $use.findmain:  Logical vector indicating whether findmain scoring (TRUE) or ramclustR scoring (FALSE) was used to support inference of M.  By default, findmain scoring is used.  When ramclustR scoring differs from findmain scoring, the scoring metric which predicts higher M is selected. 
 #' @return    $M.ramclustr:  M selected using ramclustR scoring
 #' @return    $M.ppm.ramclustr:  ppm error of M selected using ramclustR scoring. Used to resolve concflicts between ramclustR and findmain M assignment when scoring = auto. 
-#' @return    $M.ann.ramclustr:  annotated spectrum supporing M using ramclustR scoring
+#' @return    $M.ann.ramclustr:  annotated spectrum supporting M using ramclustR scoring
 #' @return    $M.nann.ramclustr:  number of masses annotated using ramclustR scoring. Used to resolve concflicts between ramclustR and findmain M assignment when scoring = auto. 
 #' @return    $M.space.ramclustr:  the 'space' of scores between the best and second best ramclustR scores. Calculated as a ratio. Used to resolve concflicts between ramclustR and findmain M assignment when scoring = auto. 
 #' @return    $M.findmain:  M selected using findmain scoring
 #' @return    $M.ppm.findmain:  ppm error of M selected using findmain scoring. Used to resolve concflicts between ramclustR and findmain M assignment when scoring = auto. 
-#' @return    $M.ann.findmain:  annotated spectrum supporing M using findmain scoring
+#' @return    $M.ann.findmain:  annotated spectrum supporting M using findmain scoring
 #' @return    $M.nann.findmain:  number of masses annotated using findmain scoring. Used to resolve concflicts between ramclustR and findmain M assignment when scoring = auto. 
 #' @return    $M.space.findmain:  the 'space' of scores between the best and second best findmain scores. Calculated as a ratio. Used to resolve concflicts between ramclustR and findmain M assignment when scoring = auto. 
 #' @references Jaeger C, ... Lisec J. Compound annotation in liquid chromatography/high-resolution mass spectrometry based metabolomics: robust adduct ion determination as a prerequisite to structure prediction in electrospray ionization mass spectra. Rapid Commun Mass Spectrom. 2017 Aug 15;31(15):1261-1266. doi: 10.1002/rcm.7905. PubMed PMID: 28499062.

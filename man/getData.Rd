@@ -27,7 +27,7 @@ getData(
 returns a list of length 3: $design is the experimental sample factors after parsing by the delim, $data is the dataset, $full.data is merged $des and $data data.frames.
 }
 \description{
-retreive and parse sample names, retrieve metabolite data.  returns as list of two data frames
+retrieve and parse sample names, retrieve metabolite data.  returns as list of two data frames
 }
 \details{
 convenience function for parsing sample names and returning a dataset.

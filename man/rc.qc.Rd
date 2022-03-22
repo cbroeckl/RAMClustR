@@ -33,10 +33,10 @@ rc.qc(
 new RC object. Saves output summary plots to pdf and .csv summary tables to new 'QC' directory. If remove.qc = TRUE, moves QC samples to new $QC slot from original position.
 }
 \description{
-summarize quality control for clustering and for quality control sample varation based on compound ($SpecAbund) and feature ($MSdata and $MSMSdata, if present)
+summarize quality control for clustering and for quality control sample variation based on compound ($SpecAbund) and feature ($MSdata and $MSMSdata, if present)
 }
 \details{
-plots a ramclustR summary plot.  first page represents the correlation of each cluster to all other clusters, sorted by retention time.  large blocks of yellow along the diaganol indicate either poor clustering or a group of coregulated metabolites with similar retention time.  It is an imperfect diagnostic, partuclarly with lipids on reverse phase LC or sugars on HILIC LC systems.  Page 2: histogram of r values from page 1 - only r values one position from the diagonal are used.  Pages 3:5 - PCA results, with QC samples colored red.  relative standard deviation calculated as sd(QC PC scores) / sd(all PC scores).  Page 6: histogram of CV values for each compound int he dataset, QC samples only.
+plots a ramclustR summary plot.  first page represents the correlation of each cluster to all other clusters, sorted by retention time.  large blocks of yellow along the diaganol indicate either poor clustering or a group of coregulated metabolites with similar retention time.  It is an imperfect diagnostic, particularly with lipids on reverse phase LC or sugars on HILIC LC systems.  Page 2: histogram of r values from page 1 - only r values one position from the diagonal are used.  Pages 3:5 - PCA results, with QC samples colored red.  relative standard deviation calculated as sd(QC PC scores) / sd(all PC scores).  Page 6: histogram of CV values for each compound int he dataset, QC samples only.
 }
 \references{
 Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.

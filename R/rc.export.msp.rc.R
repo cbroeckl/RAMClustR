@@ -5,7 +5,7 @@
 #' @param ramclustObj ramclustR object to annotate. 
 #' @param one.file logical, should all msp spectra be written to one file? If false, each spectrum is an individual file.
 #' @param mzdec integer.  Number of decimal points to export mass values with.
-#' @details exports files to a directory called 'spectra'.  If one.file = FALSE, a new directory 'spectra/msp' is created to hold the invididual msp files. if do.findman has been run, spectra are written as ms2 spectra, else as ms1. 
+#' @details exports files to a directory called 'spectra'.  If one.file = FALSE, a new directory 'spectra/msp' is created to hold the individual msp files. if do.findman has been run, spectra are written as ms2 spectra, else as ms1. 
 #' @return nothing, just exports files to the working directory
 #' @concept ramclustR
 #' @concept RAMClustR

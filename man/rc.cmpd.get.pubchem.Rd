@@ -40,7 +40,7 @@ rc.cmpd.get.pubchem(
 
 \item{cmpd.smiles}{character vector.  i.e. c("CN1C=NC2=C1C(=O)N(C(=O)N2C)C", "CN1C=NC2=C1C(=O)NC(=O)N2C")}
 
-\item{use.parent.cid}{logical.  If TRUE, the CID for each supplied name/inchikey is used to retreive its parent CID (i.e. the parent of sodium palmitate is palmitic acid).  The parent CID is used to retrieve all other names, properties.}
+\item{use.parent.cid}{logical.  If TRUE, the CID for each supplied name/inchikey is used to retrieve its parent CID (i.e. the parent of sodium palmitate is palmitic acid).  The parent CID is used to retrieve all other names, properties.}
 
 \item{manual.entry}{logical.  if TRUE, user input is enabled for compounds not matched by name. A browser window will open with the pubchem search results in your default browser.}
 
@@ -54,9 +54,9 @@ rc.cmpd.get.pubchem(
 
 \item{get.synonyms}{= TRUE. logical.  if TRUE, retrieve pubchem synonyms.  returned to $synonyms slot}
 
-\item{find.short.lipid.name}{= TRUE. logical.  If TRUE, and get.synonyms = TRUE, looks for lipid short hand names in synonymns list (i.e. PC(36:6)). returned to $short.name slot.  Short names are assigned only if assign.short.names = TRUE.}
+\item{find.short.lipid.name}{= TRUE. logical.  If TRUE, and get.synonyms = TRUE, looks for lipid short hand names in synonyms list (i.e. PC(36:6)). returned to $short.name slot.  Short names are assigned only if assign.short.names = TRUE.}
 
-\item{find.short.synonym}{= TRUE. logical.  If TRUE, and get.synonyms = TRUE, looks for lipid short synonymns, with prioritization for names with fewer numeric characters (i.e. database accession numbers or CAS numbers). returned to $short.name slot.  Short names are assigned only if assign.short.names = TRUE.}
+\item{find.short.synonym}{= TRUE. logical.  If TRUE, and get.synonyms = TRUE, looks for lipid short synonyms, with prioritization for names with fewer numeric characters (i.e. database accession numbers or CAS numbers). returned to $short.name slot.  Short names are assigned only if assign.short.names = TRUE.}
 
 \item{max.name.length}{= 20.  integer.  If names are longer than this value, short names will be searched for, else, retain original name.}
 
@@ -67,13 +67,13 @@ rc.cmpd.get.pubchem(
 \item{write.csv}{logical.  If TRUE, write csv files of all returned pubchem data.}
 }
 \value{
-returns a list with one or more of $puchem (compound name and identifiers) - one row in dataframe per CID; $properties contains pysicochemical properties - one row in dataframe per CID; $vendors contains the number of vendors for a given compound and selects a vendor based on 'priortity.vendors' supplied, or randomly choses a vendor with a HTML link - one row in dataframe per CID;  $bioassays contains a summary of bioassay activity data from pubchem - zero to many rows in dataframe per CID
+returns a list with one or more of $pubchem (compound name and identifiers) - one row in dataframe per CID; $properties contains physicochemical properties - one row in dataframe per CID; $vendors contains the number of vendors for a given compound and selects a vendor based on 'priority.vendors' supplied, or randomly choses a vendor with a HTML link - one row in dataframe per CID;  $bioassays contains a summary of bioassay activity data from pubchem - zero to many rows in dataframe per CID
 }
 \description{
-use pubchem rest and view APIs to retreive structures, CIDs (if a name or inchikey is given), synonyms, and optionally vendor data, when available.
+use pubchem rest and view APIs to retrieve structures, CIDs (if a name or inchikey is given), synonyms, and optionally vendor data, when available.
 }
 \details{
-useful for moving from chemical name to digital structure represtation. greek letters are assumed to be 'UTF-8' encoded, and are converted to latin text before searching.   if you are reading in your compound name list, do so with 'encoding' set to 'UTF-8'.
+useful for moving from chemical name to digital structure representation. greek letters are assumed to be 'UTF-8' encoded, and are converted to latin text before searching.   if you are reading in your compound name list, do so with 'encoding' set to 'UTF-8'.
 }
 \author{
 Corey Broeckling

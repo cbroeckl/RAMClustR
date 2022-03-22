@@ -7,7 +7,7 @@
 #' @param chargestate integer vector. vector of integers of charge states to look for.  default = c(1:5)
 #' @param mzError numeric. the error allowed in charge state m/z filtering.  absolute mass units
 #' @param nEvents integer. the number of isotopes necessary to assign a charnge state > 1.  default = 2.
-#' @param minPercentSignal numeric.  the ratio of isotope signal (all isotopes) divided by total spectrum signal * 100 much be greated than minPercentSignal to evaluate charge state. Value should be between 0 and 100.  
+#' @param minPercentSignal numeric.  the ratio of isotope signal (all isotopes) divided by total spectrum signal * 100 much be greater than minPercentSignal to evaluate charge state. Value should be between 0 and 100.  
 #' @param assume1 logical.  when TRUE, m/z values for which no isotopes are found are assumed to be at z = 1.
 #' @return returns a ramclustR object.  new slots holding: 
 #' @return zmax. vector with length equal to number of compounds.  max charge state detected for that compound

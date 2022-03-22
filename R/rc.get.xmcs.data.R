@@ -5,7 +5,7 @@
 #' @param xcmsObj xcmsObject: containing grouped feature data for clustering by ramclustR
 #' @param MStag character: character string in 'taglocation' to designate files as either MS / DIA(MSe, MSall, AIF, etc) e.g. "01.mzML"
 #' @param MSMStag character: character string in 'taglocation' to designate files as either MS / DIA(MSe, MSall, AIF, etc) e.g. "02.mzML"
-#' @param taglocation character: "filepaths" by default, "phenoData[,1]" is another option. referse to xcms slot
+#' @param taglocation character: "filepaths" by default, "phenoData[,1]" is another option. refers to xcms slot
 #' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
 #' @param mzdec integer: number of decimal places for storing m/z values
 #' @param ensure.no.na logical: if TRUE, any 'NA' values in msint and/or msmsint are replaced with numerical values based on 10 percent of feature min plus noise.  Used to ensure that spectra are not written with NA values. 

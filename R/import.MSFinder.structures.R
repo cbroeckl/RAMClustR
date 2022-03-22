@@ -4,7 +4,7 @@
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param mat.dir directory in which to look for mat file MSFinder output - by default the /spectra/mat in the working directory
 #' @param msp.dir directory in which to look for msp file MSFinder output - by default the /spectra/msp in the working directory
-#' @details this function exports a file called ramclustr_methods.txt which contains the processing history, parameters used, and relevent citations.
+#' @details this function exports a file called ramclustr_methods.txt which contains the processing history, parameters used, and relevant citations.
 #' @return an annotated ramclustR object
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @return nothing - new file written to working director

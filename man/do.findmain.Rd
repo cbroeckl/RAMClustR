@@ -38,18 +38,18 @@ do.findmain(
 
 \item{plot.findmain}{logical: should pdf polts be generated for evaluation? detfault = TRUE. PDF saved to working.directory/spectra}
 
-\item{writeMat}{logical: should indidual .mat files (for MSFinder) be generated in a 'mat' subdirectory in the 'spectra' folder? default = TRUE.}
+\item{writeMat}{logical: should individual .mat files (for MSFinder) be generated in a 'mat' subdirectory in the 'spectra' folder? default = TRUE.}
 
-\item{writeMS}{logical: should indidual .ms files (for Sirius) be generated in a 'ms' subdirectory in the 'spectra' folder? default = TRUE.  Note that no import functions are yet written for Sirius output.}
+\item{writeMS}{logical: should individual .ms files (for Sirius) be generated in a 'ms' subdirectory in the 'spectra' folder? default = TRUE.  Note that no import functions are yet written for Sirius output.}
 
-\item{use.z}{logical: if you have previously run the 'assign.z' function from ramclustR, there will be a slot reflecting the feature mass after accounting for charge (fm) - if TRUE this is used instead of feature m/z (fmz) in interpreting MS data and exporing spectra for annotation.}
+\item{use.z}{logical: if you have previously run the 'assign.z' function from ramclustR, there will be a slot reflecting the feature mass after accounting for charge (fm) - if TRUE this is used instead of feature m/z (fmz) in interpreting MS data and exporting spectra for annotation.}
 }
 \value{
 $M:  The inferred molecular weight of the compound giving rise to the each spectrum
 
 $M.ppm:  The ppm error of all the MS signals annotated, high error values should be considered 'red flags'.
 
-$M.ann:  The annotated spectrum supporting the intepretation of M
+$M.ann:  The annotated spectrum supporting the interpretation of M
 
 $use.findmain:  Logical vector indicating whether findmain scoring (TRUE) or ramclustR scoring (FALSE) was used to support inference of M.  By default, findmain scoring is used.  When ramclustR scoring differs from findmain scoring, the scoring metric which predicts higher M is selected.
 
@@ -57,7 +57,7 @@ $M.ramclustr:  M selected using ramclustR scoring
 
 $M.ppm.ramclustr:  ppm error of M selected using ramclustR scoring. Used to resolve concflicts between ramclustR and findmain M assignment when scoring = auto.
 
-$M.ann.ramclustr:  annotated spectrum supporing M using ramclustR scoring
+$M.ann.ramclustr:  annotated spectrum supporting M using ramclustR scoring
 
 $M.nann.ramclustr:  number of masses annotated using ramclustR scoring. Used to resolve concflicts between ramclustR and findmain M assignment when scoring = auto.
 
@@ -67,7 +67,7 @@ $M.findmain:  M selected using findmain scoring
 
 $M.ppm.findmain:  ppm error of M selected using findmain scoring. Used to resolve concflicts between ramclustR and findmain M assignment when scoring = auto.
 
-$M.ann.findmain:  annotated spectrum supporing M using findmain scoring
+$M.ann.findmain:  annotated spectrum supporting M using findmain scoring
 
 $M.nann.findmain:  number of masses annotated using findmain scoring. Used to resolve concflicts between ramclustR and findmain M assignment when scoring = auto.
 

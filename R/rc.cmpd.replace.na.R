@@ -6,7 +6,7 @@
 #' @param replace.int default = 0.2.  proportion of minimum feature value to replace NA (or zero) values with
 #' @param replace.noise default = 0.2.  proportion ofreplace.int value by which noise is added via 'jitter'
 #' @param replace.zero logical if TRUE, any zero values are replaced with noise as if they were NA values 
-#' @details noise is added by finding for each feature the mimimum detected value, multiplying that value by replace.int, then adding (replace.int*replace.noise) noise.  abs() is used to ensure no negative values result.  
+#' @details noise is added by finding for each feature the minimum detected value, multiplying that value by replace.int, then adding (replace.int*replace.noise) noise.  abs() is used to ensure no negative values result.  
 #' @return  ramclustR object with NA and zero values removed.     
 #'  
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.

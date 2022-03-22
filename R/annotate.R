@@ -1,10 +1,10 @@
-#' evalute ramSearch, MSFinder mssearch, MSFinder Structure, MSFinder Formula, and findmain output to annotate spectra of ramclustR object
+#' evaluate ramSearch, MSFinder mssearch, MSFinder Structure, MSFinder Formula, and findmain output to annotate spectra of ramclustR object
 #'
 #' After running RAMSearch (msp) and MSFinder on .mat or .msp files, import the spectral search results
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param standardize.names logical: if TRUE, use inchikey for standardized chemical name lookup (http://cts.fiehnlab.ucdavis.edu/)
 #' @param min.msms.score numerical: what is the minimum MSFinder similarity score acceptable.  default = 6.5
-#' @param database.priority character.  Formula assignment prioritization based on presence in one or more (structure) databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just databases in MSFinder parameters).  If any database is set, the best formula match to any of those databases is selected, rather than the best formula match overall.  If NULL, this will be set to include all selected databases (from ramclustObj$msfinder.dbs, retreieved from search output during import.msfinder.formulas(), when available) or 'all'.  
+#' @param database.priority character.  Formula assignment prioritization based on presence in one or more (structure) databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisely. Can also be set to 'all' (note that MSFinder reports all databases matched, not just databases in MSFinder parameters).  If any database is set, the best formula match to any of those databases is selected, rather than the best formula match overall.  If NULL, this will be set to include all selected databases (from ramclustObj$msfinder.dbs, retrieved from search output during import.msfinder.formulas(), when available) or 'all'.  
 #' @param database.priority.factor numeric, between 0 and 1.  0.1 by default.  The proportion by which scores for structures not in priority database are assessed
 #' @param taxonomy.inchi vector or data frame.  Only when rescore.structure = TRUE.  user can supply a vector of inchikeys.  If used, structures which match first block of inchikey retain full score, while all other structures are penalized.  
 #' @param taxonomy.inchi.factor numeric, between 0 and 1.  0.1 by default.  The proportion by which scores for structures not in taxonomy.inchi vector are assessed
@@ -155,7 +155,7 @@ annotate<-function(ramclustObj = NULL,
     ramclustObj$rs.rmf	<-as.integer(rep(-1, max(ramclustObj$featclus)))
     ramclustObj$rs.prob	<-as.numeric(rep(-1, max(ramclustObj$featclus)))
     
-    ##pull relevent line numbers for all spectra
+    ##pull relevant line numbers for all spectra
     ##name line is first, so call that directly, range between name 1 and name 2 is the
     ##range of spectrum 1
     name<-which(regexpr('Matched Spectrum:', out)==1)
@@ -168,7 +168,7 @@ annotate<-function(ramclustObj = NULL,
     ##if length of name is not equal to length of ramclust Object 'cmpd' slot, something is wrong:
     if(length(name)/as.integer(as.character(ramclustObj$ExpDes[[2]]["MSlevs",1]))!= length(ramclustObj$cmpd)) stop("number of spectra in ramsearch output different than number of compounds in ramclust object")
     
-    ##now pull relevent info our for each spectrum in output
+    ##now pull relevant info our for each spectrum in output
     for(i in 1:length(ann)) {
       md<-out[name[i]:min((name[i+1]-1), length(out), na.rm=TRUE)]
       cname<-sub("Original Name: ", "", md[grep("Original Name: ", md)])

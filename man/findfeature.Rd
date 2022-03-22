@@ -26,7 +26,7 @@ findfeature(
 
 \item{rttol}{numeric: absolute retention time tolerance around rt.}
 
-\item{iso.rttol}{numeric: when examining isotope patterns, feaure retention time tolerance around features matching mz +- mztol}
+\item{iso.rttol}{numeric: when examining isotope patterns, feature retention time tolerance around features matching mz +- mztol}
 
 \item{zmax}{integer: maximum charge state to consider.  default is 6.}
 
@@ -39,7 +39,7 @@ returns a table to the console listing masses which match, their retention time 
 see if any features match a given mass, and whether they are plausibly M0
 }
 \details{
-a convenience function to perform a targeted search of all features for a mass of interest.  Also performs a crude plausibility check as to whether the matched feature could be M0, based on the assumption of approximately 1 carbon per 17 m/z units and natural isottopic abundance of 1.1% 13C.  Note that this function returns the cluster to which the feature is assigned, but that the M0_plausibility is independent of cluster membership.
+a convenience function to perform a targeted search of all features for a mass of interest.  Also performs a crude plausibility check as to whether the matched feature could be M0, based on the assumption of approximately 1 carbon per 17 m/z units and natural isotopic abundance of 1.1% 13C.  Note that this function returns the cluster to which the feature is assigned, but that the M0_plausibility is independent of cluster membership.
 }
 \author{
 Corey Broeckling

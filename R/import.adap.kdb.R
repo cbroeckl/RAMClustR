@@ -1,7 +1,7 @@
 #' import.adap.kdb
 #'
-#' use pubchem rest and view APIs to retreive structures, CIDs (if a name or inchikey is given), synonyms, and optionally vendor data, when available. 
-#' @details useful for moving from chemical name to digital structure represtation. greek letters are assumed to be 'UTF-8' encoded, and are converted to latin text before searching.   if you are reading in your compound name list, do so with 'encoding' set to 'UTF-8'. 
+#' use pubchem rest and view APIs to retrieve structures, CIDs (if a name or inchikey is given), synonyms, and optionally vendor data, when available. 
+#' @details useful for moving from chemical name to digital structure representation. greek letters are assumed to be 'UTF-8' encoded, and are converted to latin text before searching.   if you are reading in your compound name list, do so with 'encoding' set to 'UTF-8'. 
 #' @param ramclustObj ramclustR object to be annotated.
 #' @param annotations  file name/path to annotations .xlsx file.  generally 'simple_export.xlsx'
 #' @param min.score 700 (out of 1000) by default

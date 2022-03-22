@@ -15,7 +15,7 @@
 #' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
 #' @param rt.only.low.n logical: default = TRUE  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to FALSE.
 #' @param collapse logical: if true (default), feature quantitative values are collapsed into spectra quantitative values. 
-#' @param fftempdir valid path: if there are file size limitations on the default ff pacakge temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.
+#' @param fftempdir valid path: if there are file size limitations on the default ff package temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.
 #' @details Main clustering function output - see citation for algorithm description or vignette('RAMClustR') for a walk through.  batch.qc. normalization requires input of three vectors (1) batch (2) order (3) qc.   This is a feature centric normalization approach which adjusts signal intensities first by comparing batch median intensity of each feature (one feature at a time) QC signal intensity to full dataset median to correct for systematic batch effects and then secondly to apply a local QC median vs global median sample correction to correct for run order effects.
 #' @return   $featclus: integer vector of cluster membership for each feature
 #' @return   $clrt: cluster retention time

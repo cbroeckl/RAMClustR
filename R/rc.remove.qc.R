@@ -1,6 +1,6 @@
 #' rc.remove.qc
 #'
-#' summarize quality control for clustering and for quality control sample varation based on compound ($SpecAbund) and feature ($MSdata and $MSMSdata, if present)
+#' summarize quality control for clustering and for quality control sample variation based on compound ($SpecAbund) and feature ($MSdata and $MSMSdata, if present)
 #'
 #' @param ramclustObj ramclustR object to analyze
 #' @param qc.tag qc.tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.  

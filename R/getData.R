@@ -1,6 +1,6 @@
 #' getData
 #'
-#' retreive and parse sample names, retrieve metabolite data.  returns as list of two data frames
+#' retrieve and parse sample names, retrieve metabolite data.  returns as list of two data frames
 #' @details convenience function for parsing sample names and returning a dataset.   
 #' @param ramclustObj ramclustR object to retrieve data from
 #' @param which.data character; which dataset (SpecAbund or SpecAbundAve) to reference

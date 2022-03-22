@@ -22,7 +22,7 @@ assign.z(
 
 \item{nEvents}{integer. the number of isotopes necessary to assign a charnge state > 1.  default = 2.}
 
-\item{minPercentSignal}{numeric.  the ratio of isotope signal (all isotopes) divided by total spectrum signal * 100 much be greated than minPercentSignal to evaluate charge state. Value should be between 0 and 100.}
+\item{minPercentSignal}{numeric.  the ratio of isotope signal (all isotopes) divided by total spectrum signal * 100 much be greater than minPercentSignal to evaluate charge state. Value should be between 0 and 100.}
 
 \item{assume1}{logical.  when TRUE, m/z values for which no isotopes are found are assumed to be at z = 1.}
 }

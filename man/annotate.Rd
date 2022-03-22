@@ -2,7 +2,7 @@
 % Please edit documentation in R/annotate.R
 \name{annotate}
 \alias{annotate}
-\title{evalute ramSearch, MSFinder mssearch, MSFinder Structure, MSFinder Formula, and findmain output to annotate spectra of ramclustR object}
+\title{evaluate ramSearch, MSFinder mssearch, MSFinder Structure, MSFinder Formula, and findmain output to annotate spectra of ramclustR object}
 \usage{
 annotate(
   ramclustObj = NULL,
@@ -26,7 +26,7 @@ annotate(
 
 \item{min.msms.score}{numerical: what is the minimum MSFinder similarity score acceptable.  default = 6.5}
 
-\item{database.priority}{character.  Formula assignment prioritization based on presence in one or more (structure) databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just databases in MSFinder parameters).  If any database is set, the best formula match to any of those databases is selected, rather than the best formula match overall.  If NULL, this will be set to include all selected databases (from ramclustObj$msfinder.dbs, retreieved from search output during import.msfinder.formulas(), when available) or 'all'.}
+\item{database.priority}{character.  Formula assignment prioritization based on presence in one or more (structure) databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisely. Can also be set to 'all' (note that MSFinder reports all databases matched, not just databases in MSFinder parameters).  If any database is set, the best formula match to any of those databases is selected, rather than the best formula match overall.  If NULL, this will be set to include all selected databases (from ramclustObj$msfinder.dbs, retrieved from search output during import.msfinder.formulas(), when available) or 'all'.}
 
 \item{database.priority.factor}{numeric, between 0 and 1.  0.1 by default.  The proportion by which scores for structures not in priority database are assessed}
 

@@ -657,7 +657,7 @@ ramclustR  <- function(xcmsObj=NULL,
   n<-ncol(data1)
   
   ########
-  # calucalte similarity matrix
+  # calculate similarity matrix
   ramclustObj <- calculate.similarity(n, data1, data2, times, blocksize, mult, maxt, st, sr, rt.only.low.n, cor.method)
   
   ########

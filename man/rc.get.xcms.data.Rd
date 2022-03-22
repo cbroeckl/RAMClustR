@@ -17,7 +17,7 @@ rc.get.xcms.data(
 \arguments{
 \item{xcmsObj}{xcmsObject: containing grouped feature data for clustering by ramclustR}
 
-\item{taglocation}{character: "filepaths" by default, "phenoData[,1]" is another option. referse to xcms slot}
+\item{taglocation}{character: "filepaths" by default, "phenoData[,1]" is another option. refers to xcms slot}
 
 \item{MStag}{character: character string in 'taglocation' to designate files as either MS / DIA(MSe, MSall, AIF, etc) e.g. "01.mzML"}
 

@@ -7,7 +7,7 @@
 #' @param idmsms filepath: optional idMSMS / MSe csv data.  same dim and names as ms required
 #' @param MStag character: character string in 'taglocation' to designat MS / MSe files e.g. "01.cdf"
 #' @param idMSMStag character: character string in 'taglocation' to designat idMSMS / MSe files e.g. "02.cdf"
-#' @param taglocation character: "filepaths" by default, "phenoData[,1]" is another option. referse to xcms slot
+#' @param taglocation character: "filepaths" by default, "phenoData[,1]" is another option. refers to xcms slot
 #' @param featdelim character: how feature mz and rt are delimited in csv import column header e.g. ="-"
 #' @param timepos integer: which position in delimited column header represents the retention time (csv only)
 #' @param st numeric: sigma t - time similarity decay value 
@@ -19,8 +19,8 @@
 #' @param hmax numeric: precut the tree at this height, default 0.3 - see ?cutreeDynamicTree
 #' @param sampNameCol integer: which column from the csv file contains sample names?
 #' @param collapse logical: reduce feature intensities to spectrum intensities?
-#' @param usePheno logical: tranfer phenotype data from XCMS object to SpecAbund dataset?
-#' @param mspout logical: write msp formatted specta to file?
+#' @param usePheno logical: transfer phenotype data from XCMS object to SpecAbund dataset?
+#' @param mspout logical: write msp formatted spectra to file?
 #' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
 #' @param normalize character: either "none", "TIC", "quantile", or "batch.qc" normalization of feature intensities.  see batch.qc overview in details. 
 #' @param qc.inj.range integer: how many injections around each injection are to be scanned for presence of QC samples when using batch.qc normalization?  A good rule of thumb is between 1 and 3 times the typical injection span between QC injections.  i.e. if you inject QC ever 7 samples, set this to between 7 and 21.  smaller values provide more local precision but make normalization sensitive to individual poor outliers (though these are first removed using the boxplot function outlier detection), while wider values provide less local precision in normalization but better stability to individual peak areas.
@@ -32,8 +32,8 @@
 #' @param mzdec integer: number of decimal places used in printing m/z values
 #' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
 #' @param rt.only.low.n logical: default = TRUE  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to FALSE.
-#' @param fftempdir valid path: if there are file size limitations on the default ff pacakge temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.
-#' @param replace.zeros logincal: TRUE by default.  NA, NaN, and Inf values are replaced with zero, and zero values are sometimes returned from peak peaking.  When TRUE, zero values will be replaced with a small amount of noise, with noise level set based on the detected signal intensities for that feature. 
+#' @param fftempdir valid path: if there are file size limitations on the default ff package temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.
+#' @param replace.zeros logical: TRUE by default.  NA, NaN, and Inf values are replaced with zero, and zero values are sometimes returned from peak peaking.  When TRUE, zero values will be replaced with a small amount of noise, with noise level set based on the detected signal intensities for that feature. 
 #' @details Main clustering function output - see citation for algorithm description or vignette('RAMClustR') for a walk through.  batch.qc. normalization requires input of three vectors (1) batch (2) order (3) qc.   This is a feature centric normalization approach which adjusts signal intensities first by comparing batch median intensity of each feature (one feature at a time) QC signal intensity to full dataset median to correct for systematic batch effects and then secondly to apply a local QC median vs global median sample correction to correct for run order effects.
 #' @return   $featclus: integer vector of cluster membership for each feature
 #' @return   $frt: feature retention time, in whatever units were fed in (xcms uses seconds, by default)
@@ -50,7 +50,7 @@
 #' @return   $MSMSdata: the (optional) MSe/idMSMS dataset provided be either xcms or csv input
 #' @return   $SpecAbund: the cluster intensities after collapsing features to clusters
 #' @return   $SpecAbundAve: the cluster intensities after averaging all samples with identical sample names
-#' @return   - 'spectra' directory is created in the working directory.  In this directory a .msp is (optionally) created, which contains the spectra for all compounds in the dataset following clustering.  if MSe/idMSMS data are provided, they are listed witht he same compound name as the MS spectrum, with the collision energy provided in the ExpDes object provided to distinguish low from high CE spectra. 
+#' @return   - 'spectra' directory is created in the working directory.  In this directory a .msp is (optionally) created, which contains the spectra for all compounds in the dataset following clustering.  if MSe/idMSMS data are provided, they are listed width he same compound name as the MS spectrum, with the collision energy provided in the ExpDes object provided to distinguish low from high CE spectra. 
 #' @importFrom grDevices dev.off pdf
 #' @importFrom graphics abline axis boxplot hist "legend" "par" "plot" "points" "title"
 #' @importFrom stats aggregate cor fitted lm loess median predict quantile sd weighted.mean

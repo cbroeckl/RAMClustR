@@ -1,6 +1,6 @@
 #' getClassyFire
 #'
-#' use classyfire web API to look up full ClassyFire heirarchy for each inchikey
+#' use classyfire web API to look up full ClassyFire hirarchy for each inchikey
 #' @details The $inchikey slot is used to look up the 
 #' 
 #' @param ramclustObj ramclustR object to ClassyFy.  Must supply one of either ramclustObj or inchikey (see below)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/rc.restore.qc.samples.R
 \name{rc.restore.qc.samples}
 \alias{rc.restore.qc.samples}
-\title{rc.restore.qc.qamples}
+\title{rc.restore.qc.samples}
 \usage{
 rc.restore.qc.samples(ramclustObj = NULL)
 }
@@ -13,7 +13,7 @@ rc.restore.qc.samples(ramclustObj = NULL)
 RC object
 }
 \description{
-summarize quality control for clustering and for quality control sample varation based on compound ($SpecAbund) and feature ($MSdata and $MSMSdata, if present)
+summarize quality control for clustering and for quality control sample variation based on compound ($SpecAbund) and feature ($MSdata and $MSMSdata, if present)
 }
 \details{
 moves all of $phenoData, $MSdata, $MSMSdata, $SpecAbund back to original positions from $qc slot

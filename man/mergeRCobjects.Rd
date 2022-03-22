@@ -22,7 +22,7 @@ mergeRCobjects(
 
 \item{mztol}{numeric: absolute mass tolerance around mz}
 
-\item{rttol}{numeric: feaure retention time tolerance.  Value set by this option will be used during the initial anchor mapping phase.  Two times the standard error of the rt loess correction will be used for the full mapping.}
+\item{rttol}{numeric: feature retention time tolerance.  Value set by this option will be used during the initial anchor mapping phase.  Two times the standard error of the rt loess correction will be used for the full mapping.}
 
 \item{course.rt.adj}{numeric: default = NULL. optional approximate retention time shift between ramclustObj.1 and ramclustObj.2.  i.e if the retention time of ramclustObj.1 is on average 15 seconds longer than that of ramclustobj.2, enter '15'.  if 1 is less than 2, enter a negative number.  This is applied before mapping to enable a smaller 'rttol' value to be used.}
 

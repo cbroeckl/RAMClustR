@@ -46,7 +46,7 @@ ramclustR(
 
 \item{idmsms}{filepath: optional idMSMS / MSe csv data.  same dim and names as ms required}
 
-\item{taglocation}{character: "filepaths" by default, "phenoData[,1]" is another option. referse to xcms slot}
+\item{taglocation}{character: "filepaths" by default, "phenoData[,1]" is another option. refers to xcms slot}
 
 \item{MStag}{character: character string in 'taglocation' to designat MS / MSe files e.g. "01.cdf"}
 
@@ -74,9 +74,9 @@ ramclustR(
 
 \item{collapse}{logical: reduce feature intensities to spectrum intensities?}
 
-\item{usePheno}{logical: tranfer phenotype data from XCMS object to SpecAbund dataset?}
+\item{usePheno}{logical: transfer phenotype data from XCMS object to SpecAbund dataset?}
 
-\item{mspout}{logical: write msp formatted specta to file?}
+\item{mspout}{logical: write msp formatted spectra to file?}
 
 \item{ExpDes}{either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output}
 
@@ -100,9 +100,9 @@ ramclustR(
 
 \item{rt.only.low.n}{logical: default = TRUE  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to FALSE.}
 
-\item{fftempdir}{valid path: if there are file size limitations on the default ff pacakge temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.}
+\item{fftempdir}{valid path: if there are file size limitations on the default ff package temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.}
 
-\item{replace.zeros}{logincal: TRUE by default.  NA, NaN, and Inf values are replaced with zero, and zero values are sometimes returned from peak peaking.  When TRUE, zero values will be replaced with a small amount of noise, with noise level set based on the detected signal intensities for that feature.}
+\item{replace.zeros}{logical: TRUE by default.  NA, NaN, and Inf values are replaced with zero, and zero values are sometimes returned from peak peaking.  When TRUE, zero values will be replaced with a small amount of noise, with noise level set based on the detected signal intensities for that feature.}
 }
 \value{
 $featclus: integer vector of cluster membership for each feature
@@ -135,7 +135,7 @@ $SpecAbund: the cluster intensities after collapsing features to clusters
 
 $SpecAbundAve: the cluster intensities after averaging all samples with identical sample names
 
-- 'spectra' directory is created in the working directory.  In this directory a .msp is (optionally) created, which contains the spectra for all compounds in the dataset following clustering.  if MSe/idMSMS data are provided, they are listed witht he same compound name as the MS spectrum, with the collision energy provided in the ExpDes object provided to distinguish low from high CE spectra.
+- 'spectra' directory is created in the working directory.  In this directory a .msp is (optionally) created, which contains the spectra for all compounds in the dataset following clustering.  if MSe/idMSMS data are provided, they are listed width he same compound name as the MS spectrum, with the collision energy provided in the ExpDes object provided to distinguish low from high CE spectra.
 }
 \description{
 Main clustering function for grouping features based on their analytical behavior.

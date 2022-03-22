@@ -27,7 +27,7 @@ rc.cmpd.get.classyfire(
 returns a ramclustR object.  new dataframe in $classyfire slot with rows equal to number of compounds.
 }
 \description{
-use classyfire web API to look up full ClassyFire heirarchy for each inchikey
+use classyfire web API to look up full ClassyFire hirarchy for each inchikey
 }
 \details{
 The $inchikey slot is used to look up the

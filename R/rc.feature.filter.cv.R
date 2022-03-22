@@ -4,7 +4,7 @@
 #'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
 #' @param qc.tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.
-#' @param max.cv numeric maximumn allowable cv for any feature.  default = 0.3 
+#' @param max.cv numeric maximum allowable cv for any feature.  default = 0.3 
 #' @details This function offers normalization by total extracted ion signal.  it is recommended to first run 'rc.feature.filter.blanks' to remove non-sample derived signal.
 #' @return  ramclustR object with total extracted ion normalized data.   
 #'  

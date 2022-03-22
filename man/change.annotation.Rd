@@ -2,7 +2,7 @@
 % Please edit documentation in R/change.annotation.R
 \name{change.annotation}
 \alias{change.annotation}
-\title{evalute ramSearch, MSFinder mssearch, MSFinder Structure, MSFinder Formula, and findmain output to annotate spectra of ramclustR object}
+\title{evaluate ramSearch, MSFinder mssearch, MSFinder Structure, MSFinder Formula, and findmain output to annotate spectra of ramclustR object}
 \usage{
 change.annotation(
   ramclustObj = NULL,
@@ -23,7 +23,7 @@ change.annotation(
 
 \item{min.msms.score}{numerical: what is the minimum MSFinder similarity score acceptable.  default = 3.5}
 
-\item{database.priority}{character.  Formula assignment prioritization based on presence in one or more databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisily. Can also be set to 'all' (note that MSFinder reports all databases matched, not just selected databases).  If any database is set, the best formula match to that (those) database(s) is selected, rather than the best formula match overall.}
+\item{database.priority}{character.  Formula assignment prioritization based on presence in one or more databases.  Can be set to a single or multiple database names.  must match database names as they are listed in MSFinder precisely. Can also be set to 'all' (note that MSFinder reports all databases matched, not just selected databases).  If any database is set, the best formula match to that (those) database(s) is selected, rather than the best formula match overall.}
 
 \item{any.database.priority}{logical.  First priority in formula assignment is based on any of the 'database.priority' values.  Secondary priority from all other databases (determined in original MSFinder search) if TRUE.  If false, formula assignment score from MSFinder used independent of structure search results.}
 

@@ -15,7 +15,7 @@ rc.remove.qc(ramclustObj = NULL, qc.tag = "QC")
 new RC object. moves QC samples to new $qc slot from original position.
 }
 \description{
-summarize quality control for clustering and for quality control sample varation based on compound ($SpecAbund) and feature ($MSdata and $MSMSdata, if present)
+summarize quality control for clustering and for quality control sample variation based on compound ($SpecAbund) and feature ($MSdata and $MSMSdata, if present)
 }
 \details{
 simply moves QC samples out of the way for downstream processing. moved to a $qc slot.

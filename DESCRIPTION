@@ -3,8 +3,19 @@ Type: Package
 Title: Mass Spectrometry Metabolomics Feature Clustering and Interpretation
 Version: 1.2.3
 Date: 2022-03-16
-Author: Corey D. Broeckling, Fayyaz Afsar, Steffan Neumann, Asa Ben-Hur,  Jessica Prenni.
-Maintainer: "Broeckling,Corey" <Corey.Broeckling@ColoState.EDU>
+Authors@R:
+    c(person(given = "Corey D.", family = "Broeckling",
+             role = c("aut"),
+             email = "Corey.Broeckling@ColoState.EDU",
+             comment = c(ORCID = "0000-0002-6158-827X")),
+      person("Fayyaz", "Afsar", role = c("aut")),
+      person("Steffen", "Neumann", role = c("aut")),
+      person("Asa", "Ben-Hur", role = c("aut")),
+      person("Jessica", "Prenni", role = c("aut")),
+      person(given = "Helge", family = "Hecht",
+             email = "helge.hecht@recetox.muni.cz",
+             role = c("cre"),
+             comment = c(ORCID = "0000-0001-6744-996X")))
 Imports: dynamicTreeCut, fastcluster, ff, InterpretMSSpectrum, BiocManager, httr, jsonlite, preprocessCore, e1071, gplots, pcaMethods, stringr, xml2, utils, webchem, stringi, RCurl, ggplot2, readxl
 License: GPL (>= 2)
 Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics data. This method is compatible with gas and liquid chromatography coupled mass spectrometry, including indiscriminant tandem mass spectrometry <DOI: 10.1021/ac501530d> data. 

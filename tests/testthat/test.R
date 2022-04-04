@@ -23,6 +23,12 @@ test_that("RAMClustR with csv works", {
   actual <- ramclustR(ms = filename, st = 5, maxt = 1, blocksize = 1000)
   actual$history <- NA
   expected$history <- NA
+
+  expect_equal_labels(actual$labels, expected$labels)
+  expect_equal_MSdata(actual$MSdata, expected$MSdata)
+
+  actual$labels <- expected$labels <- actual$MSdata <- expected$MSdata <- NA
+
   expect_equal(actual, expected)
   setwd(wd)
 })

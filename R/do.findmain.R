@@ -59,6 +59,10 @@ do.findmain <- function (
   writeMS = TRUE, 
   use.z = TRUE) 
 {
+
+  if (!requireNamespace("InterpretMSSpectrum", quietly = TRUE)) {
+    stop("The use of this function requires package 'InterpretMSSpectrum'.")
+  }
   
   if(is.null(ramclustObj)) {
     stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')

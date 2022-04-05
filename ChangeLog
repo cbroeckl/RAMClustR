@@ -1,5 +1,8 @@
-2022-08-11 Corey Broeckling v1.2.3
-  * fixed machineIntegerMax limit. (courtesy Helge Hech)
+2022-04-05 Helge Hecht v1.2.4
+  * Adapted tests to also be working on MAC M1
+
+2022-03-16 Corey Broeckling v1.2.3
+  * fixed machineIntegerMax limit. (courtesy Helge Hecht)
   * import Sirius output
   * import ADAP KDB annotations
 

@@ -37,9 +37,8 @@
 #' @importFrom pcaMethods pca
 #' @importFrom jsonlite fromJSON
 #' @importFrom preprocessCore normalize.quantiles
-#' @importFrom InterpretMSSpectrum findMAIN PlotSpec
 #' @importFrom utils citation packageVersion
-#' 
+#'
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
 #' @concept ramclustR

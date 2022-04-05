@@ -1,8 +1,8 @@
 Package: RAMClustR
 Type: Package
 Title: Mass Spectrometry Metabolomics Feature Clustering and Interpretation
-Version: 1.2.3
-Date: 2022-03-16
+Version: 1.2.4
+Date: 2022-04-05
 Authors@R:
     c(person(given = "Corey D.", family = "Broeckling",
              role = c("aut"),

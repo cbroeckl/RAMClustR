@@ -143,6 +143,29 @@ Main clustering function for grouping features based on their analytical behavio
 \details{
 Main clustering function output - see citation for algorithm description or vignette('RAMClustR') for a walk through.  batch.qc. normalization requires input of three vectors (1) batch (2) order (3) qc.   This is a feature centric normalization approach which adjusts signal intensities first by comparing batch median intensity of each feature (one feature at a time) QC signal intensity to full dataset median to correct for systematic batch effects and then secondly to apply a local QC median vs global median sample correction to correct for run order effects.
 }
+\examples{
+## Choose input file with feature column names `mz_rt` (expected by default).
+## Column with sample name is expected to be first (by default).
+## These can be adjusted with the `featdelim` and `sampNameCol` parameters.
+wd <- getwd()
+filename <- system.file("extdata", "peaks.csv", package = "RAMClustR", mustWork = TRUE)
+print(filename)
+head(data.frame(read.csv(filename)), c(6L, 5L))
+
+## If the file contains features from MS1, assign those to the `ms` parameter.
+## If the file contains features from MS2, assign those to the `idmsms` parameter.
+## If you ran `xcms` for the feature detection, the assign the output to the `xcmsObj` parameter.
+## In this example we use a MS1 feature table stored in a `csv` file.
+setwd(tempdir())
+ramclustobj <- ramclustR(ms = filename, st = 5, maxt = 1, blocksize = 1000)
+
+## Investigate the deconvoluted features in the `spectra` folder in MSP format
+## or inspect the `ramclustobj` for feature retention times, annotations etc.
+print(ramclustobj$ann)
+print(ramclustobj$nfeat)
+print(ramclustobj$SpecAbund[,1:6])
+setwd(wd)
+}
 \references{
 Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 

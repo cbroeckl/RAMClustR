@@ -77,6 +77,28 @@
 #' @concept xcms
 #' @author Corey Broeckling
 #' @export
+#' @examples
+#' ## Choose input file with feature column names `mz_rt` (expected by default).
+#' ## Column with sample name is expected to be first (by default).
+#' ## These can be adjusted with the `featdelim` and `sampNameCol` parameters.
+#' wd <- getwd()
+#' filename <- system.file("extdata", "peaks.csv", package = "RAMClustR", mustWork = TRUE)
+#' print(filename)
+#' head(data.frame(read.csv(filename)), c(6L, 5L))
+#' 
+#' ## If the file contains features from MS1, assign those to the `ms` parameter.
+#' ## If the file contains features from MS2, assign those to the `idmsms` parameter.
+#' ## If you ran `xcms` for the feature detection, the assign the output to the `xcmsObj` parameter.
+#' ## In this example we use a MS1 feature table stored in a `csv` file.
+#' setwd(tempdir())
+#' ramclustobj <- ramclustR(ms = filename, st = 5, maxt = 1, blocksize = 1000)
+#' 
+#' ## Investigate the deconvoluted features in the `spectra` folder in MSP format
+#' ## or inspect the `ramclustobj` for feature retention times, annotations etc.
+#' print(ramclustobj$ann)
+#' print(ramclustobj$nfeat)
+#' print(ramclustobj$SpecAbund[,1:6])
+#' setwd(wd)
 
 ramclustR  <- function(xcmsObj=NULL,
                        ms=NULL, 

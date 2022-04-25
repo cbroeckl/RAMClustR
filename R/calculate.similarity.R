@@ -31,6 +31,7 @@ calculate.similarity <- function(numcols,
   
   ramclustObj <- vector(mode = "integer", length = vlength)
   block = 1
+  column <- NULL
   
   for (row in 0:(nblocks)) {
     for (col in row:(nblocks)) {
@@ -85,7 +86,7 @@ calculate.similarity <- function(numcols,
       }
       
       # merge computed similarity matrices to single matrix (extend rows)
-      if (exists("column") == FALSE) {
+      if (is.null(column)) {
         column <- sim_matrix
       } else {
         column <- rbind(column, sim_matrix)

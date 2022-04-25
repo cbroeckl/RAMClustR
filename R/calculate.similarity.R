@@ -105,7 +105,7 @@ calculate.similarity <- function(numcols,
     startv <- stopv + 1
     
     # remove column to start next iteration with clean slate
-    rm(column)
+    column <- NULL
   }
   
   cat('\n RAMClust feature similarity matrix calculated and stored.\n')

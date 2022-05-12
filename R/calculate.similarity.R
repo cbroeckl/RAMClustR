@@ -62,7 +62,7 @@ calculate.similarity <- function(numcols,
                                ncol = length(start_col:stop_col)
             )
           } else {
-            supressWarnings(
+            suppressWarnings(
               max_value <- pmax(
                 cor(
                   data1[, start_row:stop_row], data1[, start_col:stop_col], method = cor.method, use = "pairwise.complete.obs"),

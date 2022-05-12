@@ -62,9 +62,16 @@ calculate.similarity <- function(numcols,
                                ncol = length(start_col:stop_col)
             )
           } else {
-            max_value <- pmax(cor(data1[, start_row:stop_row], data1[, start_col:stop_col], method = cor.method),
-                              cor(data1[, start_row:stop_row], data2[, start_col:stop_col], method = cor.method),
-                              cor(data2[, start_row:stop_row], data2[, start_col:stop_col], method = cor.method)
+            supressWarnings(
+              max_value <- pmax(
+                cor(
+                  data1[, start_row:stop_row], data1[, start_col:stop_col], method = cor.method, use = "pairwise.complete.obs"),
+                cor(
+                  data1[, start_row:stop_row], data2[, start_col:stop_col], method = cor.method, use = "pairwise.complete.obs"),
+                cor(
+                  data2[, start_row:stop_row], data2[, start_col:stop_col], method = cor.method, use = "pairwise.complete.obs")
+                , na.rm = TRUE
+              )
             )
             # correlational similarity
             corr_sim <- round(exp(-((1 - max_value) ^ 2) / (2 * (sr ^ 2))), digits = 20)

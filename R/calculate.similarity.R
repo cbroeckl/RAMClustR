@@ -65,12 +65,12 @@ calculate.similarity <- function(numcols,
             suppressWarnings(
               max_value <- pmax(
                 cor(
-                  data1[, start_row:stop_row], data1[, start_col:stop_col], method = cor.method, use = "pairwise.complete.obs"),
+                  data1[, start_row:stop_row], data1[, start_col:stop_col], method = cor.method, use = "all"),
                 cor(
-                  data1[, start_row:stop_row], data2[, start_col:stop_col], method = cor.method, use = "pairwise.complete.obs"),
+                  data1[, start_row:stop_row], data2[, start_col:stop_col], method = cor.method, use = "all"),
                 cor(
-                  data2[, start_row:stop_row], data2[, start_col:stop_col], method = cor.method, use = "pairwise.complete.obs")
-                , na.rm = TRUE
+                  data2[, start_row:stop_row], data2[, start_col:stop_col], method = cor.method, use = "all")
+                # , na.rm = TRUE
               )
             )
             # correlational similarity

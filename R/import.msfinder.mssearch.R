@@ -23,7 +23,8 @@
 import.msfinder.mssearch <- function (
   ramclustObj = NULL,
   mat.dir = NULL,
-  msp.dir = NULL
+  msp.dir = NULL,
+  dir.extension = ".mssearch"
 ) {
   
   if(is.null(ramclustObj)) {
@@ -71,7 +72,15 @@ import.msfinder.mssearch <- function (
   
   mat.dir <- c(mat.dir, msp.dir)[c(usemat, usemsp)]
   
-  do<-list.dirs(mat.dir, recursive = FALSE, full.names = FALSE) 
+  do<-list.dirs(mat.dir, recursive = FALSE, full.names = FALSE)
+  cmpds <- do
+  if(!is.null(dir.extension)) {
+    keep <- grep(dir.extension, do)
+    do<-do[keep] 
+    cmpds <- cmpds[keep]
+    cmpds <- gsub(dir.extension, "", cmpds)
+  } 
+
   
   ### retrieve parameter file from mat directory and parse to save with results.
   params <- list.files(mat.dir, pattern = "batchparam", full.names = TRUE)
@@ -97,7 +106,7 @@ import.msfinder.mssearch <- function (
   } 
   
   
-  ncmpd <- max(as.integer(gsub("C", "", do)))
+  ncmpd <- max(as.integer(gsub("C", "", cmpds)))
   
   tags<-c(
     "NAME: ",
@@ -136,8 +145,10 @@ import.msfinder.mssearch <- function (
   }
   
   for(i in 1:length(ramclustObj$cmpd)) {
-    if(!dir.exists(paste0(mat.dir, "/", ramclustObj$cmpd[i]))) next
-    setwd(paste0(mat.dir, "/", ramclustObj$cmpd[i]))
+    tar.dir <- paste0(mat.dir, "/", ramclustObj$cmpd[i])
+    if(!is.null(dir.extension)) tar.dir <- paste0(tar.dir, dir.extension)
+    if(!dir.exists(tar.dir)) next
+    setwd(tar.dir)
     if(!file.exists("Spectral DB search.sfd")) {next}
     tmp<-readLines("Spectral DB search.sfd")
     if(length(tmp) == 0) {next}
@@ -196,7 +207,7 @@ import.msfinder.mssearch <- function (
         out[,k]<-an
       }
     }
-    msfinder.mssearch.details[[ramclustObj$cmpd[i]]]$summary<-out
+    msfinder.mssearch.details[[i]]$summary<-out
     msfinder.mssearch.details[[ramclustObj$cmpd[i]]]$spectra<-spectra
   }
   

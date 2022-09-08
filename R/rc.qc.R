@@ -52,6 +52,10 @@ rc.qc<-function(ramclustObj=NULL,
     do.sets <- do.sets[!(do.sets %in% "SpecAbund")]
   } 
   
+  if(is.null(ramclustObj$MSdata)) {
+    do.sets <- do.sets[!(do.sets %in% "MSdata")]
+  } 
+
   do.sets.rows <- sapply(
     c(do.sets, "phenoData"), 
     FUN = function(x) {

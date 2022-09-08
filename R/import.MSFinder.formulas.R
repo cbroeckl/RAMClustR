@@ -31,11 +31,15 @@ import.msfinder.formulas <- function (ramclustObj = NULL,
   
   home.dir <- getwd()
   
-  r <- grep("msfinder", names(ramclustObj))
+  r <- grep("msfinder.formula", names(ramclustObj))
   if (length(r) > 0) {
-    warning("removed previosly assigned MSFinder formulas and sructures", 
+    warning("removed previously assigned MSFinder formulas and structures", 
             "\n")
     ramclustObj <- ramclustObj[-r]
+    r <- grep("msfinder.structure", names(ramclustObj))
+    if(length(r)>0) {
+      ramclustObj <- ramclustObj[-r]
+    }
     rm(r)
   }
   if (is.null(mat.dir)) {

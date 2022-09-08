@@ -184,6 +184,8 @@ rc.cmpd.get.pubchem <- function(
       }
     }
     
+  } else {
+    html.smiles <- cmpd.smiles
   }
   
   

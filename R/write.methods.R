@@ -66,8 +66,11 @@ write.methods <- function (
     
     '(Smith 2006)' = "Smith, C.A. and Want, E.J. and O'Maille, G. and Abagyan,R. and Siuzdak, G.: XCMS: Processing mass spectrometry data for metabolite profiling using nonlinear peak alignment, matching and identification, Analytical Chemistry, 78:779-787 (2006)",
     
-    '(Tautenhahn 2008)' = "Ralf Tautenhahn, Christoph Boettcher, Steffen Neumann: Highly sensitive feature detection for high resolution LC/MS BMC Bioinformatics, 9:504 (2008)"
+    '(Tautenhahn 2008)' = "Ralf Tautenhahn, Christoph Boettcher, Steffen Neumann: Highly sensitive feature detection for high resolution LC/MS BMC Bioinformatics, 9:504 (2008)",
     
+    '(Smirnov 2019)' = "Aleksandr Smirnov, Yunping Qiu, Wei Jia, Douglas I. Walker, Dean P. Jones, Xiuxia Di: ADAP-GC 4.0: Application of Clustering-Assisted Multivariate Curve Resolution to Spectral Deconvolution of Gas Chromatography-Mass Spectrometry Metabolomics Data.  Anal. Chem. 2019, 91, 14, 9069-9077", 
+
+    '(Smirnov 2021)' = "Aleksandr Smirnov, Yunfei Liao, Eoin Fahy, Shankar Subramaniam, Xiuxia Du.  ADAP-KDB: A Spectral Knowledgebase for Tracking and Prioritizing Unknown GC-MS Spectra in the NIH's Metabolomics Data Repository. Anal. Chem. 2021, 93, 36, 12213-12220"
   )
 
   names(cit.list)[which(names(cit.list) == "R")] <- paste0(

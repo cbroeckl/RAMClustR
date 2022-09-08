@@ -147,13 +147,13 @@ annotate<-function(ramclustObj = NULL,
     
     
     ##these items will be filled and added to the RC object
-    ramclustObj$rs.spec	<-as.list(rep("", max(ramclustObj$featclus)))
-    ramclustObj$rs.lib	<-rep("", max(ramclustObj$featclus))
-    ramclustObj$rs.specn	<-as.integer(rep(-1, max(ramclustObj$featclus)))
-    ramclustObj$rs.libn	<-as.integer(rep(-1, max(ramclustObj$featclus)))
-    ramclustObj$rs.mf	<-as.integer(rep(-1, max(ramclustObj$featclus)))
-    ramclustObj$rs.rmf	<-as.integer(rep(-1, max(ramclustObj$featclus)))
-    ramclustObj$rs.prob	<-as.numeric(rep(-1, max(ramclustObj$featclus)))
+    ramclustObj$rs.spec	<-as.list(rep("", length(ramclustObj$cmpd)))
+    ramclustObj$rs.lib	<-rep("", length(ramclustObj$cmpd))
+    ramclustObj$rs.specn	<-as.integer(rep(-1, length(ramclustObj$cmpd)))
+    ramclustObj$rs.libn	<-as.integer(rep(-1, length(ramclustObj$cmpd)))
+    ramclustObj$rs.mf	<-as.integer(rep(-1, length(ramclustObj$cmpd)))
+    ramclustObj$rs.rmf	<-as.integer(rep(-1, length(ramclustObj$cmpd)))
+    ramclustObj$rs.prob	<-as.numeric(rep(-1, length(ramclustObj$cmpd)))
     
     ##pull relevant line numbers for all spectra
     ##name line is first, so call that directly, range between name 1 and name 2 is the
@@ -162,11 +162,16 @@ annotate<-function(ramclustObj = NULL,
     ann<-which(regexpr('Annotation:', out)==1)
     origname<-which(regexpr('Original Name', out)==1)
     
+    ## see if names look like ADAP names
+    if(grepl("Original Name: #", n, fixed = TRUE)) {
+      out[origname] <- paste("Original Name:", ramclustObj$cmpd)
+    }
+    
     if(any((origname-name)!=2)) stop("please don't edit the output from ramsearch manually")
     if(any(ramclustObj$cmpd!=sub("Original Name: ", "", out[origname]))) {stop("compound names/order differ between ramclust object and ramsearch output")}  
     
     ##if length of name is not equal to length of ramclust Object 'cmpd' slot, something is wrong:
-    if(length(name)/as.integer(as.character(ramclustObj$ExpDes[[2]]["MSlevs",1]))!= length(ramclustObj$cmpd)) stop("number of spectra in ramsearch output different than number of compounds in ramclust object")
+    # if(length(name)/as.integer(as.character(ramclustObj$ExpDes[[2]]["MSlevs",1]))!= length(ramclustObj$cmpd)) stop("number of spectra in ramsearch output different than number of compounds in ramclust object")
     
     ##now pull relevant info our for each spectrum in output
     for(i in 1:length(ann)) {
@@ -175,9 +180,9 @@ annotate<-function(ramclustObj = NULL,
       ind<-as.numeric(sub("C", "", cname))
       mf<-ramclustObj$rs.mf[ind]
       newmf<-as.integer(sub("Match Factor / Dot Product: ", "", md[grep("Match Factor / Dot Product: ", md)]))
-      if(ramclustObj$cmpd[ind] != cname) {
-        stop(paste("something is amiss with compound ", i, ": the names do not match", sep=""))
-      }
+      # if(ramclustObj$cmpd[ind] != cname) {
+      #   stop(paste("something is amiss with compound ", i, ": the names do not match", sep=""))
+      # }
       
       ## note that inchikey returned from GOLM is the metabolite inchikey, not derivative inchikey
       ## inchikey for NIST? This incongruity may cause issues later

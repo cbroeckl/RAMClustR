@@ -48,7 +48,7 @@ RCQC<-function(ramclustObj=NULL,
     o<-order(ramclustObj$clrt)
     c<-cor(ramclustObj$SpecAbund[,o])
     d<-diag(as.matrix((c[2:(nrow(c)), 1:ncol(c)-1])))
-    hist(d, breaks=50, main="")
+    hist(d, breaks= if(dim(ramclustObj$SpecAbund)[2]<200) {10} else {50}, main="")
     title(main="histogram of pearson's r for each cluster to its adjacent cluster (by time)", cex.main=0.8,
           sub=paste("skew =", round(skewness(d), digits=3), " :values near zero are better"), cex.sub=0.6)
     
@@ -83,7 +83,7 @@ RCQC<-function(ramclustObj=NULL,
     means<-apply(td[qc,], 2, FUN="mean", na.rm=TRUE)
     cvs<-sds/means
     qs<-quantile(cvs, probs=seq(0,1,0.2), na.rm=TRUE)
-    hist(cvs, breaks=50, main="", na.rm=TRUE)
+    hist(cvs, breaks= if(length(means)<200) {10} else {50}, main="")
     title("histogram of cluster CVs of QC samples", line=2.7)
     title("20% quantiles in red on top axis", col.main =2, cex.main=0.7, line=2)
     axis(side=3, col=2, col.ticks=2, col.axis=2, round(qs, digits=3), labels=TRUE, las=2, cex.axis=0.4)
@@ -111,7 +111,7 @@ RCQC<-function(ramclustObj=NULL,
     #up25<-which(means>quantile(means)[4])
     #up5<-which(means>fivecut)
     qs<-quantile(cvs, probs=seq(0,1,0.2), na.rm=TRUE)
-    hist(cvs, breaks=50, main="")
+    hist(cvs, breaks= if(length(means)<200) {10} else {50}, main="")
     title("histogram of cluster median CVs for replicate injections", line=2.7)
     title("20% quantiles in red on top axis", col.main =2, cex.main=0.7, line=2)
     axis(side=3, col=2, col.ticks=2, col.axis=2, round(qs, digits=3), labels=TRUE, las=2, cex.axis=0.4)

@@ -34,6 +34,8 @@ adap.to.rc(
 
 \item{qc.tag}{a character string by which to recognize a sample as a qc sample.  i.e. 'QC' or 'qc'.}
 
+\item{ExpDes}{ramclustR experimental design object - see RAMClustR::defineExperiment()}
+
 \item{blank.tag}{a character string by which to recognize a sample as a blank sample.  i.e. 'blank' or 'Blank'.}
 }
 \value{

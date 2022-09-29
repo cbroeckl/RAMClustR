@@ -139,7 +139,7 @@ adap.to.rc <- function(
   if(is.null(annotations)) {
     annotations <- NA
   } else {
-    annotations <- xlsx::read.xlsx(
+    annotations <- readxl::read.xlsx(
       annotations,  sheetIndex = 2,
       startRow = 2)
     unannotated <- unique(c(

@@ -58,7 +58,7 @@ annotate<-function(ramclustObj = NULL,
   if(reset) {
     ramclustObj$msfinder.formula <- rep(NA, length(ramclustObj$cmpd))
     ramclustObj$formula <- rep(NA, length(ramclustObj$cmpd))
-    ramclustObj$annconf <- rep(4, length(ramclustObj$cmpd))
+    ramclustObj$annconf <- rep(5, length(ramclustObj$cmpd))
     ramclustObj$ann <- ramclustObj$cmpd
     ramclustObj$inchikey <- rep(NA, length(ramclustObj$cmpd))
     ramclustObj$inchi <- rep(NA, length(ramclustObj$cmpd))
@@ -287,7 +287,7 @@ annotate<-function(ramclustObj = NULL,
           ramclustObj$inchikey[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"inchikey"]
           ramclustObj$smiles[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"smiles"]
           ramclustObj$ann[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"name"]
-          ramclustObj$annconf[i]<-"2a"
+          ramclustObj$annconf[i]<- 2
           ramclustObj$dbid[i]<-ramclustObj$msfinder.mssearch.details[[i]]$summary[1,"resources"]
           if(grepl("PUBCHEM", ramclustObj$dbid[i])) {
             cid <- unlist(strsplit(ramclustObj$dbid[i], ";"))
@@ -353,7 +353,7 @@ annotate<-function(ramclustObj = NULL,
           use.form <- which(ramclustObj$sirius$formula[[i]]$annotated)
           ramclustObj$formula[i] <- ramclustObj$sirius$formula[[i]]$molecularFormula[use.form]
           ramclustObj$ann[i]     <- ramclustObj$sirius$formula[[i]]$molecularFormula[use.form]
-          ramclustObj$annconf[i] <- "4"
+          ramclustObj$annconf[i] <- 4
           if(is.data.frame(ramclustObj$sirius$structure[[i]])) {  ## if structure is empty, do not annotate further.
             if(any(ramclustObj$sirius$structure[[i]]$annotated)) {   ## if structure is annotated, proceed
               st.use <- which(ramclustObj$sirius$structure[[i]]$annotated)
@@ -373,7 +373,7 @@ annotate<-function(ramclustObj = NULL,
               # } else {
               ramclustObj$ann[i] <- ramclustObj$sirius$structure[[i]][st.use, "name"]
               ramclustObj$inchikey[i] <- ramclustObj$sirius$structure[[i]][st.use, "InChIkey2D"]
-              ramclustObj$annconf[i] <- "2b"
+              ramclustObj$annconf[i] <- 3
               ramclustObj$smiles[i] <- ramclustObj$sirius$structure[[i]][st.use, "smiles"]
               ramclustObj$inchi[i] <- ramclustObj$sirius$structure[[i]][st.use, "InChI"]
               ramclustObj$formula[i] <- ramclustObj$sirius$structure[[i]][st.use, "molecularFormula"]
@@ -438,14 +438,14 @@ annotate<-function(ramclustObj = NULL,
       if(is.null(database.priority)) {
         if(!is.null(ramclustObj$msfinder.formula.dbs)) {
           if(length(ramclustObj$msfinder.formula.dbs)>0) {
-            database.priority <- ramclustObj$msfinder.formula.dbs
+            database.priority <- ramclustObj$msfinder.dbss
           } else {
             database.priority <- dbs
           }
         } else {
           database.priority <- dbs }
         
-        if (database.priority == "all") {
+        if (database.priority[1] == "all") {
           database.priority <- dbs
         }
       }
@@ -578,7 +578,7 @@ annotate<-function(ramclustObj = NULL,
       if(nrow(str.sum) == 0) next
       
       ramclustObj$ann[i] <- str.sum[1,"name"]
-      ramclustObj$annconf[i] <- 2
+      ramclustObj$annconf[i] <- 3
       ramclustObj$msfinder.formula[i] <- str.sum[1,"formula"]
       ramclustObj$msfinder.formula.score[i] <- str.sum[1,"formula.score"]
       ramclustObj$inchikey[i] <- str.sum[1,"inchikey"]
@@ -637,7 +637,7 @@ annotate<-function(ramclustObj = NULL,
     if(length(database.priority) == 0) {database.priority <- NULL}
     
     suppressWarnings(if(!is.null(database.priority)) {
-      if (database.priority == "all") {
+      if (database.priority[1] == "all") {
         database.priority <- dbs
       }
     })
@@ -725,7 +725,7 @@ annotate<-function(ramclustObj = NULL,
     if(is.null(ramclustObj$msfinder.formula)) stop("ramclustObj$msfinder.formula is null", '\n')
     if(any(!is.na(ramclustObj$msfinder.formula.details[[i]])) && (ramclustObj$cmpd[i] == ramclustObj$ann[i]) )  {
       ramclustObj$ann[i]<-ramclustObj$msfinder.formula[i]
-      ramclustObj$annconf[i] <- 3
+      ramclustObj$annconf[i] <- 4
       ramclustObj$dbid[i] <- ramclustObj$msfinder.formula.details[[i]][1,"resourcenames"]
     }
   }
@@ -810,6 +810,9 @@ annotate<-function(ramclustObj = NULL,
                                            paste(priority.dbs, collapse = " "), ".",
                                            sep = "")
   }
+  
+  search.dbs <- search.dbs[-which(search.dbs == "NA")]
+  ramclustObj$history$annotate3 <- "Annotation confidence was assigned using the Schymanski scale (Schymanksi 2014)"
   
   if(mssearch) {
     if(length(spec.formula.warnings) > 0) {

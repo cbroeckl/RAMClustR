@@ -76,6 +76,9 @@ import.msfinder.structures <- function (
   
   ### retrieve parameter file from mat directory and parse to save with results.
   params <- list.files(mat.dir, pattern = "batchparam", full.names = TRUE)
+  if(length(params) == 0) {
+    params <- list.files(mat.dir, pattern = "MSFINDER.INI", full.names = TRUE)
+  }
   if(length(params) > 0) {
     mtime <- rep(NA, length(params))
     for(i in 1:length(mtime)) {

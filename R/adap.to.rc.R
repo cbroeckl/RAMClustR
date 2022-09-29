@@ -18,11 +18,11 @@
 #' 
 
 adap.to.rc <- function(
-  seq = 'seq.csv',  # seq <- 'seq.csv'
-  spec.abund = 'SpecAbund.csv',  # spec.abund = 'CSV.csv'
-  msp = 'spectra.msp',  # msp = 'MSP.msp'
-  annotations = 'advanced_export BC 1081.xlsx', # annotations = 'advanced_export.xlsx'
-  mzdec = 0, # mzdec = 1
+  seq = '', 
+  spec.abund = '',  
+  msp = '',  
+  annotations = '', 
+  mzdec = 0, 
   min.score = 700, 
   manual.name = TRUE,
   qc.tag = "qc",

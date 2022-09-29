@@ -4,7 +4,12 @@
 \alias{import.msfinder.mssearch}
 \title{import.MSFinder.mssearch}
 \usage{
-import.msfinder.mssearch(ramclustObj = NULL, mat.dir = NULL, msp.dir = NULL)
+import.msfinder.mssearch(
+  ramclustObj = NULL,
+  mat.dir = NULL,
+  msp.dir = NULL,
+  dir.extension = ".mssearch"
+)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}

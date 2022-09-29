@@ -38,8 +38,6 @@ Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feat
 }
 \author{
 Corey Broeckling
-
-Corey Broeckling
 }
 \concept{MSFinder}
 \concept{RAMClustR}

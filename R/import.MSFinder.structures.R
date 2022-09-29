@@ -23,8 +23,7 @@
 import.msfinder.structures <- function (
   ramclustObj = NULL,
   mat.dir = NULL,
-  msp.dir = NULL,
-  dir.extension = NULL
+  msp.dir = NULL
 ) {
   
   if(is.null(ramclustObj)) {

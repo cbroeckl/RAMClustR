@@ -26,10 +26,10 @@ adap.to.rc <- function(
   min.score = 700, 
   manual.name = TRUE,
   qc.tag = "qc",
+  ExpDes = NULL,
   blank.tag = "blank"
 ) {
-  
-  require(MSnbase)
+
   ## read sequence file into R
   if(is.null(seq)) {
     seq <- read.csv("seq.csv", 
@@ -46,10 +46,10 @@ adap.to.rc <- function(
   ## try reading in experimental design
   if(file.exists("ExpDes.Rdata")) load("ExpDes.Rdata")
   if(file.exists("datasets/ExpDes.Rdata")) load("datasets/ExpDes.Rdata")
-  if(any(ls()=="ExpDes")) {
-    factor.names <- ExpDes[[1]][grep("fact", row.names(ExpDes[[1]])),1]
+  if(!any(ls()=="ExpDes")) {
+    ExpDes <- RAMClustR::defineExperiment()
   }
-  
+  factor.names <- ExpDes[[1]][grep("fact", row.names(ExpDes[[1]])),1]
   
   ## read spectra into R and parse
   if(is.null(msp)) {

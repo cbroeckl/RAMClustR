@@ -16,7 +16,7 @@ Authors@R:
              email = "helge.hecht@recetox.muni.cz",
              role = c("cre"),
              comment = c(ORCID = "0000-0001-6744-996X")))
-Imports: dynamicTreeCut, fastcluster, ff, httr, jsonlite, preprocessCore, e1071, gplots, pcaMethods, stringr, utils, webchem, RCurl, ggplot2, readxl
+Imports: dynamicTreeCut, fastcluster, ff, httr, jsonlite, preprocessCore, e1071, gplots, pcaMethods, stringr, utils, webchem, RCurl, ggplot2, readxl, xlsx
 Depends: R (>= 3.5.0)
 Suggests: knitr, rmarkdown, xcms, testthat, MSnbase, InterpretMSSpectrum, BiocManager, xml2, stringi
 License: GPL (>= 2)

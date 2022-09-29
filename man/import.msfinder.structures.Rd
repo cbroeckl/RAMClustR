@@ -4,12 +4,7 @@
 \alias{import.msfinder.structures}
 \title{write.methods}
 \usage{
-import.msfinder.structures(
-  ramclustObj = NULL,
-  mat.dir = NULL,
-  msp.dir = NULL,
-  dir.extension = NULL
-)
+import.msfinder.structures(ramclustObj = NULL, mat.dir = NULL, msp.dir = NULL)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}

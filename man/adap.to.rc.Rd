@@ -13,6 +13,7 @@ adap.to.rc(
   min.score = 700,
   manual.name = TRUE,
   qc.tag = "qc",
+  ExpDes = NULL,
   blank.tag = "blank"
 )
 }

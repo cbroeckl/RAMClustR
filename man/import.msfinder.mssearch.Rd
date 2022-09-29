@@ -17,6 +17,8 @@ import.msfinder.mssearch(
 \item{mat.dir}{optional path to .mat directory}
 
 \item{msp.dir}{optional path to .msp directory}
+
+\item{dir.extension}{optional directory name code specifying subset of results to use.  Useful if running MSFinder from the command line for both spectral searching and interpretation.}
 }
 \value{
 an updated ramclustR object, with new slots at $msfinder.mssearch.details and $msfinder.mssearch.scores

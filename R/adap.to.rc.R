@@ -10,6 +10,7 @@
 #' @param min.score 700 (out of 1000) by default
 #' @param manual.name when looking up inchikey/names, should manual input be used to fill ambiguous names? generally recommend TRUE, but requires user input. for unsupervised workflows set to FALSE. 
 #' @param qc.tag a character string by which to recognize a sample as a qc sample.  i.e. 'QC' or 'qc'. 
+#' @param ExpDes ramclustR experimental design object - see RAMClustR::defineExperiment()
 #' @param blank.tag a character string by which to recognize a sample as a blank sample.  i.e. 'blank' or 'Blank'.
 #' @return returns a ramclustR structured object suitable for down stream processing steps. 
 #' @author Corey Broeckling
@@ -139,7 +140,7 @@ adap.to.rc <- function(
   if(is.null(annotations)) {
     annotations <- NA
   } else {
-    annotations <- readxl::read.xlsx(
+    annotations <- readxl::read_xlsx(
       annotations,  sheetIndex = 2,
       startRow = 2)
     unannotated <- unique(c(

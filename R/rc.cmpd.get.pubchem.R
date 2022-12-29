@@ -19,6 +19,7 @@
 #' @param assign.short.name = TRUE.  If TRUE, short names from find.short.lipid.name and/or find.short.synonym = TRUE, short names are assigned the be the default annotation name ($ann slot), and original annotations are moved to $long.name slot.
 #' @param all.props logical.  If TRUE, all pubchem properties (https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest$_Toc494865567) are returned.  If false, only a subset (faster).
 #' @param get.bioassays logical. If TRUE, return a table summarizing existing bioassay data for that CID. 
+#' @param get.pathways logical.  If TRUE, return a table of metabolic pathways for that CID.
 #' @param write.csv logical.  If TRUE, write csv files of all returned pubchem data. 
 #' @param search.name character.  optional name to assign to pubchem search to name output .csv files.   
 #' @return returns a list with one or more of $pubchem (compound name and identifiers) - one row in dataframe per CID; $properties contains physicochemical properties - one row in dataframe per CID; $vendors contains the number of vendors for a given compound and selects a vendor based on 'priority.vendors' supplied, or randomly choses a vendor with a HTML link - one row in dataframe per CID;  $bioassays contains a summary of bioassay activity data from pubchem - zero to many rows in dataframe per CID
@@ -28,27 +29,28 @@
 #' 
 
 rc.cmpd.get.pubchem <- function(
-  ramclustObj = NULL,
-  search.name = NULL,
-  cmpd.names = NULL,
-  cmpd.cid = NULL,
-  cmpd.inchikey = NULL,
-  cmpd.smiles = NULL,
-  use.parent.cid = FALSE,
-  manual.entry = FALSE,
-  get.vendors = FALSE,
-  priority.vendors = c("Sigma Aldrich", "Alfa Chemistry", "Acros Organics", "VWR", 
-                       "Alfa Aesar", "molport", "Key Organics", "BLD Pharm"),
-  get.properties = TRUE,
-  all.props = FALSE,
-  get.synonyms = TRUE,
-  find.short.lipid.name = TRUE,
-  find.short.synonym = TRUE,
-  max.name.length = 30,
-  assign.short.name = TRUE,
-  get.bioassays = FALSE,
-  write.csv = TRUE
-  
+    ramclustObj = NULL,
+    search.name = NULL,
+    cmpd.names = NULL,
+    cmpd.cid = NULL,
+    cmpd.inchikey = NULL,
+    cmpd.smiles = NULL,
+    use.parent.cid = FALSE,
+    manual.entry = FALSE,
+    get.vendors = FALSE,
+    priority.vendors = c("Sigma Aldrich", "Alfa Chemistry", "Acros Organics", "VWR", 
+                         "Alfa Aesar", "molport", "Key Organics", "BLD Pharm"),
+    get.properties = TRUE,
+    all.props = FALSE,
+    get.synonyms = TRUE,
+    find.short.lipid.name = TRUE,
+    find.short.synonym = TRUE,
+    max.name.length = 30,
+    assign.short.name = TRUE,
+    get.bioassays = TRUE,
+    get.pathways = TRUE,
+    write.csv = TRUE
+    
 ) {
   
   ## function to close failed pubchem queries to prevent 
@@ -750,6 +752,30 @@ rc.cmpd.get.pubchem <- function(
       bioassays <- data.frame("cid" = rep(NA, 0))
       pubchem$bioassays <- bioassays
     }
+  }
+  
+  if(get.pathways) {
+    cat("getting pathway from cid", '\n')
+
+    for(i in 1:length(cid)) {
+      get.pathways <- function(cid = 5793) {
+        url.pre <- "https://pubchem.ncbi.nlm.nih.gov/sdq/sdqagent.cgi?infmt=json&outfmt=csv&query={%22download%22:%22*%22,%22collection%22:%22pathway%22,%22where%22:{%22ands%22:[{%22cid%22:%22"
+        url.mid <- "%22},{%22core%22:%221%22}]},%22order%22:[%22taxname,asc%22],%22start%22:1,%22limit%22:10000000,%22downloadfilename%22:%22CID_"
+        url.post <- "_pathway%22}"
+        
+        d <- suppressWarnings(utils::read.csv(paste0(url.pre, cid, url.mid, cid, url.post)))
+        
+        if(!is.data.frame(d)) {cat("not a data.frame")}
+        return(d)
+      }
+      pathway <- get.pathways(cid = cids[i])
+      pathway <- cbind("cid" = rep(cids[i]), pathway)
+      if(!any(ls()=="pathways")) pathways <- pathway[0,]
+      if(is.na(pathway[1,'name'])) next
+      pathways <- rbind(pathways, pathway)
+      
+    }
+    pubchem$pathways <- pathways
   }
   
   for(i in 1:length(pubchem)) {

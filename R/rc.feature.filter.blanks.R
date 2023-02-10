@@ -56,7 +56,7 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
   
   ## define QC and Blank samples in each set
   if(length(qc.tag) == 1) {
-    qc <- grep(qc.tag[1], ramclustObj$phenoData$sample.names)
+    qc <- grep(qc.tag[1], ramclustObj$phenoData$sample.names.sample_name)
     qc <- qc[which(qc <= nrow(d1))]
   } 
   if(length(qc.tag) == 2) {
@@ -69,7 +69,7 @@ rc.feature.filter.blanks  <- function(ramclustObj=NULL,
   }
   
   if(length(blank.tag) == 1) {
-    blank <- grep(blank.tag[1], ramclustObj$phenoData$sample.names)
+    blank <- grep(blank.tag[1], ramclustObj$phenoData$sample.names.sample_name)
     blank <- blank[which(blank <= nrow(d1))]
   } 
   if(length(blank.tag) == 2) {

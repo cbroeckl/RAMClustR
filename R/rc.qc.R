@@ -68,7 +68,7 @@ rc.qc<-function(ramclustObj=NULL,
   
   ## define QC samples in each set
   if(length(qc.tag) == 1) {
-    qc <- grepl(qc.tag[1], ramclustObj$phenoData$sample.names)
+    qc <- grepl(qc.tag[1], ramclustObj$phenoData$sample.names.sample_name)
   } 
   if(length(qc.tag) == 2) {
     qc <- grepl(qc.tag[1], ramclustObj$phenoData[[qc.tag[2]]])

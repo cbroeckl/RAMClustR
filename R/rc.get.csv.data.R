@@ -1,10 +1,29 @@
+compute_wt_mean <- function(data, fmz, ensure.no.na) {
+    global.min <- apply(data, 2, "min", na.rm = TRUE)
+
+    wt_mean_int <- rep(0, length(fmz))
+    for (i in 1:ncol(data)) {
+        wt_mean_int[i] <- weighted.mean(data[, i], data[, i], na.rm = TRUE)
+    }
+    if (any(is.na(wt_mean_int)) & ensure.no.na) {
+        rp <- which(is.na(wt_mean_int))
+        r <- global.min[rp]
+        r <- abs(jitter(r, factor = 0.01 * r))
+        wt_mean_int[rp] <- r
+    }
+
+    return(wt_mean_int)
+}
+
 rc.get.csv.data <- function(csv = NULL,
-                             idmsms = NULL,
-                             ExpDes = NULL,
-                             sampNameCol = 1,
-                             st = NULL,
-                             timepos = 2,
-                             featdelim = "_") {
+                            phenoData = NULL,
+                            idmsms = NULL,
+                            ExpDes = NULL,
+                            sampNameCol = 1,
+                            st = NULL,
+                            timepos = 2,
+                            featdelim = "_",
+                            ensure.no.na = TRUE) {
     if (is.null(csv)) {
         stop("Please provide an MS dataset with features as columns
              (__)one column may contain sample names, defined by sampNameCol)")
@@ -27,11 +46,16 @@ rc.get.csv.data <- function(csv = NULL,
 
     history <- paste("Raw mass spectrometry data were processed using an R based workflow for feature detection, retention time alignment, feature grouping, peak filling, feature clustering.")
 
-    history <- paste(history,
+    history <- paste(
+        history,
         " Feature data was input as .csv files"
     )
 
     MSdata <- read.csv(file = csv, header = TRUE, check.names = FALSE)
+
+    if (!is.null(phenoData)) {
+        phenoData <- read.csv(file = phenoData, header = TRUE, check.names = FALSE)
+    }
     if (!is.null(idmsms)) {
         MSMSdata <- read.csv(file = idmsms, header = TRUE, check.names = FALSE)
     }
@@ -82,6 +106,14 @@ rc.get.csv.data <- function(csv = NULL,
 
     rm(rtmz)
 
+    # data organization and parsing
+    # sort rt vector and data by retention time
+    xcmsOrd <- order(times)
+    data1 <- data1[, xcmsOrd]
+    data2 <- data2[, xcmsOrd]
+    mzs <- mzs[xcmsOrd]
+    times <- times[xcmsOrd]
+
     ## create empty hclust object to ultimately hold clustering data
     ramclustObj <- list()
     class(ramclustObj) <- "hclust"
@@ -102,11 +134,11 @@ rc.get.csv.data <- function(csv = NULL,
     ramclustObj$history$input <- history
     ramclustObj$MSdata_raw <- ramclustObj$MSdata
     ramclustObj$MSMSdata_raw <- ramclustObj$MSMSdata
-    # ramclustObj$phenoData <- phenotype
-    # ramclustObj$featnames <- featnames
-    # ramclustObj$xcmsOrd<-xcmsOrd
-    # ramclustObj$msint <- msint
-    # ramclustObj$msmsint <- msmsint
+    ramclustObj$phenoData <- phenoData
+    ramclustObj$featnames <- dimnames(data1)[[2]]
+    ramclustObj$xcmsOrd <- xcmsOrd
+    ramclustObj$msint <- compute_wt_mean(ramclustObj$MSdata, ramclustObj$fmz, ensure.no.na)
+    ramclustObj$msmsint <- compute_wt_mean(ramclustObj$MSMSdata, ramclustObj$fmz, ensure.no.na)
 
     return(ramclustObj)
 }

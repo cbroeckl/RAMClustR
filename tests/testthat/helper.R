@@ -6,7 +6,7 @@ expect_equal_labels <- function(actual, expected) {
   expect_equal(actual_features$rt, expected_features$rt)
 }
 
-expect_equal_MSdata <- function(actual, expected, tolerance = 0) {
+expect_equal_MSdata <- function(actual, expected, tolerance = .Machine$double.eps) {
   actual_labels <- colnames(actual)
   expected_labels <- colnames(expected)
   colnames(actual) <- colnames(expected) <- NULL

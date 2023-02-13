@@ -17,7 +17,7 @@ test_that("RAMClustR with csv works", {
   wd <- getwd()
   tmp <- tempdir()
   filename <- file.path(wd, "testdata/peaks.csv")
-  expected <- readRDS("testdata/ramclustObj.rds")
+  expected <- readRDS("testdata/expected_ramclustObj.rds")
 
   setwd(tmp)
   actual <- ramclustR(ms = filename, st = 5, maxt = 1, blocksize = 1000)

@@ -1,6 +1,5 @@
-compute_wt_mean <- function(data, fmz, ensure.no.na) {
-    global.min <- apply(data, 2, "min", na.rm = TRUE)
-
+#' @export
+compute_wt_mean <- function(data, global.min, fmz, ensure.no.na) {
     wt_mean_int <- rep(0, length(fmz))
     for (i in 1:ncol(data)) {
         wt_mean_int[i] <- weighted.mean(data[, i], data[, i], na.rm = TRUE)
@@ -14,6 +13,43 @@ compute_wt_mean <- function(data, fmz, ensure.no.na) {
 
     return(wt_mean_int)
 }
+
+#' rc.get.csv.data
+#'
+#' extractor for csv objects in preparation for normalization and clustering  
+#'
+#' @param csv filepath: csv input. Features as columns, rows as samples. Column header mz_rt
+#' @param phenoData character: character string in 'taglocation' to designate files as either MS / DIA(MSe, MSall, AIF, etc) e.g. "01.mzML"
+#' @param idmsms filepath: optional idMSMS / MSe csv data.  same dim and names as ms required
+#' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
+#' @param sampNameCol integer: which column from the csv file contains sample names?
+#' @param st numeric: sigma t - time similarity decay value 
+#' @param timepos integer: which position in delimited column header represents the retention time
+#' @param featdelim character: how feature mz and rt are delimited in csv import column header e.g. ="-"
+#' @param ensure.no.na logical: if TRUE, any 'NA' values in msint and/or msmsint are replaced with numerical values based on 10 percent of feature min plus noise.  Used to ensure that spectra are not written with NA values. 
+#' @details This function creates a ramclustObj which will be used as input for clustering.
+#' @return  an empty ramclustR object.  this object is formatted as an hclust object with additional slots for holding feature and compound data. details on these found below. 
+#' @return   $frt: feature retention time, in whatever units were fed in
+#' @return   $fmz: feature retention time, reported in number of decimal points selected in ramclustR function
+#' @return   $ExpDes: the experimental design object used when running ramclustR.  List of two dataframes. 
+#' @return   $MSdata:  the MSdataset provided by either xcms or csv input
+#' @return   $MSMSdata: the (optional) DIA(MSe, MSall, AIF etc) dataset
+#' @return   $xcmsOrd: original xcms order of features, for back-referencing when necessary
+#' @return   $msint: weighted.mean intensity of feature in ms level data
+#' @return   $msmsint:weighted.mean intensity of feature in msms level data
+#' 
+#' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
+#' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
+#' @concept ramclustR
+#' @concept RAMClustR
+#' @concept metabolomics
+#' @concept mass spectrometry
+#' @concept clustering
+#' @concept feature
+#' @concept MSFinder
+#' @concept xcms
+#' @author Corey Broeckling
+#' @export
 
 rc.get.csv.data <- function(csv = NULL,
                             phenoData = NULL,
@@ -137,8 +173,11 @@ rc.get.csv.data <- function(csv = NULL,
     ramclustObj$phenoData <- phenoData
     ramclustObj$featnames <- dimnames(data1)[[2]]
     ramclustObj$xcmsOrd <- xcmsOrd
-    ramclustObj$msint <- compute_wt_mean(ramclustObj$MSdata, ramclustObj$fmz, ensure.no.na)
-    ramclustObj$msmsint <- compute_wt_mean(ramclustObj$MSMSdata, ramclustObj$fmz, ensure.no.na)
+    
+    global.min <- apply(cbind(ramclustObj$MSdata, ramclustObj$MSMSdata), 2, "min", na.rm = TRUE)
+
+    ramclustObj$msint <- compute_wt_mean(ramclustObj$MSdata, global.min, ramclustObj$fmz, ensure.no.na)
+    ramclustObj$msmsint <- compute_wt_mean(ramclustObj$MSMSdata, global.min, ramclustObj$fmz, ensure.no.na)
 
     return(ramclustObj)
 }

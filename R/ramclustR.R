@@ -197,58 +197,6 @@ ramclustR  <- function(xcmsObj=NULL,
     data1 <- ramclustObj$MSdata
     data2 <- ramclustObj$MSMSdata
   }
-  ########
-  # if csv input of MS data, do this: 
-#  if(!is.null(ms)){
-#    if(is.null(st)) stop("please specify st: 
-#      a recommended starting point is half the value of 
-#      your average chromatographic peak width at half max (seconds)")
-#    if(is.null(sr)) sr<-0.5
-#    if(is.null(maxt)) maxt<-60
-#    
-#    history <- paste(history,
-#                     " Feature data was input as .csv files with ramclustR parameter settings of ",
-#                     " st = ", st,
-#                     " sr = ", sr,
-#                     " and maxt = ", maxt, ".", sep = ""
-#    )
-#    
-#    MSdata<-read.csv(file = ms, header=TRUE, check.names=FALSE)
-#    if(!is.null(idmsms)){
-#      MSMSdata<-read.csv(file = idmsms, header=TRUE, check.names=FALSE)}
-#    if(is.null(idmsms)) { MSMSdata<-MSdata}
-#    if(is.null(sampNameCol)) {featcol<-1:ncol(MSdata)} else {
-#      featcol<-setdiff(1:(ncol(MSdata)), sampNameCol)}
-#    if(is.null(sampNameCol)) {featcol<-1:ncol(MSdata)} else {
-#      featcol<-setdiff(1:(ncol(MSdata)), sampNameCol)}
-#    sampnames<-MSdata[,sampNameCol]
-#    data1<-as.matrix(MSdata[,featcol])
-#    dimnames(data1)[[1]]<-MSdata[,sampNameCol]
-#    dimnames(data1)[[2]]<-names(MSdata[,featcol])
-#    data2<-as.matrix(MSMSdata[,featcol])
-#    dimnames(data2)[[1]]<-MSMSdata[,sampNameCol]
-#    dimnames(data2)[[2]]<-names(MSMSdata[,featcol])
-#    if(!all(dimnames(data1)[[2]]==dimnames(data2)[[2]])) 
-#    {stop("the feature names of your MS and idMSMS data are not identical")}
-#    
-#    if(!all(dimnames(data1)[[1]]==dimnames(data2)[[1]])) 
-#    {stop("the order and names of your MS and idMSMS data sample names are not identical")}
-#    
-#    rtmz<-matrix(
-#      unlist(
-#        strsplit(dimnames(data1)[[2]], featdelim)
-#      ), 
-#      byrow=TRUE, ncol=2)
-#    times<-as.numeric(rtmz[,timepos])
-#    mzs<-as.numeric(rtmz[,which(c(1:2)!=timepos)])
-#    if(any(is.na(times))) {
-#      stop("column(s) ", which(is.na(times)), " rt cannot be made numeric. ")
-#    }
-#    if(any(is.na(mzs))) {
-#      stop("column(s) ", which(is.na(times)), " mz cannot be made numeric. ")
-#    }
-#    rm(rtmz)
-#  }
   
   newXCMS <- FALSE
   ########

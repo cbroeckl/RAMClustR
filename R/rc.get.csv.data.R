@@ -1,3 +1,11 @@
+#' compute_wt_mean
+#'
+#' compute weighted.mean intensity of feature in ms/msms level data
+#' @param data feature in ms/msms level data
+#' @param global.min minimum intensity in ms/msms level data
+#' @param fmz feature retention time
+#' @param ensure.no.na logical: if TRUE, any 'NA' values in msint and/or msmsint are replaced with numerical values based on 10 percent of feature min plus noise.  Used to ensure that spectra are not written with NA values.
+#' @return weighted.mean intensity of feature in ms/msms level data
 #' @export
 compute_wt_mean <- function(data, global.min, fmz, ensure.no.na) {
     wt_mean_int <- rep(0, length(fmz))
@@ -16,7 +24,7 @@ compute_wt_mean <- function(data, global.min, fmz, ensure.no.na) {
 
 #' rc.get.csv.data
 #'
-#' extractor for csv objects in preparation for normalization and clustering  
+#' extractor for csv objects in preparation for normalization and clustering 
 #'
 #' @param csv filepath: csv input. Features as columns, rows as samples. Column header mz_rt
 #' @param phenoData character: character string in 'taglocation' to designate files as either MS / DIA(MSe, MSall, AIF, etc) e.g. "01.mzML"

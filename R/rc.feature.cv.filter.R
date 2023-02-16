@@ -70,7 +70,6 @@ rc.feature.filter.cv  <- function(
   if(length(qc.tag) == 2) {
     qc <- grepl(qc.tag[1], ramclustObj$phenoData[[qc.tag[2]]])
   }
-  browser()
   
   if(length(which(qc)) == 0) {
     stop("no QC samples found using the qc.tag ", "'", qc.tag, "'", '\n')

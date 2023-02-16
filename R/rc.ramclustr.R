@@ -352,8 +352,8 @@ rc.ramclustr  <- function(
     g<-Sys.time()
   }
   
-  if(!is.null(ramclustObj$phenoData$sample.names)) {
-    dimnames(ramclustObj$SpecAbund)[[1]]<-ramclustObj$phenoData$sample.names
+  if(!is.null(ramclustObj$phenoData$sample.names.sample_name)) {
+    dimnames(ramclustObj$SpecAbund)[[1]]<-ramclustObj$phenoData$sample.names.sample_name
   }
   if(!is.null(ramclustObj$phenoData$sample.names.sn)) {
     dimnames(ramclustObj$SpecAbund)[[1]]<-ramclustObj$phenoData$sample.names.sn

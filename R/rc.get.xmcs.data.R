@@ -253,16 +253,6 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   
   ramclustObj$MSdata <- data[msfiles,]
   ramclustObj$MSdata_raw <- ramclustObj$MSdata
-  msint<-rep(0, length(ramclustObj$fmz))
-  for(i in 1:ncol(ramclustObj$MSdata)){
-    msint[i]<-weighted.mean(ramclustObj$MSdata[,i], ramclustObj$MSdata[,i], na.rm = TRUE)
-  }
-  if(any(is.na(msint)) & ensure.no.na) {
-    rp <- which(is.na(msint))
-    r <- global.min[rp]
-    r <- abs(jitter(r, factor = 0.01*r))
-    msint[rp] <- r
-  }
   
   if(mslev == 2) {
     ramclustObj$MSMSdata <- data[msmsfiles,]
@@ -273,26 +263,11 @@ rc.get.xcms.data  <- function(xcmsObj=NULL,
   ramclustObj$fmz <- mzs
   ramclustObj$featnames <- featnames
   ramclustObj$xcmsOrd<-xcmsOrd
-  ramclustObj$msint <- msint
+  ramclustObj$msint <- compute_wt_mean(ramclustObj$MSdata, global.min, ramclustObj$fmz, ensure.no.na)
   
   if(mslev == 2) {
-    msmsint<-rep(0, length(ramclustObj$fmz))
-    for(i in 1:ncol(ramclustObj$MSMSdata)){
-      msmsint[i]<-weighted.mean(ramclustObj$MSMSdata[,i], ramclustObj$MSMSdata[,i], na.rm = TRUE)
-    }
-    
-    if(any(is.na(msmsint)) & ensure.no.na) {
-      rp <- which(is.na(msmsint))
-      r <- global.min[rp]
-      r <- abs(jitter(r, factor = 0.01*r))
-      msmsint[rp] <- r
-    }
-    
-    ramclustObj$msmsint <- msmsint
+    ramclustObj$msmsint <- compute_wt_mean(ramclustObj$MSMSdata, global.min, ramclustObj$fmz, ensure.no.na)
   }
-  
-
   
   return(ramclustObj)
 }
-

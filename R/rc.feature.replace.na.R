@@ -19,6 +19,55 @@ check_arguments_replace.na <- function(ramclustObj,
   }
 }
 
+replace_na <- function(data,
+                       replace.int,
+                       replace.zero,
+                       replace.noise,
+                       n.feat.replaced) {
+  # define a global minimum for the data set to use when all feature values are missing/zero
+  min.int.global <- min(data, na.rm = TRUE)
+
+  # which values need replacing
+  for (i in 1:ncol(data)) {
+    rpl <- unique(c(which(is.na(data[, i])), which(is.nan(data[, i])), which(is.infinite(data[, i]))))
+    if (replace.zero) {
+      rpl.z <- which(data[, i] == 0)
+      if (length(rpl.z) > 0) {
+        rpl <- unique(c(rpl, rpl.z))
+      }
+    }
+    if (length(rpl) > 0) {
+      if (all(is.na(data[, i]))) {
+        min.int.local <- min.int.global
+      } else {
+        min.int.local <- min(data[, i], na.rm = TRUE)
+      }
+      min.int <- min(min.int.local, min.int.global, na.rm = TRUE)
+      rpl.with <- rep((min.int * replace.int), length(rpl))
+      rpl.with <- abs(jitter(rpl.with, amount = rpl.with[1] * replace.noise))
+      data[rpl, i] <- rpl.with
+      n.feat.replaced <- n.feat.replaced + length(rpl)
+    }
+  }
+
+  return(list(data = data, n.feat.replaced = n.feat.replaced))
+}
+
+add_params <- function(ramclustObj) {
+  params <- c(
+    "replace.int" = replace.int,
+    "replace.noise" = replace.noise,
+    "replace.zero" = replace.zero
+  )
+
+  if (is.null(ramclustObj$params)) {
+    ramclustObj$params <- list()
+  }
+  ramclustObj$params$rc.feature.replace.na <- params
+
+  return(ramclustObj)
+}
+
 #' rc.feature.replace.na
 #'
 #' replaces any NA (and optionally zero) values with small signal (20% of minimum feature signal value + 20% random noise)
@@ -47,23 +96,16 @@ rc.feature.replace.na <- function(ramclustObj = NULL,
                                   replace.noise = 0.1,
                                   replace.zero = TRUE,
                                   which.data = c("MSdata", "MSMSdata")) {
-
   check_arguments_replace.na(ramclustObj, replace.int, replace.noise, replace.zero)
 
-  params <- c(
-    "replace.int" = replace.int,
-    "replace.noise" = replace.noise,
-    "replace.zero" = replace.zero
-  )
-
   ########
-  # ensure that we have all numeric values,
   # then optionally ensure we have all non-zero values in the dataset.
   # uses a noise addition 'jitter' around minimum values with missing data points.
   # this is mostly necessary for csv input, where other programs may not have used a 'fillPeaks' like step
   # it is important for clustering that variation is present for every feature and MS level.
   n.feat.replaced <- 0
   n.feat.total <- 0
+
   for (x in which.data) {
     if (is.null(ramclustObj[[x]])) {
       next
@@ -73,32 +115,16 @@ rc.feature.replace.na <- function(ramclustObj = NULL,
     data <- ramclustObj[[x]]
     n.feat.total <- n.feat.total + (dim(data)[[1]] * dim(data)[[2]])
 
-    # define a global minimum for the data set to use when all feature values are missing/zero
-    min.int.global <- min(data, na.rm = TRUE)
+    replaced_values <- replace_na(
+      data,
+      replace.int,
+      replace.zero,
+      replace.noise,
+      n.feat.replaced
+    )
 
-    # which values need replacing
-    for (i in 1:ncol(data)) {
-      rpl <- unique(c(which(is.na(data[, i])), which(is.nan(data[, i])), which(is.infinite(data[, i]))))
-      if (replace.zero) {
-        rpl.z <- which(data[, i] == 0)
-        if (length(rpl.z) > 0) {
-          rpl <- unique(c(rpl, rpl.z))
-        }
-      }
-      if (length(rpl) > 0) {
-        if (all(is.na(data[, i]))) {
-          min.int.local <- min.int.global
-        } else {
-          min.int.local <- min(data[, i], na.rm = TRUE)
-        }
-        min.int <- min(min.int.local, min.int.global, na.rm = TRUE)
-        rpl.with <- rep((min.int * replace.int), length(rpl))
-        rpl.with <- abs(jitter(rpl.with, amount = rpl.with[1] * replace.noise))
-        data[rpl, i] <- rpl.with
-        n.feat.replaced <- n.feat.replaced + length(rpl)
-      }
-    }
-    ramclustObj[[x]] <- data
+    ramclustObj[[x]] <- replaced_values$data
+    n.feat.replaced <- replaced_values$n.feat.replaced
   }
   result <- paste(
     "replaced", n.feat.replaced, "of", n.feat.total, "total feature values (",
@@ -133,11 +159,7 @@ rc.feature.replace.na <- function(ramclustObj = NULL,
   #   ramclustObj$msmsint <- msmsint
   # }
 
-
-  if (is.null(ramclustObj$params)) {
-    ramclustObj$params <- list()
-  }
-  ramclustObj$params$rc.feature.replace.na <- params
+  ramclustObj <- add_params(ramclustObj)
 
   return(ramclustObj)
 }

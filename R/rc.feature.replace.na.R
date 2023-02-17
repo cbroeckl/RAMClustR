@@ -53,7 +53,10 @@ replace_na <- function(data,
   return(list(data = data, n.feat.replaced = n.feat.replaced))
 }
 
-add_params <- function(ramclustObj) {
+add_params <- function(ramclustObj,
+                       replace.int,
+                       replace.noise,
+                       replace.zero) {
   params <- c(
     "replace.int" = replace.int,
     "replace.noise" = replace.noise,
@@ -96,7 +99,13 @@ rc.feature.replace.na <- function(ramclustObj = NULL,
                                   replace.noise = 0.1,
                                   replace.zero = TRUE,
                                   which.data = c("MSdata", "MSMSdata")) {
-  check_arguments_replace.na(ramclustObj, replace.int, replace.noise, replace.zero)
+
+  check_arguments_replace.na(
+    ramclustObj,
+    replace.int,
+    replace.noise,
+    replace.zero
+  )
 
   ########
   # then optionally ensure we have all non-zero values in the dataset.
@@ -144,7 +153,12 @@ rc.feature.replace.na <- function(ramclustObj = NULL,
     )
   }
 
-  ramclustObj <- add_params(ramclustObj)
+  ramclustObj <- add_params(
+    ramclustObj,
+    replace.int,
+    replace.noise,
+    replace.zero
+  )
 
   return(ramclustObj)
 }

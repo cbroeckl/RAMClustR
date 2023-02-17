@@ -144,21 +144,6 @@ rc.feature.replace.na <- function(ramclustObj = NULL,
     )
   }
 
-  # ## update msint and optionally msmsint
-  # msint<-rep(0, length(ramclustObj$fmz))
-  # for(i in 1:ncol(ramclustObj$MSdata)){
-  #   msint[i]<-weighted.mean(ramclustObj$MSdata[,i], ramclustObj$MSdata[,i], na.rm = TRUE)
-  # }
-  # ramclustObj$msint <- msint
-  #
-  # if(!is.null(ramclustObj$MSMSdata)) {
-  #   msmsint<-rep(0, length(ramclustObj$fmz))
-  #   for(i in 1:ncol(ramclustObj$MSMSdata)){
-  #     msmsint[i]<-weighted.mean(ramclustObj$MSMSdata[,i], ramclustObj$MSMSdata[,i], na.rm = TRUE)
-  #   }
-  #   ramclustObj$msmsint <- msmsint
-  # }
-
   ramclustObj <- add_params(ramclustObj)
 
   return(ramclustObj)

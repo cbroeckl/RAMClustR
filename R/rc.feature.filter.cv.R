@@ -103,6 +103,29 @@ filter_good_features <- function(ramclustObj, keep) {
   return(ramclustObj)
 }
 
+compute_do.sets <- function(ramclustObj) {
+  do.sets <- c("MSdata", "MSMSdata")
+  if (is.null(ramclustObj$MSMSdata)) {
+    do.sets <- do.sets[!(do.sets %in% "MSMSdata")]
+  }
+
+  do.sets.rows <- sapply(
+    c(do.sets, "phenoData"),
+    FUN = function(x) {
+      nrow(ramclustObj[[x]])
+    }
+  )
+
+  if (!all.equal(
+    do.sets.rows, do.sets.rows
+  )
+  ) {
+    stop("number of rows in MSdata, SpecAbund, and phenoData sets are not identical.")
+  }
+
+  return(do.sets)
+}
+
 #' rc.feature.filter.cv
 #'
 #' extractor for xcms objects in preparation for clustering
@@ -130,24 +153,7 @@ rc.feature.filter.cv <- function(ramclustObj = NULL,
                                  max.cv = 0.5) {
   check_arguments_filter.cv(ramclustObj, qc.tag)
 
-  do.sets <- c("MSdata", "MSMSdata")
-  if (is.null(ramclustObj$MSMSdata)) {
-    do.sets <- do.sets[!(do.sets %in% "MSMSdata")]
-  }
-
-  do.sets.rows <- sapply(
-    c(do.sets, "phenoData"),
-    FUN = function(x) {
-      nrow(ramclustObj[[x]])
-    }
-  )
-
-  if (!all.equal(
-    do.sets.rows, do.sets.rows
-  )
-  ) {
-    stop("number of rows in MSdata, SpecAbund, and phenoData sets are not identical.")
-  }
+  do.sets <- compute_do.sets(ramclustObj)
 
   qc <- define_QC_samples(ramclustObj, qc.tag)
 

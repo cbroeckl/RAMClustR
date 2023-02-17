@@ -54,9 +54,9 @@ replace_na <- function(data,
 }
 
 add_params_replace.na <- function(ramclustObj,
-                       replace.int,
-                       replace.noise,
-                       replace.zero) {
+                                  replace.int,
+                                  replace.noise,
+                                  replace.zero) {
   params <- c(
     "replace.int" = replace.int,
     "replace.noise" = replace.noise,
@@ -99,7 +99,6 @@ rc.feature.replace.na <- function(ramclustObj = NULL,
                                   replace.noise = 0.1,
                                   replace.zero = TRUE,
                                   which.data = c("MSdata", "MSMSdata")) {
-
   check_arguments_replace.na(
     ramclustObj,
     replace.int,

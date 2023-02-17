@@ -53,7 +53,7 @@ replace_na <- function(data,
   return(list(data = data, n.feat.replaced = n.feat.replaced))
 }
 
-add_params <- function(ramclustObj,
+add_params_replace.na <- function(ramclustObj,
                        replace.int,
                        replace.noise,
                        replace.zero) {
@@ -153,7 +153,7 @@ rc.feature.replace.na <- function(ramclustObj = NULL,
     )
   }
 
-  ramclustObj <- add_params(
+  ramclustObj <- add_params_replace.na(
     ramclustObj,
     replace.int,
     replace.noise,

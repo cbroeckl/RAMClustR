@@ -25,7 +25,8 @@ rc.feature.replace.na  <- function(
   ramclustObj=NULL,
   replace.int = 0.1,
   replace.noise = 0.1,
-  replace.zero = TRUE
+  replace.zero = TRUE,
+  which.data = c("MSdata", "MSMSdata")
 ) {
   
   if(is.null(ramclustObj)) {
@@ -59,9 +60,10 @@ rc.feature.replace.na  <- function(
   # it is important for clustering that variation is present for every feature and MS level. 
   n.feat.replaced <- 0
   n.feat.total <- 0
-  for(x in c("MSdata", "MSMSdata")) {
+  for(x in which.data) {
     # skip MSMS data if it isn't present
-    if(x == "MSMSdata" & is.null(ramclustObj$MSMSdata)) {
+
+    if(is.null(ramclustObj[[x]])) {
       next
     }
     

@@ -1,3 +1,13 @@
+#' check_arguments_replace.na
+#'
+#' check provided arguments
+#'
+#' @param ramclustObj selected data frame to use
+#' @param replace.int default = 0.1.  proportion of minimum feature value to replace NA (or zero) values with
+#' @param replace.noise default = 0.1.  proportion ofreplace.int value by which noise is added via 'jitter'
+#' @param replace.zero logical if TRUE, any zero values are replaced with noise as if they were NA values
+#' @export
+
 check_arguments_replace.na <- function(ramclustObj,
                                        replace.int,
                                        replace.noise,
@@ -19,13 +29,26 @@ check_arguments_replace.na <- function(ramclustObj,
   }
 }
 
+#' replace_na
+#'
+#' add rc.feature.replace.na params in ramclustObj
+#'
+#' @param data selected data frame to use
+#' @param replace.int default = 0.1.  proportion of minimum feature value to replace NA (or zero) values with
+#' @param replace.noise default = 0.1.  proportion ofreplace.int value by which noise is added via 'jitter'
+#' @param replace.zero logical if TRUE, any zero values are replaced with noise as if they were NA values
+#' @return  selected ramclustR data frame with NA and zero values removed.
+#' @return  number of features replaced
+#' @export
+
 replace_na <- function(data,
                        replace.int,
                        replace.zero,
-                       replace.noise,
-                       n.feat.replaced) {
+                       replace.noise) {
   # define a global minimum for the data set to use when all feature values are missing/zero
   min.int.global <- min(data, na.rm = TRUE)
+
+  n.feat.replaced <- 0
 
   # which values need replacing
   for (i in 1:ncol(data)) {
@@ -53,6 +76,17 @@ replace_na <- function(data,
   return(list(data = data, n.feat.replaced = n.feat.replaced))
 }
 
+#' add_params_replace.na
+#'
+#' add rc.feature.replace.na params in ramclustObj
+#'  
+#' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
+#' @param replace.int default = 0.1.  proportion of minimum feature value to replace NA (or zero) values with
+#' @param replace.noise default = 0.1.  proportion ofreplace.int value by which noise is added via 'jitter'
+#' @param replace.zero logical if TRUE, any zero values are replaced with noise as if they were NA values
+#' @return  ramclustR object with rc.feature.replace.na params added.
+#' @export
+
 add_params_replace.na <- function(ramclustObj,
                                   replace.int,
                                   replace.noise,
@@ -76,9 +110,10 @@ add_params_replace.na <- function(ramclustObj,
 #' replaces any NA (and optionally zero) values with small signal (20% of minimum feature signal value + 20% random noise)
 #'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
-#' @param replace.int default = 0.2.  proportion of minimum feature value to replace NA (or zero) values with
-#' @param replace.noise default = 0.2.  proportion ofreplace.int value by which noise is added via 'jitter'
+#' @param replace.int default = 0.1.  proportion of minimum feature value to replace NA (or zero) values with
+#' @param replace.noise default = 0.1.  proportion ofreplace.int value by which noise is added via 'jitter'
 #' @param replace.zero logical if TRUE, any zero values are replaced with noise as if they were NA values
+#' @param which.data name of dataset
 #' @details noise is added by finding for each feature the minimum detected value, multiplying that value by replace.int, then adding (replace.int*replace.noise) noise.  abs() is used to ensure no negative values result.
 #' @return  ramclustR object with NA and zero values removed.
 #'
@@ -111,7 +146,6 @@ rc.feature.replace.na <- function(ramclustObj = NULL,
   # uses a noise addition 'jitter' around minimum values with missing data points.
   # this is mostly necessary for csv input, where other programs may not have used a 'fillPeaks' like step
   # it is important for clustering that variation is present for every feature and MS level.
-  n.feat.replaced <- 0
   n.feat.total <- 0
 
   for (x in which.data) {
@@ -127,8 +161,7 @@ rc.feature.replace.na <- function(ramclustObj = NULL,
       data,
       replace.int,
       replace.zero,
-      replace.noise,
-      n.feat.replaced
+      replace.noise
     )
 
     ramclustObj[[x]] <- replaced_values$data

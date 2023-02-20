@@ -19,22 +19,6 @@ check_arguments_filter.cv <- function(ramclustObj, qc.tag) {
   }
 }
 
-add_params_filter.cv <- function(ramclustObj,
-                                 qc.tag,
-                                 max.cv) {
-  params <- c(
-    "qc.tag" = qc.tag,
-    "max.cv" = max.cv
-  )
-
-  if (is.null(ramclustObj$params)) {
-    ramclustObj$params <- list()
-  }
-  ramclustObj$params$rc.feature.filter.cv <- params
-
-  return(ramclustObj)
-}
-
 define_samples <- function(ramclustObj, tag) {
   ## define QC samples in each set
   if (length(tag) == 1) {
@@ -208,10 +192,13 @@ rc.feature.filter.cv <- function(ramclustObj = NULL,
     " were retained. ", length(which(!keep)), " of ", length(keep), " features were removed."
   )
 
-  ramclustObj <- add_params_filter.cv(
+  ramclustObj <- add_params(
     ramclustObj,
-    qc.tag,
-    max.cv
+    c(
+      "qc.tag" = qc.tag,
+      "max.cv" = max.cv
+    ),
+    "rc.feature.filter.cv"
   )
 
   cat(ramclustObj$history$filter.features)

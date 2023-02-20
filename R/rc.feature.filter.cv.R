@@ -35,19 +35,21 @@ add_params_filter.cv <- function(ramclustObj,
   return(ramclustObj)
 }
 
-define_QC_samples <- function(ramclustObj, qc.tag) {
+define_samples <- function(ramclustObj, tag) {
   ## define QC samples in each set
-  if (length(qc.tag) == 1) {
-    qc <- grepl(qc.tag[1], ramclustObj$phenoData$sample.names.sample_name)
+  if (length(tag) == 1) {
+    samples <- grep(tag[1], ramclustObj$phenoData$sample.names.sample_name)
+    samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
   }
-  if (length(qc.tag) == 2) {
-    qc <- grepl(qc.tag[1], ramclustObj$phenoData[[qc.tag[2]]])
+  if (length(tag) == 2) {
+    samples <- grep(tag[1], ramclustObj$phenoData[[tag[2]]])
+    samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
   }
 
-  if (length(which(qc)) == 0) {
-    stop("no QC samples found using the qc.tag ", "'", qc.tag, "'", "\n")
+  if (length(samples) == 0) {
+    stop("no ", tag, " samples found using the tag ", "'", tag, "'", "\n")
   }
-  return(qc)
+  return(samples)
 }
 
 find_good_features <- function(ramclustObj,
@@ -155,7 +157,7 @@ rc.feature.filter.cv <- function(ramclustObj = NULL,
 
   do.sets <- compute_do.sets(ramclustObj)
 
-  qc <- define_QC_samples(ramclustObj, qc.tag)
+  qc <- define_samples(ramclustObj, qc.tag)
 
   good_features <- find_good_features(
     ramclustObj,

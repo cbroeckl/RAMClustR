@@ -81,7 +81,7 @@ replace_na <- function(data,
 #' add rc.feature.replace.na params in ramclustObj
 #'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
-#' @param params parameters to add
+#' @param params vector containing parameters to add
 #' @param param_name name of the parameter/step
 #' @return  ramclustR object with rc.feature.replace.na params added.
 #' @export

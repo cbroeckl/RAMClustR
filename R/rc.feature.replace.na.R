@@ -76,31 +76,23 @@ replace_na <- function(data,
   return(list(data = data, n.feat.replaced = n.feat.replaced))
 }
 
-#' add_params_replace.na
+#' add_params
 #'
 #' add rc.feature.replace.na params in ramclustObj
-#'  
+#'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
-#' @param replace.int default = 0.1.  proportion of minimum feature value to replace NA (or zero) values with
-#' @param replace.noise default = 0.1.  proportion ofreplace.int value by which noise is added via 'jitter'
-#' @param replace.zero logical if TRUE, any zero values are replaced with noise as if they were NA values
+#' @param params parameters to add
+#' @param param_name name of the parameter/step
 #' @return  ramclustR object with rc.feature.replace.na params added.
 #' @export
 
-add_params_replace.na <- function(ramclustObj,
-                                  replace.int,
-                                  replace.noise,
-                                  replace.zero) {
-  params <- c(
-    "replace.int" = replace.int,
-    "replace.noise" = replace.noise,
-    "replace.zero" = replace.zero
-  )
-
+add_params <- function(ramclustObj,
+                       params,
+                       param_name) {
   if (is.null(ramclustObj$params)) {
     ramclustObj$params <- list()
   }
-  ramclustObj$params$rc.feature.replace.na <- params
+  ramclustObj$params[[param_name]] <- params
 
   return(ramclustObj)
 }
@@ -185,11 +177,14 @@ rc.feature.replace.na <- function(ramclustObj = NULL,
     )
   }
 
-  ramclustObj <- add_params_replace.na(
+  ramclustObj <- add_params(
     ramclustObj,
-    replace.int,
-    replace.noise,
-    replace.zero
+    c(
+      "replace.int" = replace.int,
+      "replace.noise" = replace.noise,
+      "replace.zero" = replace.zero
+    ),
+    "rc.feature.replace.na"
   )
 
   return(ramclustObj)

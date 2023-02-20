@@ -49,7 +49,7 @@ mean_signal_intensities <- function(data, sample) {
 #' @param ms.qc.mean ms qc mean signal intensities
 #' @param ms.blank.mean ms blank mean signal intensities
 #' @param sn numeric defines the ratio for 'signal'.  i.e. sn = 3 indicates that signal intensity must be 3 fold higher in sample than in blanks, on average, to be retained.
-#' @return signal to keep
+#' @return union of which signal is at least 3x larger
 #' @export
 
 filter_signal <- function(ms.qc.mean, ms.blank.mean, sn) {
@@ -69,7 +69,7 @@ filter_signal <- function(ms.qc.mean, ms.blank.mean, sn) {
 #' filter blanks
 #'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
-#' @param keep signal to keep
+#' @param keep union of which signal is at least 3x larger, output of filter_signal()
 #' @param d1 MS Data
 #' @return ramclustObj object with feature.filter.blanks
 #' @export

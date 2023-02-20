@@ -1,3 +1,11 @@
+#' check_arguments_filter.blanks
+#'
+#' check provided arguments
+#'
+#' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
+#' @param sn numeric defines the ratio for 'signal'.  i.e. sn = 3 indicates that signal intensity must be 3 fold higher in sample than in blanks, on average, to be retained.
+#' @export
+
 check_arguments_filter.blanks <- function(ramclustObj, sn) {
   if (is.null(ramclustObj)) {
     stop("please provide a ramclustR Object as input.", "\n")
@@ -15,6 +23,15 @@ check_arguments_filter.blanks <- function(ramclustObj, sn) {
   }
 }
 
+#' mean_signal_intensities
+#'
+#' calculate MS mean signal intensities
+#'
+#' @param data MS/MSMS data
+#' @param sample sample found using the tag, output of define_samples()
+#' @return mean signal intensities
+#' @export
+
 mean_signal_intensities <- function(data, sample) {
   if (length(sample) > 1) {
     ms_sample_mean <- apply(data[sample, ], 2, FUN = "mean", na.rm = TRUE)
@@ -24,6 +41,16 @@ mean_signal_intensities <- function(data, sample) {
 
   return(ms_sample_mean)
 }
+
+#' filter_signal
+#'
+#' filter signal
+#'
+#' @param ms.qc.mean ms qc mean signal intensities
+#' @param ms.blank.mean ms blank mean signal intensities
+#' @param sn numeric defines the ratio for 'signal'.  i.e. sn = 3 indicates that signal intensity must be 3 fold higher in sample than in blanks, on average, to be retained.
+#' @return signal to keep
+#' @export
 
 filter_signal <- function(ms.qc.mean, ms.blank.mean, sn) {
   # filters
@@ -36,6 +63,16 @@ filter_signal <- function(ms.qc.mean, ms.blank.mean, sn) {
 
   return(keep)
 }
+
+#' filter_blanks
+#'
+#' filter blanks
+#'
+#' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
+#' @param keep signal to keep
+#' @param d1 MS Data
+#' @return ramclustObj object with feature.filter.blanks
+#' @export
 
 filter_blanks <- function(ramclustObj, keep, d1) {
   ## define variables that we need to subset
@@ -84,6 +121,15 @@ filter_blanks <- function(ramclustObj, keep, d1) {
 
   return(ramclustObj)
 }
+
+#' remove_blanks
+#'
+#' remove blanks
+#'
+#' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
+#' @param blank blank samples found by define_samples
+#' @return ramclustObj object with blanks removed
+#' @export
 
 remove_blanks <- function(ramclustObj, blank) {
   ramclustObj$MSdata <- ramclustObj$MSdata[-blank, ]

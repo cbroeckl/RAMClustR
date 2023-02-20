@@ -1,3 +1,11 @@
+#' check_arguments_filter.cv
+#'
+#' check provided arguments
+#'
+#' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
+#' @param qc.tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.
+#' @export
+
 check_arguments_filter.cv <- function(ramclustObj, qc.tag) {
   ## CHECKS
   if (is.null(ramclustObj)) {
@@ -19,8 +27,17 @@ check_arguments_filter.cv <- function(ramclustObj, qc.tag) {
   }
 }
 
+#' define_samples
+#'
+#' define samples in each set
+#'
+#' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
+#' @param tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.
+#' @return samples found using the tag
+#' @export
+
 define_samples <- function(ramclustObj, tag) {
-  ## define QC samples in each set
+  ## define samples in each set
   if (length(tag) == 1) {
     samples <- grep(tag[1], ramclustObj$phenoData$sample.names.sample_name)
     samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
@@ -35,6 +52,18 @@ define_samples <- function(ramclustObj, tag) {
   }
   return(samples)
 }
+
+#' find_good_features
+#'
+#' find 'good' features, acceptable CV at either MS or MSMS level results in keeping
+#'
+#' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
+#' @param do.sets select data frame to use.
+#' @param max.cv numeric maximum allowable cv for any feature.  default = 0.5
+#' @param qc QC samples found by define_samples
+#' @return ramclustR object
+#' @return features to keep
+#' @export
 
 find_good_features <- function(ramclustObj,
                                do.sets,
@@ -67,6 +96,15 @@ find_good_features <- function(ramclustObj,
   return(list(ramclustObj = ramclustObj, keep = keep))
 }
 
+#' filter_good_features
+#'
+#' filter to keep only 'good' features
+#'
+#' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
+#' @param keep features to keep. output of find_good_features().
+#' @return ramclustR object filtered to keep only 'good' features
+#' @export
+
 filter_good_features <- function(ramclustObj, keep) {
   ## filter to keep only 'good' features
   l <- sapply(1:length(ramclustObj), FUN = function(x) length(ramclustObj[[x]]))
@@ -88,6 +126,14 @@ filter_good_features <- function(ramclustObj, keep) {
 
   return(ramclustObj)
 }
+
+#' compute_do.sets
+#'
+#' compute data frame to use in ramclustObj 
+#'
+#' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
+#' @return vector which is used to select data frame to use in ramclustObj
+#' @export
 
 compute_do.sets <- function(ramclustObj) {
   do.sets <- c("MSdata", "MSMSdata")
@@ -118,7 +164,7 @@ compute_do.sets <- function(ramclustObj) {
 #'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
 #' @param qc.tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.
-#' @param max.cv numeric maximum allowable cv for any feature.  default = 0.3
+#' @param max.cv numeric maximum allowable cv for any feature.  default = 0.5
 #' @details This function offers normalization by total extracted ion signal.  it is recommended to first run 'rc.feature.filter.blanks' to remove non-sample derived signal.
 #' @return  ramclustR object with total extracted ion normalized data.
 #'

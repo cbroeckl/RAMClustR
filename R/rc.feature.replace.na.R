@@ -2,7 +2,7 @@
 #'
 #' check provided arguments
 #'
-#' @param ramclustObj selected data frame to use
+#' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
 #' @param replace.int default = 0.1.  proportion of minimum feature value to replace NA (or zero) values with
 #' @param replace.noise default = 0.1.  proportion ofreplace.int value by which noise is added via 'jitter'
 #' @param replace.zero logical if TRUE, any zero values are replaced with noise as if they were NA values

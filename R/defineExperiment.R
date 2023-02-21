@@ -1,3 +1,57 @@
+write_csv <- function(data) {
+  write.csv(data, file = paste(getwd(), "/ExpDes.csv", sep = ""), row.names = FALSE)
+  readline(prompt = cat(
+    "A file called ExpDes.csv has been written to your working directorty:",
+    "\n", "\n",
+    getwd(),
+    "\n", "\n",
+    "please replace platform appropriate 'fill' cells with instrument and experiment",
+    "\n", "data and save file.  When complete, press [enter] to continue"
+  ))
+  csv.in <- read.csv(file = paste(getwd(), "/ExpDes.csv", sep = ""), header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+  return(csv.in)
+}
+
+get_instrument_platform <- function(design) {
+  instrument <- NULL
+  plat <- as.character(design[5, 1])
+  if (grepl("LC-MS", plat)) {
+    instrument <- "LC-MS"
+  }
+  if (grepl("GC-MS", plat)) {
+    instrument <- "GC-MS"
+  }
+  if (!grepl("LC-MS", plat) & !grepl("GC-MS", plat)) {
+    if (grepl("[Gg]", substring(plat, 1, 1))) {
+      instrument <- "GC-MS"
+    }
+    if (grepl("[Ll]", substring(plat, 1, 1))) {
+      instrument <- "LC-MS"
+    }
+  }
+  if (is.null(instrument)) {
+    stop("do not regonize instrument platform, please use either 'GC-MS' or 'LC-MS' ")
+  }
+  return(instrument)
+}
+
+get_ExpDes <- function(csv.in) {
+  design <- data.frame("value" = csv.in[3:7, 2], row.names = csv.in[3:7, 1], stringsAsFactors = FALSE)
+
+  instrument <- get_instrument_platform(design)
+
+  rowstart <- grep(instrument, csv.in[, 1]) + 1
+  rowend <- grep("MSlevs", csv.in[, 1])
+  rowend <- rowend[which(rowend > rowstart)]
+  if (length(rowend) > 1) {
+    rowend <- rowend[which.min((rowend - rowstart))]
+  }
+  instrument <- data.frame("value" = csv.in[rowstart:rowend, 2], row.names = csv.in[rowstart:rowend, 1], stringsAsFactors = FALSE)
+  ExpDes <- list("design" = design, "instrument" = instrument)
+
+  return(ExpDes)
+}
+
 #' defineExperiment
 #'
 #' Create an Experimental Design R object for record-keeping and msp output
@@ -116,77 +170,27 @@ defineExperiment <- function(csv = FALSE, force.skip = FALSE) {
       ), class = "data.frame", row.names = c(NA, -37L))
 
       if (!force.skip) {
-        write.csv(out, file = paste(getwd(), "/ExpDes.csv", sep = ""), row.names = FALSE)
-        readline(prompt = cat(
-          "A file called ExpDes.csv has been written to your working directorty:",
-          "\n", "\n",
-          getwd(),
-          "\n", "\n",
-          "please replace platform appropriate 'fill' cells with instrument and experiment",
-          "\n", "data and save file.  When complete, press [enter] to continue"
-        ))
-        csv.in <- read.csv(file = paste(getwd(), "/ExpDes.csv", sep = ""), header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+        csv.in <- write_csv(out)
       } else {
         csv.in <- out
         csv.in[7, 2] <- "LC-MS"
         csv.in[which(csv.in[, 1] == "MSlevs"), 2] <- 1
       }
-      design <- data.frame("value" = csv.in[3:7, 2], row.names = csv.in[3:7, 1], stringsAsFactors = FALSE)
 
-      instrument <- NULL
-      plat <- as.character(design[5, 1])
-      if (grepl("LC-MS", plat)) {
-        instrument <- "LC-MS"
-      }
-      if (grepl("GC-MS", plat)) {
-        instrument <- "GC-MS"
-      }
-      if (!grepl("LC-MS", plat) & !grepl("GC-MS", plat)) {
-        if (grepl("[Gg]", substring(plat, 1, 1))) {
-          instrument <- "GC-MS"
-        }
-        if (grepl("[Ll]", substring(plat, 1, 1))) {
-          instrument <- "LC-MS"
-        }
-      }
-      if (is.null(instrument)) {
-        stop("do not regonize instrument platform, please use either 'GC-MS' or 'LC-MS' ")
-      }
-
-      rowstart <- grep(instrument, csv.in[, 1]) + 1
-      rowend <- grep("MSlevs", csv.in[, 1])
-      rowend <- rowend[which(rowend > rowstart)]
-      if (length(rowend) > 1) {
-        rowend <- rowend[which.min((rowend - rowstart))]
-      }
-      instrument <- data.frame("value" = csv.in[rowstart:rowend, 2], row.names = csv.in[rowstart:rowend, 1], stringsAsFactors = FALSE)
-      ExpDes <- list("design" = design, "instrument" = instrument)
+      ExpDes <- get_ExpDes(csv.in)
     }
 
     if (!csv) {
       suppressWarnings(design <- edit(Experiment))
 
-      plat <- as.character(design[5, 1])
-      if (grepl("LC-MS", plat)) {
-        instrument <- "LC-MS"
-      }
-      if (grepl("GC-MS", plat)) {
-        instrument <- "GC-MS"
-      }
-      if (!grepl("LC-MS", plat) & !grepl("GC-MS", plat)) {
-        if (grepl("[Gg]", substring(plat, 1, 1))) {
-          instrument <- "GC-MS"
-        }
-        if (grepl("[Ll]", substring(plat, 1, 1))) {
-          instrument <- "LC-MS"
-        }
-      }
-      if (is.null(instrument)) {
-        stop("do not regonize instrument platform, please use either 'GC-MS' or 'LC-MS' ")
-      }
+      instrument <- get_instrument_platform(design)
 
-      if (instrument == "LC-MS") platform <- LCMS
-      if (instrument == "GC-MS") platform <- GCMS
+      if (instrument == "LC-MS") {
+        platform <- LCMS
+      }
+      if (instrument == "GC-MS") {
+        platform <- GCMS
+      }
 
       # rowstart<-grep(instrument, csv.in[,1])+1
       # rowend<-grep("MSlevs", csv.in[,1])
@@ -206,36 +210,8 @@ defineExperiment <- function(csv = FALSE, force.skip = FALSE) {
   } else {
     if (file.exists(csv)) {
       csv.in <- read.csv(csv, header = TRUE, check.names = FALSE)
-      design <- data.frame("value" = csv.in[3:7, 2], row.names = csv.in[3:7, 1], stringsAsFactors = FALSE)
 
-      instrument <- NULL
-      plat <- as.character(design[5, 1])
-      if (grepl("LC-MS", plat)) {
-        instrument <- "LC-MS"
-      }
-      if (grepl("GC-MS", plat)) {
-        instrument <- "GC-MS"
-      }
-      if (!grepl("LC-MS", plat) & !grepl("GC-MS", plat)) {
-        if (grepl("[Gg]", substring(plat, 1, 1))) {
-          instrument <- "GC-MS"
-        }
-        if (grepl("[Ll]", substring(plat, 1, 1))) {
-          instrument <- "LC-MS"
-        }
-      }
-      if (is.null(instrument)) {
-        stop("do not regonize instrument platform, please use either 'GC-MS' or 'LC-MS' ")
-      }
-
-      rowstart <- grep(instrument, csv.in[, 1]) + 1
-      rowend <- grep("MSlevs", csv.in[, 1])
-      rowend <- rowend[which(rowend > rowstart)]
-      if (length(rowend) > 1) {
-        rowend <- rowend[which.min((rowend - rowstart))]
-      }
-      instrument <- data.frame("value" = csv.in[rowstart:rowend, 2], row.names = csv.in[rowstart:rowend, 1], stringsAsFactors = FALSE)
-      ExpDes <- list("design" = design, "instrument" = instrument)
+      ExpDes <- get_ExpDes(csv.in)
     }
   }
 

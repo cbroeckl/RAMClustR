@@ -387,5 +387,3 @@ rc.ramclustr  <- function(
   
   return(ramclustObj)
 }
-
-

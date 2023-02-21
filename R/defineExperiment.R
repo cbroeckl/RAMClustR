@@ -1,3 +1,11 @@
+#' write_csv
+#'
+#' write csv template called "ExpDes.csv" to your working directory. you will fill this in manually, ensuring that when you save you retain csv format. ramclustR will then read this file in and and format appropriately.
+#'
+#' @param data csv template to write
+#' @return read ExpDes.csv file
+#' @export
+
 write_csv <- function(data) {
   write.csv(data, file = paste(getwd(), "/ExpDes.csv", sep = ""), row.names = FALSE)
   readline(prompt = cat(
@@ -11,6 +19,14 @@ write_csv <- function(data) {
   csv.in <- read.csv(file = paste(getwd(), "/ExpDes.csv", sep = ""), header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
   return(csv.in)
 }
+
+#' get_instrument_platform
+#'
+#' get instrument platform
+#'
+#' @param design data frame containing Experimental Design
+#' @return instrument platform
+#' @export
 
 get_instrument_platform <- function(design) {
   instrument <- NULL
@@ -34,6 +50,14 @@ get_instrument_platform <- function(design) {
   }
   return(instrument)
 }
+
+#' get_ExpDes
+#'
+#' get Experimental Design
+#'
+#' @param csv.in Experimental Design read from csv
+#' @return list containing design and instrument
+#' @export
 
 get_ExpDes <- function(csv.in) {
   design <- data.frame("value" = csv.in[3:7, 2], row.names = csv.in[3:7, 1], stringsAsFactors = FALSE)

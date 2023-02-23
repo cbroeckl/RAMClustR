@@ -1,4 +1,4 @@
-#' rc.cmpd.filter.cv
+#' rc.calibrate.ri
 #'
 #' extractor for xcms objects in preparation for clustering  
 #'

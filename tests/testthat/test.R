@@ -2,13 +2,13 @@ test_that("RAMClustR with xcms works", {
   skip_if_not_installed("xcms")
   wd <- getwd()
   tmp <- tempdir()
-  load("testdata/test.fillpeaks")
-  expected <- readLines("testdata/output.msp")
-
+  load(file.path("testdata", "test.fillpeaks"))
+  expected <- readLines(file.path("testdata", "output.msp"))
+  
   setwd(tmp)
   ramclustr_obj <- ramclustR(xcmsObj = xdata)
   write.msp(ramclustr_obj, one.file = TRUE)
-  diff <- setdiff(expected, readLines("spectra/fill.msp"))
+  diff <- setdiff(expected, readLines(file.path("spectra", "fill.msp")))
   expect_true(length(diff) < 10)
   setwd(wd)
 })
@@ -17,8 +17,8 @@ test_that("RAMClustR with csv works", {
   wd <- getwd()
   tmp <- tempdir()
   filename <- file.path(wd, "testdata/peaks.csv")
-  expected <- readRDS("testdata/expected_ramclustObj.rds")
-
+  expected <- readRDS(file.path("testdata", "expected_ramclustObj.rds"))
+  
   setwd(tmp)
   actual <- ramclustR(ms = filename, st = 5, maxt = 1, blocksize = 1000)
   actual$history <- NA

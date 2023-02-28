@@ -121,7 +121,7 @@ checks <- function(ms1_featureDefinitions = NULL,
 #' @param ms2_featureValues dataframe with rownames = sample names, colnames = feature names containing MSMS data
 #' @param phenoData dataframe containing phenoData
 #' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
-#' @param featureNamesColumnIndex integer: which column in the dataframe contains feature names?
+#' @param featureNamesColumnIndex integer: which column in `ms1_featureDefinitions` contains feature names?
 #' @param st numeric: sigma t - time similarity decay value
 #' @param ensure.no.na logical: if TRUE, any 'NA' values in msint and/or msmsint are replaced with numerical values based on 10 percent of feature min plus noise.  Used to ensure that spectra are not written with NA values.
 #' @details This function creates a ramclustObj which will be used as input for clustering.

@@ -76,9 +76,9 @@ annotate<-function(ramclustObj = NULL,
   }
   
   
-  suppressWarnings(
-    have.internet <- !as.logical(system(paste("ping -n 1", "www.google.com"), show.output.on.console = FALSE))
-  )
+  # suppressWarnings(
+  #   have.internet <- !as.logical(system(paste("ping -n 1", "www.google.com"), show.output.on.console = FALSE))
+  # )
   
   
   ## make sure taxonomy inchikeys are properly formatted

@@ -16,8 +16,6 @@
 #' @param frt feature retention time, in whatever units were fed in
 #' @param fmz feature retention time
 #' @param st numeric: sigma t - time similarity decay value
-#' @param MSdata_raw dataframe containing MS Data
-#' @param MSMSdata_raw dataframe containing MSMS Data
 #' @param phenoData dataframe containing phenoData
 #' @param feature_names feature names extracted from the data
 #' @param xcmsOrd original xcms order of features, for back-referencing when necessary
@@ -39,8 +37,6 @@ create_ramclustObj <- function(merger = vector(length = 0),
                                frt = NULL,
                                fmz = NULL,
                                st = NULL,
-                               MSdata_raw = NULL,
-                               MSMSdata_raw = NULL,
                                phenoData = NULL,
                                feature_names = NULL,
                                xcmsOrd = NULL,
@@ -63,8 +59,8 @@ create_ramclustObj <- function(merger = vector(length = 0),
     ramclustObj$fmz <- fmz
     ramclustObj$st <- st
     ramclustObj$history$input <- input_history
-    ramclustObj$MSdata_raw <- MSdata_raw
-    ramclustObj$MSMSdata_raw <- MSMSdata_raw
+    ramclustObj$MSdata_raw <- MSdata
+    ramclustObj$MSMSdata_raw <- MSMSdata
     ramclustObj$phenoData <- phenoData
     ramclustObj$featnames <- feature_names
     ramclustObj$xcmsOrd <- xcmsOrd
@@ -101,11 +97,11 @@ checks <- function(ms1_featureDefinitions = NULL,
     }
 
     if (!is.null(ms2_featureValues)) {
-        if (!all(dimnames(ms1_featureValues)[[2]] == dimnames(ms2_featureValues)[[2]])) {
+        if (!all(colnames(ms1_featureValues) == colnames(ms2_featureValues))) {
             stop("the feature names of your MS and idMSMS data are not identical")
         }
 
-        if (!all(dimnames(ms1_featureValues)[[1]] == dimnames(ms2_featureValues)[[1]])) {
+        if (!all(rownames(ms1_featureValues) == rownames(ms2_featureValues))) {
             stop("the order and names of your MS and idMSMS data sample names are not identical")
         }
     }
@@ -212,8 +208,6 @@ rc.get.df.data <- function(ms1_featureDefinitions = NULL,
         fmz = mzs,
         st = st,
         input_history = history,
-        MSdata_raw = ms1_featureValues,
-        MSMSdata_raw = ms2_featureValues,
         phenoData = phenoData,
         feature_names = feature_names,
         xcmsOrd = xcmsOrd

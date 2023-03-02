@@ -2,13 +2,6 @@
 #'
 #' create ramclustr Object
 #'
-#' @param merger
-#' @param height
-#' @param order integer vector with length equal to number of injections
-#' @param labels feature names
-#' @param method method used e.g "RAMClustR"
-#' @param call
-#' @param dist.method
 #' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
 #' @param input_history input history
 #' @param MSdata dataframe containing MS Data
@@ -16,8 +9,6 @@
 #' @param frt feature retention time, in whatever units were fed in
 #' @param fmz feature retention time
 #' @param st numeric: sigma t - time similarity decay value
-#' @param MSdata_raw dataframe containing MS Data
-#' @param MSMSdata_raw dataframe containing MSMS Data
 #' @param phenoData dataframe containing phenoData
 #' @param feature_names feature names extracted from the data
 #' @param xcmsOrd original xcms order of features, for back-referencing when necessary
@@ -25,22 +16,13 @@
 #' @return  an ramclustR object. this object is formatted as an hclust object with additional slots for holding feature and compound data.
 #' @export
 
-create_ramclustObj <- function(merger = vector(length = 0),
-                               height = vector(length = 0),
-                               order = vector(length = 0),
-                               labels = vector(length = 0),
-                               method = vector(length = 0),
-                               call = vector(length = 0),
-                               dist.method = vector(length = 0),
-                               ExpDes = NULL,
+create_ramclustObj <- function(ExpDes = NULL,
                                input_history = NULL,
                                MSdata = NULL,
                                MSMSdata = NULL,
                                frt = NULL,
                                fmz = NULL,
                                st = NULL,
-                               MSdata_raw = NULL,
-                               MSMSdata_raw = NULL,
                                phenoData = NULL,
                                feature_names = NULL,
                                xcmsOrd = NULL,
@@ -48,13 +30,13 @@ create_ramclustObj <- function(merger = vector(length = 0),
     ## create empty hclust object to ultimately hold clustering data
     ramclustObj <- list()
     class(ramclustObj) <- "hclust"
-    ramclustObj$merger <- merger
-    ramclustObj$height <- height
-    ramclustObj$order <- order
-    ramclustObj$labels <- labels
-    ramclustObj$method <- method
-    ramclustObj$call <- call
-    ramclustObj$dist.method <- dist.method
+    ramclustObj$merger <- vector(length = 0)
+    ramclustObj$height <- vector(length = 0)
+    ramclustObj$order <- vector(length = 0)
+    ramclustObj$labels <- vector(length = 0)
+    ramclustObj$method <- vector(length = 0)
+    ramclustObj$call <- vector(length = 0)
+    ramclustObj$dist.method <- vector(length = 0)
     ramclustObj$ExpDes <- ExpDes
     ramclustObj$history <- list()
     ramclustObj$MSdata <- MSdata
@@ -63,8 +45,8 @@ create_ramclustObj <- function(merger = vector(length = 0),
     ramclustObj$fmz <- fmz
     ramclustObj$st <- st
     ramclustObj$history$input <- input_history
-    ramclustObj$MSdata_raw <- MSdata_raw
-    ramclustObj$MSMSdata_raw <- MSMSdata_raw
+    ramclustObj$MSdata_raw <- MSdata
+    ramclustObj$MSMSdata_raw <- MSMSdata
     ramclustObj$phenoData <- phenoData
     ramclustObj$featnames <- feature_names
     ramclustObj$xcmsOrd <- xcmsOrd
@@ -101,11 +83,11 @@ checks <- function(ms1_featureDefinitions = NULL,
     }
 
     if (!is.null(ms2_featureValues)) {
-        if (!all(dimnames(ms1_featureValues)[[2]] == dimnames(ms2_featureValues)[[2]])) {
+        if (!all(colnames(ms1_featureValues) == colnames(ms2_featureValues))) {
             stop("the feature names of your MS and idMSMS data are not identical")
         }
 
-        if (!all(dimnames(ms1_featureValues)[[1]] == dimnames(ms2_featureValues)[[1]])) {
+        if (!all(rownames(ms1_featureValues) == rownames(ms2_featureValues))) {
             stop("the order and names of your MS and idMSMS data sample names are not identical")
         }
     }
@@ -121,7 +103,7 @@ checks <- function(ms1_featureDefinitions = NULL,
 #' @param ms2_featureValues dataframe with rownames = sample names, colnames = feature names containing MSMS data
 #' @param phenoData dataframe containing phenoData
 #' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
-#' @param featureNamesColumnIndex integer: which column in the dataframe contains feature names?
+#' @param featureNamesColumnIndex integer: which column in `ms1_featureDefinitions` contains feature names?
 #' @param st numeric: sigma t - time similarity decay value
 #' @param ensure.no.na logical: if TRUE, any 'NA' values in msint and/or msmsint are replaced with numerical values based on 10 percent of feature min plus noise.  Used to ensure that spectra are not written with NA values.
 #' @details This function creates a ramclustObj which will be used as input for clustering.
@@ -205,15 +187,13 @@ rc.get.df.data <- function(ms1_featureDefinitions = NULL,
     }
 
     ramclustObj <- create_ramclustObj(
-        ExpDes,
+        ExpDes = ExpDes,
         MSdata = ms1_featureValues,
         MSMSdata = ms2_featureValues,
         frt = times,
         fmz = mzs,
         st = st,
         input_history = history,
-        MSdata_raw = ms1_featureValues,
-        MSMSdata_raw = ms2_featureValues,
         phenoData = phenoData,
         feature_names = feature_names,
         xcmsOrd = xcmsOrd

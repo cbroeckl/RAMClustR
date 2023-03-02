@@ -248,6 +248,8 @@ rc.feature.normalize.batch.qc <- function(order = NULL,
     )
   }
 
+  dev.off()
+
   ## update msint and optionally msmsint
   global.min <- apply(cbind(ramclustObj$MSdata, ramclustObj$MSMSdata), 2, "min", na.rm = TRUE)
 
@@ -266,8 +268,6 @@ rc.feature.normalize.batch.qc <- function(order = NULL,
       TRUE
     )
   }
-
-  dev.off()
 
   return(ramclustObj)
 }

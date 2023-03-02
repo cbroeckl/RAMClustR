@@ -2,10 +2,10 @@ test_that("RAMClustR workflow with xcms works", {
   skip_if_not_installed("xcms")
   wd <- getwd()
   tmp <- tempdir()
-  load("testdata/test.rc.ramclustr.fillpeaks")
-  expected <- readRDS("testdata/do.findmain.rds")
+  load(file.path("testdata", "test.rc.ramclustr.fillpeaks"))
+  expected <- readRDS(file.path("testdata", "do.findmain.rds"))
   setwd(tmp)
-
+  
   ramclustObj <- rc.get.xcms.data(xcmsObj = xdata)
   ramclustObj <- rc.expand.sample.names(ramclustObj = ramclustObj)
   ramclustObj <- rc.feature.replace.na(ramclustObj = ramclustObj)

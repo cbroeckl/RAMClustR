@@ -2,9 +2,9 @@ test_that("RAMClustR workflow comparison test", {
   skip_if_not_installed("xcms")
   wd <- getwd()
   tmp <- tempdir()
-  load("testdata/test.rc.ramclustr.fillpeaks")
+  load(file.path("testdata", "test.rc.ramclustr.fillpeaks"))
   setwd(tmp)
-
+  
   ramclustr_obj <- ramclustR(xcmsObj = xdata, maxt = 20, sr = 0.5)
 
   ramclustObj <- rc.get.xcms.data(xcmsObj = xdata)

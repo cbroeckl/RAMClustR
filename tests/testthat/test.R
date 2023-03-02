@@ -3,14 +3,15 @@ test_that("RAMClustR with xcms works", {
   set.seed(123) # to get reproducible results with jitters
   wd <- getwd()
   tmp <- tempdir()
-  load("testdata/test.fillpeaks")
-  expected <- readLines("testdata/output.msp")
+  load(file.path("testdata", "test.fillpeaks"))
+  expected <- readLines(file.path("testdata", "output.msp"))
+  
   setwd(tmp)
 
   ramclustr_obj <- ramclustR(xcmsObj = xdata, maxt = 20, sr = 0.5, mzdec = 4)
   write.msp(ramclustr_obj, one.file = TRUE)
-  mismatches <- setdiff(expected, readLines("spectra/fill.msp"))
-
+  mismatches <- setdiff(expected, readLines(file.path("spectra", "fill.msp")))
+  
   expect_true(length(mismatches) < 10)
   setwd(wd)
 })
@@ -20,9 +21,9 @@ test_that("RAMClustR with csv works", {
   wd <- getwd()
   tmp <- tempdir()
   filename <- file.path(wd, "testdata/peaks.csv")
-  expected <- readRDS("testdata/test_csv.rds")
-  pheno <- file.path(wd, "testdata/phenoData.csv")
-
+  pheno <- file.path("testdata", "testdata/phenoData.csv")
+  expected <- readRDS(file.path("testdata", "expected_ramclustObj.rds"))
+  
   setwd(tmp)
   actual <- ramclustR(
     ms = filename,

@@ -2,13 +2,6 @@
 #'
 #' create ramclustr Object
 #'
-#' @param merger
-#' @param height
-#' @param order integer vector with length equal to number of injections
-#' @param labels feature names
-#' @param method method used e.g "RAMClustR"
-#' @param call
-#' @param dist.method
 #' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
 #' @param input_history input history
 #' @param MSdata dataframe containing MS Data
@@ -23,14 +16,7 @@
 #' @return  an ramclustR object. this object is formatted as an hclust object with additional slots for holding feature and compound data.
 #' @export
 
-create_ramclustObj <- function(merger = vector(length = 0),
-                               height = vector(length = 0),
-                               order = vector(length = 0),
-                               labels = vector(length = 0),
-                               method = vector(length = 0),
-                               call = vector(length = 0),
-                               dist.method = vector(length = 0),
-                               ExpDes = NULL,
+create_ramclustObj <- function(ExpDes = NULL,
                                input_history = NULL,
                                MSdata = NULL,
                                MSMSdata = NULL,
@@ -44,13 +30,13 @@ create_ramclustObj <- function(merger = vector(length = 0),
     ## create empty hclust object to ultimately hold clustering data
     ramclustObj <- list()
     class(ramclustObj) <- "hclust"
-    ramclustObj$merger <- merger
-    ramclustObj$height <- height
-    ramclustObj$order <- order
-    ramclustObj$labels <- labels
-    ramclustObj$method <- method
-    ramclustObj$call <- call
-    ramclustObj$dist.method <- dist.method
+    ramclustObj$merger <- vector(length = 0)
+    ramclustObj$height <- vector(length = 0)
+    ramclustObj$order <- vector(length = 0)
+    ramclustObj$labels <- vector(length = 0)
+    ramclustObj$method <- vector(length = 0)
+    ramclustObj$call <- vector(length = 0)
+    ramclustObj$dist.method <- vector(length = 0)
     ramclustObj$ExpDes <- ExpDes
     ramclustObj$history <- list()
     ramclustObj$MSdata <- MSdata
@@ -201,7 +187,7 @@ rc.get.df.data <- function(ms1_featureDefinitions = NULL,
     }
 
     ramclustObj <- create_ramclustObj(
-        ExpDes,
+        ExpDes = ExpDes,
         MSdata = ms1_featureValues,
         MSMSdata = ms2_featureValues,
         frt = times,

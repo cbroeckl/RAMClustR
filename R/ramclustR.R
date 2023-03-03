@@ -280,7 +280,7 @@ ramclustR <- function(xcmsObj = NULL,
   ########
   # Optional normalization of data, either Total ion signal or quantile
 
-  if (!normalize == "none") {
+  if (normalize != "none") {
     cat(paste("  normalizing dataset", "\n"))
   }
 

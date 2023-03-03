@@ -160,7 +160,7 @@ rc.ramclustr  <- function(
   eval1<-eval1[which(eval1[,"j"]<=eval1[,"k"]),] #upper triangle only
   bl<-nrow(eval1)
   
-  cat(paste('\n', "calculating ramclustR similarity: nblocks = ", bl, '\n'))
+  #  cat(paste('\n', "calculating ramclustR similarity: nblocks = ", bl, '\n'))
   ########
   # # Define the RCsim function used to calculate feature similarities on selected blocks of data
   # RCsim<-function(bl)  {

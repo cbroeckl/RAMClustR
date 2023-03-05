@@ -38,14 +38,8 @@ check_arguments_filter.cv <- function(ramclustObj, qc.tag) {
 
 define_samples <- function(ramclustObj, tag) {
   ## define samples in each set
-  if (length(tag) == 1) {
-    samples <- grep(tag[1], ramclustObj$phenoData$sample.names.sample_name)
-    samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
-  }
-  if (length(tag) == 2) {
-    samples <- grep(tag[1], ramclustObj$phenoData[[tag[2]]])
-    samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
-  }
+  samples <- grep(tag[1], ramclustObj$sample_names)
+  samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
 
   if (length(samples) == 0) {
     stop("no ", tag, " samples found using the tag ", "'", tag, "'", "\n")

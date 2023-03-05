@@ -140,6 +140,8 @@ remove_blanks <- function(ramclustObj, blank) {
     ramclustObj$phenoData <- ramclustObj$phenoData[-blank, ]
   }
 
+  ramclustObj$sample_names <- ramclustObj$sample_names[-blank]
+
   return(ramclustObj)
 }
 

@@ -17,12 +17,11 @@ test_that("RAMClustR with xcms works", {
 })
 
 test_that("RAMClustR with csv works", {
-  skip("disabled")
   wd <- getwd()
   tmp <- tempdir()
   filename <- file.path(wd, "testdata/peaks.csv")
-  pheno <- file.path("testdata", "testdata/phenoData.csv")
-  expected <- readRDS(file.path("testdata", "expected_ramclustObj.rds"))
+  pheno <- file.path(wd, "testdata/phenoData.csv")
+  expected <- readRDS(file.path("testdata", "test_csv.rds"))
   
   setwd(tmp)
   actual <- ramclustR(

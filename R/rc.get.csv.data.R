@@ -116,25 +116,25 @@ rc.get.csv.data <- function(csv = NULL,
     }
     sampnames <- MSdata[, sampNameCol]
     data1 <- as.matrix(MSdata[, featcol])
-    dimnames(data1)[[1]] <- MSdata[, sampNameCol]
-    dimnames(data1)[[2]] <- names(MSdata[, featcol])
+    rownames(data1) <- MSdata[, sampNameCol]
+    colnames(data1) <- names(MSdata[, featcol])
 
     if (!is.null(idmsms)) {
         data2 <- as.matrix(MSMSdata[, featcol])
-        dimnames(data2)[[1]] <- MSMSdata[, sampNameCol]
-        dimnames(data2)[[2]] <- names(MSMSdata[, featcol])
+        rownames(data2) <- MSMSdata[, sampNameCol]
+        colnames(data2) <- names(MSMSdata[, featcol])
 
-        if (!all(dimnames(data1)[[2]] == dimnames(data2)[[2]])) {
+        if (!all(colnames(data1) == colnames(data2))) {
             stop("the feature names of your MS and idMSMS data are not identical")
         }
 
-        if (!all(dimnames(data1)[[1]] == dimnames(data2)[[1]])) {
+        if (!all(rownames(data1) == rownames(data2))) {
             stop("the order and names of your MS and idMSMS data sample names are not identical")
         }
     }
     rtmz <- matrix(
         unlist(
-            strsplit(dimnames(data1)[[2]], featdelim)
+            strsplit(colnames(data1), featdelim)
         ),
         byrow = TRUE, ncol = 2
     )

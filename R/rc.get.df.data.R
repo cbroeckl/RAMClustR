@@ -72,7 +72,6 @@ create_ramclustObj <- function(ExpDes = NULL,
 #' @param ms1_featureValues dataframe with rownames = sample names, colnames = feature names containing MS data
 #' @param ms2_featureValues dataframe with rownames = sample names, colnames = feature names containing MSMS data
 #' @param feature_names feature names extracted from the data
-#' @export
 
 checks <- function(ms1_featureDefinitions = NULL,
                    ms1_featureValues = NULL,

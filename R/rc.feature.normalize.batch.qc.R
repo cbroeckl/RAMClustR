@@ -7,7 +7,6 @@
 #' @param qc logical vector with length equal to number of injections in xset or csv file or dataframe
 #' @param qc.inj.range integer: how many injections around each injection are to be scanned for presence of QC samples when using batch.qc normalization?  A good rule of thumb is between 1 and 3 times the typical injection span between QC injections.  i.e. if you inject QC ever 7 samples, set this to between 7 and 21.  smaller values provide more local precision but make normalization sensitive to individual poor outliers (though these are first removed using the boxplot function outlier detection), while wider values provide less local precision in normalization but better stability to individual peak areas.
 #' @return normalized data.
-#' @export
 
 normalized_data_batch_qc <- function(data = NULL,
                                      batch = NULL,
@@ -136,7 +135,6 @@ normalized_data_batch_qc <- function(data = NULL,
 #' @param order integer vector with length equal to number of injections in xset or csv file or dataframe
 #' @param qc logical vector with length equal to number of injections in xset or csv file or dataframe
 #' @return ordered feature in ms/msms level data, order, batch, qc
-#' @export
 
 order_datasets <- function(order = NULL,
                            batch = NULL,

@@ -4,7 +4,6 @@
 #'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
 #' @param qc.tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.
-#' @export
 
 check_arguments_filter.cv <- function(ramclustObj, qc.tag) {
   ## CHECKS

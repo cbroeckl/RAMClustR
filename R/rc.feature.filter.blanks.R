@@ -4,7 +4,6 @@
 #'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
 #' @param sn numeric defines the ratio for 'signal'.  i.e. sn = 3 indicates that signal intensity must be 3 fold higher in sample than in blanks, on average, to be retained.
-#' @export
 
 check_arguments_filter.blanks <- function(ramclustObj, sn) {
   if (is.null(ramclustObj)) {

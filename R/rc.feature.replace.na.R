@@ -6,7 +6,6 @@
 #' @param replace.int default = 0.1.  proportion of minimum feature value to replace NA (or zero) values with
 #' @param replace.noise default = 0.1.  proportion ofreplace.int value by which noise is added via 'jitter'
 #' @param replace.zero logical if TRUE, any zero values are replaced with noise as if they were NA values
-#' @export
 
 check_arguments_replace.na <- function(ramclustObj,
                                        replace.int,

@@ -52,8 +52,12 @@ create_ramclustObj <- function(ExpDes = NULL,
     ramclustObj$featnames <- feature_names
     ramclustObj$xcmsOrd <- xcmsOrd
 
-    global.min <- apply(cbind(ramclustObj$MSdata, ramclustObj$MSMSdata), 2, "min", na.rm = TRUE)
-
+    if (!is.null(MSMSdata)) {
+        global.min <- apply(cbind(ramclustObj$MSdata, ramclustObj$MSMSdata), 2, "min", na.rm = TRUE)
+    } else {
+        global.min <- apply(cbind(ramclustObj$MSdata), 2, "min", na.rm = TRUE)
+    }
+    
     ramclustObj$msint <- compute_wt_mean(ramclustObj$MSdata, global.min, ramclustObj$fmz, ensure.no.na)
     if (!is.null(MSMSdata)) {
         ramclustObj$msmsint <- compute_wt_mean(ramclustObj$MSMSdata, global.min, ramclustObj$fmz, ensure.no.na)

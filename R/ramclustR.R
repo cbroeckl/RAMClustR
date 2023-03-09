@@ -26,6 +26,7 @@ compute_SpecAbundAve <- function(ramclustObj = NULL) {
 #'
 #' @param xcmsObj xcmsObject: containing grouped feature data for clustering by ramclustR
 #' @param ms filepath: optional csv input. Features as columns, rows as samples. Column header mz_rt
+#' @param pheno_csv filepath: optional csv input containing phenoData
 #' @param idmsms filepath: optional idMSMS / MSe csv data.  same dim and names as ms required
 #' @param MStag character: character string in 'taglocation' to designat MS / MSe files e.g. "01.cdf"
 #' @param idMSMStag character: character string in 'taglocation' to designat idMSMS / MSe files e.g. "02.cdf"

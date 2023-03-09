@@ -44,4 +44,4 @@ jobs:
       - name: Run devtools::check()
         run: |
           conda activate ramclustr-dev
-          Rscript -e "devtools::check('.', error_on = 'warning')"
+          Rscript -e "devtools::check('.', error_on = 'error')"

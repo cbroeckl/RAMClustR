@@ -11,6 +11,7 @@
 #' @param st numeric: sigma t - time similarity decay value
 #' @param phenoData dataframe containing phenoData
 #' @param feature_names feature names extracted from the data
+#' @param sample_names sample names extracted from the data
 #' @param xcmsOrd original xcms order of features, for back-referencing when necessary
 #' @param ensure.no.na logical: if TRUE, any 'NA' values in msint and/or msmsint are replaced with numerical values based on 10 percent of feature min plus noise.  Used to ensure that spectra are not written with NA values.
 #' @return  an ramclustR object. this object is formatted as an hclust object with additional slots for holding feature and compound data.
@@ -102,7 +103,7 @@ checks <- function(ms1_featureDefinitions = NULL,
 
 #' rc.get.df.data
 #'
-#' @description
+#' extractor for dataframe input in preparation for normalization and clustering
 #'
 #' @param ms1_featureDefinitions dataframe with metadata with columns: mz, rt, feature names containing MS data
 #' @param ms1_featureValues dataframe with rownames = sample names, colnames = feature names containing MS data

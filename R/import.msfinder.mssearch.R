@@ -69,7 +69,7 @@ import.msfinder.mssearch <- function (
       if(feedback == 1) {usemsp <- FALSE}
       if(feedback == 2) {usemat <- FALSE}
     }
-  }
+  } 
   
   mat.dir <- c(mat.dir, msp.dir)[c(usemat, usemsp)]
   
@@ -80,7 +80,11 @@ import.msfinder.mssearch <- function (
     do<-do[keep] 
     cmpds <- cmpds[keep]
     cmpds <- gsub(dir.extension, "", cmpds)
-  } 
+  }
+  
+  if(length(cmpds) == 0) {
+    stop("  --  no spectral match results to return")
+  }
 
   
   ### retrieve parameter file from mat directory and parse to save with results.

@@ -765,7 +765,7 @@ rc.cmpd.get.pubchem <- function(
         
         d <- suppressWarnings(utils::read.csv(paste0(url.pre, cid, url.mid, cid, url.post)))
         
-        if(!is.data.frame(d)) {cat("not a data.frame")}
+        # if(!is.data.frame(d)) {cat("not a data.frame")}
         return(d)
       }
       pathway <- get.pathways(cid = cids[i])

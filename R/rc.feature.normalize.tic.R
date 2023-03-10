@@ -4,7 +4,6 @@
 #'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
 #' @return  ramclustR object with total extracted ion normalized data.
-#' @export
 
 normalized_data_tic <- function(ramclustObj = NULL){
   msint <- rowSums(ramclustObj$MSdata, na.rm = TRUE)

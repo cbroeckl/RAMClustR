@@ -4,7 +4,6 @@
 #'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
 #' @param qc.tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.
-#' @export
 
 check_arguments_filter.cv <- function(ramclustObj, qc.tag) {
   ## CHECKS
@@ -38,14 +37,8 @@ check_arguments_filter.cv <- function(ramclustObj, qc.tag) {
 
 define_samples <- function(ramclustObj, tag) {
   ## define samples in each set
-  if (length(tag) == 1) {
-    samples <- grep(tag[1], ramclustObj$phenoData$sample.names.sample_name)
-    samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
-  }
-  if (length(tag) == 2) {
-    samples <- grep(tag[1], ramclustObj$phenoData[[tag[2]]])
-    samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
-  }
+  samples <- grep(tag[1], ramclustObj$sample_names)
+  samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
 
   if (length(samples) == 0) {
     stop("no ", tag, " samples found using the tag ", "'", tag, "'", "\n")

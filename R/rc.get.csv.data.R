@@ -24,28 +24,28 @@ compute_wt_mean <- function(data, global.min, fmz, ensure.no.na) {
 
 #' rc.get.csv.data
 #'
-#' extractor for csv objects in preparation for normalization and clustering 
+#' extractor for csv objects in preparation for normalization and clustering
 #'
 #' @param csv filepath: csv input. Features as columns, rows as samples. Column header mz_rt
 #' @param phenoData character: character string in 'taglocation' to designate files as either MS / DIA(MSe, MSall, AIF, etc) e.g. "01.mzML"
 #' @param idmsms filepath: optional idMSMS / MSe csv data.  same dim and names as ms required
 #' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
 #' @param sampNameCol integer: which column from the csv file contains sample names?
-#' @param st numeric: sigma t - time similarity decay value 
+#' @param st numeric: sigma t - time similarity decay value
 #' @param timepos integer: which position in delimited column header represents the retention time
 #' @param featdelim character: how feature mz and rt are delimited in csv import column header e.g. ="-"
-#' @param ensure.no.na logical: if TRUE, any 'NA' values in msint and/or msmsint are replaced with numerical values based on 10 percent of feature min plus noise.  Used to ensure that spectra are not written with NA values. 
+#' @param ensure.no.na logical: if TRUE, any 'NA' values in msint and/or msmsint are replaced with numerical values based on 10 percent of feature min plus noise.  Used to ensure that spectra are not written with NA values.
 #' @details This function creates a ramclustObj which will be used as input for clustering.
-#' @return  an empty ramclustR object.  this object is formatted as an hclust object with additional slots for holding feature and compound data. details on these found below. 
+#' @return  an empty ramclustR object.  this object is formatted as an hclust object with additional slots for holding feature and compound data. details on these found below.
 #' @return   $frt: feature retention time, in whatever units were fed in
 #' @return   $fmz: feature retention time, reported in number of decimal points selected in ramclustR function
-#' @return   $ExpDes: the experimental design object used when running ramclustR.  List of two dataframes. 
+#' @return   $ExpDes: the experimental design object used when running ramclustR.  List of two dataframes.
 #' @return   $MSdata:  the MSdataset provided by either xcms or csv input
 #' @return   $MSMSdata: the (optional) DIA(MSe, MSall, AIF etc) dataset
 #' @return   $xcmsOrd: original xcms order of features, for back-referencing when necessary
 #' @return   $msint: weighted.mean intensity of feature in ms level data
 #' @return   $msmsint:weighted.mean intensity of feature in msms level data
-#' 
+#'
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
 #' @concept ramclustR
@@ -96,15 +96,13 @@ rc.get.csv.data <- function(csv = NULL,
     )
 
     MSdata <- read.csv(file = csv, header = TRUE, check.names = FALSE)
+    data2 <- NULL
 
     if (!is.null(phenoData)) {
         phenoData <- read.csv(file = phenoData, header = TRUE, check.names = FALSE)
     }
     if (!is.null(idmsms)) {
         MSMSdata <- read.csv(file = idmsms, header = TRUE, check.names = FALSE)
-    }
-    if (is.null(idmsms)) {
-        MSMSdata <- MSdata
     }
     if (is.null(sampNameCol)) {
         featcol <- 1:ncol(MSdata)
@@ -118,22 +116,25 @@ rc.get.csv.data <- function(csv = NULL,
     }
     sampnames <- MSdata[, sampNameCol]
     data1 <- as.matrix(MSdata[, featcol])
-    dimnames(data1)[[1]] <- MSdata[, sampNameCol]
-    dimnames(data1)[[2]] <- names(MSdata[, featcol])
-    data2 <- as.matrix(MSMSdata[, featcol])
-    dimnames(data2)[[1]] <- MSMSdata[, sampNameCol]
-    dimnames(data2)[[2]] <- names(MSMSdata[, featcol])
-    if (!all(dimnames(data1)[[2]] == dimnames(data2)[[2]])) {
-        stop("the feature names of your MS and idMSMS data are not identical")
-    }
+    rownames(data1) <- MSdata[, sampNameCol]
+    colnames(data1) <- names(MSdata[, featcol])
 
-    if (!all(dimnames(data1)[[1]] == dimnames(data2)[[1]])) {
-        stop("the order and names of your MS and idMSMS data sample names are not identical")
-    }
+    if (!is.null(idmsms)) {
+        data2 <- as.matrix(MSMSdata[, featcol])
+        rownames(data2) <- MSMSdata[, sampNameCol]
+        colnames(data2) <- names(MSMSdata[, featcol])
 
+        if (!all(colnames(data1) == colnames(data2))) {
+            stop("the feature names of your MS and idMSMS data are not identical")
+        }
+
+        if (!all(rownames(data1) == rownames(data2))) {
+            stop("the order and names of your MS and idMSMS data sample names are not identical")
+        }
+    }
     rtmz <- matrix(
         unlist(
-            strsplit(dimnames(data1)[[2]], featdelim)
+            strsplit(colnames(data1), featdelim)
         ),
         byrow = TRUE, ncol = 2
     )
@@ -154,38 +155,26 @@ rc.get.csv.data <- function(csv = NULL,
     # sort rt vector and data by retention time
     xcmsOrd <- order(times)
     data1 <- data1[, xcmsOrd]
-    data2 <- data2[, xcmsOrd]
     mzs <- mzs[xcmsOrd]
     times <- times[xcmsOrd]
 
-    ## create empty hclust object to ultimately hold clustering data
-    ramclustObj <- list()
-    class(ramclustObj) <- "hclust"
-    ramclustObj$merger <- vector(length = 0)
-    ramclustObj$height <- vector(length = 0)
-    ramclustObj$order <- vector(length = 0)
-    ramclustObj$labels <- vector(length = 0)
-    ramclustObj$method <- vector(length = 0)
-    ramclustObj$call <- vector(length = 0)
-    ramclustObj$dist.method <- vector(length = 0)
-    ramclustObj$ExpDes <- ExpDes
-    ramclustObj$history <- list()
-    ramclustObj$MSdata <- data1
-    ramclustObj$MSMSdata <- data2
-    ramclustObj$frt <- times
-    ramclustObj$fmz <- mzs
-    ramclustObj$st <- st
-    ramclustObj$history$input <- history
-    ramclustObj$MSdata_raw <- ramclustObj$MSdata
-    ramclustObj$MSMSdata_raw <- ramclustObj$MSMSdata
-    ramclustObj$phenoData <- phenoData
-    ramclustObj$featnames <- dimnames(data1)[[2]]
-    ramclustObj$xcmsOrd <- xcmsOrd
-    
-    global.min <- apply(cbind(ramclustObj$MSdata, ramclustObj$MSMSdata), 2, "min", na.rm = TRUE)
+    if (!is.null(data2)) {
+        data2 <- data2[, xcmsOrd]
+    }
 
-    ramclustObj$msint <- compute_wt_mean(ramclustObj$MSdata, global.min, ramclustObj$fmz, ensure.no.na)
-    ramclustObj$msmsint <- compute_wt_mean(ramclustObj$MSMSdata, global.min, ramclustObj$fmz, ensure.no.na)
+    ramclustObj <- create_ramclustObj(
+        ExpDes = ExpDes,
+        MSdata = data1,
+        MSMSdata = data2,
+        frt = times,
+        fmz = mzs,
+        st = st,
+        input_history = history,
+        phenoData = phenoData,
+        feature_names = colnames(data1),
+        xcmsOrd = xcmsOrd,
+        sample_names = rownames(data1)
+    )
 
     return(ramclustObj)
 }

@@ -44,9 +44,9 @@ rc.remove.qc <- function(ramclustObj = NULL,
   }
 
   do.sets.rows <- sapply(
-    c(do.sets, "phenoData"),
+    c(do.sets, "phenoData", "sample_names"),
     FUN = function(x) {
-      nrow(ramclustObj[[x]])
+      NROW(ramclustObj[[x]])
     }
   )
 
@@ -56,34 +56,25 @@ rc.remove.qc <- function(ramclustObj = NULL,
   ) {
     stop("number of rows in MSdata, SpecAbund, and phenoData sets are not identical.")
   }
-
+  
   ## define QC samples in each set
-  if (length(qc.tag) == 1) {
-    qc <- grepl(qc.tag[1], ramclustObj$phenoData$sample.names.sample_name)
-  }
-  if (length(qc.tag) == 2) {
-    qc <- grepl(qc.tag[1], ramclustObj$phenoData[[qc.tag[2]]])
-  }
-
-  if (length(which(qc)) == 0) {
-    stop("no QC samples found using the qc.tag ", "'", qc.tag, "'", "\n")
-  }
-
-  qc <- which(qc)
-
+  qc <- define_samples(ramclustObj, qc.tag)
 
   ramclustObj$qc <- list()
-  for (x in c("phenoData", do.sets)) {
-    ramclustObj$qc[[x]] <- ramclustObj[[x]][qc, ]
-    ramclustObj[[x]] <- ramclustObj[[x]][-qc, ]
+  for (x in c("phenoData", "sample_names",do.sets)) {
+    if (is.vector(ramclustObj[[x]])) {
+      ramclustObj$qc[[x]] <- ramclustObj[[x]][qc]
+      ramclustObj[[x]] <- ramclustObj[[x]][-qc]
+    } else {
+      ramclustObj$qc[[x]] <- ramclustObj[[x]][qc, ]
+      ramclustObj[[x]] <- ramclustObj[[x]][-qc, ]
+    }
   }
-
 
   ramclustObj$history$qc.summary <- paste(
     ramclustObj$history$qc.summary,
     "QC samples were removed from the set for downstream processing."
   )
-
 
   if (is.null((ramclustObj$params))) {
     ramclustObj$params <- list()

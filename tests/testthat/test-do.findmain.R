@@ -7,6 +7,6 @@ test_that("RAMClustR do.findmain", {
   setwd(tmp)
   actual <- do.findmain(ramclustObj = ramclustObj)
 
-  expect_equal(actual, expected, tolerance = 0.02)
+  expect_equal(actual, expected)
   setwd(wd)
 })

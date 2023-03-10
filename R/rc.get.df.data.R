@@ -25,6 +25,7 @@ create_ramclustObj <- function(ExpDes = NULL,
                                st = NULL,
                                phenoData = NULL,
                                feature_names = NULL,
+                               sample_names = NULL,
                                xcmsOrd = NULL,
                                ensure.no.na = TRUE) {
     ## create empty hclust object to ultimately hold clustering data
@@ -57,6 +58,9 @@ create_ramclustObj <- function(ExpDes = NULL,
     if (!is.null(MSMSdata)) {
         ramclustObj$msmsint <- compute_wt_mean(ramclustObj$MSMSdata, global.min, ramclustObj$fmz, ensure.no.na)
     }
+
+    ramclustObj$sample_names <- sample_names
+
     return(ramclustObj)
 }
 
@@ -68,7 +72,6 @@ create_ramclustObj <- function(ExpDes = NULL,
 #' @param ms1_featureValues dataframe with rownames = sample names, colnames = feature names containing MS data
 #' @param ms2_featureValues dataframe with rownames = sample names, colnames = feature names containing MSMS data
 #' @param feature_names feature names extracted from the data
-#' @export
 
 checks <- function(ms1_featureDefinitions = NULL,
                    ms1_featureValues = NULL,
@@ -196,7 +199,8 @@ rc.get.df.data <- function(ms1_featureDefinitions = NULL,
         input_history = history,
         phenoData = phenoData,
         feature_names = feature_names,
-        xcmsOrd = xcmsOrd
+        xcmsOrd = xcmsOrd,
+        sample_names = sample_names
     )
 
     return(ramclustObj)

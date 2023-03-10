@@ -4,13 +4,12 @@
 #' @details useful for moving from chemical name to digital structure represtation. greek letters are assumed to be 'UTF-8' encoded, and are converted to latin text before searching.   if you are reading in your compound name list, do so with 'encoding' set to 'UTF-8'. 
 #' @param seq file name/path to sequence file - expect filenames in column 1 and sample names in column 2.  filenames should match those in spec.abund
 #' @param spec.abund file name/path to adap-big export of signal intensities. .csv file expected
-#' @param msp file name/path to .msp file created by adap-big (optional)
-#' @param annotations  file name/path to annotations .xlsx file.  generally 'simple_export.xlsx' (optional)
-#' @param mzdec mz decimals to report for internal storage/reporting.  generally we want 0 for adap kdb low resolution GC-quad instruments.
+#' @param msp file name/path to .msp file created by adap-big
+#' @param annotations  file name/path to annotations .xlsx file.  generally 'simple_export.xlsx'
+#' @param mzdec mz decimals to report for internal storage/reporting.  generally we want 0 for adap kdb
 #' @param min.score 700 (out of 1000) by default
-#' @param manual.name when looking up inchikey/names, should manual input be used to fill ambiguous names? generally recommend TRUE, but requires user input. for unsupervised workflows set to FALSE. 
+#' @param manual.name when looking up inchikey/names, should manual input be used to fill ambiguous names? generally recommend TRUE
 #' @param qc.tag a character string by which to recognize a sample as a qc sample.  i.e. 'QC' or 'qc'. 
-#' @param ExpDes ramclustR experimental design object - see RAMClustR::defineExperiment()
 #' @param blank.tag a character string by which to recognize a sample as a blank sample.  i.e. 'blank' or 'Blank'.
 #' @return returns a ramclustR structured object suitable for down stream processing steps. 
 #' @author Corey Broeckling
@@ -19,18 +18,20 @@
 #' 
 
 adap.to.rc <- function(
-  seq = '', 
-  spec.abund = '',  
-  msp = '',  
-  annotations = '', 
-  mzdec = 0, 
-  min.score = 700, 
-  manual.name = TRUE,
-  qc.tag = "qc",
-  ExpDes = NULL,
-  blank.tag = "blank"
+    seq = 'seq.csv',  
+    spec.abund = 'signal.csv', 
+    msp = 'spectra.msp',  
+    annotations = 'annotations.xlsx', 
+    mzdec = 1, # mzdec = 1
+    min.score = 700, 
+    manual.name = FALSE,
+    qc.tag = "qc",
+    blank.tag = "blank",
+    factor.names = c()
 ) {
-
+  
+  require(MSnbase)
+  require(readxl)
   ## read sequence file into R
   if(is.null(seq)) {
     seq <- read.csv("seq.csv", 
@@ -47,10 +48,20 @@ adap.to.rc <- function(
   ## try reading in experimental design
   if(file.exists("ExpDes.Rdata")) load("ExpDes.Rdata")
   if(file.exists("datasets/ExpDes.Rdata")) load("datasets/ExpDes.Rdata")
-  if(!any(ls()=="ExpDes")) {
-    ExpDes <- RAMClustR::defineExperiment()
+  
+  if(any(ls()=="ExpDes")) {
+    factor.names <- ExpDes[[1]][grep("fact", row.names(ExpDes[[1]])),1]
+  } else {
+    if(ncol(seq)>2) {
+      factor.names <- names(seq)[3:length(names(seq))]
+    } else {
+      stop("need factor names")
+    }
   }
-  factor.names <- ExpDes[[1]][grep("fact", row.names(ExpDes[[1]])),1]
+  
+  ## create empty ramclustObj as standard list
+  ramclustObj <- list()
+  
   
   ## read spectra into R and parse
   if(is.null(msp)) {
@@ -97,19 +108,12 @@ adap.to.rc <- function(
   
   
   ## read intensities into R and parse
-  if(is.null(spec.abund)) {
-    spec.abund <- read.csv(
-      "ADAP_BIG/specAbund.csv", 
-      header = TRUE, 
-      check.names = FALSE, 
-      stringsAsFactors = FALSE)
-  } else {
-    spec.abund <- read.csv(
-      spec.abund, 
-      header = TRUE, 
-      check.names = FALSE, 
-      stringsAsFactors = FALSE)
-  }
+  spec.abund <- read.csv(
+    spec.abund, 
+    header = TRUE, 
+    check.names = FALSE, 
+    stringsAsFactors = FALSE)
+  
   ramclustObj$history$adap.big <- paste(
     paste0(
       "ADAP-BIG (Smirnov 2019) was used to detect peaks, align samples, and deconvolve spectra. ",
@@ -118,37 +122,45 @@ adap.to.rc <- function(
   spec.abund <- spec.abund[, endsWith(names(spec.abund), " area")]
   file.names <- gsub(" area", "", names(spec.abund))
   spec.abund <- t(spec.abund)
-  row.names(spec.abund) <- file.names
-  dimnames(spec.abund)[[2]] <- names(spectra)
-  
-  
-  
-  ## create pheno dataframe
-  pheno <- data.frame(
-    "filename" = file.names,
-    "sample.names" = rep(NA, length(file.names))
-  )
-  
-  for(i in 1:nrow(pheno)) {
-    mtch <- grep(unlist(basename(tools::file_path_sans_ext(file.names[i]))), seq[,1], ignore.case = TRUE)
-    if(length(mtch) !=1) stop(paste0("missing ", file.names[i], '\n'))
-    pheno[i,2] <- seq[mtch,2]
+  if(dim(seq)[1] == dim(spec.abund)[1]) {
+    row.names(spec.abund) <- seq[,1]
+    dimnames(spec.abund)[[2]] <- names(spectra)
+    pheno <- seq[,1:2]
+    names(pheno) <- c("filename", "sample.names")
+  } else {
+    row.names(spec.abund) <- file.names
+    pheno <- data.frame(
+      "filename" = file.names,
+      "sample.names" = rep(NA, length(file.names))
+    )
+    for(i in 1:nrow(pheno)) {
+      mtch <- grep(unlist(basename(tools::file_path_sans_ext(file.names[i]))), seq[,1], ignore.case = TRUE)
+      if(length(mtch) !=1) {
+        cat("please select raw (cdf) file directory")
+        raw.dir <- choose.dir()
+        
+      }
+      
+      pheno[i,2] <- seq[mtch,2]
+    }
   }
-  
   
   ## import annotations file
   if(is.null(annotations)) {
     annotations <- NA
   } else {
     annotations <- readxl::read_xlsx(
-      annotations,  sheetIndex = 2,
-      startRow = 2)
+      annotations,  sheet = 2,
+      skip = 1)
     unannotated <- unique(c(
-      which(is.na(annotations$Compound.Name)),
-      grep("Unknown", annotations$Compound.Name)
+      which(is.na(annotations$'Compound Name')),
+      grep("Unknown", annotations$'Compound Name')
     ))
     annotations <- annotations[-unannotated,]
-    annotations <- annotations[which(annotations$Fragmentation.Score.by.matching.with.Experimental.spectra > min.score),]
+    annotations <- annotations[
+      which(
+        annotations$`Fragmentation Score by matching with Experimental spectra` > min.score
+      ),]
     
     ramclustObj$history$adap.kdb <- paste(
       paste0(
@@ -157,20 +169,20 @@ adap.to.rc <- function(
     )
   } 
   
-
+  
   cmpd <- names(spectra)
   ann <- rep(NA, length(cmpd))
   adap.score <- rep(NA, length(cmpd))
   if(is.data.frame(annotations)) {
     for(i in 1:length(spectra)) {
-      use <- annotations[which(annotations$Numerical.Signal.ID.assigned.by.ADAP.KDB == i),]
+      use <- annotations[which(annotations$`Numerical Signal ID assigned by ADAP-KDB` == i),]
       if(length(use) == 0) next
-      use <- use[order(use$Fragmentation.Score.by.matching.with.Experimental.spectra, decreasing = TRUE),]
-      ann[i] <- use$Compound.Name[1]
-      adap.score[i] <- use$Fragmentation.Score.by.matching.with.Experimental.spectra[1]
+      use <- use[order(use$`Fragmentation Score by matching with Experimental spectra`, decreasing = TRUE),]
+      ann[i] <- use$'Compound Name'[1]
+      adap.score[i] <- use$`Fragmentation Score by matching with Experimental spectra`[1]
     }
   }
-
+  
   # ann <- sapply(1:length(ann), FUN = function(x) trimws(unlist(strsplit( ann[x], "]"))[2]))
   
   flag <- rep(FALSE, length(ann))
@@ -201,6 +213,7 @@ adap.to.rc <- function(
   
   phosinchikey <- rep(NA, length(ann))
   inchi <- rep(NA, length(ann))
+  inchikey <- rep(NA, length(ann))
   smiles <- rep(NA, length(ann))
   formula <- rep(NA, length(ann))
   pubchem.cid <- rep(NA, length(ann))
@@ -224,7 +237,7 @@ adap.to.rc <- function(
     pubchem.cid     <- rep(NA, length(cmpd))
     formula         <- rep(NA, length(cmpd))
   }
-
+  
   
   
   is.qc <- grep(qc.tag, pheno[,2])
@@ -235,12 +248,13 @@ adap.to.rc <- function(
   phenoData.samp <- pheno[-unique(c(is.qc, is.blank)),, drop = FALSE]
   phenoData.qc <- pheno[is.qc,,drop = FALSE]
   phenoData.blank <- pheno[is.blank,,drop = FALSE]
-
   
-  ramclustObj <- list()
+  
+  
   if(any(ls()=="factor.names")) {
     ramclustObj$factor.names <- factor.names
   }
+  
   ramclustObj$phenoData <- pheno
   ramclustObj$SpecAbund <- apply(spec.abund, 2, FUN = "median", na.rm = TRUE)
   ramclustObj$qc.cv.feature.msdata <- {
@@ -252,7 +266,7 @@ adap.to.rc <- function(
   ann[which(is.na(ann))] <- cmpd[which(is.na(ann))]
   ramclustObj$ann  <- met.names
   ramclustObj$ann.derivitive <- ann
-  ramclustObj$annconf <- "2a"
+  ramclustObj$annconf <- "2"
   ramclustObj$SpecAbund <- spec.abund
   
   # ramclustObj$qc.spec.abund <- spec.abund.qc
@@ -264,8 +278,8 @@ adap.to.rc <- function(
   ramclustObj$smiles <- smiles
   ramclustObj$pubchem.cid <- pubchem.cid
   
-
-
+  
+  
   
   return(ramclustObj)
   

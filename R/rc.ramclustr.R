@@ -159,7 +159,8 @@ rc.ramclustr  <- function(
   names(eval1)<-c("j", "k") #j for cols, k for rows
   eval1<-eval1[which(eval1[,"j"]<=eval1[,"k"]),] #upper triangle only
   bl<-nrow(eval1)
-  cat(paste("calculating ramclustR similarity: nblocks = ", bl, '\n'))
+  
+  #  cat(paste('\n', "calculating ramclustR similarity: nblocks = ", bl, '\n'))
   ########
   # # Define the RCsim function used to calculate feature similarities on selected blocks of data
   # RCsim<-function(bl)  {
@@ -210,20 +211,29 @@ rc.ramclustr  <- function(
   
   ########
   # Report progress and timing
-  cat("RAMClust feature similarity matrix calculated and stored:", '\n')
-  gc() 
-  
+  # cat("RAMClust feature similarity matrix calculated and stored:", '\n')
+  # gc() 
+  # 
   
   ########
   # extract lower diagonal of ffmat as vector
-  blocksize<-mult*round(blocksize^2/n)
-  nblocks<-floor(n/blocksize)
-  remaind<-n-(nblocks*blocksize)
+  # blocksize<-mult*round(blocksize^2/n)
+  # nblocks<-floor(n/blocksize)
+  # remaind<-n-(nblocks*blocksize)
   
   ########
   # calculate similarity matrix
-  tmp.ramclustObj <- calculate.similarity(n, data1, data2, times, blocksize, mult, maxt, st, sr, rt.only.low.n, cor.method)
   
+  
+  tmp.ramclustObj <- calculate.similarity(
+    numcols = n, 
+    data1 = data1, data2 = data2,
+    times = times, blocksize = blocksize, 
+    mult = mult, maxt = maxt, 
+    st = st, sr = sr, 
+    rt.only.low.n = rt.only.low.n, 
+    cor.method = cor.method)
+
   
   ########
   # create vector for storing dissimilarities

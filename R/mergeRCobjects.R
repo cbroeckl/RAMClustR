@@ -23,14 +23,14 @@
 
 
 mergeRCobjects <- function(
-  ramclustObj.1 = NULL,  
-  ramclustObj.2 = NULL,  
-  mztol = 0.2, 
-  rttol = 30,
-  course.rt.adj = NULL,
-  mzwt = 2,
-  rtwt = 1,
-  intwt = 3
+    ramclustObj.1 = NULL,  
+    ramclustObj.2 = NULL,  
+    mztol = 0.02, 
+    rttol = 30,
+    course.rt.adj = NULL,
+    mzwt = 2,
+    rtwt = 1,
+    intwt = 3
 ) {
   
   if(is.null(ramclustObj.1)) {
@@ -215,35 +215,46 @@ mergeRCobjects <- function(
                       log10(newRC$msint[keep])), digits = 2), sep = ""),
        col = "gray", pch = 19)
   abline(lm(log10(ramclustObj.2$msint[map[keep]]) ~ log10(newRC$msint[keep])), col = 2, lwd = 3)
-
+  
+  
+  newRC$MSdata <- matrix(nrow = (nrow(ramclustObj.1$MSdata) + nrow(ramclustObj.2$MSdata)), ncol = ncol(ramclustObj.1$MSdata))
+  newRC$MSMSdata <- matrix(nrow = (nrow(ramclustObj.1$MSdata) + nrow(ramclustObj.2$MSdata)), ncol = ncol(ramclustObj.1$MSdata))
+  newRC$SpecAbund <- matrix(nrow = nrow(newRC$MSdata), ncol = ncol(ramclustObj.1$SpecAbund))
+  
+  newRC$MSdata[1:nrow(ramclustObj.1$MSdata),] <- ramclustObj.1$MSdata
+  newRC$MSdata[(nrow(ramclustObj.1$MSdata)+1):nrow(newRC$MSdata),which(!is.na(map))] <- ramclustObj.2$MSdata[,map[which(!is.na(map))]]
+  newRC$MSMSdata[1:nrow(ramclustObj.1$MSMSdata),] <- ramclustObj.1$MSMSdata
+  newRC$MSMSdata[(nrow(ramclustObj.1$MSMSdata)+1):nrow(newRC$MSMSdata),which(!is.na(map))] <- ramclustObj.2$MSMSdata[,map[which(!is.na(map))]]
+  
+  
   newRC$SpecAbund.1<-ramclustObj.1$SpecAbund
   newRC$SpecAbund.2<-ramclustObj.2$SpecAbund
-  
-  newRC$SpecAbund <- matrix(nrow = (nrow(ramclustObj.1$MSdata) + nrow(ramclustObj.2$MSdata)), ncol = ncol(newRC$SpecAbund.1))
-  
   cat(" --   collapsing spectra", '\n' )
   
-  wts <- colSums(ramclustObj.1$MSdata)
-  for (ro in 1:nrow(ramclustObj.1$MSdata)) {
+  wts <- colSums(ramclustObj.1$MSdata, na.rm = TRUE)
+  for (ro in 1:nrow(newRC$MSdata)) {
     for (co in 1:ncol(newRC$SpecAbund.1)) {
-      newRC$SpecAbund[ro, co] <- weighted.mean(ramclustObj.1$MSdata[ro, which(ramclustObj.1$featclus == co)], 
-                                               wts[which(ramclustObj.1$featclus ==  co)])
+      newRC$SpecAbund[ro, co] <- weighted.mean(
+        newRC$MSdata[ro, which(ramclustObj.1$featclus == co)], 
+        wts[which(ramclustObj.1$featclus ==  co)],
+        na.rm = TRUE)
     }
   }
   
-  wts <- colSums(ramclustObj.2$MSdata)
-  for (ro in 1:nrow(ramclustObj.2$MSdata)) {
-    for (co in 1:ncol(newRC$SpecAbund.1)) {
-      if(length(which(map == co)) > 0) {
-        newRC$SpecAbund[(ro + nrow(ramclustObj.1$MSdata)), co] <- weighted.mean(ramclustObj.2$MSdata[ro, which(map == co)], 
-                                                                                wts[which(map ==  co)])
-      } else {
-        # cat(co, '\n')
-        newRC$SpecAbund[(ro + nrow(ramclustObj.1$MSdata)), co] <- 0
-      }
-      
-    }
-  }
+  # wts <- colMeans(newRC$MSdata, na.rm = TRUE)
+  # for (ro in 1:nrow(newRC$MSdata)) {
+  #   for (co in 1:ncol(newRC$SpecAbund)) {
+  #     if(length(which(map == co)) > 0) {
+  #       newRC$SpecAbund[ro, co] <- weighted.mean(ramclustObj.2$MSdata[ro, which(map == co)], 
+  #                                                                               wts[which(map ==  co)])
+  #     } else {
+  #       # cat(co, '\n')
+  #       newRC$SpecAbund[ro, co] <- 0
+  #     }
+  #     
+  #   }
+  # }
+  
   dimnames(newRC$SpecAbund)[[2]] <- dimnames(ramclustObj.1$SpecAbund)[[2]]
   rnames <- c(dimnames(ramclustObj.1$SpecAbund)[[1]], dimnames(ramclustObj.2$SpecAbund)[[1]])
   if(length(rnames) == nrow(newRC$SpecAbund) ) {

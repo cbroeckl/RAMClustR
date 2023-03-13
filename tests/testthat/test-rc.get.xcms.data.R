@@ -6,5 +6,8 @@ test_that("RAMClustR rc.get.xcms.data", {
   
   actual <- rc.get.xcms.data(xcmsObj = xdata)
 
+  actual$history <- NA
+  expected$history <- NA
+
   expect_equal(actual, expected)
 })

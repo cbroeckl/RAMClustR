@@ -66,11 +66,8 @@ sonar.calibrate <- function(
     # Sys.sleep(0.5)
   }
   )
-  
-}
 
-
-plot(density.by.bin[[x]]$y, type = "l")  
+  plot(density.by.bin[[x]]$y, type = "l")  
 points(max.int, 1, col = 2, cex = 2)
 points(smooth.spline(density.by.bin[[x]]$y, spar = 0.2), type = "l", col = 2)
 upper.pts <- density.by.bin[[x]]$y[max.int]
@@ -113,12 +110,16 @@ plot(density.by.bin[[x]], type = "l")
 abline(v = density.by.bin[[x]]$x[c(lower.infl, upper.infl)], lwd = 0.2, col = 2)
 lower.cut <- which(under.cdf > 80)[1]
 infl <- which(c(FALSE, diff(diff(under.cdf, lag = 2)>0.5)!=0))[1]
-})
 lower.cut <- which(under.cdf > 80)[1]
+  
+}
+
+
+
 
 ## regress/smooth upper and lower bin boundaries to reduce impact of outliers
 
 ## fix assignment of upper and lower mz bounds per bin
 
 ## return object with structured bin boundary data
-}
+

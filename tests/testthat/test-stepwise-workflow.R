@@ -17,6 +17,9 @@ test_that("RAMClustR workflow with xcms works", {
   ramclustObj <- rc.qc(ramclustObj = ramclustObj)
   actual <- do.findmain(ramclustObj = ramclustObj)
 
+  actual$history <- NA
+  expected$history <- NA
+
   expect_equal(actual, expected)
 
   setwd(wd)

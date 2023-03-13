@@ -1,6 +1,10 @@
 unreleased - dev
   * Added test cases for several functions [PR #3](https://github.com/RECETOX/RAMClustR/pull/3)
+  * Extracted functions for several duplicate code [PR #23](https://github.com/RECETOX/RAMClustR/pull/23)
+  * Added option for dataframe input [PR #25](https://github.com/RECETOX/RAMClustR/pull/25)
+  * Updated ramclustR function with individual function calls [PR #32](https://github.com/RECETOX/RAMClustR/pull/32)
   * Added `sample_names` attribute to `ramclustObj` [PR#33](https://github.com/RECETOX/RAMClustR/pull/33)
+  * Replaced sample.names from phenoData with sample_names attribute in rc.feature files [PR #33](https://github.com/RECETOX/RAMClustR/pull/33)
 
 2022-04-05 Helge Hecht v1.2.4
   * Adapted tests to also be working on MAC M1

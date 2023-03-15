@@ -60,6 +60,8 @@ setwd(wd)
 ```
 
 #### Individual stepwise workflow
+![alt text](https://github.com/zargham-ahmad/RAMClustR/blob/issue_14/docs/ramclustR.png)
+
 Below is a small example of using Individual stepwise workflow.
 ```
 set.seed(123) # to get reproducible results with jitters

@@ -11,6 +11,7 @@
 #' @param manual.name when looking up inchikey/names, should manual input be used to fill ambiguous names? generally recommend TRUE
 #' @param qc.tag a character string by which to recognize a sample as a qc sample.  i.e. 'QC' or 'qc'. 
 #' @param blank.tag a character string by which to recognize a sample as a blank sample.  i.e. 'blank' or 'Blank'.
+#' @param factor.names factor names
 #' @return returns a ramclustR structured object suitable for down stream processing steps. 
 #' @author Corey Broeckling
 #' 

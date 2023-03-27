@@ -6,7 +6,7 @@ A feature clustering algorithm for non-targeted mass spectrometric metabolomics 
 ### Installation
 The newest version of the package can be installed through conda from [bioconda](https://anaconda.org/bioconda/r-ramclustr) channel:
 
-```
+```bash
 conda install -c bioconda r-ramclustr
 ```
 
@@ -28,7 +28,7 @@ Main clustering function output - see citation for algorithm description or vign
 There are two pathways for using RAMClustR; You can use either use the main ramclustR function or the individual stepwise workflow. 
 
 Below is a small example of using main ramclustR function.
-```
+```R
 ## Choose input file with feature column names `mz_rt` (expected by default).
 ## Column with sample name is expected to be first (by default).
 ## These can be adjusted with the `featdelim` and `sampNameCol` parameters.
@@ -63,7 +63,7 @@ setwd(wd)
 ![alt text](https://github.com/zargham-ahmad/RAMClustR/blob/issue_14/docs/ramclustR.png)
 
 Below is a small example of using Individual stepwise workflow.
-```
+```R
 set.seed(123) # to get reproducible results with jitters
 wd <- getwd()
 tmp <- tempdir()
@@ -92,7 +92,7 @@ setwd(wd)
 ## Documentation for developers
 
 ### Installation
-```
+```bash
 git clone https://github.com/cbroeckl/RAMClustR.git
 cd RAMClustR
 conda env create -n ramclustr-dev -f=conda/environment-dev.yaml
@@ -100,7 +100,7 @@ conda activate ramclustr-dev
 ```
 
 ### Testing
-```
+```R
 # Activate the ramclustr-dev environment
 # Run the below command on R console
 devtools::test()

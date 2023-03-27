@@ -29,9 +29,15 @@ adap.to.rc <- function(
     blank.tag = "blank",
     factor.names = c()
 ) {
-  
-  require(MSnbase)
-  require(readxl)
+
+  if (!requireNamespace("MSnbase", quietly = TRUE)) {
+    stop("The use of this function requires package 'MSnbase'.")
+  }
+
+  if (!requireNamespace("readxl", quietly = TRUE)) {
+    stop("The use of this function requires package 'readxl'.")
+  }
+
   ## read sequence file into R
   if(is.null(seq)) {
     seq <- read.csv("seq.csv", 

@@ -7,6 +7,7 @@
 ramclustR(
   xcmsObj = NULL,
   ms = NULL,
+  pheno_csv = NULL,
   idmsms = NULL,
   taglocation = "filepaths",
   MStag = NULL,
@@ -43,6 +44,8 @@ ramclustR(
 \item{xcmsObj}{xcmsObject: containing grouped feature data for clustering by ramclustR}
 
 \item{ms}{filepath: optional csv input. Features as columns, rows as samples. Column header mz_rt}
+
+\item{pheno_csv}{filepath: optional csv input containing phenoData}
 
 \item{idmsms}{filepath: optional idMSMS / MSe csv data.  same dim and names as ms required}
 
@@ -163,8 +166,9 @@ ramclustobj <- ramclustR(ms = filename, st = 5, maxt = 1, blocksize = 1000)
 ## or inspect the `ramclustobj` for feature retention times, annotations etc.
 print(ramclustobj$ann)
 print(ramclustobj$nfeat)
-print(ramclustobj$SpecAbund[,1:6])
+print(ramclustobj$SpecAbund[, 1:6])
 setwd(wd)
+
 }
 \references{
 Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.

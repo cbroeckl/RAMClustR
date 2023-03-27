@@ -23,7 +23,8 @@ rc.cmpd.get.pubchem(
   find.short.synonym = TRUE,
   max.name.length = 30,
   assign.short.name = TRUE,
-  get.bioassays = FALSE,
+  get.bioassays = TRUE,
+  get.pathways = TRUE,
   write.csv = TRUE
 )
 }
@@ -63,6 +64,8 @@ rc.cmpd.get.pubchem(
 \item{assign.short.name}{= TRUE.  If TRUE, short names from find.short.lipid.name and/or find.short.synonym = TRUE, short names are assigned the be the default annotation name ($ann slot), and original annotations are moved to $long.name slot.}
 
 \item{get.bioassays}{logical. If TRUE, return a table summarizing existing bioassay data for that CID.}
+
+\item{get.pathways}{logical.  If TRUE, return a table of metabolic pathways for that CID.}
 
 \item{write.csv}{logical.  If TRUE, write csv files of all returned pubchem data.}
 }

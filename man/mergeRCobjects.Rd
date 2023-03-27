@@ -7,7 +7,7 @@
 mergeRCobjects(
   ramclustObj.1 = NULL,
   ramclustObj.2 = NULL,
-  mztol = 0.2,
+  mztol = 0.02,
   rttol = 30,
   course.rt.adj = NULL,
   mzwt = 2,

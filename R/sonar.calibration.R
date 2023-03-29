@@ -1,3 +1,5 @@
+#' @importFrom stats density smooth.spline
+
 sonar.calibrate <- function(
     raw.sonar.data = d.spectra,
     nominal.mass.range = 10,

@@ -13,6 +13,7 @@
 #' @param blank.tag a character string by which to recognize a sample as a blank sample.  i.e. 'blank' or 'Blank'.
 #' @param factor.names factor names
 #' @return returns a ramclustR structured object suitable for down stream processing steps. 
+#' @importFrom methods new
 #' @author Corey Broeckling
 #' 
 #' @export 

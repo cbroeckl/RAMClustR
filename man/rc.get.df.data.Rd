@@ -60,6 +60,17 @@ extractor for dataframe input in preparation for normalization and clustering
 \details{
 This function creates a ramclustObj which will be used as input for clustering.
 }
+\examples{
+## Choose dataframe with metadata with columns: mz, rt, feature names containing MS data
+## Choose dataframe with rownames = sample names, colnames = feature names containing MS data
+## Choose dataframe containing phenoData 
+ms1_featureDefinitions <- readRDS(system.file("extdata", "ms1_featureDefinitions.rds", package = "RAMClustR", mustWork = TRUE))
+ms1_featureValues <- readRDS(system.file("extdata", "ms1_featureValues.rds", package = "RAMClustR", mustWork = TRUE))
+phenoData <- readRDS(system.file("extdata", "phenoData_df.rds", package = "RAMClustR", mustWork = TRUE))
+
+ramclustobj <- rc.get.df.data(ms1_featureDefinitions = ms1_featureDefinitions, ms1_featureValues = ms1_featureValues, phenoData = phenoData, st = 5)
+
+}
 \references{
 Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 

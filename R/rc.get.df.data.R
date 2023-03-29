@@ -137,6 +137,16 @@ checks <- function(ms1_featureDefinitions = NULL,
 #' @concept xcms
 #' @author Zargham Ahmad, Helge Hecht, Corey Broeckling
 #' @export
+#' @examples
+#' ## Choose dataframe with metadata with columns: mz, rt, feature names containing MS data
+#' ## Choose dataframe with rownames = sample names, colnames = feature names containing MS data
+#' ## Choose dataframe containing phenoData 
+#' df1 <- readRDS(system.file("extdata", "featDefinition.rds", package = "RAMClustR", mustWork = TRUE))
+#' df2 <- readRDS(system.file("extdata", "featValues.rds", package = "RAMClustR", mustWork = TRUE))
+#' df3 <- readRDS(system.file("extdata", "phenoData_df.rds", package = "RAMClustR", mustWork = TRUE))
+#'
+#' ramclustr <- rc.get.df.data(ms1_featureDefinitions=df1, ms1_featureValues=df2, phenoData=df3, st=5)
+#'
 
 rc.get.df.data <- function(ms1_featureDefinitions = NULL,
                            ms1_featureValues = NULL,

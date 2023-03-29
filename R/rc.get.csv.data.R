@@ -58,6 +58,14 @@ compute_wt_mean <- function(data, global.min, fmz, ensure.no.na) {
 #' @concept xcms
 #' @author Corey Broeckling
 #' @export
+#' @examples
+#' ## Choose csv input file. Features as columns, rows as samples
+#' ## Choose csv input file phenoData 
+#' filename <- system.file("extdata", "peaks.csv", package = "RAMClustR", mustWork = TRUE)
+#' phenoData <- system.file("extdata", "phenoData.csv", package = "RAMClustR", mustWork = TRUE)
+#'
+#' ramclustobj <- rc.get.csv.data(csv = filename, phenoData = phenoData, st = 5)
+#'
 
 rc.get.csv.data <- function(csv = NULL,
                             phenoData = NULL,

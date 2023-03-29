@@ -64,11 +64,11 @@ This function creates a ramclustObj which will be used as input for clustering.
 ## Choose dataframe with metadata with columns: mz, rt, feature names containing MS data
 ## Choose dataframe with rownames = sample names, colnames = feature names containing MS data
 ## Choose dataframe containing phenoData 
-ms1_featureDefinitions <- readRDS(system.file("extdata", "ms1_featureDefinitions.rds", package = "RAMClustR", mustWork = TRUE))
-ms1_featureValues <- readRDS(system.file("extdata", "ms1_featureValues.rds", package = "RAMClustR", mustWork = TRUE))
-phenoData <- readRDS(system.file("extdata", "phenoData_df.rds", package = "RAMClustR", mustWork = TRUE))
+df1 <- readRDS(system.file("extdata", "featDefinition.rds", package = "RAMClustR", mustWork = TRUE))
+df2 <- readRDS(system.file("extdata", "featValues.rds", package = "RAMClustR", mustWork = TRUE))
+df3 <- readRDS(system.file("extdata", "phenoData_df.rds", package = "RAMClustR", mustWork = TRUE))
 
-ramclustobj <- rc.get.df.data(ms1_featureDefinitions = ms1_featureDefinitions, ms1_featureValues = ms1_featureValues, phenoData = phenoData, st = 5)
+ramclustr <- rc.get.df.data(ms1_featureDefinitions=df1, ms1_featureValues=df2, phenoData=df3, st=5)
 
 }
 \references{

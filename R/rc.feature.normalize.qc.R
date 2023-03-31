@@ -77,7 +77,7 @@ rc.feature.normalize.qc <- function(ramclustObj = NULL,
   )
 
   ## define QC samples in each set
-  if(length(qc.tag) == 1) {
+  if(!is.null(qc.tag)) {
     qc <- grepl(qc.tag[1], ramclustObj$sample_names)
   }
 

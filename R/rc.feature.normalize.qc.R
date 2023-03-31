@@ -77,7 +77,9 @@ rc.feature.normalize.qc <- function(ramclustObj = NULL,
   )
 
   ## define QC samples in each set
-  qc <- grepl(qc.tag[1], ramclustObj$sample_names)
+  if(length(qc.tag) == 1) {
+    qc <- grepl(qc.tag[1], ramclustObj$sample_names)
+  }
 
   if (!is.logical(qc)) {
     stop("qc must be a logical vector", "\n")

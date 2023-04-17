@@ -32,3 +32,4 @@ dependencies:
   - qpdf
   - r-rhub
   - r-rentrez
+  - r-covr

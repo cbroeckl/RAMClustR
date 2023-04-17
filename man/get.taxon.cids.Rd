@@ -4,7 +4,7 @@
 \alias{get.taxon.cids}
 \title{get.taxon.cids}
 \usage{
-get.taxon.cids(taxid = 4498)
+get.taxon.cids(taxid = 4496, sub.taxa.n = 1000)
 }
 \arguments{
 \item{taxid}{integer NCBI taxid for the taxon to search.}

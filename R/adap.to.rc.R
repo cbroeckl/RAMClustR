@@ -11,7 +11,9 @@
 #' @param manual.name when looking up inchikey/names, should manual input be used to fill ambiguous names? generally recommend TRUE
 #' @param qc.tag a character string by which to recognize a sample as a qc sample.  i.e. 'QC' or 'qc'. 
 #' @param blank.tag a character string by which to recognize a sample as a blank sample.  i.e. 'blank' or 'Blank'.
+#' @param factor.names factor names
 #' @return returns a ramclustR structured object suitable for down stream processing steps. 
+#' @importFrom methods new
 #' @author Corey Broeckling
 #' 
 #' @export 
@@ -29,9 +31,15 @@ adap.to.rc <- function(
     blank.tag = "blank",
     factor.names = c()
 ) {
-  
-  require(MSnbase)
-  require(readxl)
+
+  if (!requireNamespace("MSnbase", quietly = TRUE)) {
+    stop("The use of this function requires package 'MSnbase'.")
+  }
+
+  if (!requireNamespace("readxl", quietly = TRUE)) {
+    stop("The use of this function requires package 'readxl'.")
+  }
+
   ## read sequence file into R
   if(is.null(seq)) {
     seq <- read.csv("seq.csv", 

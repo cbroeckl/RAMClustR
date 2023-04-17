@@ -60,6 +60,15 @@ extractor for csv objects in preparation for normalization and clustering
 \details{
 This function creates a ramclustObj which will be used as input for clustering.
 }
+\examples{
+## Choose csv input file. Features as columns, rows as samples
+## Choose csv input file phenoData 
+filename <- system.file("extdata", "peaks.csv", package = "RAMClustR", mustWork = TRUE)
+phenoData <- system.file("extdata", "phenoData.csv", package = "RAMClustR", mustWork = TRUE)
+
+ramclustobj <- rc.get.csv.data(csv = filename, phenoData = phenoData, st = 5)
+
+}
 \references{
 Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 

@@ -37,6 +37,10 @@ check_arguments_filter.cv <- function(ramclustObj, qc.tag) {
 
 define_samples <- function(ramclustObj, tag) {
   ## define samples in each set
+  if(length(tag) == 0) {
+    stop("no tag provided", "\n")
+  }
+
   samples <- grep(tag[1], ramclustObj$sample_names)
   samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
 

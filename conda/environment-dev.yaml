@@ -31,4 +31,5 @@ dependencies:
   - r-rmarkdown
   - qpdf
   - r-rhub
+  - r-rentrez
   - r-covr

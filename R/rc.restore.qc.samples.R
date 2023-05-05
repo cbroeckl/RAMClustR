@@ -20,7 +20,7 @@
 #' @export
 
 rc.restore.qc.samples<-function(
-  ramclustObj=NULL
+  ramclustObj = NULL
 ){
   
   if(is.null(ramclustObj)) {
@@ -40,29 +40,35 @@ rc.restore.qc.samples<-function(
   } 
   
   do.sets.rows <- sapply(
-    c(do.sets, "phenoData"), 
+    c(do.sets, "phenoData", "sample_names"),
     FUN = function(x) {
-      nrow(ramclustObj[[x]])
+      NROW(ramclustObj[[x]])
     })
-  
+
   if(!all.equal(
     do.sets.rows, do.sets.rows)
   ) {
     stop("number of rows in sample sets are not identical.")
   }
-  
+
   do.sets <- names(ramclustObj$qc)
   for(x in c(do.sets)) {
-    ramclustObj[[x]] <- rbind(ramclustObj[[x]], ramclustObj$qc[[x]])
+    if(is.vector(ramclustObj[[x]])){
+      ramclustObj[[x]] <- append(ramclustObj[[x]], ramclustObj$qc[[x]])
+    } else {
+      ramclustObj[[x]] <- rbind(ramclustObj[[x]], ramclustObj$qc[[x]])
+    }
   }
-  
+
   ramclustObj$qc <- NULL
-  
+
   ord.pheno <- order(as.numeric(row.names(ramclustObj$phenoData)))
   for(x in c(do.sets)) {
-    ramclustObj[[x]] <- ramclustObj[[x]][ord.pheno,]
+    if (is.vector(ramclustObj[[x]])) {
+      ramclustObj[[x]] <- ramclustObj[[x]][ord.pheno]
+    } else {
+    ramclustObj[[x]] <- ramclustObj[[x]][ord.pheno, ]
+    }
   }
   return(ramclustObj)
 }
-
-

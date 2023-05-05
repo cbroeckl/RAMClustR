@@ -15,6 +15,7 @@ dependencies:
   - r-ff
   - bioconductor-msnbase
   - bioconductor-xcms
+  - bioconductor-spectra
   - r-rcurl
   - r-webchem
   - r-stringi
@@ -30,3 +31,5 @@ dependencies:
   - r-rmarkdown
   - qpdf
   - r-rhub
+  - r-rentrez
+  - r-covr

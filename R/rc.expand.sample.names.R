@@ -32,8 +32,8 @@ rc.expand.sample.names <- function(
   )
 
 
-  if(!is.null(ramclustObj$phenoData$sample.names)) {
-    sn <- as.character(ramclustObj$phenoData$sample.names)
+  if(!is.null(ramclustObj$phenoData$sample.names.sample_name)) {
+    sn <- as.character(ramclustObj$phenoData$sample.names.sample_name)
   }
   if(!is.null(ramclustObj$phenoData$sample.names.sn)) {
     sn <- as.character(ramclustObj$phenoData$sample.names.sn)

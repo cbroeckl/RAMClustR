@@ -8,17 +8,20 @@ rc.feature.replace.na(
   ramclustObj = NULL,
   replace.int = 0.1,
   replace.noise = 0.1,
-  replace.zero = TRUE
+  replace.zero = TRUE,
+  which.data = c("MSdata", "MSMSdata")
 )
 }
 \arguments{
 \item{ramclustObj}{ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)}
 
-\item{replace.int}{default = 0.2.  proportion of minimum feature value to replace NA (or zero) values with}
+\item{replace.int}{default = 0.1.  proportion of minimum feature value to replace NA (or zero) values with}
 
-\item{replace.noise}{default = 0.2.  proportion ofreplace.int value by which noise is added via 'jitter'}
+\item{replace.noise}{default = 0.1.  proportion ofreplace.int value by which noise is added via 'jitter'}
 
 \item{replace.zero}{logical if TRUE, any zero values are replaced with noise as if they were NA values}
+
+\item{which.data}{name of dataset}
 }
 \value{
 ramclustR object with NA and zero values removed.

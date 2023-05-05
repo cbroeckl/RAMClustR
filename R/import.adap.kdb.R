@@ -8,7 +8,6 @@
 #' @param annotate logical.  TRUE by default.  for now please leave default
 #' @param manual.name when looking up inchikey/names, should manual input be used to fill ambiguous names? generally recommend TRUE
 #' @return returns a ramclustR structured object suitable for down stream processing steps. 
-#' @importFrom readxl read_xlsx
 #' @author Corey Broeckling
 #' 
 #' @export 
@@ -22,6 +21,9 @@ import.adap.kdb <- function(
   manual.name = TRUE
 ) {
   
+  if (!requireNamespace("readxl", quietly = TRUE)) {
+    stop("The use of this function requires package 'readxl'.")
+  }
   
   ## import annotations file
   if(is.null(annotations)) {

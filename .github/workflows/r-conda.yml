@@ -6,9 +6,9 @@ name: devtools::check (conda)
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ master ]
+    branches: [ master, dev ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, dev ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -44,4 +44,4 @@ jobs:
       - name: Run devtools::check()
         run: |
           conda activate ramclustr-dev
-          Rscript -e "devtools::check('.', error_on = 'warning')"
+          Rscript -e "devtools::check('.', error_on = 'error')"

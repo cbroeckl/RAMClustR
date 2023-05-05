@@ -12,6 +12,10 @@
 
 get.taxon.cids <- function(taxid = 4496, sub.taxa.n = 1000) {
   
+  if (!requireNamespace("rentrez", quietly = TRUE)) {
+    stop("The use of this function requires package 'rentrez'.")
+  }
+
   if(sub.taxa.n > 0) {
     sub.taxid <- rentrez::entrez_search(db = "taxonomy", term = paste0("txid", taxid, "[Subtree]"), retmax = sub.taxa.n)
     sub.taxid <- as.integer(sub.taxid$ids)

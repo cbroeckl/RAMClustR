@@ -5,16 +5,16 @@
 \title{adap.to.rc}
 \usage{
 adap.to.rc(
-  seq = "",
-  spec.abund = "",
-  msp = "",
-  annotations = "",
-  mzdec = 0,
+  seq = "seq.csv",
+  spec.abund = "signal.csv",
+  msp = "spectra.msp",
+  annotations = "annotations.xlsx",
+  mzdec = 1,
   min.score = 700,
-  manual.name = TRUE,
+  manual.name = FALSE,
   qc.tag = "qc",
-  ExpDes = NULL,
-  blank.tag = "blank"
+  blank.tag = "blank",
+  factor.names = c()
 )
 }
 \arguments{
@@ -22,21 +22,21 @@ adap.to.rc(
 
 \item{spec.abund}{file name/path to adap-big export of signal intensities. .csv file expected}
 
-\item{msp}{file name/path to .msp file created by adap-big (optional)}
+\item{msp}{file name/path to .msp file created by adap-big}
 
-\item{annotations}{file name/path to annotations .xlsx file.  generally 'simple_export.xlsx' (optional)}
+\item{annotations}{file name/path to annotations .xlsx file.  generally 'simple_export.xlsx'}
 
-\item{mzdec}{mz decimals to report for internal storage/reporting.  generally we want 0 for adap kdb low resolution GC-quad instruments.}
+\item{mzdec}{mz decimals to report for internal storage/reporting.  generally we want 0 for adap kdb}
 
 \item{min.score}{700 (out of 1000) by default}
 
-\item{manual.name}{when looking up inchikey/names, should manual input be used to fill ambiguous names? generally recommend TRUE, but requires user input. for unsupervised workflows set to FALSE.}
+\item{manual.name}{when looking up inchikey/names, should manual input be used to fill ambiguous names? generally recommend TRUE}
 
 \item{qc.tag}{a character string by which to recognize a sample as a qc sample.  i.e. 'QC' or 'qc'.}
 
-\item{ExpDes}{ramclustR experimental design object - see RAMClustR::defineExperiment()}
-
 \item{blank.tag}{a character string by which to recognize a sample as a blank sample.  i.e. 'blank' or 'Blank'.}
+
+\item{factor.names}{factor names}
 }
 \value{
 returns a ramclustR structured object suitable for down stream processing steps.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/rc.calibrate.ri.R
 \name{rc.calibrate.ri}
 \alias{rc.calibrate.ri}
-\title{rc.cmpd.filter.cv}
+\title{rc.calibrate.ri}
 \usage{
 rc.calibrate.ri(ramclustObj = NULL, calibrant.data = "", poly.order = 3)
 }

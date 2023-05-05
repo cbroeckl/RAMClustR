@@ -67,16 +67,7 @@ rc.qc<-function(ramclustObj=NULL,
   }
   
   ## define QC samples in each set
-  if(length(qc.tag) == 1) {
-    qc <- grepl(qc.tag[1], ramclustObj$phenoData$sample.names)
-  } 
-  if(length(qc.tag) == 2) {
-    qc <- grepl(qc.tag[1], ramclustObj$phenoData[[qc.tag[2]]])
-  }
-  
-  if(length(which(qc)) == 0) {
-    stop("no QC samples found using the qc.tag ", "'", qc.tag, "'", '\n')
-  }
+  qc <- define_samples(ramclustObj = ramclustObj, tag = qc.tag)
   
   ## create directory
   dir.create("QC")
@@ -119,9 +110,8 @@ rc.qc<-function(ramclustObj=NULL,
   ## PCA of QC samples
   ## histogram of feature and/or compound CVs for QC samples
   
-  qc <- which(qc)
-  
-  cols<-rep(8, nrow(ramclustObj$phenoData))
+  cols<-rep(8, length(ramclustObj$sample_names))
+  #cols<-rep(8, nrow(ramclustObj$phenoData))
   cols[qc]<-2
   
   for(x in do.sets) {

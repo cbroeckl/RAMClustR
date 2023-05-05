@@ -10,7 +10,7 @@
 #' @param posts.per.minute  integer; a limit set when 'get.all' is true.  ClassyFire server accepts no more than 5 posts per minute when calculating new ClassyFire results.  Slows down submission process to keep server from denying access.  
 #' @return returns a ramclustR object.  new dataframe in $classyfire slot with rows equal to number of compounds.  
 #' @importFrom jsonlite fromJSON
-#' @importFrom RCurl url.exists
+#' @importFrom httr http_error
 #' @concept ramclustR
 #' @concept RAMClustR
 #' @concept metabolomics
@@ -38,6 +38,10 @@ rc.cmpd.get.classyfire <- function (ramclustObj = NULL, inchikey = NULL, get.all
     ramclustObj$cmpd <- paste0("C", 1:length(inchikey))
     ramclustObj[['inchikey']] <- inchikey
 
+  }
+
+  if (!requireNamespace("httr", quietly = TRUE)) {
+    stop("The use of this function requires package 'httr'.")
   }
   
   params <- c(
@@ -187,7 +191,7 @@ rc.cmpd.get.classyfire <- function (ramclustObj = NULL, inchikey = NULL, get.all
         while (out$number_of_elements == 0) {
           Sys.sleep(1)
           
-          if(!RCurl::url.exists(paste0("http://classyfire.wishartlab.com/queries/",  query = query_id$id, ".json"))) {
+          if(httr::http_error(paste0("http://classyfire.wishartlab.com/queries/",  query = query_id$id, ".json"))) {
             cat(" not done", '\n')
             break
           }

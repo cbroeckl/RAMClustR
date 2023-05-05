@@ -16,13 +16,13 @@ Authors@R:
              email = "helge.hecht@recetox.muni.cz",
              role = c("cre"),
              comment = c(ORCID = "0000-0001-6744-996X")))
-Imports: dynamicTreeCut, fastcluster, ff, httr, jsonlite, preprocessCore, e1071, gplots, pcaMethods, stringr, utils, webchem, RCurl, ggplot2, readxl, Spectra
+Imports: dynamicTreeCut, fastcluster, ff, httr, jsonlite, preprocessCore, e1071, gplots, pcaMethods, stringr, utils, webchem, ggplot2, Spectra, methods
 Depends: R (>= 3.5.0)
-Suggests: knitr, rmarkdown, xcms, testthat, MSnbase, InterpretMSSpectrum, BiocManager, xml2, stringi
+Suggests: knitr, rmarkdown, xcms, testthat, MSnbase, InterpretMSSpectrum, BiocManager, xml2, stringi, readxl, curl, rentrez
 License: GPL (>= 2)
 Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics data. This method is compatible with gas and liquid chromatography coupled mass spectrometry, including indiscriminant tandem mass spectrometry <DOI: 10.1021/ac501530d> data. 
 URL: https://github.com/cbroeckl/RAMClustR
 Encoding: UTF-8
 biocViews: MassSpectrometry, Metabolomics
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr

@@ -237,12 +237,14 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
     mzs <- round(xcmsObj@msFeatureData$featureDefinitions$mzmed, digits = mzdec)
   }
 
+  featnames <- rownames(xcms::featureDefinitions(xcmsObj))
+  
   # reorder feature data by RT, record original xcmsOrder
   xcmsOrd <- order(times)
   data <- data[, xcmsOrd]
   mzs <- mzs[xcmsOrd]
   times <- times[xcmsOrd]
-  featnames <- paste(mzs, "_", times, sep = "")
+  featnames <- featnames[xcmsOrd]
   dimnames(data)[[2]] <- featnames
   dimnames(data)[[1]] <- filenames
 

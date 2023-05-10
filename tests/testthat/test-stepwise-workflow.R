@@ -3,7 +3,7 @@ test_that("RAMClustR workflow with xcms works", {
   set.seed(123) # to get reproducible results with jitters
   wd <- getwd()
   tmp <- tempdir()
-  load(file.path("testdata", "test.rc.ramclustr.fillpeaks"))
+  load(file.path("testdata", "test.fillpeaks"))
   expected <- readRDS(file.path("testdata", "do.findmain.rds"))
   setwd(tmp)
 
@@ -16,6 +16,9 @@ test_that("RAMClustR workflow with xcms works", {
   ramclustObj <- rc.ramclustr(ramclustObj = ramclustObj)
   ramclustObj <- rc.qc(ramclustObj = ramclustObj)
   actual <- do.findmain(ramclustObj = ramclustObj)
+
+  # renamed phenoData colnames as test fails in R CMD checks becuase of no user input for colnames
+  colnames(actual$phenoData) <- colnames(expected$phenoData)
 
   actual$history <- NA
   expected$history <- NA

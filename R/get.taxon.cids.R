@@ -10,8 +10,9 @@
 #' @export 
 #' 
 
-get.taxon.cids <- function(taxid = 4496, sub.taxa.n = 1000) {
+get.taxon.cids <- function(taxid = NULL, taxstring = NULL, sub.taxa.n = 1000, get.inchikey = TRUE) {
   
+<<<<<<< Updated upstream
   if (!requireNamespace("rentrez", quietly = TRUE)) {
     stop("The use of this function requires package 'rentrez'.")
   }
@@ -22,75 +23,175 @@ get.taxon.cids <- function(taxid = 4496, sub.taxa.n = 1000) {
     if(length(sub.taxid)> 0) {
       taxid <- sort(unique(c(taxid, sub.taxid)))
     }
+=======
+  if(is.null(taxid) & is.null(taxstring)) {
+    stop("you must submit a valid inter NCBI Taxonomy ID value (taxid) or taxonomy string (taxstring) for the taxon of interest.", '\n',
+         " - i.e. taxid = 9606 for Homo sapiens ", '\n',
+         " - or taxstring = 'Homo sapiens'", '\n')
+>>>>>>> Stashed changes
   }
   
-
-  all.cids <- vector(length = 0, mode = "integer")
-  
-  cat("retrieving metabolites for taxid: ", '\n')
-  
-  for(i in 1:length(taxid)) {
-    cat(taxid[i], " ")
-    cids <- vector(length = 0, mode = "integer")
-    ## metabolites
-    url.csv1 <-  paste0(
-      "https://pubchem.ncbi.nlm.nih.gov/sdq/sdqagent.cgi?infmt=json&outfmt=csv&query={%22download%22:%22*%22,%22collection%22:%22consolidatedcompoundtaxonomy%22,%22where%22:{%22ands%22:[{%22taxid%22:%22",
-      taxid[i],
-      "%22},{%22srccmpdkind%22:%22Metabolite%22}]},%22order%22:[%22cid,asc%22],%22start%22:1,%22limit%22:10000000,%22downloadfilename%22:%22TaxID_",
-      taxid[i],
-      "_consolidatedcompoundtaxonomy%22}")
-    d1 <- read.csv(url.csv1)
-    if(any(colnames(d1) == "cid")) {
-      cids <- c(cids, as.numeric(d1[which(!(d1[,"cid"] == "NULL")),"cid"]))
-    }
-    
-    ## natural products
-    url.csv2 <- paste0(
-      "https://pubchem.ncbi.nlm.nih.gov/sdq/sdqagent.cgi?infmt=json&outfmt=csv&query={%22download%22:%22*%22,%22collection%22:%22consolidatedcompoundtaxonomy%22,%22where%22:{%22ands%22:[{%22taxid%22:%22",
-      taxid[i],
-      "%22},{%22srccmpdkind%22:%22Natural%20Product%22}]},%22order%22:[%22cid,asc%22],%22start%22:1,%22limit%22:10000000,%22downloadfilename%22:%22TaxID_",
-      taxid[i],
-      "_consolidatedcompoundtaxonomy%22}"
-    )
-    d2 <- read.csv(url.csv2)
-    if(any(colnames(d2) == "cid")) {
-      cids <- c(cids, as.numeric(d2[which(!(d2[,"cid"] == "NULL")),"cid"]))
-    }
-    
-    ## metabolic pathway metabolites
-    url.csv3 <- paste0(
-      "https://pubchem.ncbi.nlm.nih.gov/assay/pcget.cgi?task=pathway_chemical&taxid=",
-                       taxid[i],
-                       "&start=1&limit=10000000&download=true&downloadfilename=TaxID_",
-                       taxid[i],
-                       "_pcget_pathway_chemical&infmt=json&outfmt=csv"
-    )
-    d3 <- read.csv(url.csv3)
-    if(any(colnames(d3) == "cid")) {
-      cids <- c(cids, as.numeric(d3[which(!(d3[,"cid"] == "NULL")),"cid"]))
-    }
-    
-    ## glycans
-    url.csv4 <- paste0( 
-      "https://pubchem.ncbi.nlm.nih.gov/sdq/sdqagent.cgi?infmt=json&outfmt=csv&query={%22download%22:%22*%22,%22collection%22:%22glycosmos_glycan%22,%22where%22:{%22ands%22:[{%22taxid%22:%22",
-      taxid[i],
-      "%22}]},%22order%22:[%22relevancescore,desc%22],%22start%22:1,%22limit%22:10000000,%22downloadfilename%22:%22TaxID_",
-      taxid[i],
-      "_glycosmos_glycan%22}"
-    )
-    d4 <- read.csv(url.csv4)
-    if(any(colnames(d4) == "cid")) {
-      cids <- c(cids, as.numeric(d4[which(!(d4[,"cid"] == "NULL")),"cid"]))
-    }
-    
-    cids <- unique(cids)
-    all.cids <- sort(unique(c(all.cids, cids)))
+  if(!is.null(taxid) & !is.null(taxstring)) {
+    stop("you must submit either a valid inter NCBI Taxonomy ID value (taxid) or taxonomy string (taxstring) for the taxon of interest. Not both.", '\n')
   }
   
-  return(all.cids)
+  
+  
+  taxid <- rentrez::entrez_search(db = "taxonomy", term = paste0(taxstring, "[All names]"))
+  if(length(taxid$ids) == 0) warning("No taxon matched: returning NA", '\n')
+  if(length(taxid$ids) > 0 ) {
+    if(length(taxid$ids) > 1) warning("More than one taxon matched - only the smallest taxid will be used", '\n')
+    taxid <- taxid$ids[which.min(taxid$ids)]
+    
+    closePubchemConnections <- function (desc.rem = "pubchem") {
+      d <- showConnections(all = TRUE)
+      desc <- d[,"description"]
+      desc <- desc[grepl(desc.rem, desc)]
+      set <- as.integer(as.numeric(names(desc)))
+      if(length(set) > 0) {
+        for (i in seq_along(set)) close(getConnection(set[i]))
+      }
+      gc()
+      invisible()
+    }
+    closePubchemConnections()
+    
+    if(sub.taxa.n > 0) {
+      sub.taxid <- rentrez::entrez_search(db = "taxonomy", term = paste0("txid", taxid, "[Subtree]"), retmax = sub.taxa.n)
+      sub.taxid <- as.integer(sub.taxid$ids)
+      if(length(sub.taxid)> 0) {
+        taxid <- sort(unique(c(taxid, sub.taxid)))
+      }
+    }
+    
+    
+    all.cids <- vector(length = 0, mode = "integer")
+    
+    cat("retrieving metabolites for taxid: ", '\n')
+    
+    for(i in 1:length(taxid)) {
+      cat(taxid[i], " ")
+      cids <- vector(length = 0, mode = "integer")
+      ## metabolites
+      url.csv1 <-  paste0(
+        "https://pubchem.ncbi.nlm.nih.gov/sdq/sdqagent.cgi?infmt=json&outfmt=csv&query={%22download%22:%22*%22,%22collection%22:%22consolidatedcompoundtaxonomy%22,%22where%22:{%22ands%22:[{%22taxid%22:%22",
+        taxid[i],
+        "%22},{%22srccmpdkind%22:%22Metabolite%22}]},%22order%22:[%22cid,asc%22],%22start%22:1,%22limit%22:10000000,%22downloadfilename%22:%22TaxID_",
+        taxid[i],
+        "_consolidatedcompoundtaxonomy%22}")
+      d1 <- read.csv(url.csv1)
+      if(any(colnames(d1) == "cid")) {
+        cids <- c(cids, as.numeric(d1[which(!(d1[,"cid"] == "NULL")),"cid"]))
+      }
+      
+      ## natural products
+      url.csv2 <- paste0(
+        "https://pubchem.ncbi.nlm.nih.gov/sdq/sdqagent.cgi?infmt=json&outfmt=csv&query={%22download%22:%22*%22,%22collection%22:%22consolidatedcompoundtaxonomy%22,%22where%22:{%22ands%22:[{%22taxid%22:%22",
+        taxid[i],
+        "%22},{%22srccmpdkind%22:%22Natural%20Product%22}]},%22order%22:[%22cid,asc%22],%22start%22:1,%22limit%22:10000000,%22downloadfilename%22:%22TaxID_",
+        taxid[i],
+        "_consolidatedcompoundtaxonomy%22}"
+      )
+      d2 <- read.csv(url.csv2)
+      if(any(colnames(d2) == "cid")) {
+        cids <- c(cids, as.numeric(d2[which(!(d2[,"cid"] == "NULL")),"cid"]))
+      }
+      
+      ## metabolic pathway metabolites
+      url.csv3 <- paste0(
+        "https://pubchem.ncbi.nlm.nih.gov/assay/pcget.cgi?task=pathway_chemical&taxid=",
+        taxid[i],
+        "&start=1&limit=10000000&download=true&downloadfilename=TaxID_",
+        taxid[i],
+        "_pcget_pathway_chemical&infmt=json&outfmt=csv"
+      )
+      d3 <- read.csv(url.csv3)
+      if(any(colnames(d3) == "cid")) {
+        cids <- c(cids, as.numeric(d3[which(!(d3[,"cid"] == "NULL")),"cid"]))
+      }
+      
+      ## glycans
+      url.csv4 <- paste0( 
+        "https://pubchem.ncbi.nlm.nih.gov/sdq/sdqagent.cgi?infmt=json&outfmt=csv&query={%22download%22:%22*%22,%22collection%22:%22glycosmos_glycan%22,%22where%22:{%22ands%22:[{%22taxid%22:%22",
+        taxid[i],
+        "%22}]},%22order%22:[%22relevancescore,desc%22],%22start%22:1,%22limit%22:10000000,%22downloadfilename%22:%22TaxID_",
+        taxid[i],
+        "_glycosmos_glycan%22}"
+      )
+      d4 <- read.csv(url.csv4)
+      if(any(colnames(d4) == "cid")) {
+        cids <- c(cids, as.numeric(d4[which(!(d4[,"cid"] == "NULL")),"cid"]))
+      }
+      
+      cids <- unique(cids)
+      all.cids <- sort(unique(c(all.cids, cids)))
+    }
+    
+    out <- data.frame(
+      'cid' = all.cids
+    )
+    
+    
+    if(get.inchikey) {
+      if(length(all.cids) == 0) {
+        out <- data.frame(
+          'cid' = all.cids, 
+          'inchikey' = rep(NA, 0)
+        )
+      } else {
+        all.inchikeys <- rep(NA, length(all.cids))
+        do.ind <- split(1:length(all.cids), ceiling(seq_along(1:length(all.cids))/100))
+        do.l <- split(all.cids, ceiling(seq_along(all.cids)/100))
+        for(i in 1:length(do.l)) {
+          keep <- which(!all.cids[do.ind[[i]]]=="NA")
+          # cat(do.l[[i]][keep], '\n')
+          Sys.sleep(0.2)
+          if(length(keep)==0) next
+          # https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/2244/property/MolecularWeight/TXT
+          html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
+                         paste0(all.cids[do.ind[[i]]][keep], collapse = ","),
+                         "/property/", "inchikey", "/JSON")
+          out <- tryCatch(
+            {
+              jsonlite::read_json(html)
+            },
+            error=function(cond) {
+              closePubchemConnections()
+              return(NA)
+            },
+            warning=function(cond) {
+              closePubchemConnections()
+              return(NA)
+            },
+            finally={
+              closePubchemConnections()
+              cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
+            }
+          )
+          if(is.na(out[1])) next
+          tmp <- lapply(1:length(out$PropertyTable$Properties),
+                        FUN = function(x) {
+                          unlist(out$PropertyTable$Properties[[x]])
+                        })
+          tmp <- data.frame(t(data.frame(tmp, stringsAsFactors = FALSE)), stringsAsFactors = FALSE)
+          all.inchikeys[do.ind[[i]][keep]] <- tmp$InChIKey[keep]
+        }
+        
+        out <- data.frame(
+          'cid' = all.cids, 
+          'inchikey' = all.inchikeys
+        )
+      }
+      
+    }
+  } else {
+    out <- NA
+  }
+  return(out)
 } 
 
 # oat.cids <- get.taxon.cids(taxid = 4496)
 # oat.inchikeys <- rc.cmpd.get.pubchem(cmpd.cid = oat.cids, get.bioassays = FALSE, get.synonyms = FALSE, get.vendors = FALSE)
 # oat.inchikeys <- oat.inchikeys$properties$InChIKey
+
 

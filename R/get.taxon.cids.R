@@ -12,59 +12,64 @@
 
 get.taxon.cids <- function(taxid = NULL, taxstring = NULL, sub.taxa.n = 1000, get.inchikey = TRUE) {
   
-<<<<<<< Updated upstream
+  ## confirm rentrez
   if (!requireNamespace("rentrez", quietly = TRUE)) {
     stop("The use of this function requires package 'rentrez'.")
   }
-
+  
+  ## ensure proper input
+  if(is.null(taxid) & is.null(taxstring)) {
+    stop("you must submit a valid inter NCBI Taxonomy ID value (taxid) or taxonomy string (taxstring) for the taxon of interest.", '\n',
+         " - i.e. taxid = 9606 for Homo sapiens ", '\n',
+         " - or taxstring = 'Homo sapiens'", '\n',
+         " - or taxstring = 'Homo'", '\n')
+  }
+  
+  ## ensure no ambiguous request
+  if(!is.null(taxid) & !is.null(taxstring)) {
+    message("you must submit either a valid inter NCBI Taxonomy ID value (taxid) or taxonomy string (taxstring) for the taxon of interest.", '\n',
+            " -  taxid will be used in the case that both are submitted.", '\n')
+    taxstring <- NULL
+  }
+  
+  ## convert taxstring to taxid
+  if(is.null(taxid)) {
+    taxid <- rentrez::entrez_search(db = "taxonomy", term = paste0(taxstring, "[All names]"))
+    if(length(taxid$ids) == 0) warning("No taxon matched: returning empty dataframe", '\n')
+    if(length(taxid$ids) > 1) warning("More than one taxon matched - only the smallest taxid will be used", '\n')
+    taxid <- taxid$ids[which.min(taxid$ids)]
+  }
+  
+  ## if sub.taxa.n >0, get subtaxa taxid values
   if(sub.taxa.n > 0) {
     sub.taxid <- rentrez::entrez_search(db = "taxonomy", term = paste0("txid", taxid, "[Subtree]"), retmax = sub.taxa.n)
     sub.taxid <- as.integer(sub.taxid$ids)
     if(length(sub.taxid)> 0) {
       taxid <- sort(unique(c(taxid, sub.taxid)))
     }
-=======
-  if(is.null(taxid) & is.null(taxstring)) {
-    stop("you must submit a valid inter NCBI Taxonomy ID value (taxid) or taxonomy string (taxstring) for the taxon of interest.", '\n',
-         " - i.e. taxid = 9606 for Homo sapiens ", '\n',
-         " - or taxstring = 'Homo sapiens'", '\n')
->>>>>>> Stashed changes
   }
   
-  if(!is.null(taxid) & !is.null(taxstring)) {
-    stop("you must submit either a valid inter NCBI Taxonomy ID value (taxid) or taxonomy string (taxstring) for the taxon of interest. Not both.", '\n')
+  ## cleanup connections to ensure no connections remain open
+  closePubchemConnections <- function (desc.rem = "pubchem") {
+    d <- showConnections(all = TRUE)
+    desc <- d[,"description"]
+    desc <- desc[grepl(desc.rem, desc)]
+    set <- as.integer(as.numeric(names(desc)))
+    if(length(set) > 0) {
+      for (i in seq_along(set)) close(getConnection(set[i]))
+    }
+    gc()
+    invisible()
   }
+  closePubchemConnections()
   
   
-  
-  taxid <- rentrez::entrez_search(db = "taxonomy", term = paste0(taxstring, "[All names]"))
-  if(length(taxid$ids) == 0) warning("No taxon matched: returning NA", '\n')
-  if(length(taxid$ids) > 0 ) {
-    if(length(taxid$ids) > 1) warning("More than one taxon matched - only the smallest taxid will be used", '\n')
-    taxid <- taxid$ids[which.min(taxid$ids)]
-    
-    closePubchemConnections <- function (desc.rem = "pubchem") {
-      d <- showConnections(all = TRUE)
-      desc <- d[,"description"]
-      desc <- desc[grepl(desc.rem, desc)]
-      set <- as.integer(as.numeric(names(desc)))
-      if(length(set) > 0) {
-        for (i in seq_along(set)) close(getConnection(set[i]))
-      }
-      gc()
-      invisible()
-    }
-    closePubchemConnections()
-    
-    if(sub.taxa.n > 0) {
-      sub.taxid <- rentrez::entrez_search(db = "taxonomy", term = paste0("txid", taxid, "[Subtree]"), retmax = sub.taxa.n)
-      sub.taxid <- as.integer(sub.taxid$ids)
-      if(length(sub.taxid)> 0) {
-        taxid <- sort(unique(c(taxid, sub.taxid)))
-      }
-    }
-    
-    
+  ## collect CIDS for all taxid values
+  if(length(taxid) == 0)  {
+    out <- data.frame(
+      'cid' = all.cids
+    )
+  } else {
     all.cids <- vector(length = 0, mode = "integer")
     
     cat("retrieving metabolites for taxid: ", '\n')
@@ -130,68 +135,59 @@ get.taxon.cids <- function(taxid = NULL, taxstring = NULL, sub.taxa.n = 1000, ge
     out <- data.frame(
       'cid' = all.cids
     )
-    
-    
-    if(get.inchikey) {
-      if(length(all.cids) == 0) {
-        out <- data.frame(
-          'cid' = all.cids, 
-          'inchikey' = rep(NA, 0)
-        )
-      } else {
-        all.inchikeys <- rep(NA, length(all.cids))
-        do.ind <- split(1:length(all.cids), ceiling(seq_along(1:length(all.cids))/100))
-        do.l <- split(all.cids, ceiling(seq_along(all.cids)/100))
-        for(i in 1:length(do.l)) {
-          keep <- which(!all.cids[do.ind[[i]]]=="NA")
-          # cat(do.l[[i]][keep], '\n')
-          Sys.sleep(0.2)
-          if(length(keep)==0) next
-          # https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/2244/property/MolecularWeight/TXT
-          html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
-                         paste0(all.cids[do.ind[[i]]][keep], collapse = ","),
-                         "/property/", "inchikey", "/JSON")
-          out <- tryCatch(
-            {
-              jsonlite::read_json(html)
-            },
-            error=function(cond) {
-              closePubchemConnections()
-              return(NA)
-            },
-            warning=function(cond) {
-              closePubchemConnections()
-              return(NA)
-            },
-            finally={
-              closePubchemConnections()
-              cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
-            }
-          )
-          if(is.na(out[1])) next
-          tmp <- lapply(1:length(out$PropertyTable$Properties),
-                        FUN = function(x) {
-                          unlist(out$PropertyTable$Properties[[x]])
-                        })
-          tmp <- data.frame(t(data.frame(tmp, stringsAsFactors = FALSE)), stringsAsFactors = FALSE)
-          all.inchikeys[do.ind[[i]][keep]] <- tmp$InChIKey[keep]
-        }
-        
-        out <- data.frame(
-          'cid' = all.cids, 
-          'inchikey' = all.inchikeys
-        )
-      }
-      
-    }
-  } else {
-    out <- NA
   }
+  
+  if(get.inchikey & !any(is.na(out))) {
+    all.inchikeys <- rep(NA, length(all.cids))
+    do.ind <- split(1:length(all.cids), ceiling(seq_along(1:length(all.cids))/100))
+    do.l <- split(all.cids, ceiling(seq_along(all.cids)/100))
+    for(i in 1:length(do.l)) {
+      keep <- which(!all.cids[do.ind[[i]]]=="NA")
+      # cat(do.l[[i]][keep], '\n')
+      Sys.sleep(0.2)
+      if(length(keep)==0) next
+      # https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/2244/property/MolecularWeight/TXT
+      html <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/",
+                     paste0(all.cids[do.ind[[i]]][keep], collapse = ","),
+                     "/property/", "inchikey", "/JSON")
+      out <- tryCatch(
+        {
+          jsonlite::read_json(html)
+        },
+        error=function(cond) {
+          closePubchemConnections()
+          return(NA)
+        },
+        warning=function(cond) {
+          closePubchemConnections()
+          return(NA)
+        },
+        finally={
+          closePubchemConnections()
+          cons <- suppressWarnings(showConnections(all = TRUE)); rm(cons)
+        }
+      )
+      if(is.na(out[1])) next
+      tmp <- lapply(1:length(out$PropertyTable$Properties),
+                    FUN = function(x) {
+                      unlist(out$PropertyTable$Properties[[x]])
+                    })
+      tmp <- data.frame(t(data.frame(tmp, stringsAsFactors = FALSE)), stringsAsFactors = FALSE)
+      all.inchikeys[do.ind[[i]][keep]] <- tmp$InChIKey[keep]
+    }
+    
+    out <- data.frame(
+      'cid' = all.cids, 
+      'inchikey' = all.inchikeys
+    )
+    
+    
+  }  else {
+    out <- cbind(out, "inchikey" = NA)
+  }
+  
+  message(paste("retreived", nrow(out), "structures"), '\n')
   return(out)
-} 
-
-# oat.cids <- get.taxon.cids(taxid = 4496)
-# oat.inchikeys <- rc.cmpd.get.pubchem(cmpd.cid = oat.cids, get.bioassays = FALSE, get.synonyms = FALSE, get.vendors = FALSE)
-# oat.inchikeys <- oat.inchikeys$properties$InChIKey
+}
 
 

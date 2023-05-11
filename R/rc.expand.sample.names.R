@@ -24,7 +24,8 @@
 rc.expand.sample.names <- function(
   ramclustObj = NULL,
   delim = "-",
-  factor.names = TRUE
+  factor.names = TRUE,
+  quiet = FALSE
 ) {
   
   params <- c(
@@ -55,7 +56,7 @@ rc.expand.sample.names <- function(
   des <- data.frame(t(data.frame(des, check.names = FALSE)), 
                     stringsAsFactors = FALSE, check.names = FALSE)
   
-  if(is.logical(factor.names)) {
+  if(is.logical(factor.names) & !quiet) {
     if(factor.names){
       for(x in 1:ncol(des)) {
         cat(

@@ -12,7 +12,6 @@
 
 get.taxon.cids <- function(taxid = NULL, taxstring = NULL, sub.taxa.n = 1000, get.inchikey = TRUE) {
   
-<<<<<<< Updated upstream
   if (!requireNamespace("rentrez", quietly = TRUE)) {
     stop("The use of this function requires package 'rentrez'.")
   }
@@ -23,12 +22,6 @@ get.taxon.cids <- function(taxid = NULL, taxstring = NULL, sub.taxa.n = 1000, ge
     if(length(sub.taxid)> 0) {
       taxid <- sort(unique(c(taxid, sub.taxid)))
     }
-=======
-  if(is.null(taxid) & is.null(taxstring)) {
-    stop("you must submit a valid inter NCBI Taxonomy ID value (taxid) or taxonomy string (taxstring) for the taxon of interest.", '\n',
-         " - i.e. taxid = 9606 for Homo sapiens ", '\n',
-         " - or taxstring = 'Homo sapiens'", '\n')
->>>>>>> Stashed changes
   }
   
   if(!is.null(taxid) & !is.null(taxstring)) {

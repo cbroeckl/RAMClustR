@@ -4,7 +4,8 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - r-base >= 4.1
+  - r-base >=4.1
+  - r-rlang >=1.1.0
   - r-devtools
   - r-biocmanager
   - r-dynamictreecut

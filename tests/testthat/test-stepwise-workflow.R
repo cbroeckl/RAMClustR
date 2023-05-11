@@ -8,7 +8,7 @@ test_that("RAMClustR workflow with xcms works", {
   setwd(tmp)
 
   ramclustObj <- rc.get.xcms.data(xcmsObj = xdata)
-  ramclustObj <- rc.expand.sample.names(ramclustObj = ramclustObj)
+  ramclustObj <- rc.expand.sample.names(ramclustObj = ramclustObj, quiet=TRUE)
   ramclustObj <- rc.feature.replace.na(ramclustObj = ramclustObj)
   ramclustObj <- rc.feature.filter.blanks(ramclustObj = ramclustObj, blank.tag = "Blanc")
   ramclustObj <- rc.feature.normalize.qc(ramclustObj = ramclustObj, qc.tag = "QC")

@@ -760,8 +760,8 @@ rc.cmpd.get.pubchem <- function(
     cat("getting pathway from cid", '\n')
 
     for(i in 1:length(cid)) {
-      pathway <- get.pathways(cid = cids[i])
-      pathway <- cbind("cid" = rep(cids[i]), pathway)
+      pathway <- get.pathways(cid = cid[i])
+      pathway <- cbind("cid" = rep(cid[i]), pathway)
       if(!any(ls()=="pathways")) pathways <- pathway[0,]
       if(is.na(pathway[1,'name'])) next
       pathways <- rbind(pathways, pathway)

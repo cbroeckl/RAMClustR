@@ -17,3 +17,7 @@ inst/doc
 .Rhistory
 .Rhistory
 .vscode
+
+# build artifacts
+RAMClustR.Rcheck
+RAMClustR_*.tar.gz

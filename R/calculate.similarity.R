@@ -1,12 +1,12 @@
 compute.start <- function(position, blocksize, numcols) {
-  return(min((1 + (position * blocksize)), numcols))
+  return(min((1 + ((position - 1) * blocksize)), numcols))
 }
 
 compute.stop <- function(position, blocksize, numcols) {
-  if ((position + 1) * blocksize > numcols) {
+  if ((position) * blocksize > numcols) {
     stop_pos <- numcols
   } else {
-    stop_pos <- (position + 1) * blocksize
+    stop_pos <- (position) * blocksize
   }
   return(stop_pos)
 }
@@ -25,15 +25,15 @@ calculate.similarity <- function(numcols,
   ########
   # establish some constants for downstream processing
   vlength <- (numcols * (numcols - 1)) / 2
-  nblocks <- floor(numcols / blocksize)
-  
+  nblocks <- ceiling(numcols / blocksize)
+
   cat(paste("Calculating ramclustR similarity using", sum((nblocks+1):1), "nblocks.\n"))
   
   ramclustObj <- vector(mode = "integer", length = vlength)
   block = 1
   column <- NULL
   
-  for (row in 0:(nblocks)) {
+  for (row in 1:(nblocks)) {
     for (col in row:(nblocks)) {
       cat(block, " ")
       block <- block + 1
@@ -106,7 +106,7 @@ calculate.similarity <- function(numcols,
     if (exists("startv") == FALSE)
       startv <- 1
     stopv <- startv + length(column) - 1
-    
+
     # assign obtained vector to result
     ramclustObj[startv:stopv] <- column
     startv <- stopv + 1

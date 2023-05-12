@@ -3,8 +3,10 @@
 #' use pubchem rest to retreive pubchem CIDS known to be found in a given species.  NCBI taxid should be used as input.  i.e. Homo sapiens subsp. 'Denisova' is taxid 741158 
 #' @details this function enables return of a list of pubchem CIDs which can be used for prioritizing annotations.  If a genus level taxid is selected, setting the sub.taxa.n option > 0 will return metabolites associated with that taxid and all (assuming n is large enough) subtaxa.  i.e. seting taxid to 9605 (genus = 'Homo') will return metabolites associated with Homo sapiens, Homo heidelbergensis, Homo sapiens subsp. 'Denisova', etc. 
 #' @param taxid integer NCBI taxid for the taxon to search.  
-#' @param sub.taxa.n integer value for the number of subtaxa to consider.  Note that if the sub.taxa.n value is less the the availabe number of subtaxa, only the first sub.taxa.n values, as reported by rentrez, are returned.  If you require specific subtaxa, you should call those taxids explicitly to ensure those results are returned.  
-#' @return returns a vector of integer pubchem cids.  
+#' @param taxstring taxonomy string for the taxon of interest.
+#' @param sub.taxa.n integer value for the number of subtaxa to consider.  Note that if the sub.taxa.n value is less the the availabe number of subtaxa, only the first sub.taxa.n values, as reported by rentrez, are returned.  If you require specific subtaxa, you should call those taxids explicitly to ensure those results are returned.
+#' @param get.inchikey logical whether to get the InChIKeys as well (default TRUE).
+#' @return returns a vector of integer pubchem cids (and optionally inchikeys if get.inchikey was set to TRUE)
 #' @author Corey Broeckling
 #' 
 #' @export 

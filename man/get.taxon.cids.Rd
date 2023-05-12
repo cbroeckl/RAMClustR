@@ -4,15 +4,24 @@
 \alias{get.taxon.cids}
 \title{get.taxon.cids}
 \usage{
-get.taxon.cids(taxid = 4496, sub.taxa.n = 1000)
+get.taxon.cids(
+  taxid = NULL,
+  taxstring = NULL,
+  sub.taxa.n = 1000,
+  get.inchikey = TRUE
+)
 }
 \arguments{
 \item{taxid}{integer NCBI taxid for the taxon to search.}
 
+\item{taxstring}{taxonomy string for the taxon of interest.}
+
 \item{sub.taxa.n}{integer value for the number of subtaxa to consider.  Note that if the sub.taxa.n value is less the the availabe number of subtaxa, only the first sub.taxa.n values, as reported by rentrez, are returned.  If you require specific subtaxa, you should call those taxids explicitly to ensure those results are returned.}
+
+\item{get.inchikey}{logical whether to get the InChIKeys as well (default TRUE).}
 }
 \value{
-returns a vector of integer pubchem cids.
+returns a vector of integer pubchem cids (and optionally inchikeys if get.inchikey was set to TRUE)
 }
 \description{
 use pubchem rest to retreive pubchem CIDS known to be found in a given species.  NCBI taxid should be used as input.  i.e. Homo sapiens subsp. 'Denisova' is taxid 741158

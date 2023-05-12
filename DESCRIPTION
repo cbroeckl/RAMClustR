@@ -1,7 +1,7 @@
 Package: RAMClustR
 Type: Package
 Title: Mass Spectrometry Metabolomics Feature Clustering and Interpretation
-Version: 1.2.4
+Version: 1.3.0
 Date: 2022-04-05
 Authors@R:
     c(person(given = "Corey D.", family = "Broeckling",
@@ -16,9 +16,37 @@ Authors@R:
              email = "helge.hecht@recetox.muni.cz",
              role = c("cre"),
              comment = c(ORCID = "0000-0001-6744-996X")))
-Imports: dynamicTreeCut, fastcluster, ff, httr, jsonlite, preprocessCore, e1071, gplots, pcaMethods, stringr, utils, webchem, ggplot2, Spectra, methods
-Depends: R (>= 3.5.0)
-Suggests: knitr, rmarkdown, xcms, testthat, MSnbase, InterpretMSSpectrum, BiocManager, xml2, stringi, readxl, curl, rentrez
+Depends:
+  R (>= 3.5.0)
+Imports:
+  dynamicTreeCut,
+  fastcluster,
+  ff,
+  httr,
+  jsonlite,
+  preprocessCore,
+  e1071,
+  gplots,
+  pcaMethods,
+  stringr,
+  utils,
+  webchem,
+  ggplot2,
+  methods
+Suggests: 
+  knitr,
+  rmarkdown,
+  xcms,
+  testthat,
+  patrick,
+  MSnbase,
+  InterpretMSSpectrum,
+  BiocManager,
+  xml2,
+  stringi,
+  readxl,
+  curl,
+  rentrez
 License: GPL (>= 2)
 Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics data. This method is compatible with gas and liquid chromatography coupled mass spectrometry, including indiscriminant tandem mass spectrometry <DOI: 10.1021/ac501530d> data. 
 URL: https://github.com/cbroeckl/RAMClustR

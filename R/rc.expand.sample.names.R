@@ -5,6 +5,7 @@
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
 #' @param delim what delimiter should be used to separate names into factors?  '-' by default
 #' @param factor.names logical or character vector.  if TRUE, user will enter names one by on in console.  If character vector (i.e. c("trt", "time")) names are assigned to table
+#' @param quiet logical .  if TRUE, user will not be prompted to enter names one by on in console.
 #' @details THis function only works on newer format ramclustObjects with a $phenoData slot.
 #' @details This function will split sample names by a delimiter, and enable users to name factors
 #' @return  ramclustR object with normalized data.   
@@ -24,7 +25,8 @@
 rc.expand.sample.names <- function(
   ramclustObj = NULL,
   delim = "-",
-  factor.names = TRUE
+  factor.names = TRUE,
+  quiet = FALSE
 ) {
   
   params <- c(
@@ -55,7 +57,7 @@ rc.expand.sample.names <- function(
   des <- data.frame(t(data.frame(des, check.names = FALSE)), 
                     stringsAsFactors = FALSE, check.names = FALSE)
   
-  if(is.logical(factor.names)) {
+  if(is.logical(factor.names) & !quiet) {
     if(factor.names){
       for(x in 1:ncol(des)) {
         cat(

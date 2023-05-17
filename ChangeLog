@@ -1,4 +1,4 @@
-2023-05-16 Helge Hecht v1.3.0
+2023-05-17 Helge Hecht v1.3.0
   * Added test cases for several functions [PR #3](https://github.com/RECETOX/RAMClustR/pull/3)
   * Extracted functions for several duplicate code [PR #23](https://github.com/RECETOX/RAMClustR/pull/23)
   * Added option for dataframe input [PR #25](https://github.com/RECETOX/RAMClustR/pull/25)

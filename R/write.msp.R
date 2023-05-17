@@ -14,6 +14,7 @@
 #' @concept interpretMSSpectrum
 #' @concept xcms
 #' @author Corey Broeckling
+#' @importFrom methods is
 #' @export 
 #' 
 

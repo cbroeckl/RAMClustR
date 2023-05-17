@@ -80,12 +80,11 @@ do.findmain <- function (
   if (is.null(ads)) {
     if (grepl("p", mode)) {
       ads <- c("[M+H]+", "[M+Na]+", "[M+K]+", "[M+NH4]+", 
-               "[2M+H]+", "[2M+Na]+", "[2M+K]+", "[2M+NH4]+", 
-               "[3M+H]+", "[3M+Na]+", "[3M+K]+", "[3M+NH4]+")
+               "[2M+H]+", "[2M+Na]+", "[2M+K]+", "[2M+NH4]+")
     }
     if (grepl("n", mode)) {
       ads <- c("[M-H]-", "[M+Na-2H]-", "[M+K-2H]-", "[M+CH2O2-H]-", 
-               "[2M-H]-", "[2M+Na-2H]-", "[2M+K-2H]-", "[2M+CH2O2- H]-", 
+               "[2M-H]-", "[2M+Na-2H]-", "[2M+K-2H]-", "[2M+CH2O2- H]-",
                "[3M-H]-", "[3M+Na-2H]-", "[3M+K-2H]-", "[3M+CH2O2- H]-")
     }
     if (is.null(ads)) {
@@ -178,23 +177,28 @@ do.findmain <- function (
   M.ann.ramclustr <- as.list(rep(NA, max(ramclustObj$featclus)))
   M.nann.ramclustr <- rep(NA, max(ramclustObj$featclus))
   M.space.ramclustr <- rep(NA, max(ramclustObj$featclus))
-  if (is.null(cmpd)) {
+  if(is.null(cmpd)) {
     cmpd <- (1:max(ramclustObj$featclus))
   }
   for (cl in cmpd) {
     s <- data.frame(mz = ramclustObj[[use.mass]][which(ramclustObj$featclus == 
                                                          cl)], int = ramclustObj$msint[which(ramclustObj$featclus == 
-                                                                                               cl)])
+                                                                                               cl)]^2)
+    s2 <- data.frame(mz = ramclustObj[[use.mass]][which(ramclustObj$featclus == 
+                                                         cl)], int = ramclustObj$msmsint[which(ramclustObj$featclus == 
+                                                                                               cl)]^2)
     s <- s[order(s$mz),]
     out <- InterpretMSSpectrum::findMAIN(
       s, 
       rules = c(ads), 
       adducthyp = ads[grep("[M",ads, fixed = TRUE)], 
       ionmode = mode, 
+      ms2spec = s2, 
       mzabs = mzabs.error, 
       ppm = ppm.error
     )
     summarytable <- summary(out)
+    fm.out <- summarytable
     
     # summarytable[which(is.na(summarytable[, "medppm"])), 
     #              "medppm"] <- 2 * ppm.error
@@ -210,12 +214,13 @@ do.findmain <- function (
       ionmode = mode, 
       rules = c(ads, nls), 
       adducthyp = ads[grep("[M", ads, fixed = TRUE)], 
-      ms2spec = NULL, 
+      ms2spec = s2, 
       mzabs = mzabs.error,
       ppm = ppm.error, 
-      mainpkthr = 0.1, 
+      mainpkthr = 0.3, 
       collapseResults = FALSE)
     summarytable <- summary(out)
+    rc.out <- summarytable
     # summarytable[which(is.na(summarytable[, "medppm"])), 
     #              "medppm"] <- 2 * ppm.error
     # summarytable[which(summarytable[, "medppm"] == 0), "medppm"] <- ppm.error

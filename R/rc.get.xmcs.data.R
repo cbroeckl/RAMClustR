@@ -178,7 +178,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
 
   ## get phenotype file name associations for storage in new RC object
   if (newXCMS) {
-    filepaths <- MSnbase::fileNames(xcmsObj)
+    filepaths <- xcms::filepaths(xcmsObj)
     filenames <- basename(filepaths)
     phenotype <- xcmsObj@phenoData@data
     phenotype <- data.frame(sample.names = phenotype, filenames, filepaths)

@@ -145,7 +145,7 @@ adap.to.rc <- function(
       mtch <- grep(unlist(basename(tools::file_path_sans_ext(file.names[i]))), seq[,1], ignore.case = TRUE)
       if(length(mtch) !=1) {
         cat("please select raw (cdf) file directory")
-        raw.dir <- choose.dir()
+        raw.dir <- utils::choose.dir()
         
       }
       

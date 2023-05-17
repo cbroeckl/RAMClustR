@@ -36,7 +36,7 @@ library(faahKO)
 cdfpath <- system.file("cdf", package = "faahKO")
 cdffiles <- list.files(cdfpath, recursive = TRUE, full.names = TRUE)
 # to point to your own directory
-# cdffiles <- list.files(choose.dir(), recursive = TRUE, full.names = TRUE, pattern = ".cdf")
+# cdffiles <- list.files(utils::choose.dir(), recursive = TRUE, full.names = TRUE, pattern = ".cdf")
 # note: choose.dir() will bring up a window to browse to your directory
 # the pattern argument is case sensitive, ensure it matches your file type in a case sensitive
 # manner

@@ -4,7 +4,7 @@ A feature clustering algorithm for non-targeted mass spectrometric metabolomics 
 ## Documentation for users
 
 ### Installation
-The newest version of the package can be installed through conda from [bioconda](https://anaconda.org/bioconda/r-ramclustr) channel:
+The newest version of the package can be installed through conda from the [bioconda](https://anaconda.org/bioconda/r-ramclustr) channel:
 
 ```bash
 conda install -c bioconda r-ramclustr

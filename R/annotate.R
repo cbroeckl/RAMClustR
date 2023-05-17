@@ -165,7 +165,7 @@ annotate<-function(ramclustObj = NULL,
     origname<-which(regexpr('Original Name', out)==1)
     
     ## see if names look like ADAP names
-    if(grepl("Original Name: #", n, fixed = TRUE)) {
+    if(grepl("Original Name: #", name, fixed = TRUE)) {
       out[origname] <- paste("Original Name:", ramclustObj$cmpd)
     }
     

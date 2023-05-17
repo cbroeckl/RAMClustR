@@ -58,6 +58,7 @@ adap.to.rc <- function(
   if(file.exists("datasets/ExpDes.Rdata")) load("datasets/ExpDes.Rdata")
   
   if(exists("ExpDes")) {
+    ExpDes <- get("ExpDes")
     factor.names <- ExpDes[[1]][grep("fact", row.names(ExpDes[[1]])),1]
   } else {
     if(ncol(seq)>2) {

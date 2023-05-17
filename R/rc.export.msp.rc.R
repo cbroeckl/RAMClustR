@@ -15,16 +15,16 @@
 #' @concept interpretMSSpectrum
 #' @concept xcms
 #' @author Corey Broeckling
+#' @importFrom methods is
 #' @export 
 #' 
-
 rc.export.msp.rc <- function(
   ramclustObj = NULL,
   one.file = TRUE,
   mzdec = 1
 ) {
   
-  if(class(ramclustObj) != "hclus" & 
+  if(!is(ramclustObj, "hclus") & 
      ramclustObj$dist.method != "RAMClustR") {
     stop("this is not a RAMClustR object")
   }

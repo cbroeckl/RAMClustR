@@ -1,10 +1,10 @@
 # RAMClustR: Mass Spectrometry Metabolomics Feature Clustering and Interpretation
-A feature clustering algorithm for non-targeted mass spectrometric metabolomics data. This method is compatible with gas and liquid chromatography coupled mass spectrometry, including indiscriminant tandem mass spectrometry <doi:10.1021/ac501530d> data.
+A feature clustering algorithm for non-targeted mass spectrometric metabolomics data. This method is compatible with gas and liquid chromatography coupled mass spectrometry, including indiscriminant tandem mass spectrometry data.
 
 ## Documentation for users
 
 ### Installation
-The newest version of the package can be installed through conda from [bioconda](https://anaconda.org/bioconda/r-ramclustr) channel:
+The newest version of the package can be installed through conda from the [bioconda](https://anaconda.org/bioconda/r-ramclustr) channel:
 
 ```bash
 conda install -c bioconda r-ramclustr

@@ -14,6 +14,7 @@
 #' @concept interpretMSSpectrum
 #' @concept xcms
 #' @author Corey Broeckling
+#' @importFrom methods is
 #' @export 
 #' 
 
@@ -22,7 +23,7 @@ write.msp <- function(
   one.file = FALSE
 ) {
   
-  if(class(ramclustObj) != "hclus" & 
+  if(!is(ramclustObj, "hclus") & 
      ramclustObj$dist.method != "RAMClustR") {
     stop("this is not a RAMClustR object")
   }

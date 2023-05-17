@@ -4,7 +4,12 @@
 \alias{rc.expand.sample.names}
 \title{rc.expand.sample.names}
 \usage{
-rc.expand.sample.names(ramclustObj = NULL, delim = "-", factor.names = TRUE)
+rc.expand.sample.names(
+  ramclustObj = NULL,
+  delim = "-",
+  factor.names = TRUE,
+  quiet = FALSE
+)
 }
 \arguments{
 \item{ramclustObj}{ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)}
@@ -12,6 +17,8 @@ rc.expand.sample.names(ramclustObj = NULL, delim = "-", factor.names = TRUE)
 \item{delim}{what delimiter should be used to separate names into factors?  '-' by default}
 
 \item{factor.names}{logical or character vector.  if TRUE, user will enter names one by on in console.  If character vector (i.e. c("trt", "time")) names are assigned to table}
+
+\item{quiet}{logical .  if TRUE, user will not be prompted to enter names one by on in console.}
 }
 \value{
 ramclustR object with normalized data.

@@ -78,7 +78,7 @@ rc.feature.normalize.qc <- function(ramclustObj = NULL,
 
   ## define QC samples in each set
   if(!is.null(qc.tag)) {
-    qc <- grepl(qc.tag[1], ramclustObj$sample_names)
+    qc <- grepl(tolower(qc.tag[1]), tolower(ramclustObj$sample_names))
   }
 
   if (!is.logical(qc)) {
@@ -313,7 +313,7 @@ rc.feature.normalize.qc <- function(ramclustObj = NULL,
     }
   }
 
-  ramclustObj$history$normalize.batch.qc <- paste0(
+  ramclustObj$history$normalize.qc <- paste0(
     "Features were normalized ",
     if (!is.null(ramclustObj$history$normalize.tic)) {
       "additionally "
@@ -341,7 +341,7 @@ rc.feature.normalize.qc <- function(ramclustObj = NULL,
   }
   ramclustObj$params$rc.feature.normalize.qc <- params
 
-  cat(ramclustObj$history$normalize.batch.qc)
+  cat(ramclustObj$history$normalize.qc)
 
   return(ramclustObj)
 }

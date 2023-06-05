@@ -42,7 +42,6 @@ compute_SpecAbundAve <- function(ramclustObj = NULL) {
 #' @param hmax numeric: precut the tree at this height, default 0.3 - see ?cutreeDynamicTree
 #' @param sampNameCol integer: which column from the csv file contains sample names?
 #' @param collapse logical: reduce feature intensities to spectrum intensities?
-#' @param usePheno logical: transfer phenotype data from XCMS object to SpecAbund dataset?
 #' @param mspout logical: write msp formatted spectra to file?
 #' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
 #' @param normalize character: either "none", "TIC", "quantile", or "batch.qc" normalization of feature intensities.  see batch.qc overview in details.
@@ -141,7 +140,6 @@ ramclustR <- function(xcmsObj = NULL,
                       hmax = NULL,
                       sampNameCol = 1,
                       collapse = TRUE,
-                      usePheno = TRUE,
                       mspout = TRUE,
                       ExpDes = NULL,
                       normalize = "TIC",
@@ -306,6 +304,9 @@ ramclustR <- function(xcmsObj = NULL,
   if (normalize == "batch.qc") {
     ramclustObj <- rc.feature.normalize.batch.qc(
       ramclustObj = ramclustObj,
+      batch = batch,
+      order = order,
+      qc = qc,
       qc.inj.range = qc.inj.range
     )
 

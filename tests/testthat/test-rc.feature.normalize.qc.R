@@ -7,11 +7,13 @@ test_that("RAMClustR rc.feature.normalize.qc", {
     ramclustObj = ramclustObj,
     batch = metadata$batch,
     order = metadata$order,
-    qc.tag = "QC"
+    qc = metadata$qc
   )
 
   actual$history <- NA
   expected$history <- NA
+  actual$params$rc.feature.normalize.qc <- NA
+  expected$params$rc.feature.normalize.qc <- NA
 
   expect_equal(actual, expected)
 })

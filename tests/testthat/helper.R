@@ -27,8 +27,8 @@ read_metadata <- function(filename) {
     data <- read.csv(filename, header = TRUE, stringsAsFactors = FALSE)
 
     if (!"qc" %in% colnames(data)) {
-        if ("class" %in% colnames(data)) {
-            data$qc <- ifelse(tolower(data$class) == tolower("qc"), TRUE, FALSE)
+        if ("sampleType" %in% colnames(data)) {
+            data$qc <- ifelse(tolower(data$sampleType) == tolower("qc"), TRUE, FALSE)
         }
     }
 

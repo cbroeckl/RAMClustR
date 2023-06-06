@@ -61,6 +61,11 @@ rc.feature.normalize.qc <- function(ramclustObj = NULL,
     batch <- rep(1, nrow(ramclustObj$MSdata))
   }
 
+  # Check if there are any QC samples
+  if (!any(qc) | sum(qc) == 1) {
+    stop("Less than 2 QC samples found. QC-based run order correction cannot be applied.")
+  }
+
   if (is.null(qc)) {
     warning(
       "qc = NULL; QC based run order correction can not be applied.", "\n",

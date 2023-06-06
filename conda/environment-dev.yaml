@@ -12,11 +12,10 @@ dependencies:
   - r-fastcluster
   - r-gplots
   - r-ggplot2
-  - r-devtools
   - r-ff
   - bioconductor-msnbase
   - bioconductor-xcms
-  - r-rcurl
+  - r-curl
   - r-webchem
   - r-stringi
   - r-jsonlite
@@ -34,3 +33,5 @@ dependencies:
   - r-rentrez
   - r-covr
   - r-patrick
+  - r-httr
+  - bioconductor-preprocesscore

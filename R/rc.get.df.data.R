@@ -54,7 +54,7 @@ create_ramclustObj <- function(ExpDes = NULL,
     ramclustObj$xcmsOrd <- xcmsOrd
 
     if (!is.null(MSMSdata)) {
-        global.min <- apply(cbind(ramclustObj$MSdata, ramclustObj$MSMSdata), 2, "min", na.rm = TRUE)
+        global.min <- apply(rbind(ramclustObj$MSdata, ramclustObj$MSMSdata), 2, "min", na.rm = TRUE)
     } else {
         global.min <- apply(cbind(ramclustObj$MSdata), 2, "min", na.rm = TRUE)
     }

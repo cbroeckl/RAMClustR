@@ -41,7 +41,7 @@ define_samples <- function(ramclustObj, tag) {
     stop("no tag provided", "\n")
   }
 
-  samples <- grep(tag[1], ramclustObj$sample_names)
+  samples <- grep(tag[1], ramclustObj$phenoData$sample.names)
   samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
 
   if (length(samples) == 0) {

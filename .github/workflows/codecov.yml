@@ -5,9 +5,9 @@ name: R Conda (with codecov)
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ master, dev ]
+    branches: [ master, dev, release_1.3.x]
   pull_request:
-    branches: [ master, dev ]
+    branches: [ master, dev, release_1.3.x ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:

@@ -31,7 +31,8 @@ rc.qc<-function(ramclustObj=NULL,
                 npc=4,
                 scale="pareto",
                 outfile.basename ="ramclustQC",
-                view.hist = TRUE
+                view.hist = TRUE,
+                cluster.heatmap = FALSE
                 
 ){
   
@@ -102,18 +103,17 @@ rc.qc<-function(ramclustObj=NULL,
     
     # ideally heatmap will have a bright yellow diagonal with no yellow squares near the diagonal
     # this is slow for larger numbers of clusters
-    gplots::heatmap.2(c^2, trace="none", dendrogram="none", Rowv=FALSE, Colv=FALSE, main="pearsons r^2, clusters sorted by rt", cex.main=0.5,
-                      cexRow=0.02 + 1/log10(length(o)), cexCol=0.02 + 1/log10(length(o)))
+    if(cluster.heatmap) {
+      gplots::heatmap.2(c^2, trace="none", dendrogram="none", Rowv=FALSE, Colv=FALSE, main="pearsons r^2, clusters sorted by rt", cex.main=0.5,
+                        cexRow=0.02 + 1/log10(length(o)), cexCol=0.02 + 1/log10(length(o)))
+    }
+    
     dev.off()
   }
   
   
   ## PCA of QC samples
   ## histogram of feature and/or compound CVs for QC samples
-  
-  cols<-rep(8, length(ramclustObj$sample_names))
-  #cols<-rep(8, nrow(ramclustObj$phenoData))
-  cols[qc]<-2
   
   for(x in do.sets) {
     
@@ -123,6 +123,10 @@ rc.qc<-function(ramclustObj=NULL,
     } else {
       td <- ramclustObj[[x]]
     }
+    
+    cols<-rep(8, dim(td)[1])
+    #cols<-rep(8, nrow(ramclustObj$phenoData))
+    cols[qc]<-2
     
     # if(!is.null(ramclustObj$MSMSdata) & x == "MSdata") {
     #   td <- td + ramclustObj$MSMSdata

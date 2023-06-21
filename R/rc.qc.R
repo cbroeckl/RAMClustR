@@ -125,6 +125,7 @@ rc.qc<-function(ramclustObj=NULL,
     }
     
     cols<-rep(8, dim(td)[1])
+    cols[which(is.na(cols)) == 8]
     #cols<-rep(8, nrow(ramclustObj$phenoData))
     cols[qc]<-2
     

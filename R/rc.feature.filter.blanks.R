@@ -204,7 +204,7 @@ rc.feature.filter.blanks <- function(ramclustObj = NULL,
   absent.in.blank <- which(is.nan(ms1.blank.mean))
 
   # filters
-  # which signal is at least 3x larger in QC
+  # which signal is at least sn times larger in QC
   keep <- filter_signal(ms1.qc.mean, ms1.blank.mean, sn)
 
   ## do the same for MS2

@@ -105,8 +105,7 @@ rc.ramclustr  <- function(
     "minModuleSize"=minModuleSize,
     "linkage"=linkage,
     "cor.method"=cor.method,
-    "rt.only.low.n" = rt.only.low.n,
-    "fftempdir" = fftempdir
+    "rt.only.low.n" = rt.only.low.n
   )
   
   

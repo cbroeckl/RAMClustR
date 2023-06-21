@@ -215,7 +215,8 @@ rc.get.df.data <- function(ms1_featureDefinitions = NULL,
         phenoData = phenoData,
         feature_names = feature_names,
         xcmsOrd = xcmsOrd,
-        sample_names = sample_names
+        sample_names = sample_names,
+        ensure.no.na = ensure.no.na
     )
 
     return(ramclustObj)

@@ -1,0 +1,4 @@
+sample_name,class,sampleType,injectionOrder,batch
+QC1_008,QC,QC,105,1
+QC1_014,QC,QC,185,1
+HU_neg_192,sample,sample,165,1

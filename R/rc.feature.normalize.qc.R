@@ -7,7 +7,7 @@
 #' @param order integer vector with length equal to number of injections in xset or csv file
 #' @param p.cut numeric when run order correction is applied, only features showing a run order vs signal with a linear p-value (after FDR correction) < p.cut will be adjusted.  also requires r-squared < rsq.cut.
 #' @param rsq.cut numeric when run order correction is applied, only features showing a run order vs signal with a linear r-squared > rsq.cut will be adjusted. also requires p values < p.cut.
-#' @param qc.tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.
+#' @param qc logical vector with length equal to number of injections in xset or csv file or dataframe
 #' @param p.adjust which p-value adjustment should be used? default = "none", see ?p.adjust
 #' @param output.plot logical: if TRUE (default), plots are output to PDF.
 #' @details This function offers normalization by run order, batch number, and QC sample signal intensity.
@@ -30,7 +30,7 @@
 rc.feature.normalize.qc <- function(ramclustObj = NULL,
                                     order = NULL,
                                     batch = NULL,
-                                    qc.tag = NULL,
+                                    qc = NULL,
                                     output.plot = FALSE,
                                     p.cut = 0.05,
                                     rsq.cut = 0.1,
@@ -61,9 +61,14 @@ rc.feature.normalize.qc <- function(ramclustObj = NULL,
     batch <- rep(1, nrow(ramclustObj$MSdata))
   }
 
-  if (is.null(qc.tag)) {
+  # Check if there are any QC samples
+  if (!any(qc) | sum(qc) == 1) {
+    stop("Less than 2 QC samples found. QC-based run order correction cannot be applied.")
+  }
+
+  if (is.null(qc)) {
     warning(
-      "qc.tag = NULL; QC based run order correction can not be applied.", "\n",
+      "qc = NULL; QC based run order correction can not be applied.", "\n",
       "       An assumption of random run order is required for this to be a valid approach.", "\n"
     )
     qc <- rep(TRUE, nrow(ramclustObj$MSdata))
@@ -71,15 +76,10 @@ rc.feature.normalize.qc <- function(ramclustObj = NULL,
 
 
   params <- c(
-    "qc.tag" = qc.tag,
+    "qc" = qc,
     "p.cut" = p.cut,
     "rsq.cut" = rsq.cut
   )
-
-  ## define QC samples in each set
-  if(!is.null(qc.tag)) {
-    qc <- grepl(qc.tag[1], ramclustObj$sample_names)
-  }
 
   if (!is.logical(qc)) {
     stop("qc must be a logical vector", "\n")
@@ -313,7 +313,7 @@ rc.feature.normalize.qc <- function(ramclustObj = NULL,
     }
   }
 
-  ramclustObj$history$normalize.batch.qc <- paste0(
+  ramclustObj$history$normalize.qc <- paste0(
     "Features were normalized ",
     if (!is.null(ramclustObj$history$normalize.tic)) {
       "additionally "
@@ -341,7 +341,7 @@ rc.feature.normalize.qc <- function(ramclustObj = NULL,
   }
   ramclustObj$params$rc.feature.normalize.qc <- params
 
-  cat(ramclustObj$history$normalize.batch.qc)
+  cat(ramclustObj$history$normalize.qc)
 
   return(ramclustObj)
 }

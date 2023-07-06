@@ -20,7 +20,6 @@ Depends:
 Imports:
   dynamicTreeCut,
   fastcluster,
-  ff,
   httr,
   jsonlite,
   preprocessCore,

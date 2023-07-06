@@ -9,7 +9,8 @@ normalized_data_batch_qc(
   batch = NULL,
   order = NULL,
   qc = NULL,
-  qc.inj.range = 20
+  qc.inj.range = 20,
+  output.plot = FALSE
 )
 }
 \arguments{

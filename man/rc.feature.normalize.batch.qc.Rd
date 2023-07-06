@@ -9,7 +9,8 @@ rc.feature.normalize.batch.qc(
   batch = NULL,
   qc = NULL,
   ramclustObj = NULL,
-  qc.inj.range = 20
+  qc.inj.range = 20,
+  output.plot = FALSE
 )
 }
 \arguments{

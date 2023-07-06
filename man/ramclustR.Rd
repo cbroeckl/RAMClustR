@@ -23,7 +23,6 @@ ramclustR(
   hmax = NULL,
   sampNameCol = 1,
   collapse = TRUE,
-  usePheno = TRUE,
   mspout = TRUE,
   ExpDes = NULL,
   normalize = "TIC",
@@ -36,7 +35,6 @@ ramclustR(
   mzdec = 3,
   cor.method = "pearson",
   rt.only.low.n = TRUE,
-  fftempdir = NULL,
   replace.zeros = TRUE
 )
 }
@@ -77,8 +75,6 @@ ramclustR(
 
 \item{collapse}{logical: reduce feature intensities to spectrum intensities?}
 
-\item{usePheno}{logical: transfer phenotype data from XCMS object to SpecAbund dataset?}
-
 \item{mspout}{logical: write msp formatted spectra to file?}
 
 \item{ExpDes}{either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output}
@@ -102,8 +98,6 @@ ramclustR(
 \item{cor.method}{character: which correlational method used to calculate 'r' - see ?cor}
 
 \item{rt.only.low.n}{logical: default = TRUE  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to FALSE.}
-
-\item{fftempdir}{valid path: if there are file size limitations on the default ff package temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.}
 
 \item{replace.zeros}{logical: TRUE by default.  NA, NaN, and Inf values are replaced with zero, and zero values are sometimes returned from peak peaking.  When TRUE, zero values will be replaced with a small amount of noise, with noise level set based on the detected signal intensities for that feature.}
 }

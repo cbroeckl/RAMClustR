@@ -15,7 +15,6 @@
 #' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
 #' @param rt.only.low.n logical: default = TRUE  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to FALSE.
 #' @param collapse logical: if true (default), feature quantitative values are collapsed into spectra quantitative values. 
-#' @param fftempdir valid path: if there are file size limitations on the default ff package temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.
 #' @details Main clustering function output - see citation for algorithm description or vignette('RAMClustR') for a walk through.  batch.qc. normalization requires input of three vectors (1) batch (2) order (3) qc.   This is a feature centric normalization approach which adjusts signal intensities first by comparing batch median intensity of each feature (one feature at a time) QC signal intensity to full dataset median to correct for systematic batch effects and then secondly to apply a local QC median vs global median sample correction to correct for run order effects.
 #' @return   $featclus: integer vector of cluster membership for each feature
 #' @return   $clrt: cluster retention time
@@ -29,7 +28,6 @@
 #' @importFrom graphics abline axis boxplot hist "legend" "par" "plot" "points" "title"
 #' @importFrom stats aggregate cor fitted lm loess median predict quantile sd weighted.mean
 #' @importFrom utils edit read.csv read.delim read.delim2 write.csv packageVersion
-#' @importFrom ff ff
 #' @importFrom fastcluster hclust
 #' @importFrom dynamicTreeCut cutreeDynamicTree
 #' @importFrom e1071 skewness
@@ -51,7 +49,6 @@
 #' @concept xcms
 #' @author Corey Broeckling
 #' @export
-
 rc.ramclustr  <- function(
   ramclustObj=NULL,
   st=NULL, 
@@ -65,21 +62,13 @@ rc.ramclustr  <- function(
   minModuleSize=2,
   linkage="average",
   cor.method="pearson",
-  rt.only.low.n = TRUE,
-  fftempdir = NULL
+  rt.only.low.n = TRUE
 ) {
   
   if(is.null(ramclustObj)) {
     stop("please supply a ramclustR object as input. see rc.get.xcms.data, for example")
   }
-  
-  
-  
-  if(!is.null(fftempdir)) {
-    origffdir<-getOption("fftempdir")
-    options("fftempdir" = fftempdir)
-  }
-  
+    
   ########
   # define ms levels, used several times below
   if(is.null(ramclustObj$MSMSdata)) {
@@ -119,13 +108,9 @@ rc.ramclustr  <- function(
     "minModuleSize"=minModuleSize,
     "linkage"=linkage,
     "cor.method"=cor.method,
-    "rt.only.low.n" = rt.only.low.n,
-    "fftempdir" = fftempdir
+    "rt.only.low.n" = rt.only.low.n
   )
-  
-  
-  
-  
+
   ########
   # establish some constants for downstream processing
   data1 <- ramclustObj$MSdata
@@ -142,88 +127,14 @@ rc.ramclustr  <- function(
   times <- ramclustObj$frt
   mzs <- ramclustObj$fmz
   featnames <- paste(ramclustObj$frt, ramclustObj$fmz, sep = "_")
-  
-  ########
-  # set off ff matrix system for holding data. 
-  # manages RAM demands a bit.  
-  # ffmat<-ff::ff(vmode="double", dim=c(n, n), initdata = 0) ##reset to 1 if necessary
-  # gc()
-  #Sys.sleep((n^2)/10000000)
-  #gc()
-  ########
-  # calculate similarity matrix
-  
+    
   ########
   # make list of all row and column blocks to evaluate
   eval1<-expand.grid(0:nblocks, 0:nblocks)
   names(eval1)<-c("j", "k") #j for cols, k for rows
   eval1<-eval1[which(eval1[,"j"]<=eval1[,"k"]),] #upper triangle only
   bl<-nrow(eval1)
-  
-  #  cat(paste('\n', "calculating ramclustR similarity: nblocks = ", bl, '\n'))
-  ########
-  # # Define the RCsim function used to calculate feature similarities on selected blocks of data
-  # RCsim<-function(bl)  {
-  #   cat(bl,' ')
-  #   j<-eval1[bl,"j"]  #columns
-  #   k<-eval1[bl,"k"]  #rows
-  #   startc<-min((1+(j*blocksize)), n)
-  #   if ((j+1)*blocksize > n) {
-  #     stopc<-n} else {
-  #       stopc<-(j+1)*blocksize}
-  #   startr<-min((1+(k*blocksize)), n)
-  #   if ((k+1)*blocksize > n) {
-  #     stopr<-n} else {
-  #       stopr<-(k+1)*blocksize}
-  #   if(startc<=startr) { 
-  #     mint<-min(abs(outer(range(times[startr:stopr]), range(times[startc:stopc]), FUN="-")))
-  #     if(mint<=maxt) {
-  #       temp1<-round(exp(-(( (abs(outer(times[startr:stopr], times[startc:stopc], FUN="-"))))^2)/(2*(st^2))), 
-  #                    
-  #                    digits=20 )
-  #       
-  #       if(nrow(data1) < 5 & rt.only.low.n) {
-  #         temp2 <- matrix(data = 1, nrow = length(startr:stopr), ncol = length(startc:stopc))
-  #       } else {
-  #         temp2<-round (exp(-((1-(pmax(  cor(data1[,startr:stopr], data1[,startc:stopc], method=cor.method),
-  #                                        cor(data1[,startr:stopr], data2[,startc:stopc], method=cor.method),
-  #                                        cor(data2[,startr:stopr], data2[,startc:stopc], method=cor.method)  )))^2)/(2*(sr^2))), 
-  #                       
-  #                       digits=20 )	
-  #       }
-  #       #ffcor[startr:stopr, startc:stopc]<-temp
-  #       temp<- 1-(temp1*temp2)
-  #       temp[which(is.nan(temp))]<-1
-  #       temp[which(is.na(temp))]<-1
-  #       temp[which(is.infinite(temp))]<-1
-  #       ffmat[startr:stopr, startc:stopc]<-temp
-  #       rm(temp1); rm(temp2); rm(temp)
-  #       gc()} 
-  #     if(mint>maxt) {ffmat[startr:stopr, startc:stopc]<- 1}
-  #   }
-  #   gc()}
-  # 
-  ########
-  # Call the similarity scoring function
-  # system.time(sapply(1:bl, RCsim))
-  # b<-Sys.time()
-  
-  
-  ########
-  # Report progress and timing
-  # cat("RAMClust feature similarity matrix calculated and stored:", '\n')
-  # gc() 
-  # 
-  
-  ########
-  # extract lower diagonal of ffmat as vector
-  # blocksize<-mult*round(blocksize^2/n)
-  # nblocks<-floor(n/blocksize)
-  # remaind<-n-(nblocks*blocksize)
-  
-  ########
-  # calculate similarity matrix
-  
+   
   
   tmp.ramclustObj <- calculate.similarity(
     numcols = n, 
@@ -233,38 +144,9 @@ rc.ramclustr  <- function(
     st = st, sr = sr, 
     rt.only.low.n = rt.only.low.n, 
     cor.method = cor.method)
-
-  
-  ########
-  # create vector for storing dissimilarities
-  # tmp.ramclustObj<-vector(mode="integer", length=vlength)
-  
-  ########
-  # fill vector with dissimilarities
-  # for(k in 0:(nblocks)){
-  #   startc<-1+(k*blocksize)
-  #   if ((k+1)*blocksize > n) {
-  #     stopc<-n} else {
-  #       stopc<-(k+1)*blocksize}
-  #   temp<-ffmat[startc:nrow(ffmat),startc:stopc]
-  #   if(!is.matrix(temp)) next
-  #   
-  #   temp<-temp[which(row(temp)-col(temp)>0)]
-  #   if(exists("startv")==FALSE) startv<-1
-  #   stopv<-startv+length(temp)-1
-  #   
-  #   tmp.ramclustObj[startv:stopv]<-temp
-  #   gc()
-  #   startv<-stopv+1
-  #   rm(temp)
-  #   gc()
-  # }    
-  # rm(startv)
-  # gc()
   
   ########
   # convert vector to distance formatted object
-  # featnames <- paste(ramclustObj$frt, ramclustObj$fmz, sep = "_")
   tmp.ramclustObj<-structure(
     tmp.ramclustObj, 
     Size=(n), 
@@ -281,17 +163,7 @@ rc.ramclustr  <- function(
   
   c<-Sys.time()    
   # cat("RAMClust distances converted to distance object", '\n')
-  
-  ########
-  # cleanup
-  # close(ffmat)
-  # rm(ffmat)
-  # gc()
-  # if(!is.null(fftempdir)) {
-  #   options("fftempdir" = origffdir)
-  # }
-  
-  
+    
   ########
   # cluster using fastcluster package,
   system.time(tmp.ramclustObj<-fastcluster::hclust(

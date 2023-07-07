@@ -1,3 +1,7 @@
+normalize_quantiles <- function(x) {
+    return(t(preprocessCore::normalize.quantiles(as.matrix(t(x)), keep.names = TRUE)))
+}
+
 #' rc.feature.normalize.quantile
 #'
 #' normalize data using quantile
@@ -5,16 +9,11 @@
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
 #' @return  ramclustR object with normalized data.
 #' @export
-
 rc.feature.normalize.quantile <- function(ramclustObj = NULL) {
-    tmpnames1 <- dimnames(ramclustObj$MSdata)
-    ramclustObj$MSdata <- t(preprocessCore::normalize.quantiles(as.matrix(t(ramclustObj$MSdata))))
-    dimnames(ramclustObj$MSdata) <- tmpnames1
+    ramclustObj$MSdata <- normalize_quantiles(ramclustObj$MSdata)
 
     if (!is.null(ramclustObj$MSMSdata)) {
-        tmpnames2 <- dimnames(ramclustObj$MSMSdata)
-        ramclustObj$MSMSdata <- t(preprocessCore::normalize.quantiles(as.matrix(t(ramclustObj$MSMSdata))))
-        dimnames(ramclustObj$MSMSdata) <- tmpnames2
+        ramclustObj$MSMSdata <- normalize_quantiles(ramclustObj$MSMSdata)
     }
 
     ## update msint and optionally msmsint

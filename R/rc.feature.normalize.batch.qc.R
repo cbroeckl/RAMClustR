@@ -20,33 +20,33 @@ normalized_data_batch_qc <- function(data = NULL,
     tmp <- data[, z]
     featmed <- mean(tmp[qc])
     tmpn <- tmp
-    
+
     for (i in unique(batch)) {
       do <- which(batch == i)
       doqc <- which(batch == i & qc)
-      
+
       sds <- 1.96
       lcl <- mean(tmp[doqc]) - (sds * sd(tmp[doqc]))
       ucl <- mean(tmp[doqc]) + (sds * sd(tmp[doqc]))
       keep <- which(tmp[doqc] > lcl & tmp[doqc] < ucl)
       if (length(keep) > 0) doqc <- doqc[keep]
-      
+
       batchmed <- mean(tmpn[doqc])
       f <- batchmed / featmed
-      
+
       if (is.na(f)) next
       if (abs(log2(f)) > max.ratio) {
         if (f > 1) {
           f <- max.ratio
-        } 
+        }
         if (f < 1) {
           f <- 1 / max.ratio
         }
       }
-      
+
       tmpn[do] <- tmp[do] / f
       tmpnqc <- tmpn
-      
+
       for (x in do) {
         batchmed <- mean(tmpn[doqc])
         space <- abs(x - doqc)
@@ -54,7 +54,7 @@ normalized_data_batch_qc <- function(data = NULL,
         wts <- 1 / space[use]
         wts <- wts / sum(wts)
         localmed <- weighted.mean(tmpnqc[doqc[use]], weights = wts)
-        
+
         if (is.na(localmed)) {
           for (y in 2:5) {
             use <- which(space <= qc.inj.range * y)
@@ -64,31 +64,31 @@ normalized_data_batch_qc <- function(data = NULL,
             if (!is.na(localmed)) break
           }
         }
-        
+
         if (is.na(localmed)) {
           localmed <- batchmed
         }
         f <- localmed / batchmed
-        
+
         if (is.na(f)) next
-        
+
         if (abs(log2(f)) > max.ratio) {
           if (f > 1) {
             f <- max.ratio
-          } 
+          }
           if (f < 1) {
             f <- 1 / max.ratio
           }
         }
-        
+
         tmpn[x] <- tmpnqc[x] / f
         rm(localmed)
         rm(f)
       }
     }
-    
+
     data[, z] <- tmpn
-    if(output.plot){
+    if (output.plot) {
       par(mfrow = c(1, 2))
       plot(tmp,
         col = batch, cex = (qc + 1) / 2, ylim = c(0.9, 1.11) * range(tmp),
@@ -107,14 +107,14 @@ normalized_data_batch_qc <- function(data = NULL,
     }
     rm(tmp)
     rm(tmpn)
-    if(exists("tmpnqc")) {
+    if (exists("tmpnqc")) {
       rm(tmpnqc)
     }
-    if(z %% 100 == 0) {
+    if (z %% 100 == 0) {
       gc()
     }
   }
-  
+
   return(data)
 }
 
@@ -220,7 +220,7 @@ rc.feature.normalize.batch.qc <- function(order = NULL,
     sep = ""
   )
 
-  if(output.plot) {
+  if (output.plot) {
     pdf(file = "norm.plots.pdf", height = 4, width = 9)
   }
 
@@ -243,7 +243,7 @@ rc.feature.normalize.batch.qc <- function(order = NULL,
     )
   }
 
-  if(output.plot) {
+  if (output.plot) {
     dev.off()
   }
   ## update msint and optionally msmsint

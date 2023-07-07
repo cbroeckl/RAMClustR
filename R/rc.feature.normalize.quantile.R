@@ -1,5 +1,15 @@
-normalize_quantiles <- function(x) {
-    return(t(preprocessCore::normalize.quantiles(as.matrix(t(x)), keep.names = TRUE)))
+quantile_normalisation <- function(df) {
+    df_rank <- apply(df, 2, rank, ties.method = "min")
+    df_sorted <- data.frame(apply(df, 2, sort))
+    df_mean <- apply(df_sorted, 1, mean)
+
+    index_to_mean <- function(my_index, my_mean) {
+        return(my_mean[my_index])
+    }
+
+    df_final <- apply(df_rank, 2, index_to_mean, my_mean = df_mean)
+    rownames(df_final) <- rownames(df)
+    return(df_final)
 }
 
 #' rc.feature.normalize.quantile
@@ -10,10 +20,10 @@ normalize_quantiles <- function(x) {
 #' @return  ramclustR object with normalized data.
 #' @export
 rc.feature.normalize.quantile <- function(ramclustObj = NULL) {
-    ramclustObj$MSdata <- normalize_quantiles(ramclustObj$MSdata)
+    ramclustObj$MSdata <- t(quantile_normalisation(t(ramclustObj$MSdata)))
 
     if (!is.null(ramclustObj$MSMSdata)) {
-        ramclustObj$MSMSdata <- normalize_quantiles(ramclustObj$MSMSdata)
+        ramclustObj$MSMSdata <- t(quantile_normalisation(t(ramclustObj$MSMSdata)))
     }
 
     ## update msint and optionally msmsint

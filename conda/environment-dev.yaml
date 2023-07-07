@@ -21,7 +21,7 @@ dependencies:
   - r-stringr
   - r-xml2
   - r-e1071
-  - r-interpretmsspectrum <=1.3.3
+  - r-interpretmsspectrum <=1.3.7
   - r-languageserver
   - r-testthat
   - r-readxl
@@ -33,4 +33,3 @@ dependencies:
   - r-covr
   - r-patrick
   - r-httr
-  - bioconductor-preprocesscore

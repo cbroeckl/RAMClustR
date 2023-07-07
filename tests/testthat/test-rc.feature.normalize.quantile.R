@@ -3,6 +3,5 @@ test_that("RAMClustR rc.feature.normalize.quantile", {
   expected <- readRDS(file.path("testdata", "rc.feature.normalize.quantile.rds"))
   
   actual <- rc.feature.normalize.quantile(ramclustObj = ramclustObj)
-
   expect_equal(actual, expected)
 })

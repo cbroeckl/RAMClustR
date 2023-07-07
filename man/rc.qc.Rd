@@ -11,7 +11,8 @@ rc.qc(
   npc = 4,
   scale = "pareto",
   outfile.basename = "ramclustQC",
-  view.hist = TRUE
+  view.hist = TRUE,
+  do.plot = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ rc.qc(
 \item{outfile.basename}{base name of output files. Extensions added internally. default = "ramclustQC"}
 
 \item{view.hist}{logical.  should histograms be plotted?}
+
+\item{do.plot}{logical should plots be shown/plotted?}
 }
 \value{
 new RC object. Saves output summary plots to pdf and .csv summary tables to new 'QC' directory. If remove.qc = TRUE, moves QC samples to new $QC slot from original position.

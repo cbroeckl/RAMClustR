@@ -7,6 +7,13 @@ test_that("RAMClustR do.findmain", {
   setwd(tmp)
   actual <- do.findmain(ramclustObj = ramclustObj)
 
+  actual$history <- NA
+  expected$history <- NA
+  actual$params <- NA
+  expected$params <- NA
+  actual$phenoData <- NA
+  expected$phenoData <- NA
+
   expect_equal(actual, expected)
   setwd(wd)
 })

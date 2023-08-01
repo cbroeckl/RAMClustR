@@ -19,7 +19,7 @@ Authors@R:
 Imports: dynamicTreeCut, fastcluster, preprocessCore, e1071, gplots, pcaMethods, utils, ggplot2, InterpretMSSpectrum
 Depends: R (>= 3.5.0)
 Suggests: knitr, rmarkdown, xcms, testthat, BiocManager, stringi, curl
-License: GPL (>= 2)
+License: MIT
 Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics data. This method is compatible with gas and liquid chromatography coupled mass spectrometry, including indiscriminant tandem mass spectrometry <DOI: 10.1021/ac501530d> data. 
 URL: https://github.com/cbroeckl/RAMClustR
 Encoding: UTF-8

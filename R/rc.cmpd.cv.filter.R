@@ -100,7 +100,7 @@ rc.cmpd.filter.cv  <- function(
   
   ramclustObj$history$filter.cmpds <- paste0(
     "Compounds were filtered based on their qc sample CV values.",
-    " All compounds with CV vaules greater than ", max.cv, 
+    " All compounds with CV values greater than ", max.cv, 
     " in the cluster intensity (SpecAbund) dataset",
     " were removed. ",   length(which(!keep))," of ", length(keep), " compounds were removed."
   )

@@ -198,7 +198,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
   history <- {
     paste0(
       "RAMClustR version ", utils::packageDescription("RAMClustR")$Version, " in ", R.Version()$version.string,
-      ") was used to normalize, filter, and group features into spectra.",
+      ") was used to normalize, filter, and group features into spectra. ",
       "XCMS (Smith 2006)(Tautenhahn 2008) output data was transferred to a ramclustR object using the rc.get.xcms.data function. ",
       "Feature data was extracted using the xcms ", if (newXCMS) {
         "featureValues"

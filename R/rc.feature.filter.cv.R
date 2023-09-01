@@ -226,7 +226,7 @@ rc.feature.filter.cv <- function(ramclustObj = NULL,
 
   ramclustObj$history$filter.features <- paste0(
     "Features were filtered based on their qc sample CV values.",
-    " Only features with CV vaules less than or equal to ", max.cv,
+    " Only features with CV values less than or equal to ", max.cv,
     if (is.null(ramclustObj$MSMSdata)) {
       " in MSdata set"
     } else {

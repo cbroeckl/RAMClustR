@@ -237,7 +237,12 @@ rc.ramclustr  <- function(
     g<-Sys.time()
   }
   
-  dimnames(ramclustObj$SpecAbund)[[1]] <- ramclustObj$sample_names
+  if(!is.null(ramclustObj$sample_names)) {
+    dimnames(ramclustObj$SpecAbund)[[1]] <- ramclustObj$sample_names
+  } else {
+    dimnames(ramclustObj$SpecAbund)[[1]] <- ramclustObj$phenoData[,"sample.names"]
+  }
+  
   
   if(is.null(dimnames(ramclustObj$SpecAbund)[[1]])) {
     stop('this appears to be an older format ramclustR object and does not have a "phenoData" slot with sample names')

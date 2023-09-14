@@ -180,23 +180,30 @@ do.findmain <- function (
   if(is.null(cmpd)) {
     cmpd <- (1:max(ramclustObj$featclus))
   }
+
   for (cl in cmpd) {
-    s <- data.frame(mz = ramclustObj[[use.mass]][which(ramclustObj$featclus == 
-                                                         cl)], int = ramclustObj$msint[which(ramclustObj$featclus == 
-                                                                                               cl)]^2)
-    s2 <- data.frame(mz = ramclustObj[[use.mass]][which(ramclustObj$featclus == 
-                                                         cl)], int = ramclustObj$msmsint[which(ramclustObj$featclus == 
-                                                                                               cl)]^2)
+    s <- data.frame(mz = ramclustObj[[use.mass]][which(
+      ramclustObj$featclus == cl)
+      ], int = ramclustObj$msint[which(ramclustObj$featclus == cl)])
     s <- s[order(s$mz),]
+    
+    if(is.null(ramclustObj$msmsint)) {
+      s2 <- NULL 
+      } else {
+      s2 <- data.frame(mz = ramclustObj[[use.mass]][which(
+      ramclustObj$featclus == cl)], int = ramclustObj$msmsint[which(ramclustObj$featclus == cl)])
+      s2 <- s2[order(s2$mz),]
+    }
+    
     out <- InterpretMSSpectrum::findMAIN(
       s, 
       rules = c(ads), 
       adducthyp = ads[grep("[M",ads, fixed = TRUE)], 
       ionmode = mode, 
-      ms2spec = s2, 
+      if(!is.null(s2)) {ms2spec = s2}, 
       mzabs = mzabs.error, 
       ppm = ppm.error
-    )
+      )
     summarytable <- summary(out)
     fm.out <- summarytable
     
@@ -510,6 +517,7 @@ do.findmain <- function (
     }
   }
   ramclustObj$history$do.findmain <- paste(
+    '\n', 
     " Molecular weight was inferred from in-source spectra (Broeckling 2016) using the do.findmain function, which calls the ", 
     "interpretMSSpectrum package (Jaeger 2016). ", 
     "Parameters for do.findmain were set to: ", 

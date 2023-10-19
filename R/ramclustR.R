@@ -55,7 +55,6 @@ compute_SpecAbundAve <- function(ramclustObj = NULL) {
 #' @param mzdec integer: number of decimal places used in printing m/z values
 #' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
 #' @param rt.only.low.n logical: default = TRUE  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to FALSE.
-#' @param fftempdir valid path: if there are file size limitations on the default ff package temp directory  - getOptions('fftempdir') - you can change the directory used as the fftempdir with this option.
 #' @param replace.zeros logical: TRUE by default.  NA, NaN, and Inf values are replaced with zero, and zero values are sometimes returned from peak peaking.  When TRUE, zero values will be replaced with a small amount of noise, with noise level set based on the detected signal intensities for that feature.
 #' @details Main clustering function output - see citation for algorithm description or vignette('RAMClustR') for a walk through.  batch.qc. normalization requires input of three vectors (1) batch (2) order (3) qc.   This is a feature centric normalization approach which adjusts signal intensities first by comparing batch median intensity of each feature (one feature at a time) QC signal intensity to full dataset median to correct for systematic batch effects and then secondly to apply a local QC median vs global median sample correction to correct for run order effects.
 #' @return   $featclus: integer vector of cluster membership for each feature
@@ -149,7 +148,6 @@ ramclustR <- function(xcmsObj = NULL,
                       mzdec = 3,
                       cor.method = "pearson",
                       rt.only.low.n = TRUE,
-                      fftempdir = NULL,
                       replace.zeros = TRUE) {
   ########
   # If experimental design is NULL:
@@ -171,10 +169,6 @@ ramclustR <- function(xcmsObj = NULL,
     }
   }
 
-  if (!is.null(fftempdir)) {
-    origffdir <- getOption("fftempdir")
-    options("fftempdir" = fftempdir)
-  }
 
   ########
   # define ms levels, used several times below
@@ -322,8 +316,7 @@ ramclustR <- function(xcmsObj = NULL,
     minModuleSize = minModuleSize,
     linkage = linkage,
     cor.method = cor.method,
-    rt.only.low.n = rt.only.low.n,
-    fftempdir = fftempdir
+    rt.only.low.n = rt.only.low.n
   )
 
   history <- paste(

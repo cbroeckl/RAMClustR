@@ -1,4 +1,4 @@
-#' do.findmain
+#' doFindmain
 #'
 #' Cluster annotation function: inference of 'M' - molecular weight of the compound giving rise to each spectrum - using the InterpretMSSpectrum::findMain function
 #'
@@ -45,7 +45,7 @@
 #' @export 
 
 
-do.findmain <- function (
+doFindmain <- function (
   ramclustObj = NULL, 
   cmpd = NULL, 
   mode = "positive", 

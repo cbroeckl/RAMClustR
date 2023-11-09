@@ -11,8 +11,7 @@ rc.qc(
   npc = 4,
   scale = "pareto",
   outfile.basename = "ramclustQC",
-  view.hist = TRUE,
-  cluster.heatmap = FALSE
+  view.hist = TRUE
 )
 }
 \arguments{

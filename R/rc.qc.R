@@ -31,8 +31,7 @@ rc.qc<-function(ramclustObj=NULL,
                 npc=4,
                 scale="pareto",
                 outfile.basename ="ramclustQC",
-                view.hist = TRUE,
-                cluster.heatmap = FALSE
+                view.hist = TRUE
                 
 ){
   
@@ -48,6 +47,22 @@ rc.qc<-function(ramclustObj=NULL,
     outfile.basename <- "ramclustQC"
   }
   
+  define_samples <- function(ramclustObj, tag) {
+    ## define samples in each set
+    if(length(tag) == 0) {
+      stop("no tag provided", "\n")
+    }
+    
+    samples <- grep(tag[1], ramclustObj$phenoData$sample.names)
+    samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
+    
+    if (length(samples) == 0) {
+      stop("no ", tag, " samples found using the tag ", "'", tag, "'", "\n")
+    }
+    return(samples)
+  }
+  
+  
   do.sets <- c("MSdata", "SpecAbund")
   
   if(is.null(ramclustObj$SpecAbund)) {
@@ -57,7 +72,7 @@ rc.qc<-function(ramclustObj=NULL,
   if(is.null(ramclustObj$MSdata)) {
     do.sets <- do.sets[!(do.sets %in% "MSdata")]
   } 
-
+  
   do.sets.rows <- sapply(
     c(do.sets, "phenoData"), 
     FUN = function(x) {
@@ -88,32 +103,34 @@ rc.qc<-function(ramclustObj=NULL,
   ## correlational r values 1 step from the diagonal
   ## imperfect clustering introduces right skew
   ## load("datasets/RCobject.Rdata")
-  if(!is.null(ramclustObj$clrt)) {
-    
-    ## create file to collect figures. 
-    pdf(file=paste("QC/", "ramclust_clustering_diagnostic.pdf", sep=""), 
-        useDingbats=FALSE, width=8, height=8)  
-    o<-order(ramclustObj$clrt[cmpd.use])
-    c<-cor(ramclustObj$SpecAbund[,cmpd.use][,o])
-    d<-diag(as.matrix((c[2:(nrow(c)), 1:ncol(c)-1])))
-    hist(d, breaks=50, main="")
-    title(main="histogram of pearson's r for each cluster to its adjacent cluster (by time)", cex.main=0.8,
-          sub=paste("skew =", round(e1071::skewness(d), digits=3), " :values near zero are better", '\n', 
-                    'WARNING:metabolic relationships will confound interpretation of this plot'), cex.sub=0.6)
-    
-    # ideally heatmap will have a bright yellow diagonal with no yellow squares near the diagonal
-    # this is slow for larger numbers of clusters
-    if(cluster.heatmap) {
-      gplots::heatmap.2(c^2, trace="none", dendrogram="none", Rowv=FALSE, Colv=FALSE, main="pearsons r^2, clusters sorted by rt", cex.main=0.5,
-                        cexRow=0.02 + 1/log10(length(o)), cexCol=0.02 + 1/log10(length(o)))
-    }
-    
-    dev.off()
-  }
   
+  # if(!is.null(ramclustObj$clrt)) {
+  #   
+  #   ## create file to collect figures. 
+  #   pdf(file=paste("QC/", "ramclust_clustering_diagnostic.pdf", sep=""), 
+  #       useDingbats=FALSE, width=8, height=8)  
+  #   o<-order(ramclustObj$clrt[cmpd.use])
+  #   c<-cor(ramclustObj$SpecAbund[,cmpd.use][,o])
+  #   d<-diag(as.matrix((c[2:(nrow(c)), 1:ncol(c)-1])))
+  #   hist(d, breaks=50, main="")
+  #   title(main="histogram of pearson's r for each cluster to its adjacent cluster (by time)", cex.main=0.8,
+  #         sub=paste("skew =", round(e1071::skewness(d), digits=3), " :values near zero are better", '\n', 
+  #                   'WARNING:metabolic relationships will confound interpretation of this plot'), cex.sub=0.6)
+  #   
+  #   # ideally heatmap will have a bright yellow diagonal with no yellow squares near the diagonal
+  #   # this is slow for larger numbers of clusters
+  #   gplots::heatmap.2(c^2, trace="none", dendrogram="none", Rowv=FALSE, Colv=FALSE, main="pearsons r^2, clusters sorted by rt", cex.main=0.5,
+  #                     cexRow=0.02 + 1/log10(length(o)), cexCol=0.02 + 1/log10(length(o)))
+  #   dev.off()
+  # }
+  # 
   
   ## PCA of QC samples
   ## histogram of feature and/or compound CVs for QC samples
+  
+  # cols<-rep(8, length(ramclustObj$sample_names))
+  cols<-rep(8, nrow(ramclustObj$phenoData))
+  cols[qc]<-2
   
   for(x in do.sets) {
     
@@ -123,11 +140,6 @@ rc.qc<-function(ramclustObj=NULL,
     } else {
       td <- ramclustObj[[x]]
     }
-    
-    cols<-rep(8, dim(td)[1])
-    cols[which(is.na(cols)) == 8]
-    #cols<-rep(8, nrow(ramclustObj$phenoData))
-    cols[qc]<-2
     
     # if(!is.null(ramclustObj$MSMSdata) & x == "MSdata") {
     #   td <- td + ramclustObj$MSMSdata
@@ -239,5 +251,3 @@ rc.qc<-function(ramclustObj=NULL,
   
   return(ramclustObj)
 }
-
-

@@ -60,6 +60,12 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
     "mzdec" = mzdec,
     "ensure.no.na" = ensure.no.na
   )
+  
+  ## filled warning
+  if(ensure.no.na & !is.filled) {
+    warning("xcms filled peaks are not being used, but you set ensure.no.na = TRUE, this is atypical usage.", '\n')
+  }
+  
   ## add xcms processing history narrative here
 
   ## check xcms object presence

@@ -39,7 +39,8 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
                              MSMStag = NULL,
                              ExpDes = NULL,
                              mzdec = 3,
-                             ensure.no.na = TRUE) {
+                             ensure.no.na = TRUE,
+                             use.filled = TRUE) {
   MSMSdata <- NULL
   ########
   # If experimental design is NULL:
@@ -169,7 +170,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
     data <- t(xcms::groupval(xcmsObj, value = "into"))
   }
   if (newXCMS) {
-    data <- t(xcms::featureValues(xcmsObj, value = "into"))
+    data <- t(xcms::featureValues(xcmsObj, value = "into", filled = use.filled))
   }
 
   if (length(msfiles) == 0) {

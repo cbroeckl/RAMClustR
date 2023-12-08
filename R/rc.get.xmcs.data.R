@@ -62,7 +62,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
   )
   
   ## filled warning
-  if(ensure.no.na & !is.filled) {
+  if(ensure.no.na & !use.filled) {
     warning("xcms filled peaks are not being used, but you set ensure.no.na = TRUE, this is atypical usage.", '\n')
   }
   

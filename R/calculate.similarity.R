@@ -21,7 +21,8 @@ calculate.similarity <- function(numcols,
                                  st,
                                  sr,
                                  rt.only.low.n,
-                                 cor.method) {
+                                 cor.method,
+                                 cor.use) {
   ########
   # establish some constants for downstream processing
   vlength <- (numcols * (numcols - 1)) / 2
@@ -65,14 +66,18 @@ calculate.similarity <- function(numcols,
             suppressWarnings(
               max_value <- pmax(
                 cor(
-                  data1[, start_row:stop_row], data1[, start_col:stop_col], method = cor.method, use = "everything"),
+                  data1[, start_row:stop_row], data1[, start_col:stop_col], method = cor.method, use = cor.use),
                 cor(
-                  data1[, start_row:stop_row], data2[, start_col:stop_col], method = cor.method, use = "everything"),
+                  data1[, start_row:stop_row], data2[, start_col:stop_col], method = cor.method, use = cor.use),
                 cor(
-                  data2[, start_row:stop_row], data2[, start_col:stop_col], method = cor.method, use = "everything")
-                #, na.rm = TRUE
+                  data2[, start_row:stop_row], data2[, start_col:stop_col], method = cor.method, use = cor.use)
+                , na.rm = TRUE
               )
+
             )
+            if(any(is.na(max_value))) {
+              max_value[is.na(max_value)] <- 0
+            }
             # correlational similarity
             corr_sim <- round(exp(-((1 - max_value) ^ 2) / (2 * (sr ^ 2))), digits = 20)
           }

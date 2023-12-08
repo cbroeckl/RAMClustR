@@ -233,7 +233,7 @@ rc.ramclustr  <- function(
     ramclustObj$SpecAbund<-matrix(nrow=nrow(data1), ncol=max(clus))
     for (ro in 1:nrow(ramclustObj$SpecAbund)) { 
       for (co in 1:ncol(ramclustObj$SpecAbund)) {
-        ramclustObj$SpecAbund[ro,co]<- weighted.mean(data1[ro,which(ramclustObj$featclus==co)], wts[which(ramclustObj$featclus==co)])
+        ramclustObj$SpecAbund[ro,co]<- weighted.mean(data1[ro,which(ramclustObj$featclus==co)], wts[which(ramclustObj$featclus==co)], na.rm = TRUE)
       }
     }
     dimnames(ramclustObj$SpecAbund)[[2]]<-ramclustObj$cmpd

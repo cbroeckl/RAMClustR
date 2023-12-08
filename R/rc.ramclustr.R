@@ -15,6 +15,7 @@
 #' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
 #' @param rt.only.low.n logical: default = TRUE  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to FALSE.
 #' @param collapse logical: if true (default), feature quantitative values are collapsed into spectra quantitative values. 
+#' @param cor.use character: see 'use' option from 'cor' method.  Default = 'everything'.  if alternate (i.e. 'pairwise.complete.obs'), and NA may be returned, NA are replaced with 0 before clustering.  
 #' @details Main clustering function output - see citation for algorithm description or vignette('RAMClustR') for a walk through.  batch.qc. normalization requires input of three vectors (1) batch (2) order (3) qc.   This is a feature centric normalization approach which adjusts signal intensities first by comparing batch median intensity of each feature (one feature at a time) QC signal intensity to full dataset median to correct for systematic batch effects and then secondly to apply a local QC median vs global median sample correction to correct for run order effects.
 #' @return   $featclus: integer vector of cluster membership for each feature
 #' @return   $clrt: cluster retention time
@@ -47,19 +48,20 @@
 #' @export
 
 rc.ramclustr  <- function(
-  ramclustObj=NULL,
-  st=NULL, 
-  sr=NULL, 
-  maxt=NULL, 
-  deepSplit=FALSE, 
-  blocksize=2000,
-  mult=5,
-  hmax=NULL,
-  collapse=TRUE,
-  minModuleSize=2,
-  linkage="average",
-  cor.method="pearson",
-  rt.only.low.n = TRUE
+    ramclustObj=NULL,
+    st=NULL, 
+    sr=NULL, 
+    maxt=NULL, 
+    deepSplit=FALSE, 
+    blocksize=2000,
+    mult=5,
+    hmax=NULL,
+    collapse=TRUE,
+    minModuleSize=2,
+    linkage="average",
+    cor.method="pearson",
+    rt.only.low.n = TRUE,
+    cor.use = "everything"
 ) {
   
   if(is.null(ramclustObj)) {
@@ -145,8 +147,9 @@ rc.ramclustr  <- function(
     mult = mult, maxt = maxt, 
     st = st, sr = sr, 
     rt.only.low.n = rt.only.low.n, 
-    cor.method = cor.method)
-
+    cor.method = cor.method,
+    cor.use = cor.use)
+  
   
   tmp.ramclustObj<-structure(
     tmp.ramclustObj, 
@@ -226,7 +229,7 @@ rc.ramclustr  <- function(
   # collapse feature dataset into spectrum dataset
   if(collapse=="TRUE") {
     cat("collapsing feature into spectral signal intensities", '\n')
-    wts<-colSums(data1[])
+    wts<-colMeans(data1[], na.rm = TRUE)
     ramclustObj$SpecAbund<-matrix(nrow=nrow(data1), ncol=max(clus))
     for (ro in 1:nrow(ramclustObj$SpecAbund)) { 
       for (co in 1:ncol(ramclustObj$SpecAbund)) {
@@ -237,11 +240,24 @@ rc.ramclustr  <- function(
     g<-Sys.time()
   }
   
+  
   if(!is.null(ramclustObj$sample_names)) {
-    dimnames(ramclustObj$SpecAbund)[[1]] <- ramclustObj$sample_names
+    smp.names <- ramclustObj$sample_names
   } else {
-    dimnames(ramclustObj$SpecAbund)[[1]] <- ramclustObj$phenoData[,"sample.names"]
+    if(!is.null(ramclustObj$phenoData[,"sample_names"])) {
+      smp.names <- ramclustObj$sample_names
+    } else {
+      smp.names  <- ramclustObj$sample.names
+    }
   }
+  
+  if(is.null(smp.names)) {
+    stop("sample names is null")
+  } else {
+    dimnames(ramclustObj$SpecAbund)[[1]] <- smp.names
+  }
+  
+  
   
   
   if(is.null(dimnames(ramclustObj$SpecAbund)[[1]])) {

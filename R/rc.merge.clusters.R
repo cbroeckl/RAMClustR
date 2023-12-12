@@ -73,7 +73,7 @@ rc.merge.split.clusters <- function(
   # collapse feature dataset into spectrum dataset
   data1 <- ramclustObj$MSdata
   wts<-colMeans(data1[], na.rm = TRUE)
-  ramclustObj$SpecAbund<-matrix(nrow=nrow(data1), ncol=max(clus))
+  ramclustObj$SpecAbund<-matrix(nrow=nrow(data1), ncol=max(ramclustObj$featclus))
   for (ro in 1:nrow(ramclustObj$SpecAbund)) { 
     for (co in 1:ncol(ramclustObj$SpecAbund)) {
       ramclustObj$SpecAbund[ro,co]<- weighted.mean(data1[ro,which(ramclustObj$featclus==co)], wts[which(ramclustObj$featclus==co)], na.rm = TRUE)

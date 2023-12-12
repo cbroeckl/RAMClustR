@@ -23,7 +23,8 @@ rc.merge.split.clusters <- function(
     ramclustObj = NULL,
     merge.threshold = 0.7,
     cor.method = 'spearman',
-    rt.sd.factor = 3
+    rt.sd.factor = 3,
+    cor.use = "everything"
     
 ) {
   
@@ -45,7 +46,7 @@ rc.merge.split.clusters <- function(
     potential.merges <- potential.merges[!potential.merges == i]
     if(length(potential.merges) == 0) next
     
-    rval <- cor(ramclustObj$SpecAbund[,i], ramclustObj$SpecAbund[,potential.merges], method = cor.method)
+    rval <- cor(ramclustObj$SpecAbund[,i], ramclustObj$SpecAbund[,potential.merges], method = cor.method, use = cor.use)
     merges <- potential.merges[which(rval >= merge.threshold)]
     if(length(merges) == 0) next
     
@@ -70,11 +71,11 @@ rc.merge.split.clusters <- function(
   # 0.99888
   
   # collapse feature dataset into spectrum dataset
-  wts<-colSums(ramclustObj$MSdata)
-  ramclustObj$SpecAbund<-matrix(nrow=nrow(ramclustObj$SpecAbund), ncol=max(ramclustObj$featclus))
+  wts<-colMeans(data1[], na.rm = TRUE)
+  ramclustObj$SpecAbund<-matrix(nrow=nrow(data1), ncol=max(clus))
   for (ro in 1:nrow(ramclustObj$SpecAbund)) { 
     for (co in 1:ncol(ramclustObj$SpecAbund)) {
-      ramclustObj$SpecAbund[ro,co]<- weighted.mean(ramclustObj$MSdata[ro,which(ramclustObj$featclus==co)], wts[which(ramclustObj$featclus==co)])
+      ramclustObj$SpecAbund[ro,co]<- weighted.mean(data1[ro,which(ramclustObj$featclus==co)], wts[which(ramclustObj$featclus==co)], na.rm = TRUE)
     }
   }
   dimnames(ramclustObj$SpecAbund)[[1]] <- sa.rn

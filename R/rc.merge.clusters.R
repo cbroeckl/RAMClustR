@@ -71,6 +71,7 @@ rc.merge.split.clusters <- function(
   # 0.99888
   
   # collapse feature dataset into spectrum dataset
+  data1 <- ramclustObj$MSdata
   wts<-colMeans(data1[], na.rm = TRUE)
   ramclustObj$SpecAbund<-matrix(nrow=nrow(data1), ncol=max(clus))
   for (ro in 1:nrow(ramclustObj$SpecAbund)) { 

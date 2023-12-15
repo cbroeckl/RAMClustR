@@ -19,6 +19,7 @@ getData<-function(ramclustObj=NULL,
                   cmpdlabel="cmpd",
                   filter = FALSE
 ) {
+  
   if(is.null(ramclustObj$phenoData)) {  
     dat <- ramclustObj[[which.data]]
     if(filter) {
@@ -63,6 +64,8 @@ getData<-function(ramclustObj=NULL,
       "data" = ramclustObj[[which.data]][,cmpd.use], 
       "full.data" = data.frame(ramclustObj$phenoData, ramclustObj[[which.data]][,cmpd.use])
     )
+    dimnames(dat$data)[[2]] <- ramclustObj[[cmpdlabel]]
+    dimnames(dat$full.data)[[2]][(ncol(dat$design)+1):ncol(dat$full.data)] <- ramclustObj[[cmpdlabel]]
   }
   return(dat)
 }	

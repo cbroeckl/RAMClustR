@@ -270,7 +270,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
     phenoData = phenotype,
     feature_names = featnames,
     xcmsOrd = xcmsOrd,
-    sample_names = filenames
+    sample_names = phenotype$sample.names
   )
 
   if (is.null(ramclustObj$params)) {

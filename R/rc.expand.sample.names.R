@@ -45,7 +45,7 @@ rc.expand.sample.names <- function(
     sn <- as.character(ramclustObj$phenoData$sample.names)
   }
   
-  cat(paste(sn, collapse = ", "), '\n')
+  # cat(paste(sn, collapse = ", "), '\n')
   
   if(!any(ls()=="sn")) {
     stop('missing sample names in phenoData slot', '\n')

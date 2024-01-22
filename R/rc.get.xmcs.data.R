@@ -196,7 +196,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
     filepaths <- xcmsObj@filepaths
     filenames <- basename(filepaths)
     phenotype <- xcmsObj@phenoData[, 1]
-    phenotype <- data.frame(sample.names = phenotype, filenames, filepaths)
+    phenotype <- data.frame(phenotype, filenames, filepaths)
     if (mslev == 2) {
       phenotype <- phenotype[1:(nrow(phenotype) / 2), ]
     }

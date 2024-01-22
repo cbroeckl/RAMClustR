@@ -20,6 +20,11 @@ getData<-function(ramclustObj=NULL,
                   filter = FALSE
 ) {
   
+  if(which.data == 'MSdata') {
+    cmpdlabel = 'featnames'
+  }
+  
+  
   if(is.null(ramclustObj$phenoData)) {  
     dat <- ramclustObj[[which.data]]
     if(filter) {
@@ -30,7 +35,7 @@ getData<-function(ramclustObj=NULL,
         }
       }
     }
-
+    
     if(length(ramclustObj[[cmpdlabel]]) == dim(ramclustObj[[which.data]])[2]) {
       names(dat) <- ramclustObj[[cmpdlabel]]
     } else {
@@ -54,10 +59,10 @@ getData<-function(ramclustObj=NULL,
       if(!is.null(ramclustObj$cmpd.use)) {
         cmpd.use <- which(ramclustObj$cmpd.use)
       }else {
-        cmpd.use <- 1:length(ramclustObj$ann)
+        cmpd.use <- 1:length(ramclustObj[[cmpdlabel]])
       }
     } else {
-      cmpd.use <- 1:length(ramclustObj$ann)
+      cmpd.use <- 1:length(ramclustObj[[cmpdlabel]])
     }
     dat <- list(
       "design" = ramclustObj$phenoData, 

@@ -16,7 +16,7 @@
 exportDataset<-function(
   ramclustObj=NULL,
   which.data="SpecAbund",
-  label.by="ann",
+  label.by="cmpd",
   appendFactors = TRUE
 ) {
   

@@ -188,7 +188,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
     filepaths <- xcmsObj@processingData@files
     filenames <- basename(filepaths)
     phenotype <- xcmsObj@phenoData@data
-    phenotype <- data.frame(sample.names = phenotype, filenames, filepaths)
+    phenotype <- data.frame(filenames, filepaths, phenotype)
     if (mslev == 2) {
       phenotype <- phenotype[1:(nrow(phenotype) / 2), ]
     }
@@ -259,7 +259,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
     MSMSdata <- data[msmsfiles, ]
   }
 
-  ramclustObj <- create_ramclustObj(
+  ramclustObj <- RAMClustR::create_ramclustObj(
     ExpDes = ExpDes,
     MSdata = data[msfiles, ],
     MSMSdata = MSMSdata,
@@ -270,7 +270,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
     phenoData = phenotype,
     feature_names = featnames,
     xcmsOrd = xcmsOrd,
-    sample_names = phenotype$sample.names
+    sample_names = phenotype$filenames
   )
 
   if (is.null(ramclustObj$params)) {

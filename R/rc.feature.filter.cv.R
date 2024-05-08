@@ -40,12 +40,20 @@ define_samples <- function(ramclustObj, tag) {
   if(length(tag) == 0) {
     stop("no tag provided", "\n")
   }
-
-  samples <- grep(tag[1], ramclustObj$phenoData$sample.names)
-  samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
-
+  
+  if(length(tag) == 1) {
+    samples <- grep(tag[1], ramclustObj$phenoData$sample.names)
+    samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
+  }
+  
+  if(length(tag) == 2) {
+    samples <- grep(tag[1], ramclustObj$phenoData[,tag[2]])
+    samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
+  }
+  
+  
   if (length(samples) == 0) {
-    stop("no ", tag, " samples found using the tag ", "'", tag, "'", "\n")
+    stop("no QC samples found using the tag ", "'", tag, "'", "\n")
   }
   return(samples)
 }

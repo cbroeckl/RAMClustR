@@ -78,7 +78,8 @@ rc.feature.normalize.qc <- function(ramclustObj = NULL,
   
   ## define QC samples in each set
   if(!is.null(qc.tag)) {
-    qc <- grepl(qc.tag[1], ramclustObj$phenoData[,2])
+    # qc <- grepl(qc.tag[1], ramclustObj$phenoData[,2])
+    qc <- define_samples(ramclustObj = ramclustObj, tag = qc.tag, logical = TRUE)
   }
   
   if (!is.logical(qc)) {

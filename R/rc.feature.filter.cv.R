@@ -37,8 +37,7 @@ check_arguments_filter.cv <- function(ramclustObj, qc.tag) {
 #' @return samples found using the tag
 #' @export
 
-define_samples <- function(ramclustObj, tag, logical = FALSE) {
-  ## define samples in each set
+define_samples <- function(ramclustObj, tag, return.logical = FALSE) {
   if(length(tag) == 0) {
     stop("no tag provided", "\n")
   }
@@ -58,8 +57,8 @@ define_samples <- function(ramclustObj, tag, logical = FALSE) {
     stop("no QC samples found using the tag ", "'", tag, "'", "\n")
   }
   
-  if(logical) {
-    1:nrow(ramclustObj$MSdata) %in% samples
+  if(return.logical) {
+    samples <- 1:nrow(ramclustObj$MSdata) %in% samples
   }
   
   return(samples)

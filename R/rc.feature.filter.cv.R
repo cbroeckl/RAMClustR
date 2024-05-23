@@ -52,7 +52,6 @@ define_samples <- function(ramclustObj, tag, return.logical = FALSE) {
     samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
   }
   
-  
   if (length(samples) == 0) {
     stop("no QC samples found using the tag ", "'", tag, "'", "\n")
   }

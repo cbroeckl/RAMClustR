@@ -76,6 +76,7 @@ write.msp <- function(
       "RETENTIONTIME:", round(ramclustObj$clrt[i], 2), '\n'
     )
     
+    ## bug fix
     if(any(names(ramclustObj)=="clri")) {
       out <- paste0(
         out,

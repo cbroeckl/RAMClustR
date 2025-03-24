@@ -33,9 +33,7 @@ Imports:
 Suggests: 
   knitr,
   rmarkdown,
-  xcms (>= 4.0),
-  xcms (< 4.5),
-  xcms,
+  xcms (>= 4.0, < 4.5),
   testthat,
   patrick,
   MSnbase,

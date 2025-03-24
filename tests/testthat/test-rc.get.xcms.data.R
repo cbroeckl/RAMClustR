@@ -1,5 +1,9 @@
 test_that("RAMClustR rc.get.xcms.data", {
   skip_if_not_installed("xcms")
+
+  # Print the xcms version and R version
+  message("xcms version: ", as.character(packageVersion("xcms")))
+  message("R version: ", R.version.string)
   
   load(file.path("testdata", "test.fillpeaks"))
   expected <- readRDS(file.path("testdata", "rc.get.xcms.data.rds"))

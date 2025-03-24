@@ -31,8 +31,9 @@ Imports:
   ggplot2,
   methods
 Suggests: 
-  BiocManager (>= 3.18),
+  BiocManager (>= 3.20),
   BiocManager (<= 3.20),
+  BiocManager,
   knitr,
   rmarkdown,
   xcms,

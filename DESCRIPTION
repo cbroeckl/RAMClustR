@@ -17,6 +17,7 @@ Authors@R: c(
   )
 Depends:
   R (>= 3.5.0)
+  R (< 4.5.0)
 Imports:
   dynamicTreeCut,
   fastcluster,
@@ -33,12 +34,12 @@ Imports:
 Suggests: 
   knitr,
   rmarkdown,
-  BiocManager (== 3.20),
-  xcms,
+  xcms (>= 4.4.0),
   testthat,
   patrick,
   MSnbase,
   InterpretMSSpectrum (>= 1.3.8),
+  BiocManager,
   xml2,
   stringi,
   readxl,

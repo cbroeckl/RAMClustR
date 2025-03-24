@@ -31,10 +31,9 @@ Imports:
   ggplot2,
   methods
 Suggests: 
-  BiocManager (= 3.20),
   knitr,
   rmarkdown,
-  xcms,
+  xcms (>= 4.4.0),
   testthat,
   patrick,
   MSnbase,

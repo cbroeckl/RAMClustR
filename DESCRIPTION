@@ -35,6 +35,7 @@ Suggests:
   rmarkdown,
   xcms (>= 4.0.0),
   xcms (<= 4.4.0),
+  xcms,
   testthat,
   patrick,
   MSnbase,

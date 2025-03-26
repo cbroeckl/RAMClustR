@@ -13,7 +13,7 @@ dependencies:
   - r-gplots
   - r-ggplot2
   - bioconductor-msnbase
-  - bioconductor-xcms >= 4.5.0
+  - bioconductor-xcms
   - r-curl
   - r-webchem
   - r-stringi

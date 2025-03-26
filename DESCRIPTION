@@ -16,7 +16,7 @@ Authors@R: c(
     person("Zargham", "Ahmad", , "zargham.ahmad@recetox.muni.cz", role = "ctb")
   )
 Depends:
-  R (>= 3.5.0, <= 4.4.0)
+  R (>= 3.5.0)
 Imports:
   dynamicTreeCut,
   fastcluster,
@@ -33,7 +33,7 @@ Imports:
 Suggests: 
   knitr,
   rmarkdown,
-  xcms (>= 4.4.0),
+  xcms,
   testthat,
   patrick,
   MSnbase,

@@ -92,11 +92,23 @@ setwd(wd)
 ## Documentation for developers
 
 ### Installation
+
+#### Developing with conda
 ```bash
 git clone https://github.com/cbroeckl/RAMClustR.git
 cd RAMClustR
 conda env create -n ramclustr-dev -f=conda/environment-dev.yaml
 conda activate ramclustr-dev
+```
+
+#### Developing with docker
+```bash
+git clone https://github.com/cbroeckl/RAMClustR.git
+cd RAMClustR
+docker-compose build # To build the container
+docker-compose up -d # To start the container in detached mode
+docker exec -it ramclustr_container /bin/bash # To ssh into the container
+docker-compose down # To stop and remove the container along with its network
 ```
 
 ### Testing

@@ -125,9 +125,9 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
         }
       }
       if (newXCMS) {
-        nfiles <- length(xcmsObj@phenoData[[1]])
+        nfiles <- length(xcmsObj@phenoData@data[[1]])
         if (!is.null(MSMStag)) {
-          msmsfiles <- grep(MSMStag, as.vector(xcmsObj@phenoData[[1]]), ignore.case = TRUE)
+          msmsfiles <- grep(MSMStag, as.vector(xcmsObj@phenoData@data[[1]]), ignore.case = TRUE)
         }
       }
     }
@@ -136,7 +136,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
       nfiles <- nrow(xcmsObj@phenoData)
     }
     if (newXCMS) {
-      nfiles <- length(xcmsObj@phenoData[[1]])
+      nfiles <- length(xcmsObj@phenoData@data[[1]])
     }
   }
 

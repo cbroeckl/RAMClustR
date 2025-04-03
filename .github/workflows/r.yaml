@@ -39,3 +39,9 @@ jobs:
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
         shell: Rscript {0}
+      - name: Run codecov
+        run: |
+          install.packages(c("covr"))
+          covr::codecov(quiet = FALSE)
+        shell: Rscript {0}
+    

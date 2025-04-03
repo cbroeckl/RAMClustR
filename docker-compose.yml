@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  ramclustr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ramclustr:latest
+    container_name: ramclustr_container
+    volumes:
+      - ./:/RAMClustR  # Mount the local directory into the container
+    working_dir: /RAMClustR
+    stdin_open: true
+    tty: true

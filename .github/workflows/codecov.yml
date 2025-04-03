@@ -33,15 +33,13 @@ jobs:
       - name: Create conda environment
         uses: conda-incubator/setup-miniconda@v3
         with:
-          activate-environment: ramclustr-dev
           auto-update-conda: true
-          environment-file: conda/environment-dev.yaml
-          auto-activate-base: false
+          environment-file: conda/environment-test.yaml
       - run: |
           conda init bash
           conda env list
 
       - name: Test coverage
         run: |
-          conda activate ramclustr-dev
+          conda activate
           Rscript -e "covr::codecov(quiet = FALSE)"

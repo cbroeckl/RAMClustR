@@ -125,18 +125,32 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
         }
       }
       if (newXCMS) {
-        nfiles <- length(xcmsObj@phenoData@data[[1]])
-        if (!is.null(MSMStag)) {
-          msmsfiles <- grep(MSMStag, as.vector(xcmsObj@phenoData@data[[1]]), ignore.case = TRUE)
-        }
+        if (inherits(xcmsObj, "XcmsExperiment")) {  
+          nfiles <- length(xcmsObj)  
+          if (!is.null(MSMStag)) {  
+              msmsfiles <- grep(MSMStag, MsExperiment::sampleData(xcmsObj)[, 1L], ignore.case = TRUE)  
+          }  
+        }  
+        if (inherits(xcmsObj, "XCMSnExp")) {  
+          nfiles <- nrow(MSnbase::pData(xcmsObj))
+          if (!is.null(MSMStag)) {  
+            msmsfiles <- grep(MSMStag, MSnbase::pData(xcmsObj)[, 1L], ignore.case = TRUE)  
+          }  
+        }  
       }
+      
     }
   } else {
     if (!newXCMS) {
       nfiles <- nrow(xcmsObj@phenoData)
     }
     if (newXCMS) {
-      nfiles <- length(xcmsObj@phenoData@data[[1]])
+      if (inherits(xcmsObj, "XCMSnExp")) {  
+          nfiles <- nrow(MSnbase::pData(xcmsObj))  
+      }  
+      if (inherits(xcmsObj, "XcmsExperiment")) {  
+          nfiles <- MsExperiment::length(xcmsObj)  
+      }
     }
   }
 

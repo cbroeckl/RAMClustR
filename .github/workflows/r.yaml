@@ -10,9 +10,10 @@ name: R
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+      branches: [ master, dev, release_1.3.x]
+    pull_request:
+      branches: [ master, dev, release_1.3.x ]
+  workflow_dispatch:
 
 permissions:
   contents: read

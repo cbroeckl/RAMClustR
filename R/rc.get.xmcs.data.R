@@ -1,3 +1,29 @@
+#' Extract Sample Metadata from an xcms Object
+#'
+#' This function retrieves sample metadata from a provided xcms object.
+#'
+#' @param xcmsObj An xcms object containing chromatographic and metadata information.
+#'                This object is typically generated during preprocessing of 
+#'                metabolomics data using the xcms package.
+#'
+#' @return A data frame or list containing the sample metadata extracted from the xcms object.
+#'         The structure and content of the returned metadata depend on the input xcms object.
+#'
+#' @details This function is designed to facilitate the extraction of metadata
+#'          associated with samples in an xcms object. The metadata may include
+#'          information such as sample names, injection order, batch information,
+#'          and other experimental details.
+#'
+#' @concept xcms
+#' @export
+getSampleMetadata <- function(xcmsObj) {
+  if (inherits(xcmsObj@phenoData, "NAnnotatedDataFrame")) {
+    return(xcmsObj@phenoData@data)
+  } else {
+    stop("Unsupported phenoData class")
+  }
+}
+
 #' rc.get.xcms.data
 #'
 #' extractor for xcms objects in preparation for normalization and clustering
@@ -32,15 +58,6 @@
 #' @concept xcms
 #' @author Corey Broeckling
 #' @export
-
-getSampleMetadata <- function(xcmsObj) {
-  if (inherits(xcmsObj@phenoData, "NAnnotatedDataFrame")) {
-    return(xcmsObj@phenoData@data)
-  } else {
-    stop("Unsupported phenoData class")
-  }
-}
-
 rc.get.xcms.data <- function(xcmsObj = NULL,
                              taglocation = "filepaths",
                              MStag = NULL,
@@ -157,7 +174,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
           nfiles <- nrow(getSampleMetadata(xcmsObj))  
       }  
       if (inherits(xcmsObj, "XcmsExperiment")) {  
-          nfiles <- MsExperiment::length(xcmsObj)  
+          nfiles <- length(xcmsObj)  
       }
     }
   }

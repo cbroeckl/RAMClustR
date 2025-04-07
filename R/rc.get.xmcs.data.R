@@ -33,6 +33,14 @@
 #' @author Corey Broeckling
 #' @export
 
+getSampleMetadata <- function(xcmsObj) {
+  if (inherits(xcmsObj@phenoData, "NAnnotatedDataFrame")) {
+    return(xcmsObj@phenoData@data)
+  } else {
+    stop("Unsupported phenoData class")
+  }
+}
+
 rc.get.xcms.data <- function(xcmsObj = NULL,
                              taglocation = "filepaths",
                              MStag = NULL,
@@ -132,9 +140,9 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
           }  
         }  
         if (inherits(xcmsObj, "XCMSnExp")) {  
-          nfiles <- nrow(MSnbase::pData(xcmsObj))
+          nfiles <- nrow(getSampleMetadata(xcmsObj))
           if (!is.null(MSMStag)) {  
-            msmsfiles <- grep(MSMStag, MSnbase::pData(xcmsObj)[, 1L], ignore.case = TRUE)  
+            msmsfiles <- grep(MSMStag, getSampleMetadata(xcmsObj)[, 1L], ignore.case = TRUE)  
           }  
         }  
       }
@@ -146,7 +154,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
     }
     if (newXCMS) {
       if (inherits(xcmsObj, "XCMSnExp")) {  
-          nfiles <- nrow(MSnbase::pData(xcmsObj))  
+          nfiles <- nrow(getSampleMetadata(xcmsObj))  
       }  
       if (inherits(xcmsObj, "XcmsExperiment")) {  
           nfiles <- MsExperiment::length(xcmsObj)  
@@ -194,7 +202,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
   if (newXCMS) {
     filepaths <- MSnbase::fileNames(xcmsObj)
     filenames <- basename(filepaths)
-    phenotype <- xcmsObj@phenoData@data
+    phenotype <- getSampleMetadata(xcmsObj)
     phenotype <- data.frame(sample.names = phenotype, filenames, filepaths)
     if (mslev == 2) {
       phenotype <- phenotype[1:(nrow(phenotype) / 2), ]

@@ -225,6 +225,7 @@ mergeRCobjects <- function(
   newRC$MSdata[(nrow(ramclustObj.1$MSdata)+1):nrow(newRC$MSdata),which(!is.na(map))] <- ramclustObj.2$MSdata[,map[which(!is.na(map))]]
   newRC$MSMSdata[1:nrow(ramclustObj.1$MSMSdata),] <- ramclustObj.1$MSMSdata
   newRC$MSMSdata[(nrow(ramclustObj.1$MSMSdata)+1):nrow(newRC$MSMSdata),which(!is.na(map))] <- ramclustObj.2$MSMSdata[,map[which(!is.na(map))]]
+  newRC$MSMSdata[(nrow(ramclustObj.1$MSMSdata)+1):nrow(newRC$MSMSdata),which(!is.na(map))] <- ramclustObj.2$MSMSdata[,map[which(!is.na(map))]]
   
   
   newRC$SpecAbund.1<-ramclustObj.1$SpecAbund

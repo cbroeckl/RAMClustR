@@ -24,7 +24,8 @@ rc.merge.split.clusters <- function(
     merge.threshold = 0.7,
     cor.method = 'spearman',
     rt.sd.factor = 3,
-    cor.use = "everything"
+    cor.use = "everything",
+    sample.name.column = "sample.ID"
     
 ) {
   
@@ -93,7 +94,7 @@ rc.merge.split.clusters <- function(
   ramclustObj$nsing<-length(which(ramclustObj$featclus==0))
   ramclustObj$annconf<-rep(4, length(ramclustObj$clrt))
   ramclustObj$annnotes<-rep("", length(ramclustObj$clrt))
-  dimnames(ramclustObj$SpecAbund)[[1]] <- ramclustObj$sample_names
+  dimnames(ramclustObj$SpecAbund)[[1]] <- ramclustObj$phenoData[,sample.name.column]
   
   new.cl.n <- max(ramclustObj$featclus)
   cat(paste("Original cluster number =", orig.cl.n, '\n', "New cluster number =", new.cl.n, '\n'))

@@ -43,11 +43,12 @@ Suggests:
   stringi,
   readxl,
   curl,
-  rentrez
+  rentrez,
+  MsExperiment
 License: GPL (>= 2)
 Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics data. This method is compatible with gas and liquid chromatography coupled mass spectrometry, including indiscriminant tandem mass spectrometry data <DOI: 10.1021/ac501530d>. 
 URL: https://github.com/cbroeckl/RAMClustR
 Encoding: UTF-8
 biocViews: MassSpectrometry, Metabolomics
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr

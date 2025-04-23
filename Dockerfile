@@ -22,7 +22,9 @@ RUN apt-get install -y \
             libpng-dev \
             libjpeg-dev \
             libnetcdf-dev \
-            libhdf5-dev
+            libhdf5-dev \
+            pandoc \
+            qpdf
 
 # Install RAMClustR from source
 COPY . /RAMClustR
@@ -35,6 +37,7 @@ RUN R -e "install.packages(c('miniUI', 'pkgdown'))"
 RUN R -e "install.packages('devtools')"
 RUN R -e 'devtools::install_deps(dependencies = TRUE)'
 RUN R -e "BiocManager::install(c('ncdf4', 'mzR', 'MSnbase', 'xcms'))"
+RUN R -e "BiocManager::install('MsExperiment')"
 
 
 # Default command to run R

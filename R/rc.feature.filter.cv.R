@@ -32,21 +32,34 @@ check_arguments_filter.cv <- function(ramclustObj, qc.tag) {
 #'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
 #' @param tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.
+#' @param logical optionally convert numeric vector with length equal to the number of matched samples to a logical vector of length equal to number of samples, with TRUE representing matching samples. 
+#' 
 #' @return samples found using the tag
 #' @export
 
-define_samples <- function(ramclustObj, tag) {
-  ## define samples in each set
+define_samples <- function(ramclustObj, tag, return.logical = FALSE) {
   if(length(tag) == 0) {
     stop("no tag provided", "\n")
   }
-
-  samples <- grep(tag[1], ramclustObj$sample_names)
-  samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
-
-  if (length(samples) == 0) {
-    stop("no ", tag, " samples found using the tag ", "'", tag, "'", "\n")
+  
+  if(length(tag) == 1) {
+    samples <- grep(tag[1], ramclustObj$phenoData$sample.names)
+    samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
   }
+  
+  if(length(tag) == 2) {
+    samples <- grep(tag[1], ramclustObj$phenoData[,tag[2]])
+    samples <- samples[which(samples <= nrow(ramclustObj$MSdata))]
+  }
+  
+  if (length(samples) == 0) {
+    stop("no QC samples found using the tag ", "'", tag, "'", "\n")
+  }
+  
+  if(return.logical) {
+    samples <- 1:nrow(ramclustObj$MSdata) %in% samples
+  }
+  
   return(samples)
 }
 
@@ -226,7 +239,7 @@ rc.feature.filter.cv <- function(ramclustObj = NULL,
 
   ramclustObj$history$filter.features <- paste0(
     "Features were filtered based on their qc sample CV values.",
-    " Only features with CV vaules less than or equal to ", max.cv,
+    " Only features with CV values less than or equal to ", max.cv,
     if (is.null(ramclustObj$MSMSdata)) {
       " in MSdata set"
     } else {

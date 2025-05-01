@@ -19,8 +19,8 @@
 #' 
 
 write.msp <- function(
-  ramclustObj = NULL,
-  one.file = FALSE
+    ramclustObj = NULL,
+    one.file = FALSE
 ) {
   
   if(!is(ramclustObj, "hclus") & 
@@ -76,10 +76,12 @@ write.msp <- function(
       "RETENTIONTIME:", round(ramclustObj$clrt[i], 2), '\n'
     )
     
-    if(any(names(ramclustObj)=="clri")) {paste0(
-      out,
-      "RETENTIONINDEX:", round(ramclustObj$clri[i], 2),  '\n'
-    )
+    ## bug fix
+    if(any(names(ramclustObj)=="clri")) {
+      out <- paste0(
+        out,
+        "RETENTIONINDEX:", round(ramclustObj$clri[i], 2),  '\n'
+      )
     }
     
     if(ms2) {

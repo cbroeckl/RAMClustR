@@ -72,7 +72,9 @@ write.methods <- function (
 
     '(Smirnov 2021)' = "Aleksandr Smirnov, Yunfei Liao, Eoin Fahy, Shankar Subramaniam, Xiuxia Du.  ADAP-KDB: A Spectral Knowledgebase for Tracking and Prioritizing Unknown GC-MS Spectra in the NIH's Metabolomics Data Repository. Anal. Chem. 2021, 93, 36, 12213-12220",
     
-    '(Schymanksi 2014)' = "Emma L. Schymanski, Junho Jeon, Rebekka Gulde, Kathrin Fenner, Matthias Ruff, Heinz P. Singer, and Juliane Hollender. Identifying Small Molecules via High Resolution Mass Spectrometry: Communicating Confidence. Environ. Sci. Technol. 2014, 48, 4, 2097???2098"
+    '(Schymanksi 2014)' = "Emma L. Schymanski, Junho Jeon, Rebekka Gulde, Kathrin Fenner, Matthias Ruff, Heinz P. Singer, and Juliane Hollender. Identifying Small Molecules via High Resolution Mass Spectrometry: Communicating Confidence. Environ. Sci. Technol. 2014, 48, 4, 2097???2098",
+    
+    '(Duhrkop 2019)' = 'Kai Dührkop, Markus Fleischauer, Marcus Ludwig, Alexander A. Aksenov, Alexey V. Melnik, Marvin Meusel, Pieter C. Dorrestein, Juho Rousu, and Sebastian Böcker. Sirius 4: turning tandem mass spectra into metabolite structure information. Nat Methods, 2019.'
   )
 
   names(cit.list)[which(names(cit.list) == "R")] <- paste0(

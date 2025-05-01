@@ -163,7 +163,7 @@ rc.cmpd.filter.blanks  <- function(ramclustObj=NULL,
   ramclustObj$history$cmpd.filter.blanks <- {
     paste0(
       "Compounds which failed to demonstrate signal intensity of at least ",
-      sn, " fold greater in QC samples than in blanks were removed from the SpecAbund dataset. ", 
+      sn, " -fold greater in QC samples than in blanks were removed from the SpecAbund dataset. ", 
       ncol(d1) - length(keep)," of ", ncol(d1), " compounds were removed."
     )
   }  

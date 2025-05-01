@@ -204,7 +204,7 @@ rc.feature.filter.blanks <- function(ramclustObj = NULL,
   absent.in.blank <- which(is.nan(ms1.blank.mean))
 
   # filters
-  # which signal is at least 3x larger in QC
+  # which signal is at least sn times larger in QC
   keep <- filter_signal(ms1.qc.mean, ms1.blank.mean, sn)
 
   ## do the same for MS2
@@ -230,7 +230,7 @@ rc.feature.filter.blanks <- function(ramclustObj = NULL,
   ramclustObj$history$feature.filter.blanks <- {
     paste0(
       "Features which failed to demonstrate signal intensity of at least ",
-      sn, " fold greater in QC samples than in blanks were removed from the feature dataset. ",
+      sn, " -fold greater in QC samples than in blanks were removed from the feature dataset. ",
       ncol(d1) - length(keep), " of ", ncol(d1), " features were removed."
     )
   }

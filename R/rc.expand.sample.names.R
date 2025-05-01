@@ -23,23 +23,29 @@
 #' @export
 
 rc.expand.sample.names <- function(
-  ramclustObj = NULL,
-  delim = "-",
-  factor.names = TRUE,
-  quiet = FALSE
+    ramclustObj = NULL,
+    delim = "-",
+    factor.names = TRUE,
+    quiet = FALSE
 ) {
   
   params <- c(
     "delim" = delim
   )
-
-
+  
+  
   if(!is.null(ramclustObj$phenoData$sample.names.sample_name)) {
     sn <- as.character(ramclustObj$phenoData$sample.names.sample_name)
   }
   if(!is.null(ramclustObj$phenoData$sample.names.sn)) {
     sn <- as.character(ramclustObj$phenoData$sample.names.sn)
   }
+  
+  if(!is.null(ramclustObj$phenoData$sample.names)) {
+    sn <- as.character(ramclustObj$phenoData$sample.names)
+  }
+  
+  # cat(paste(sn, collapse = ", "), '\n')
   
   if(!any(ls()=="sn")) {
     stop('missing sample names in phenoData slot', '\n')
@@ -85,4 +91,5 @@ rc.expand.sample.names <- function(
   return(ramclustObj)
   
 }
+
 

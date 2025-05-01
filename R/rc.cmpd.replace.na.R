@@ -108,7 +108,7 @@ rc.cmpd.replace.na  <- function(
       "Features with missing values were replaced with small values simulating noise. ",
       "For each feature, the minimum detected value was multiplied by ", replace.int, ". ",
       "Noise was then added using a factor of ", replace.noise, ". ", 
-      "The absulute value of this value was used as the filled value to ensure that only non-negative values carried forward. ",
+      "The absolute value of this value was used as the filled value to ensure that only non-negative values carried forward. ",
       if(replace.zero) {
         "Zero values were treated as missing values."
       }

@@ -1,3 +1,5 @@
+![Codecov](https://img.shields.io/codecov/c/github/cbroeckl/RAMClustR)
+
 # RAMClustR: Mass Spectrometry Metabolomics Feature Clustering and Interpretation
 A feature clustering algorithm for non-targeted mass spectrometric metabolomics data. This method is compatible with gas and liquid chromatography coupled mass spectrometry, including indiscriminant tandem mass spectrometry data.
 

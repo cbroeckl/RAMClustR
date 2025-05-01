@@ -12,7 +12,8 @@
 #' @param hmax numeric: precut the tree at this height, default 0.3 - see ?cutreeDynamicTree
 #' @param minModuleSize integer: how many features must be part of a cluster to be returned? default = 2
 #' @param linkage character: heirarchical clustering linkage method - see ?hclust
-#' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
+#' @param cor.method character: which correlational method used to calculate 'r' - see ?cor 'method' option. default = "pearson"
+#' @param cor.use character: which data points to use to calculate 'r' - see ?cor 'use' option. default = "pairwise.complete.obs"
 #' @param rt.only.low.n logical: default = TRUE  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to FALSE.
 #' @param collapse logical: if true (default), feature quantitative values are collapsed into spectra quantitative values. 
 #' @details Main clustering function output - see citation for algorithm description or vignette('RAMClustR') for a walk through.  batch.qc. normalization requires input of three vectors (1) batch (2) order (3) qc.   This is a feature centric normalization approach which adjusts signal intensities first by comparing batch median intensity of each feature (one feature at a time) QC signal intensity to full dataset median to correct for systematic batch effects and then secondly to apply a local QC median vs global median sample correction to correct for run order effects.
@@ -61,6 +62,7 @@ rc.ramclustr  <- function(
   minModuleSize=2,
   linkage="average",
   cor.method="pearson",
+  cor.use = "pairwise.complete.obs",
   rt.only.low.n = TRUE
 ) {
   
@@ -142,7 +144,8 @@ rc.ramclustr  <- function(
     mult = mult, maxt = maxt, 
     st = st, sr = sr, 
     rt.only.low.n = rt.only.low.n, 
-    cor.method = cor.method)
+    cor.method = cor.method, 
+    cor.use = cor.use)
   
   ########
   # convert vector to distance formatted object

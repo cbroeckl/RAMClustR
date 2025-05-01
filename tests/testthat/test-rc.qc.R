@@ -6,7 +6,7 @@ test_that("RAMClustR rc.qc", {
   
   setwd(tmp)
 
-  actual <- rc.qc(ramclustObj = ramclustObj)
+  actual <- rc.qc(ramclustObj = ramclustObj, qc.tag = c("QC", "sample.names.sample_name"))
 
   expect_equal(actual, expected)
 

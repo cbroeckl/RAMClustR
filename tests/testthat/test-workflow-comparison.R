@@ -18,8 +18,7 @@ test_that("RAMClustR workflow comparison test", {
   expect_equal(ramclustObj$fmz, ramclustr_obj$fmz)
   expect_equal(ramclustObj$SpecAbund, ramclustr_obj$SpecAbund, tolerance = 0.01)
 
-  filepaths <- xcms::filepaths(xdata)
-  filenames <- basename(filepaths)
+  filenames <- xcms::fileNames(xdata)
   dimnames(ramclustr_obj$MSdata)[[1]] <- filenames
 
   expect_equal(ramclustObj$MSdata, ramclustr_obj$MSdata, tolerance = 0.01)

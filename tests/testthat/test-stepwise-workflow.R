@@ -11,25 +11,25 @@ test_that("RAMClustR workflow with xcms works", {
   ramclustObj <- rc.get.xcms.data(xcmsObj = xdata)
   ramclustObj <- rc.expand.sample.names(ramclustObj = ramclustObj, quiet = TRUE)
   ramclustObj <- rc.feature.replace.na(ramclustObj = ramclustObj)
-  ramclustObj <- rc.feature.filter.blanks(ramclustObj = ramclustObj, blank.tag = "Blanc")
+  ramclustObj <- rc.feature.filter.blanks(ramclustObj = ramclustObj, qc.tag = c("QC", "sample.names.sample_name"), blank.tag = c("Blanc", "sample.names.sample_name"))
   ramclustObj <- rc.feature.normalize.qc(
     ramclustObj = ramclustObj,
     batch = metadata$batch,
     order = metadata$order,
     qc = metadata$qc
   )
-  ramclustObj <- rc.feature.filter.cv(ramclustObj = ramclustObj)
+  ramclustObj <- rc.feature.filter.cv(ramclustObj = ramclustObj, qc.tag = c("QC", "sample.names.sample_name"))
   ramclustObj <- rc.ramclustr(ramclustObj = ramclustObj)
-  ramclustObj <- rc.qc(ramclustObj = ramclustObj)
+  ramclustObj <- rc.qc(ramclustObj = ramclustObj, qc.tag = c("QC", "sample.names.sample_name"))
   actual <- do.findmain(ramclustObj = ramclustObj)
 
   # renamed phenoData colnames as test fails in R CMD checks becuase of no user input for colnames
   colnames(actual$phenoData) <- colnames(expected$phenoData)
 
-  actual$history <- NA
-  expected$history <- NA
-  actual$params$rc.feature.normalize.qc <- NA
-  expected$params$rc.feature.normalize.qc <- NA
+  actual$history <- NULL
+  expected$history <- NULL
+  actual$params <- NULL
+  expected$params <- NULL
 
   expect_equal(actual, expected)
 

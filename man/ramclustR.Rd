@@ -23,7 +23,6 @@ ramclustR(
   hmax = NULL,
   sampNameCol = 1,
   collapse = TRUE,
-  usePheno = TRUE,
   mspout = TRUE,
   ExpDes = NULL,
   normalize = "TIC",
@@ -75,8 +74,6 @@ ramclustR(
 \item{sampNameCol}{integer: which column from the csv file contains sample names?}
 
 \item{collapse}{logical: reduce feature intensities to spectrum intensities?}
-
-\item{usePheno}{logical: transfer phenotype data from XCMS object to SpecAbund dataset?}
 
 \item{mspout}{logical: write msp formatted spectra to file?}
 

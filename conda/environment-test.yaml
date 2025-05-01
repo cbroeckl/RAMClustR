@@ -1,13 +1,11 @@
-name: ramclustr-dev
+name: ramclustr-test
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
   - r-base >=4.1
-  - r-rlang >=1.1.0
   - r-devtools
-  - r-biocmanager
   - r-dynamictreecut
   - r-fastcluster
   - r-gplots
@@ -22,14 +20,8 @@ dependencies:
   - r-xml2
   - r-e1071
   - r-interpretmsspectrum >=1.3.8
-  - r-languageserver
   - r-testthat
   - r-readxl
-  - radian
-  - r-rmarkdown
-  - qpdf
-  - r-rhub
   - r-rentrez
   - r-covr
   - r-patrick
-  - r-httr

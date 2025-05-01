@@ -42,7 +42,6 @@ compute_SpecAbundAve <- function(ramclustObj = NULL) {
 #' @param hmax numeric: precut the tree at this height, default 0.3 - see ?cutreeDynamicTree
 #' @param sampNameCol integer: which column from the csv file contains sample names?
 #' @param collapse logical: reduce feature intensities to spectrum intensities?
-#' @param usePheno logical: transfer phenotype data from XCMS object to SpecAbund dataset?
 #' @param mspout logical: write msp formatted spectra to file?
 #' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
 #' @param normalize character: either "none", "TIC", "quantile", or "batch.qc" normalization of feature intensities.  see batch.qc overview in details.
@@ -79,7 +78,10 @@ compute_SpecAbundAve <- function(ramclustObj = NULL) {
 #' @importFrom utils edit read.csv read.delim read.delim2 write.csv packageVersion
 #' @importFrom fastcluster hclust
 #' @importFrom dynamicTreeCut cutreeDynamicTree
-#' @importFrom preprocessCore normalize.quantiles
+#' @importFrom e1071 skewness
+#' @importFrom gplots heatmap.2
+#' @importFrom pcaMethods pca
+#' @importFrom jsonlite fromJSON
 #' @importFrom utils citation packageVersion
 #'
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
@@ -135,7 +137,6 @@ ramclustR <- function(xcmsObj = NULL,
                       hmax = NULL,
                       sampNameCol = 1,
                       collapse = TRUE,
-                      usePheno = TRUE,
                       mspout = TRUE,
                       ExpDes = NULL,
                       normalize = "TIC",
@@ -168,7 +169,6 @@ ramclustR <- function(xcmsObj = NULL,
       stop("to use batch.qc normalization you must provide vectors for batch, order (run order) and qc information as vectors.  see help ?ramclustR")
     }
   }
-
 
   ########
   # define ms levels, used several times below
@@ -295,6 +295,9 @@ ramclustR <- function(xcmsObj = NULL,
   if (normalize == "batch.qc") {
     ramclustObj <- rc.feature.normalize.batch.qc(
       ramclustObj = ramclustObj,
+      batch = batch,
+      order = order,
+      qc = qc,
       qc.inj.range = qc.inj.range
     )
 

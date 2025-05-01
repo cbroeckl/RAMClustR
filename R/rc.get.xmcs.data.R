@@ -1,3 +1,29 @@
+#' Extract Sample Metadata from an xcms Object
+#'
+#' This function retrieves sample metadata from a provided xcms object.
+#'
+#' @param xcmsObj An xcms object containing chromatographic and metadata information.
+#'                This object is typically generated during preprocessing of 
+#'                metabolomics data using the xcms package.
+#'
+#' @return A data frame or list containing the sample metadata extracted from the xcms object.
+#'         The structure and content of the returned metadata depend on the input xcms object.
+#'
+#' @details This function is designed to facilitate the extraction of metadata
+#'          associated with samples in an xcms object. The metadata may include
+#'          information such as sample names, injection order, batch information,
+#'          and other experimental details.
+#'
+#' @concept xcms
+#' @export
+getSampleMetadata <- function(xcmsObj) {
+  if (inherits(xcmsObj@phenoData, "NAnnotatedDataFrame")) {
+    return(xcmsObj@phenoData@data)
+  } else {
+    stop("Unsupported phenoData class")
+  }
+}
+
 #' rc.get.xcms.data
 #'
 #' extractor for xcms objects in preparation for normalization and clustering
@@ -32,15 +58,13 @@
 #' @concept xcms
 #' @author Corey Broeckling
 #' @export
-
 rc.get.xcms.data <- function(xcmsObj = NULL,
                              taglocation = "filepaths",
                              MStag = NULL,
                              MSMStag = NULL,
                              ExpDes = NULL,
                              mzdec = 3,
-                             ensure.no.na = TRUE,
-                             use.filled = TRUE) {
+                             ensure.no.na = TRUE) {
   MSMSdata <- NULL
   ########
   # If experimental design is NULL:
@@ -60,12 +84,6 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
     "mzdec" = mzdec,
     "ensure.no.na" = ensure.no.na
   )
-  
-  ## filled warning
-  if(ensure.no.na & !use.filled) {
-    warning("xcms filled peaks are not being used, but you set ensure.no.na = TRUE, this is atypical usage.", '\n')
-  }
-  
   ## add xcms processing history narrative here
 
   ## check xcms object presence
@@ -132,18 +150,32 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
         }
       }
       if (newXCMS) {
-        nfiles <- length(xcmsObj@phenoData[[1]])
-        if (!is.null(MSMStag)) {
-          msmsfiles <- grep(MSMStag, as.vector(xcmsObj@phenoData[[1]]), ignore.case = TRUE)
-        }
+        if (inherits(xcmsObj, "XcmsExperiment")) {  
+          nfiles <- length(xcmsObj)  
+          if (!is.null(MSMStag)) {  
+              msmsfiles <- grep(MSMStag, MsExperiment::sampleData(xcmsObj)[, 1L], ignore.case = TRUE)  
+          }  
+        }  
+        if (inherits(xcmsObj, "XCMSnExp")) {  
+          nfiles <- nrow(getSampleMetadata(xcmsObj))
+          if (!is.null(MSMStag)) {  
+            msmsfiles <- grep(MSMStag, getSampleMetadata(xcmsObj)[, 1L], ignore.case = TRUE)  
+          }  
+        }  
       }
+      
     }
   } else {
     if (!newXCMS) {
       nfiles <- nrow(xcmsObj@phenoData)
     }
     if (newXCMS) {
-      nfiles <- length(xcmsObj@phenoData[[1]])
+      if (inherits(xcmsObj, "XCMSnExp")) {  
+          nfiles <- nrow(getSampleMetadata(xcmsObj))  
+      }  
+      if (inherits(xcmsObj, "XcmsExperiment")) {  
+          nfiles <- length(xcmsObj)  
+      }
     }
   }
 
@@ -176,7 +208,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
     data <- t(xcms::groupval(xcmsObj, value = "into"))
   }
   if (newXCMS) {
-    data <- t(xcms::featureValues(xcmsObj, value = "into", filled = use.filled))
+    data <- t(xcms::featureValues(xcmsObj, value = "into"))
   }
 
   if (length(msfiles) == 0) {
@@ -185,10 +217,10 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
 
   ## get phenotype file name associations for storage in new RC object
   if (newXCMS) {
-    filepaths <- xcmsObj@processingData@files
+    filepaths <- MSnbase::fileNames(xcmsObj)
     filenames <- basename(filepaths)
-    phenotype <- xcmsObj@phenoData@data
-    phenotype <- data.frame(filenames, filepaths, phenotype)
+    phenotype <- getSampleMetadata(xcmsObj)
+    phenotype <- data.frame(sample.names = phenotype, filenames, filepaths)
     if (mslev == 2) {
       phenotype <- phenotype[1:(nrow(phenotype) / 2), ]
     }
@@ -196,7 +228,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
     filepaths <- xcmsObj@filepaths
     filenames <- basename(filepaths)
     phenotype <- xcmsObj@phenoData[, 1]
-    phenotype <- data.frame(phenotype, filenames, filepaths)
+    phenotype <- data.frame(sample.names = phenotype, filenames, filepaths)
     if (mslev == 2) {
       phenotype <- phenotype[1:(nrow(phenotype) / 2), ]
     }
@@ -205,7 +237,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
   history <- {
     paste0(
       "RAMClustR version ", utils::packageDescription("RAMClustR")$Version, " in ", R.Version()$version.string,
-      ") was used to normalize, filter, and group features into spectra. ",
+      ") was used to normalize, filter, and group features into spectra.",
       "XCMS (Smith 2006)(Tautenhahn 2008) output data was transferred to a ramclustR object using the rc.get.xcms.data function. ",
       "Feature data was extracted using the xcms ", if (newXCMS) {
         "featureValues"
@@ -259,7 +291,7 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
     MSMSdata <- data[msmsfiles, ]
   }
 
-  ramclustObj <- RAMClustR::create_ramclustObj(
+  ramclustObj <- create_ramclustObj(
     ExpDes = ExpDes,
     MSdata = data[msfiles, ],
     MSMSdata = MSMSdata,
@@ -270,7 +302,8 @@ rc.get.xcms.data <- function(xcmsObj = NULL,
     phenoData = phenotype,
     feature_names = featnames,
     xcmsOrd = xcmsOrd,
-    sample_names = phenotype$filenames
+    sample_names = filenames,
+    ensure.no.na = ensure.no.na
   )
 
   if (is.null(ramclustObj$params)) {

@@ -6,16 +6,17 @@
 #' @param order integer vector with length equal to number of injections in xset or csv file or dataframe
 #' @param qc logical vector with length equal to number of injections in xset or csv file or dataframe
 #' @param qc.inj.range integer: how many injections around each injection are to be scanned for presence of QC samples when using batch.qc normalization?  A good rule of thumb is between 1 and 3 times the typical injection span between QC injections.  i.e. if you inject QC ever 7 samples, set this to between 7 and 21.  smaller values provide more local precision but make normalization sensitive to individual poor outliers (though these are first removed using the boxplot function outlier detection), while wider values provide less local precision in normalization but better stability to individual peak areas.
+#' @param output.plot logical set to TRUE to store plots
 #' @return normalized data.
 
 normalized_data_batch_qc <- function(data = NULL,
                                      batch = NULL,
                                      order = NULL,
                                      qc = NULL,
-                                     qc.inj.range = 20) {
+                                     qc.inj.range = 20,
+                                     output.plot = FALSE) {
   max.ratio <- 4
   for (z in 1:ncol(data)) {
-    # z <- sample(1:ncol(data1), 1)
     tmp <- data[, z]
     featmed <- mean(tmp[qc])
     tmpn <- tmp
@@ -23,24 +24,16 @@ normalized_data_batch_qc <- function(data = NULL,
     for (i in unique(batch)) {
       do <- which(batch == i)
       doqc <- which(batch == i & qc)
-      # names(doqc) <- names(tmp[doqc])
 
-      ## use only 'typical' QC sample values from the given batch
-      ## outliers are detected using the standard boxplot definition (1.5 * the interquartile range)
-      # out <- boxplot(tmp[doqc], plot = FALSE)$out
       sds <- 1.96
       lcl <- mean(tmp[doqc]) - (sds * sd(tmp[doqc]))
       ucl <- mean(tmp[doqc]) + (sds * sd(tmp[doqc]))
       keep <- which(tmp[doqc] > lcl & tmp[doqc] < ucl)
-      # if(length(out)>0) doqc <- doqc[!(names(doqc) %in% names(out))]
       if (length(keep) > 0) doqc <- doqc[keep]
 
       batchmed <- mean(tmpn[doqc])
       f <- batchmed / featmed
-      # cat("i: ", i, '\n')
-      # cat("f: ", f, '\n')
-      # cat("batchmed: ", batchmed, '\n')
-      # cat("featmed: ", featmed, '\n')
+
       if (is.na(f)) next
       if (abs(log2(f)) > max.ratio) {
         if (f > 1) {
@@ -50,29 +43,20 @@ normalized_data_batch_qc <- function(data = NULL,
           f <- 1 / max.ratio
         }
       }
+
       tmpn[do] <- tmp[do] / f
-
       tmpnqc <- tmpn
-
-      # cat("batch:", i, " raw   CV =", sd(tmp[doqc])/mean(tmp[doqc]), '\n')
-      # tmpna <- tmpn
-      ## local QC adjustment here:
 
       for (x in do) {
         batchmed <- mean(tmpn[doqc])
-        ## try injection spacing weighted mean instead
         space <- abs(x - doqc)
         use <- which(space <= qc.inj.range)
         wts <- 1 / space[use]
         wts <- wts / sum(wts)
         localmed <- weighted.mean(tmpnqc[doqc[use]], weights = wts)
 
-        # localmed <- median(tmpn[doqc[which(abs(x - doqc) <= qc.inj.range*y)]])
         if (is.na(localmed)) {
           for (y in 2:5) {
-            # median
-            # localmed <- median(tmpn[doqc[which(abs(x - doqc) <= qc.inj.range*y)]])
-            mean
             use <- which(space <= qc.inj.range * y)
             wts <- 1 / space[use]
             wts <- wts / sum(wts)
@@ -80,14 +64,15 @@ normalized_data_batch_qc <- function(data = NULL,
             if (!is.na(localmed)) break
           }
         }
+
         if (is.na(localmed)) {
           localmed <- batchmed
         }
         f <- localmed / batchmed
+
         if (is.na(f)) next
 
         if (abs(log2(f)) > max.ratio) {
-          # f <- batchmed / featmed
           if (f > 1) {
             f <- max.ratio
           }
@@ -100,32 +85,39 @@ normalized_data_batch_qc <- function(data = NULL,
         rm(localmed)
         rm(f)
       }
-      # cat("batch:", i, " normb CV =", sd(tmpn[doqc])/mean(tmpn[doqc]), '\n')
     }
+
     data[, z] <- tmpn
-    par(mfrow = c(1, 2))
-    plot(tmp,
-      col = batch, cex = (qc + 1) / 2, ylim = c(0.9, 1.11) * range(tmp),
-      main = paste(
-        "all:", round(sd(tmp) / mean(tmp), digits = 2), "\n",
-        "qc:", round(sd(tmp[qc]) / mean(tmp[qc]), digits = 2)
+    if (output.plot) {
+      par(mfrow = c(1, 2))
+      plot(tmp,
+        col = batch, cex = (qc + 1) / 2, ylim = c(0.9, 1.11) * range(tmp),
+        main = paste(
+          "all:", round(sd(tmp) / mean(tmp), digits = 2), "\n",
+          "qc:", round(sd(tmp[qc]) / mean(tmp[qc]), digits = 2)
+        )
       )
-    )
-    plot(tmpn,
-      col = batch, pch = 19, cex = (qc + 1) / 2, , ylim = c(0.9, 1.11) * range(tmp),
-      main = paste(
-        "all:", round(sd(tmpn) / mean(tmpn), digits = 2), "\n",
-        "qc:", round(sd(tmpn[qc]) / mean(tmpn[qc]), digits = 2)
+      plot(tmpn,
+        col = batch, pch = 19, cex = (qc + 1) / 2, , ylim = c(0.9, 1.11) * range(tmp),
+        main = paste(
+          "all:", round(sd(tmpn) / mean(tmpn), digits = 2), "\n",
+          "qc:", round(sd(tmpn[qc]) / mean(tmpn[qc]), digits = 2)
+        )
       )
-    )
+    }
     rm(tmp)
     rm(tmpn)
-    rm(tmpnqc)
-    gc()
+    if (exists("tmpnqc")) {
+      rm(tmpnqc)
+    }
+    if (z %% 100 == 0) {
+      gc()
+    }
   }
 
   return(data)
 }
+
 
 #' order_datasets
 #'
@@ -167,6 +159,7 @@ order_datasets <- function(order = NULL,
 #' @param qc logical vector with length equal to number of injections in xset or csv file or dataframe
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
 #' @param qc.inj.range integer: how many injections around each injection are to be scanned for presence of QC samples when using batch.qc normalization?  A good rule of thumb is between 1 and 3 times the typical injection span between QC injections.  i.e. if you inject QC ever 7 samples, set this to between 7 and 21.  smaller values provide more local precision but make normalization sensitive to individual poor outliers (though these are first removed using the boxplot function outlier detection), while wider values provide less local precision in normalization but better stability to individual peak areas.
+#' @param output.plot logical set to TRUE to store plots
 #' @return  ramclustR object with normalized data.
 #' @export
 
@@ -174,7 +167,8 @@ rc.feature.normalize.batch.qc <- function(order = NULL,
                                           batch = NULL,
                                           qc = NULL,
                                           ramclustObj = NULL,
-                                          qc.inj.range = 20) {
+                                          qc.inj.range = 20,
+                                          output.plot = FALSE) {
   if (!all.equal(length(batch), length(qc), length(order), nrow(ramclustObj$MSdata))) {
     stop(
       "all lengths must be identical and are not: ", "\n",
@@ -226,14 +220,17 @@ rc.feature.normalize.batch.qc <- function(order = NULL,
     sep = ""
   )
 
-  pdf(file = "norm.plots.pdf", height = 4, width = 9)
+  if (output.plot) {
+    pdf(file = "norm.plots.pdf", height = 4, width = 9)
+  }
 
   ramclustObj$MSdata <- normalized_data_batch_qc(
     data = ramclustObj$MSdata,
     batch = batch,
     order = order,
     qc = qc,
-    qc.inj.range = qc.inj.range
+    qc.inj.range = qc.inj.range,
+    output.plot = output.plot
   )
 
   if (!is.null(ramclustObj$MSMSdata)) {
@@ -246,8 +243,9 @@ rc.feature.normalize.batch.qc <- function(order = NULL,
     )
   }
 
-  dev.off()
-
+  if (output.plot) {
+    dev.off()
+  }
   ## update msint and optionally msmsint
   global.min <- apply(cbind(ramclustObj$MSdata, ramclustObj$MSMSdata), 2, "min", na.rm = TRUE)
 

@@ -8,7 +8,7 @@ rc.feature.normalize.qc(
   ramclustObj = NULL,
   order = NULL,
   batch = NULL,
-  qc.tag = NULL,
+  qc = NULL,
   output.plot = FALSE,
   p.cut = 0.05,
   rsq.cut = 0.1,
@@ -22,7 +22,7 @@ rc.feature.normalize.qc(
 
 \item{batch}{integer vector with length equal to number of injections in xset or csv file}
 
-\item{qc.tag}{character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.}
+\item{qc}{logical vector with length equal to number of injections in xset or csv file or dataframe}
 
 \item{output.plot}{logical: if TRUE (default), plots are output to PDF.}
 

@@ -22,3 +22,21 @@ split_features <- function(labels) {
   mz_rt_df[, 2] <- as.numeric(mz_rt_df[, 2])
   return(mz_rt_df)
 }
+
+read_metadata <- function(filename) {
+  data <- read.csv(filename, header = TRUE, stringsAsFactors = FALSE)
+
+  if (!"qc" %in% colnames(data)) {
+    if ("sampleType" %in% colnames(data)) {
+      data$qc <- ifelse(tolower(data$sampleType) == tolower("qc"), TRUE, FALSE)
+    }
+  }
+
+  if (!"order" %in% colnames(data)) {
+    if ("injectionOrder" %in% colnames(data)) {
+      names(data)[names(data) == "injectionOrder"] <- "order"
+    }
+  }
+
+  return(data)
+}

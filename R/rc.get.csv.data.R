@@ -181,7 +181,8 @@ rc.get.csv.data <- function(csv = NULL,
         phenoData = phenoData,
         feature_names = colnames(data1),
         xcmsOrd = xcmsOrd,
-        sample_names = rownames(data1)
+        sample_names = rownames(data1),
+        ensure.no.na = ensure.no.na
     )
 
     return(ramclustObj)

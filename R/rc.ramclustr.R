@@ -15,7 +15,6 @@
 #' @param cor.method character: which correlational method used to calculate 'r' - see ?cor
 #' @param rt.only.low.n logical: default = TRUE  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to FALSE.
 #' @param collapse logical: if true (default), feature quantitative values are collapsed into spectra quantitative values. 
-#' @param cor.use character: see 'use' option from 'cor' method.  Default = 'everything'.  if alternate (i.e. 'pairwise.complete.obs'), and NA may be returned, NA are replaced with 0 before clustering.  
 #' @details Main clustering function output - see citation for algorithm description or vignette('RAMClustR') for a walk through.  batch.qc. normalization requires input of three vectors (1) batch (2) order (3) qc.   This is a feature centric normalization approach which adjusts signal intensities first by comparing batch median intensity of each feature (one feature at a time) QC signal intensity to full dataset median to correct for systematic batch effects and then secondly to apply a local QC median vs global median sample correction to correct for run order effects.
 #' @return   $featclus: integer vector of cluster membership for each feature
 #' @return   $clrt: cluster retention time
@@ -28,11 +27,14 @@
 #' @return   $SpecAbundAve: the cluster intensities after averaging all samples with identical sample names
 #' @importFrom graphics abline axis boxplot hist "legend" "par" "plot" "points" "title"
 #' @importFrom stats aggregate cor fitted lm loess median predict quantile sd weighted.mean
-#' @importFrom utils edit read.csv read.delim read.delim2 write.csv packageVersion citation
+#' @importFrom utils edit read.csv read.delim read.delim2 write.csv packageVersion
 #' @importFrom fastcluster hclust
 #' @importFrom dynamicTreeCut cutreeDynamicTree
 #' @importFrom e1071 skewness
-#' @importFrom preprocessCore normalize.quantiles
+#' @importFrom gplots heatmap.2
+#' @importFrom pcaMethods pca
+#' @importFrom jsonlite fromJSON
+#' @importFrom utils citation packageVersion
 #'
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
 #' @references Broeckling CD, Ganna A, Layer M, Brown K, Sutton B, Ingelsson E, Peers G, Prenni JE. Enabling Efficient and Confident Annotation of LC-MS Metabolomics Data through MS1 Spectrum and Time Prediction. Anal Chem. 2016 Sep 20;88(18):9226-34. doi: 10.1021/acs.analchem.6b02479. Epub 2016 Sep 8. PubMed PMID: 7560453.
@@ -46,28 +48,26 @@
 #' @concept xcms
 #' @author Corey Broeckling
 #' @export
-
 rc.ramclustr  <- function(
-    ramclustObj=NULL,
-    st=NULL, 
-    sr=NULL, 
-    maxt=NULL, 
-    deepSplit=FALSE, 
-    blocksize=2000,
-    mult=5,
-    hmax=NULL,
-    collapse=TRUE,
-    minModuleSize=2,
-    linkage="average",
-    cor.method="pearson",
-    rt.only.low.n = TRUE,
-    cor.use = "everything"
+  ramclustObj=NULL,
+  st=NULL, 
+  sr=NULL, 
+  maxt=NULL, 
+  deepSplit=FALSE, 
+  blocksize=2000,
+  mult=5,
+  hmax=NULL,
+  collapse=TRUE,
+  minModuleSize=2,
+  linkage="average",
+  cor.method="pearson",
+  rt.only.low.n = TRUE
 ) {
   
   if(is.null(ramclustObj)) {
     stop("please supply a ramclustR object as input. see rc.get.xcms.data, for example")
   }
-  
+    
   ########
   # define ms levels, used several times below
   if(is.null(ramclustObj$MSMSdata)) {
@@ -109,10 +109,7 @@ rc.ramclustr  <- function(
     "cor.method"=cor.method,
     "rt.only.low.n" = rt.only.low.n
   )
-  
-  
-  
-  
+
   ########
   # establish some constants for downstream processing
   data1 <- ramclustObj$MSdata
@@ -129,16 +126,14 @@ rc.ramclustr  <- function(
   times <- ramclustObj$frt
   mzs <- ramclustObj$fmz
   featnames <- paste(ramclustObj$frt, ramclustObj$fmz, sep = "_")
-  
-  
+    
   ########
   # make list of all row and column blocks to evaluate
   eval1<-expand.grid(0:nblocks, 0:nblocks)
   names(eval1)<-c("j", "k") #j for cols, k for rows
   eval1<-eval1[which(eval1[,"j"]<=eval1[,"k"]),] #upper triangle only
   bl<-nrow(eval1)
-  
-  
+   
   
   tmp.ramclustObj <- calculate.similarity(
     numcols = n, 
@@ -147,10 +142,10 @@ rc.ramclustr  <- function(
     mult = mult, maxt = maxt, 
     st = st, sr = sr, 
     rt.only.low.n = rt.only.low.n, 
-    cor.method = cor.method,
-    cor.use = cor.use)
+    cor.method = cor.method)
   
-  
+  ########
+  # convert vector to distance formatted object
   tmp.ramclustObj<-structure(
     tmp.ramclustObj, 
     Size=(n), 
@@ -167,9 +162,7 @@ rc.ramclustr  <- function(
   
   c<-Sys.time()    
   # cat("RAMClust distances converted to distance object", '\n')
-  
-  
-  
+    
   ########
   # cluster using fastcluster package,
   system.time(tmp.ramclustObj<-fastcluster::hclust(
@@ -229,36 +222,18 @@ rc.ramclustr  <- function(
   # collapse feature dataset into spectrum dataset
   if(collapse=="TRUE") {
     cat("collapsing feature into spectral signal intensities", '\n')
-    wts<-colMeans(data1[], na.rm = TRUE)
+    wts<-colSums(data1[])
     ramclustObj$SpecAbund<-matrix(nrow=nrow(data1), ncol=max(clus))
     for (ro in 1:nrow(ramclustObj$SpecAbund)) { 
       for (co in 1:ncol(ramclustObj$SpecAbund)) {
-        ramclustObj$SpecAbund[ro,co]<- weighted.mean(data1[ro,which(ramclustObj$featclus==co)], wts[which(ramclustObj$featclus==co)], na.rm = TRUE)
+        ramclustObj$SpecAbund[ro,co]<- weighted.mean(data1[ro,which(ramclustObj$featclus==co)], wts[which(ramclustObj$featclus==co)])
       }
     }
     dimnames(ramclustObj$SpecAbund)[[2]]<-ramclustObj$cmpd
     g<-Sys.time()
   }
   
-  
-  if(!is.null(ramclustObj$sample_names)) {
-    smp.names <- ramclustObj$sample_names
-  } else {
-    if(!is.null(ramclustObj$phenoData[,"sample_names"])) {
-      smp.names <- ramclustObj$sample_names
-    } else {
-      smp.names  <- ramclustObj$sample.names
-    }
-  }
-  
-  if(is.null(smp.names)) {
-    stop("sample names is null")
-  } else {
-    dimnames(ramclustObj$SpecAbund)[[1]] <- smp.names
-  }
-  
-  
-  
+  dimnames(ramclustObj$SpecAbund)[[1]] <- ramclustObj$sample_names
   
   if(is.null(dimnames(ramclustObj$SpecAbund)[[1]])) {
     stop('this appears to be an older format ramclustR object and does not have a "phenoData" slot with sample names')

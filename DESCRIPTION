@@ -20,14 +20,11 @@ Depends:
 Imports:
   dynamicTreeCut,
   fastcluster,
-  httr,
   jsonlite,
   e1071,
   gplots,
   pcaMethods,
-  stringr,
   utils,
-  webchem,
   ggplot2,
   methods
 Suggests: 
@@ -45,7 +42,7 @@ Suggests:
   curl,
   rentrez,
   MsExperiment
-License: GPL (>= 2)
+License: GPL (>= 2) + file LICENSE
 Description: A feature clustering algorithm for non-targeted mass spectrometric metabolomics data. This method is compatible with gas and liquid chromatography coupled mass spectrometry, including indiscriminant tandem mass spectrometry data <DOI: 10.1021/ac501530d>. 
 URL: https://github.com/cbroeckl/RAMClustR
 Encoding: UTF-8

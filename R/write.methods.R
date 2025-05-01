@@ -74,7 +74,7 @@ write.methods <- function (
     
     '(Schymanksi 2014)' = "Emma L. Schymanski, Junho Jeon, Rebekka Gulde, Kathrin Fenner, Matthias Ruff, Heinz P. Singer, and Juliane Hollender. Identifying Small Molecules via High Resolution Mass Spectrometry: Communicating Confidence. Environ. Sci. Technol. 2014, 48, 4, 2097???2098",
     
-    '(Duhrkop 2019)' = 'Kai Dührkop, Markus Fleischauer, Marcus Ludwig, Alexander A. Aksenov, Alexey V. Melnik, Marvin Meusel, Pieter C. Dorrestein, Juho Rousu, and Sebastian Böcker. Sirius 4: turning tandem mass spectra into metabolite structure information. Nat Methods, 2019.'
+    '(Duhrkop 2019)' = 'Kai Duhrkop, Markus Fleischauer, Marcus Ludwig, Alexander A. Aksenov, Alexey V. Melnik, Marvin Meusel, Pieter C. Dorrestein, Juho Rousu, and Sebastian Bocker. Sirius 4: turning tandem mass spectra into metabolite structure information. Nat Methods, 2019.'
   )
 
   names(cit.list)[which(names(cit.list) == "R")] <- paste0(

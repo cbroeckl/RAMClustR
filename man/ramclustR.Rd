@@ -34,6 +34,7 @@ ramclustR(
   linkage = "average",
   mzdec = 3,
   cor.method = "pearson",
+  cor.use = "pairwise.complete.obs",
   rt.only.low.n = TRUE,
   replace.zeros = TRUE
 )
@@ -95,7 +96,9 @@ ramclustR(
 
 \item{mzdec}{integer: number of decimal places used in printing m/z values}
 
-\item{cor.method}{character: which correlational method used to calculate 'r' - see ?cor}
+\item{cor.method}{character: which correlational method used to calculate 'r' - see ?cor 'method' option. default = "pearson"}
+
+\item{cor.use}{character: which data points to use to calculate 'r' - see ?cor 'use' option. default = "pairwise.complete.obs"}
 
 \item{rt.only.low.n}{logical: default = TRUE  At low injection numbers, correlational relationships of peak intensities may be unreliable.  by defualt ramclustR will simply ignore the correlational r value and cluster on retention time alone.  if you wish to use correlation with at n < 5, set this value to FALSE.}
 

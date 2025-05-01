@@ -11,7 +11,7 @@ define_samples(ramclustObj, tag, return.logical = FALSE)
 
 \item{tag}{character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.}
 
-\item{logical}{optionally convert numeric vector with length equal to the number of matched samples to a logical vector of length equal to number of samples, with TRUE representing matching samples.}
+\item{return.logical}{optionally convert numeric vector with length equal to the number of matched samples to a logical vector of length equal to number of samples, with TRUE representing matching samples.}
 }
 \value{
 samples found using the tag

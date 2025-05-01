@@ -4,8 +4,10 @@
 #'
 #' @param ramclustObj ramclustR object to annotate. 
 #' @param merge.threshold numeric. value between -1 and 1 indicating the correlational r threshold above which two clusters will be merged
-#' @param cor.method character.  default = 'spearman'.  correlational method to use for calculating r.  see documentation on R base cor() function for available options
+#' @param cor.method character: which correlational method used to calculate 'r' - see ?cor 'method' option. default = "pearson"
+#' @param cor.use character: which data points to use to calculate 'r' - see ?cor 'use' option. default = "pairwise.complete.obs"
 #' @param rt.sd.factor numeric.  default = 3.  clusters within rt.sd.factor * ramclustObj$rtsd (cluster retention time standard deviation) are considered for merging.
+#' @param sample.name.column character. column name from ramclustObj$phenoData which should be used as row.names in new ramclustObj$SpecAbund dataset.  
 #' @details exports files to a directory called 'spectra'.  If one.file = FALSE, a new directory 'spectra/msp' is created to hold the individual msp files. if do.findman has been run, spectra are written as ms2 spectra, else as ms1. 
 #' @return new ramclustR object, with (generally) fewer clusters than the input ramclustR object.
 #' @concept ramclustR

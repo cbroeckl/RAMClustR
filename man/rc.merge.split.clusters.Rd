@@ -18,9 +18,13 @@ rc.merge.split.clusters(
 
 \item{merge.threshold}{numeric. value between -1 and 1 indicating the correlational r threshold above which two clusters will be merged}
 
-\item{cor.method}{character.  default = 'spearman'.  correlational method to use for calculating r.  see documentation on R base cor() function for available options}
+\item{cor.method}{character: which correlational method used to calculate 'r' - see ?cor 'method' option. default = "pearson"}
 
 \item{rt.sd.factor}{numeric.  default = 3.  clusters within rt.sd.factor * ramclustObj$rtsd (cluster retention time standard deviation) are considered for merging.}
+
+\item{cor.use}{character: which data points to use to calculate 'r' - see ?cor 'use' option. default = "pairwise.complete.obs"}
+
+\item{sample.name.column}{character. column name from ramclustObj$phenoData which should be used as row.names in new ramclustObj$SpecAbund dataset.}
 }
 \value{
 new ramclustR object, with (generally) fewer clusters than the input ramclustR object.

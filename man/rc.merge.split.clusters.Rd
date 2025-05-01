@@ -8,7 +8,9 @@ rc.merge.split.clusters(
   ramclustObj = NULL,
   merge.threshold = 0.7,
   cor.method = "spearman",
-  rt.sd.factor = 3
+  rt.sd.factor = 3,
+  cor.use = "everything",
+  sample.name.column = "sample.ID"
 )
 }
 \arguments{

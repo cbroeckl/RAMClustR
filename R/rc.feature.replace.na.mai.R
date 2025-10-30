@@ -1,4 +1,4 @@
-#' rc.feature.replace.na
+#' rc.feature.replace.na.mai
 #'
 #' replaces any NA (and optionally zero) values with small signal (20% of minimum feature signal value + 20% random noise)
 #'

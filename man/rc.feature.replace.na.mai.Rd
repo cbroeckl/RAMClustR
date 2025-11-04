@@ -2,7 +2,7 @@
 % Please edit documentation in R/rc.feature.replace.na.mai.R
 \name{rc.feature.replace.na.mai}
 \alias{rc.feature.replace.na.mai}
-\title{rc.feature.replace.na}
+\title{rc.feature.replace.na.mai}
 \usage{
 rc.feature.replace.na.mai(
   ramclustObj = NULL,

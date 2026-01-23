@@ -82,7 +82,7 @@ rc.feature.replace.na.mai <- function(ramclustObj = NULL,
   
   history <- paste0(
     "Missing values from the xcms output were replaced via Mechanism Aware Imputation ", 
-    "using the MAI R package (https://doi.org/10.18129/B9.bioc.MAI; ", package.version('MAI'), ")."
+    "using the MAI R package (https://doi.org/10.18129/B9.bioc.MAI; ", packageVersion('MAI'), ")."
   )
   for(i in 1:length(which.data)) {
     history <- paste0(

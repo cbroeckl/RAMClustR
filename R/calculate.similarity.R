@@ -1,7 +1,9 @@
+#' @exportS3Method NULL
 compute.start <- function(position, blocksize, numcols) {
   return(min((1 + ((position - 1) * blocksize)), numcols))
 }
 
+#' @exportS3Method NULL
 compute.stop <- function(position, blocksize, numcols) {
   if ((position) * blocksize > numcols) {
     stop_pos <- numcols
@@ -11,6 +13,7 @@ compute.stop <- function(position, blocksize, numcols) {
   return(stop_pos)
 }
 
+#' @exportS3Method NULL
 calculate.similarity <- function(numcols,
                                  data1,
                                  data2,

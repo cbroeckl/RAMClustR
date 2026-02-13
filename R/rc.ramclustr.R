@@ -164,8 +164,7 @@ rc.ramclustr  <- function(
   gc()
   
   c<-Sys.time()    
-  # cat("RAMClust distances converted to distance object", '\n')
-    
+
   ########
   # cluster using fastcluster package,
   system.time(tmp.ramclustObj<-fastcluster::hclust(
@@ -174,7 +173,6 @@ rc.ramclustr  <- function(
   
   gc()
   d<-Sys.time()    
-  cat("fastcluster based clustering complete", '\n')
   if(minModuleSize==1) {
     clus<-dynamicTreeCut::cutreeDynamicTree(tmp.ramclustObj, maxTreeHeight=hmax, deepSplit=deepSplit, minModuleSize=2)
     sing<-which(clus==0)
@@ -209,14 +207,12 @@ rc.ramclustr  <- function(
   ramclustObj$nsing<-length(which(ramclustObj$featclus==0))
   
   e<-Sys.time() 
-  cat("dynamicTreeCut based pruning complete", '\n')
-  
+
   f<-Sys.time()
-  cat(paste("RAMClust has condensed", n, "features into",  max(clus), "spectra", '\n'))
+  message(paste("RAMClust has condensed", n, "features into",  max(clus), "spectra", '\n'))
   
   strl<-nchar(max(ramclustObj$featclus)) - 1
   ramclustObj$cmpd<-paste("C", formatC(1:length(ramclustObj$clrt), digits = strl, flag = 0 ) , sep="")
-  # cat(ramclustObj$cmpd[1:10], '\n')
   ramclustObj$ann<-ramclustObj$cmpd
   ramclustObj$annconf<-rep(4, length(ramclustObj$clrt))
   ramclustObj$annnotes<-rep("", length(ramclustObj$clrt))
@@ -224,7 +220,6 @@ rc.ramclustr  <- function(
   ########
   # collapse feature dataset into spectrum dataset
   if(collapse=="TRUE") {
-    cat("collapsing feature into spectral signal intensities", '\n')
     wts<-colSums(data1[])
     ramclustObj$SpecAbund<-matrix(nrow=nrow(data1), ncol=max(clus))
     for (ro in 1:nrow(ramclustObj$SpecAbund)) { 

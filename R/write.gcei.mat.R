@@ -3,6 +3,7 @@
 #' Export GC-MS EI spectra for spectral searching in MSFinder
 #'
 #' @param ramclustObj ramclustR object to annotate. 
+#' @param out.dir valid directory path describing output directory/file location.
 #' @details exports files to a directory called 'spectra'.  a new directory 'spectra/mat' is created to hold the individual mat files.  
 #' @return nothing, just exports files to the working directory
 #' @concept ramclustR
@@ -18,21 +19,27 @@
 #' 
 
 write.gcei.mat <- function(
-    ramclustObj = NULL
+    ramclustObj = NULL,
+    out.dir = NULL
 ) {
+  
+  if(is.null(out.dir)) {
+    stop("please provide a valid output directory")
+  }
+  
   
   if(!is(ramclustObj, "hclus") & 
      ramclustObj$dist.method != "RAMClustR") {
     stop("this is not a RAMClustR object")
   }
   
-  if(!dir.exists('spectra')) {
-    dir.create('spectra')
+  if(!dir.exists(paste0(out.dir, '/spectra'))) {
+    dir.create(paste0(out.dir, '/spectra'))
   }
   
 
-    if(!dir.exists('spectra/mat')) {
-      dir.create('spectra/mat')
+    if(!dir.exists(paste0(out.dir, '/spectra/mat'))) {
+      dir.create(paste0(out.dir, '/spectra/mat'))
     }
 
   ion.mode <- "Positive"
@@ -109,7 +116,7 @@ write.gcei.mat <- function(
   }
   
   for(i in 1:length(out.list)) {
-    sink(paste0("spectra/mat/", ramclustObj$cmpd[[i]], ".mat"))
+    sink(paste0(out.dir, "/spectra/mat/", ramclustObj$cmpd[[i]], ".mat"))
     cat(out.list[[i]], '\n')
     sink()
   }

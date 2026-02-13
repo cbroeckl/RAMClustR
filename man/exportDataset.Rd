@@ -6,6 +6,7 @@
 \usage{
 exportDataset(
   ramclustObj = NULL,
+  out.dir = NULL,
   which.data = "SpecAbund",
   label.by = "cmpd",
   appendFactors = TRUE
@@ -13,6 +14,8 @@ exportDataset(
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to export from}
+
+\item{out.dir}{valid directory path describing output directory/file location.}
 
 \item{which.data}{name of dataset to export.  SpecAbund, SpecAbundAve, MSdata, or MSMSdata}
 

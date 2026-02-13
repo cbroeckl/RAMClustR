@@ -56,7 +56,6 @@ rc.merge.split.clusters <- function(
     merges <- max(merges)
     
     ramclustObj$featclus[which(ramclustObj$featclus == i)] <- merges
-    # if(max(diff(sort(unique(ramclustObj$featclus)))) > 1) cat(i, "max diff = ", max(diff(sort(unique(ramclustObj$featclus)))), '\n')
     old.featclus <- ramclustObj$featclus
     new.featclus <- old.featclus
     decend.by.one <- which(old.featclus > i)
@@ -99,7 +98,7 @@ rc.merge.split.clusters <- function(
   dimnames(ramclustObj$SpecAbund)[[1]] <- ramclustObj$phenoData[,sample.name.column]
   
   new.cl.n <- max(ramclustObj$featclus)
-  cat(paste("Original cluster number =", orig.cl.n, '\n', "New cluster number =", new.cl.n, '\n'))
+  message(paste("Original cluster number =", orig.cl.n, '\n', "New cluster number =", new.cl.n, '\n'))
   
   return(ramclustObj)
   

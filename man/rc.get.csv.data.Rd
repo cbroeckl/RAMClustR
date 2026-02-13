@@ -23,7 +23,7 @@ rc.get.csv.data(
 
 \item{idmsms}{filepath: optional idMSMS / MSe csv data.  same dim and names as ms required}
 
-\item{ExpDes}{either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output}
+\item{ExpDes}{an R object created by RAMClustR::designExperiment. data used for record keeping and labeling msp spectral output}
 
 \item{sampNameCol}{integer: which column from the csv file contains sample names?}
 

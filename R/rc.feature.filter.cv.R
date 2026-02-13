@@ -82,6 +82,8 @@ find_good_features <- function(ramclustObj,
   ## find 'good' features, acceptable CV at either
   ## MS or MSMS level results in keeping
   keep <- rep(FALSE, ncol(ramclustObj$MSdata))
+  oldpar <- par(no.readonly = TRUE) # code line i
+  on.exit(par(oldpar)) # code line i + 1
   par(mfrow = c(1, length(do.sets)))
   for (x in do.sets) {
     td <- ramclustObj[[x]]
@@ -99,7 +101,7 @@ find_good_features <- function(ramclustObj,
     }
     hist(cvs, main = x, xlab = "CV")
     keep[which(cvs <= max.cv)] <- TRUE
-    cat(x, ": ", length(which(cvs <= max.cv)), "passed the CV filter", "\n")
+    message(x, ": ", length(which(cvs <= max.cv)), "passed the CV filter", "\n")
     hist(cvs[which(cvs <= max.cv)], add = TRUE, col = "gray")
   }
 
@@ -257,7 +259,7 @@ rc.feature.filter.cv <- function(ramclustObj = NULL,
     "rc.feature.filter.cv"
   )
 
-  cat(ramclustObj$history$filter.features)
+  message(ramclustObj$history$filter.features)
 
   return(ramclustObj)
 }

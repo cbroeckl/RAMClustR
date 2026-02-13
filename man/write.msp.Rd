@@ -4,10 +4,12 @@
 \alias{write.msp}
 \title{write.msp}
 \usage{
-write.msp(ramclustObj = NULL, one.file = FALSE)
+write.msp(ramclustObj = NULL, out.dir = NULL, one.file = FALSE)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to annotate.}
+
+\item{out.dir}{valid directory path describing output directory/file location.}
 
 \item{one.file}{logical, should all msp spectra be written to one file? If false, each spectrum is an individual file.}
 }

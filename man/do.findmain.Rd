@@ -6,6 +6,7 @@
 \usage{
 do.findmain(
   ramclustObj = NULL,
+  out.dir = NULL,
   cmpd = NULL,
   mode = "positive",
   mzabs.error = 0.005,
@@ -21,6 +22,8 @@ do.findmain(
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to annotate.}
+
+\item{out.dir}{valid directory path describing output directory/file location.}
 
 \item{cmpd}{integer: vector defining compound numbers to annotated.  if NULL (default), all compounds}
 

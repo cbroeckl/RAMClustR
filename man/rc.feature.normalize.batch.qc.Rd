@@ -5,6 +5,7 @@
 \title{rc.feature.normalize.batch.qc}
 \usage{
 rc.feature.normalize.batch.qc(
+  out.dir = NULL,
   order = NULL,
   batch = NULL,
   qc = NULL,
@@ -14,6 +15,8 @@ rc.feature.normalize.batch.qc(
 )
 }
 \arguments{
+\item{out.dir}{valid directory path describing output directory/file location.}
+
 \item{order}{integer vector with length equal to number of injections in xset or csv file or dataframe}
 
 \item{batch}{integer vector with length equal to number of injections in xset or csv file or dataframe}

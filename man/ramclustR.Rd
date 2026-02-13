@@ -9,6 +9,7 @@ ramclustR(
   ms = NULL,
   pheno_csv = NULL,
   idmsms = NULL,
+  out.dir = NULL,
   taglocation = "filepaths",
   MStag = NULL,
   idMSMStag = NULL,
@@ -47,6 +48,8 @@ ramclustR(
 \item{pheno_csv}{filepath: optional csv input containing phenoData}
 
 \item{idmsms}{filepath: optional idMSMS / MSe csv data.  same dim and names as ms required}
+
+\item{out.dir}{valid directory path describing output directory/file location.}
 
 \item{taglocation}{character: "filepaths" by default, "phenoData[,1]" is another option. refers to xcms slot}
 
@@ -156,11 +159,12 @@ head(data.frame(read.csv(filename)), c(6L, 5L))
 ## If the file contains features from MS2, assign those to the `idmsms` parameter.
 ## If you ran `xcms` for the feature detection, the assign the output to the `xcmsObj` parameter.
 ## In this example we use a MS1 feature table stored in a `csv` file.
-setwd(tempdir())
-ramclustobj <- ramclustR(ms = filename, st = 5, maxt = 1, blocksize = 1000)
+tmp <- tempdir()
+ramclustobj <- ramclustR(ms = filename, st = 5, maxt = 1, blocksize = 1000, out.dir = tmp)
 
 ## Investigate the deconvoluted features in the `spectra` folder in MSP format
 ## or inspect the `ramclustobj` for feature retention times, annotations etc.
+cat("tmp spectra directory:", paste0(tmp, "/spectra"))
 print(ramclustobj$ann)
 print(ramclustobj$nfeat)
 print(ramclustobj$SpecAbund[, 1:6])

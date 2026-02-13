@@ -1,3 +1,8 @@
+2026-02-13 Corey Broeckling v1.3.4
+  * removed reference to working directory via getwd() or setwd()
+  * require all directories to be defined, except for testing, which references tempdir()
+  * made any par() call immediately backed by on.exit() reversion to original par()
+
 2026-01-22 Corey Broeckling v1.3.3
   * Added MAI based missing value replacement function
 

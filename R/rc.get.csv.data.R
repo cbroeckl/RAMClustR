@@ -29,7 +29,7 @@ compute_wt_mean <- function(data, global.min, fmz, ensure.no.na) {
 #' @param csv filepath: csv input. Features as columns, rows as samples. Column header mz_rt
 #' @param phenoData character: character string in 'taglocation' to designate files as either MS / DIA(MSe, MSall, AIF, etc) e.g. "01.mzML"
 #' @param idmsms filepath: optional idMSMS / MSe csv data.  same dim and names as ms required
-#' @param ExpDes either an R object created by R ExpDes object: data used for record keeping and labelling msp spectral output
+#' @param ExpDes an R object created by RAMClustR::designExperiment. data used for record keeping and labeling msp spectral output
 #' @param sampNameCol integer: which column from the csv file contains sample names?
 #' @param st numeric: sigma t - time similarity decay value
 #' @param timepos integer: which position in delimited column header represents the retention time

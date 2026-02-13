@@ -33,6 +33,7 @@ compute_SpecAbundAve <- function(ramclustObj = NULL) {
 #' @param taglocation character: "filepaths" by default, "phenoData[,1]" is another option. refers to xcms slot
 #' @param featdelim character: how feature mz and rt are delimited in csv import column header e.g. ="-"
 #' @param timepos integer: which position in delimited column header represents the retention time (csv only)
+#' @param out.dir valid directory path describing output directory/file location.
 #' @param st numeric: sigma t - time similarity decay value
 #' @param sr numeric: sigma r - correlational similarity decay value
 #' @param maxt numeric: maximum time difference to calculate retention similarity for - all values beyond this are assigned similarity of zero
@@ -110,11 +111,12 @@ compute_SpecAbundAve <- function(ramclustObj = NULL) {
 #' ## If the file contains features from MS2, assign those to the `idmsms` parameter.
 #' ## If you ran `xcms` for the feature detection, the assign the output to the `xcmsObj` parameter.
 #' ## In this example we use a MS1 feature table stored in a `csv` file.
-#' setwd(tempdir())
-#' ramclustobj <- ramclustR(ms = filename, st = 5, maxt = 1, blocksize = 1000)
+#' tmp <- tempdir()
+#' ramclustobj <- ramclustR(ms = filename, st = 5, maxt = 1, blocksize = 1000, out.dir = tmp)
 #'
 #' ## Investigate the deconvoluted features in the `spectra` folder in MSP format
 #' ## or inspect the `ramclustobj` for feature retention times, annotations etc.
+#' cat("tmp spectra directory:", paste0(tmp, "/spectra"))
 #' print(ramclustobj$ann)
 #' print(ramclustobj$nfeat)
 #' print(ramclustobj$SpecAbund[, 1:6])
@@ -124,6 +126,7 @@ ramclustR <- function(xcmsObj = NULL,
                       ms = NULL,
                       pheno_csv = NULL,
                       idmsms = NULL,
+                      out.dir = NULL,
                       taglocation = "filepaths",
                       MStag = NULL,
                       idMSMStag = NULL,
@@ -345,7 +348,7 @@ ramclustR <- function(xcmsObj = NULL,
   # write msp formatted spectra
   if (mspout == TRUE) {
     cat(paste("writing msp formatted spectra", "\n"))
-    write.msp(ramclustObj, one.file = TRUE)
+    write.msp(ramclustObj, one.file = TRUE, out.dir = out.dir)
     cat(paste("msp file complete", "\n"))
   }
 

@@ -3,6 +3,7 @@
 #' Cluster annotation function: inference of 'M' - molecular weight of the compound giving rise to each spectrum - using the InterpretMSSpectrum::findMain function
 #'
 #' @param ramclustObj ramclustR object to annotate. 
+#' @param out.dir valid directory path describing output directory/file location.
 #' @param one.file logical, should all msp spectra be written to one file? If false, each spectrum is an individual file.
 #' @param mzdec integer.  Number of decimal points to export mass values with.
 #' @details exports files to a directory called 'spectra'.  If one.file = FALSE, a new directory 'spectra/msp' is created to hold the individual msp files. if do.findman has been run, spectra are written as ms2 spectra, else as ms1. 
@@ -20,6 +21,7 @@
 #' 
 rc.export.msp.rc <- function(
   ramclustObj = NULL,
+  out.dir = NULL,
   one.file = TRUE,
   mzdec = 1
 ) {
@@ -28,6 +30,11 @@ rc.export.msp.rc <- function(
      ramclustObj$dist.method != "RAMClustR") {
     stop("this is not a RAMClustR object")
   }
+  
+  if(is.null(out.dir)) {
+    stop("please provide a valid output directory")
+  }
+  
   
   if(is.null(ramclustObj$precursor.mz)) {
     ms2 <- FALSE
@@ -122,12 +129,12 @@ rc.export.msp.rc <- function(
     if(nchar(exp.name) == 0) {
       exp.name <- "spectra"
     }
-    sink(paste0("spectra/", exp.name, ".rc.msp"))
+    sink(paste0(out.dir, "/spectra/", exp.name, ".rc.msp"))
     cat(out)
     sink()
   } else {
     for(i in 1:length(out.list)) {
-      sink(paste0("spectra/msp/", ramclustObj$cmpd[[i]], ".rc.msp"))
+      sink(paste0(out.dir, "/spectra/msp/", ramclustObj$cmpd[[i]], ".rc.msp"))
       cat(out.list[[i]], '\n')
       sink()
     }

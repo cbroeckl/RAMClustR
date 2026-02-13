@@ -4,10 +4,12 @@
 \alias{write.gcei.mat}
 \title{write.gcei.mat}
 \usage{
-write.gcei.mat(ramclustObj = NULL)
+write.gcei.mat(ramclustObj = NULL, out.dir = NULL)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to annotate.}
+
+\item{out.dir}{valid directory path describing output directory/file location.}
 }
 \value{
 nothing, just exports files to the working directory

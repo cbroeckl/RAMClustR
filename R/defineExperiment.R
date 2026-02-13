@@ -3,20 +3,26 @@
 #' write csv template called "ExpDes.csv" to your working directory. you will fill this in manually, ensuring that when you save you retain csv format. ramclustR will then read this file in and and format appropriately.
 #'
 #' @param data csv template to write
+#' @param out.dir valid path name to write output file to
 #' @return read ExpDes.csv file
 #' @export
 
-write_csv <- function(data) {
-  write.csv(data, file = paste(getwd(), "/ExpDes.csv", sep = ""), row.names = FALSE)
+write_csv <- function(data, out.dir) {
+  
+  if(is.null(out.dir)) {
+    stop("please provide a valid output directory")
+  }
+  
+  write.csv(data, file = paste(out.dir, "/ExpDes.csv", sep = ""), row.names = FALSE)
   readline(prompt = cat(
     "A file called ExpDes.csv has been written to your working directorty:",
     "\n", "\n",
-    getwd(),
+    out.dir,
     "\n", "\n",
     "please replace platform appropriate 'fill' cells with instrument and experiment",
     "\n", "data and save file.  When complete, press [enter] to continue"
   ))
-  csv.in <- read.csv(file = paste(getwd(), "/ExpDes.csv", sep = ""), header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+  csv.in <- read.csv(file = paste(out.dir, "/ExpDes.csv", sep = ""), header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
   return(csv.in)
 }
 
@@ -154,7 +160,6 @@ defineExperiment <- function(csv = FALSE, force.skip = FALSE) {
 
   if (is.logical(csv)) {
     if (csv) {
-      # cat(find.package("RAMClustR"))
       # out<-read.csv(paste(find.package("RAMClustR"), "/params/params.csv", sep=""), header=TRUE, check.names=FALSE, stringsAsFactors = FALSE)
       out <- structure(list(
         parameter = c(

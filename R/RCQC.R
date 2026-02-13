@@ -7,6 +7,7 @@
 #' @param npc number of Principle components to calcuate and plot
 #' @param scale "pareto" by default: PCA scaling method used
 #' @param which.data which dataset to use.  "SpecAbund" by default
+#' @param out.dir valid directory path describing output directory/file location.
 #' @param outfile name of output pdf file. 
 #'
 #' @details plots a ramclustR summary plot.  first page represents the correlation of each cluster to all other clusters, sorted by retention time.  large blocks of yellow along the diaganol indicate either poor clustering or a group of coregulated metabolites with similar retention time.  It is an imperfect diagnostic, particularly with lipids on reverse phase LC or sugars on HILIC LC systems.  Page 2: histogram of r values from page 1 - only r values one position from the diagonal are used.  Pages 3:5 - PCA results, with QC samples colored red.  relative standard deviation calculated as sd(QC PC scores) / sd(all PC scores).  Page 6: histogram of CV values for each compound int he dataset, QC samples only.  
@@ -29,6 +30,7 @@ RCQC<-function(ramclustObj=NULL,
                npc=4,
                scale="pareto",
                which.data="SpecAbund",
+               out.dir = NULL, 
                outfile="ramclustQC.pdf"
                
 ){
@@ -37,8 +39,13 @@ RCQC<-function(ramclustObj=NULL,
     stop("must supply ramclustObj as input.  i.e. ramclustObj = RC1", '\n')
   }
   
-  dir.create("QC")
-  pdf(file=paste("QC/", "ramclustQC2.pdf", sep=""), useDingbats=FALSE, width=8, height=8)  
+  if(is.null(out.dir)) {
+    stop("please provide a valid output directory")
+  }
+  
+  
+  dir.create(paste0(out.dir, "/QC"))
+  pdf(file=paste(out.dir, "/QC/", outfile, sep=""), useDingbats=FALSE, width=8, height=8)  
   #visualize clustering
   ## if clustering was perfect, we should see a normal distribution of 
   ## correlational r values 1 step from the diagonal

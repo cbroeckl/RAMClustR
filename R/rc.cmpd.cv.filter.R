@@ -72,7 +72,6 @@ rc.cmpd.filter.cv  <- function(
   for(x in do.sets) {
     td <- ramclustObj[[x]]
     sds<-apply(td[qc,], 2, FUN="sd", na.rm=TRUE)
-    #cat(sds, '\n')
     means<-apply(td[qc,], 2, FUN="mean", na.rm=TRUE)
     cvs<-sds/means
     # hist(cvs, main = x, xlab = "CV")
@@ -105,7 +104,7 @@ rc.cmpd.filter.cv  <- function(
     " were removed. ",   length(which(!keep))," of ", length(keep), " compounds were removed."
   )
   
-  cat(ramclustObj$history$filter.cmpds)
+  message(ramclustObj$history$filter.cmpds)
   
   return(ramclustObj)
 }

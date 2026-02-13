@@ -45,8 +45,6 @@ rc.expand.sample.names <- function(
     sn <- as.character(ramclustObj$phenoData$sample.names)
   }
   
-  # cat(paste(sn, collapse = ", "), '\n')
-  
   if(!any(ls()=="sn")) {
     stop('missing sample names in phenoData slot', '\n')
   }
@@ -55,7 +53,7 @@ rc.expand.sample.names <- function(
     length(des[[x]])
   })
   if(length(table(l)) != 1) {
-    cat("delimited sample names have variable lengths ranging from: ", '\n',
+    message("delimited sample names have variable lengths ranging from: ", '\n',
         range(l)[1], " to ", range(l)[2], '\n')
     ch <- which(l != median(l))
     stop("please fix sample names:", '\n', paste(" ", sn[ch], sep = '\n'))
@@ -66,7 +64,7 @@ rc.expand.sample.names <- function(
   if(is.logical(factor.names) & !quiet) {
     if(factor.names){
       for(x in 1:ncol(des)) {
-        cat(
+        message(
           "column",x, "variables:",'\n',
           unique(des[,x]), '\n')
         fn <- readline(prompt=cat("Type name and press [enter] to continue:", '\n'))

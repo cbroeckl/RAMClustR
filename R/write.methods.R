@@ -85,7 +85,7 @@ write.methods <- function (
   sink(filename)
   
   history <- paste(ramclustObj$history, collapse = " " )
-  cat(history)
+  message(history)
   
   cites <- sapply(1:length(cit.list), FUN = function(x) {
     grepl(names(cit.list[x]), history)

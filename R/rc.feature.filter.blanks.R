@@ -97,7 +97,7 @@ filter_blanks <- function(ramclustObj, keep, d1) {
     }
 
     if (is.data.frame(ramclustObj[[i]])) {
-      cat("df", names(ramclustObj)[i], "\n")
+      # cat("df", names(ramclustObj)[i], "\n")
       if (dim(ramclustObj[[i]])[2] == ncol(d1)) {
         ramclustObj[[i]] <- ramclustObj[[i]][, keep]
       }
@@ -107,7 +107,7 @@ filter_blanks <- function(ramclustObj, keep, d1) {
     }
 
     if (is.matrix(ramclustObj[[i]])) {
-      cat("ma", names(ramclustObj)[i], "\n")
+      # cat("ma", names(ramclustObj)[i], "\n")
       if (dim(ramclustObj[[i]])[2] == ncol(d1)) {
         ramclustObj[[i]] <- ramclustObj[[i]][, keep]
       }
@@ -219,7 +219,7 @@ rc.feature.filter.blanks <- function(ramclustObj = NULL,
 
   ## union of keep.ms1 and keep.ms2 is what we want to move forward
   length(keep) / ncol(d1)
-  cat(round(100 * length(keep) / ncol(d1), digits = 1), "% of features move forward", "\n", sep = "")
+  message(round(100 * length(keep) / ncol(d1), digits = 1), "% of features move forward", "\n", sep = "")
 
   ramclustObj <- filter_blanks(ramclustObj, keep, d1)
 
@@ -235,7 +235,7 @@ rc.feature.filter.blanks <- function(ramclustObj = NULL,
     )
   }
 
-  cat(ramclustObj$history$feature.filter.blanks)
+  message(ramclustObj$history$feature.filter.blanks)
 
   return(ramclustObj)
 }

@@ -10,6 +10,7 @@ RCQC(
   npc = 4,
   scale = "pareto",
   which.data = "SpecAbund",
+  out.dir = NULL,
   outfile = "ramclustQC.pdf"
 )
 }
@@ -23,6 +24,8 @@ RCQC(
 \item{scale}{"pareto" by default: PCA scaling method used}
 
 \item{which.data}{which dataset to use.  "SpecAbund" by default}
+
+\item{out.dir}{valid directory path describing output directory/file location.}
 
 \item{outfile}{name of output pdf file.}
 }

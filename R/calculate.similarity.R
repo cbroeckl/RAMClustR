@@ -31,15 +31,12 @@ calculate.similarity <- function(numcols,
   vlength <- (numcols * (numcols - 1)) / 2
   nblocks <- ceiling(numcols / blocksize)
 
-  cat(paste("Calculating ramclustR similarity using", sum((nblocks+1):1), "nblocks.\n"))
-  
   ramclustObj <- vector(mode = "integer", length = vlength)
   block = 1
   column <- NULL
   
   for (row in 1:(nblocks)) {
     for (col in row:(nblocks)) {
-      cat(block, " ")
       block <- block + 1
       
       start_col <- compute.start(row, blocksize, numcols)
@@ -122,8 +119,6 @@ calculate.similarity <- function(numcols,
     # remove column to start next iteration with clean slate
     column <- NULL
   }
-  
-  cat('\n RAMClust feature similarity matrix calculated and stored.\n')
   gc()
   
   return(ramclustObj)

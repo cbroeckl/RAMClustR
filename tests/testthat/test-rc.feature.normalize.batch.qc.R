@@ -4,6 +4,7 @@ test_that("RAMClustR rc.feature.normalize.batch.qc", {
   metadata <- read_metadata(file.path("testdata", "testMetadata.csv"))
 
   actual <- rc.feature.normalize.batch.qc(
+    out.dir =  tempdir(),
     order = metadata$order,
     batch = metadata$batch,
     qc = metadata$qc,

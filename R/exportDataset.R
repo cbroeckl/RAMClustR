@@ -3,6 +3,7 @@
 #' export one of 'SpecAbund', 'SpecAbundAve', 'MSdata' or 'MSMSdata' from an RC object to csv
 #' @details Useful for exporting the processed signal intensity matrix to csv for analysis elsewhere.  
 #' @param ramclustObj ramclustR object to export from
+#' @param out.dir valid directory path describing output directory/file location.
 #' @param which.data name of dataset to export.  SpecAbund, SpecAbundAve, MSdata, or MSMSdata
 #' @param label.by either 'ann' or 'cmpd', generally.  name of ramclustObj slot used as csv header for each column (compound)
 #' @param appendFactors logical.  If TRUE (default) the factor data frame is appended to the left side of the dataset. 
@@ -15,6 +16,7 @@
 
 exportDataset<-function(
   ramclustObj=NULL,
+  out.dir = NULL,
   which.data="SpecAbund",
   label.by="cmpd",
   appendFactors = TRUE
@@ -22,6 +24,10 @@ exportDataset<-function(
   
   if(is.null(ramclustObj)) {
     stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", '\n')
+  }
+  
+  if(is.null(out.dir)) {
+    stop("please provide a valid output directory")
   }
   
   d <- RAMClustR::getData(
@@ -47,9 +53,9 @@ exportDataset<-function(
   dimnames(d[[2]])[[2]] <- ramclustObj[[label.by]]  
   dimnames(d[[3]])[[2]][((dim(d[[3]])[2] - dim(d[[2]])[2] + 1)):(dim(d[[3]])[2])] <- ramclustObj[[label.by]]
   if(appendFactors) {
-    write.csv(d[[3]], paste("datasets/", which.data, ".csv", sep=""), row.names=FALSE)
+    write.csv(d[[3]], paste(out.dir, "/datasets/", which.data, ".csv", sep=""), row.names=FALSE)
   } else {
-    write.csv(d[[2]], paste("datasets/", which.data, ".csv", sep=""), row.names=TRUE)
+    write.csv(d[[2]], paste(out.dir, "/datasets/", which.data, ".csv", sep=""), row.names=TRUE)
   }
 }
 

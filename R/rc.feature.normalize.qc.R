@@ -1,6 +1,6 @@
 #' rc.feature.normalize.qc
 #'
-#' extractor for xcms objects in preparation for clustering
+#' drift correction for all data based on pooled QC samples. performed at feature level, ideally used prior to RAMClustR clustering. 
 #'
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
 #' @param batch integer vector with length equal to number of injections in xset or csv file
@@ -9,7 +9,6 @@
 #' @param rsq.cut numeric when run order correction is applied, only features showing a run order vs signal with a linear r-squared > rsq.cut will be adjusted. also requires p values < p.cut.
 #' @param qc logical vector with length equal to number of injections in xset or csv file or dataframe
 #' @param p.adjust which p-value adjustment should be used? default = "none", see ?p.adjust
-#' @param output.plot logical: if TRUE (default), plots are output to PDF.
 #' @details This function offers normalization by run order, batch number, and QC sample signal intensity.
 #' @details Each input vector should be the same length, and equal to the number of samples in the $MSdata set.
 #' @details Input vector order is assumed to be the same as the sample order in the $MSdata set.
@@ -31,7 +30,6 @@ rc.feature.normalize.qc <- function(ramclustObj = NULL,
                                     order = NULL,
                                     batch = NULL,
                                     qc = NULL,
-                                    output.plot = FALSE,
                                     p.cut = 0.05,
                                     rsq.cut = 0.1,
                                     p.adjust = "none") {
@@ -341,7 +339,7 @@ rc.feature.normalize.qc <- function(ramclustObj = NULL,
   }
   ramclustObj$params$rc.feature.normalize.qc <- params
 
-  cat(ramclustObj$history$normalize.qc)
+  message(ramclustObj$history$normalize.qc)
 
   return(ramclustObj)
 }

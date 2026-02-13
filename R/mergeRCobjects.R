@@ -49,7 +49,7 @@ mergeRCobjects <- function(
   if(is.null(mztol)) {
     if(is.na(newRC$ExpDes[[2]]["mzdifftof",])) {
       mztol <- 0.75
-      cat(" -- setting mztol to 0.75 Da", '\n')
+      message(" -- setting mztol to 0.75 Da", '\n')
     } else {
       mztol <- as.numeric(as.character(newRC$ExpDes[[2]]["mzdifftof",]))
     }
@@ -59,7 +59,7 @@ mergeRCobjects <- function(
   
   if(is.null(rttol)) {
     rttol <- round(100*median(newRC$clrtsd), digits = 2)
-    cat (" -- rttol set to ", rttol, '\n')
+    message(" -- rttol set to ", rttol, '\n')
   }
   
   ## generate a selectivity score based on intensity and isolation (how close is the nearest similar mass in rt)
@@ -111,14 +111,12 @@ mergeRCobjects <- function(
         weighted.mean(c(rtsim[x], mzsim[x]), weights = c(rtwt, mzwt))
       }
       )
-      # cat ('i = ', i, '\n')
       # print(data.frame("matches"=keep, rtsim, mzsim, sims))
       
       keep<-keep[which(sims == min(sims))]
       if(length(keep) > 1) {
         keep<-keep[which.max(ramclustObj.2$msint[keep])]
       }
-      # cat("kept: ", keep, '\n', '\n')
       map[i]<-keep
     }
     rm(keep)
@@ -127,6 +125,8 @@ mergeRCobjects <- function(
   if(length(keep) < 500) {
     warning(cat('only',  length(keep) ,'matching features: use output with caution', '\n'))
   }
+  oldpar <- par(no.readonly = TRUE) # code line i
+  on.exit(par(oldpar)) # code line i + 1
   par(mfrow = c(2,2))
   plot(newRC$frt[keep], (newRC$frt[keep] - ramclustObj.2$frt[map[keep]]), xlab = "rt", ylab = "correction", 
        col = "gray", pch = 19, main = "anchor map", lwd = 3)
@@ -189,9 +189,7 @@ mergeRCobjects <- function(
     }
   }
   keep<-which(!is.na(map))
-  cat(" --  ", 100*round(length(keep)/length(map), digits = 3), "% of features mapped", '\n')
-  
-  
+
   # par(mfrow = c(1,2))
   plot(newRC$frt[keep], (newRC$frt[keep] - pred.frt[map[keep]]), xlab = "rt", ylab = "correction", 
        col = "gray", pch = 19, main = "all rt vs pred rt")
@@ -230,7 +228,7 @@ mergeRCobjects <- function(
   
   newRC$SpecAbund.1<-ramclustObj.1$SpecAbund
   newRC$SpecAbund.2<-ramclustObj.2$SpecAbund
-  cat(" --   collapsing spectra", '\n' )
+  message(" --   collapsing spectra", '\n' )
   
   wts <- colSums(ramclustObj.1$MSdata, na.rm = TRUE)
   for (ro in 1:nrow(newRC$MSdata)) {
@@ -249,7 +247,7 @@ mergeRCobjects <- function(
   #       newRC$SpecAbund[ro, co] <- weighted.mean(ramclustObj.2$MSdata[ro, which(map == co)], 
   #                                                                               wts[which(map ==  co)])
   #     } else {
-  #       # cat(co, '\n')
+  #       
   #       newRC$SpecAbund[ro, co] <- 0
   #     }
   #     
@@ -273,7 +271,7 @@ mergeRCobjects <- function(
   newRC$fmz2 <- rep(NA, length(newRC$frt))
   newRC$fmz2[!is.na(map)] <- ramclustObj.2$fmz[map[!is.na(map)]]
   
-  cat(" --   finished", '\n' )
+  message(" --   finished", '\n' )
   
   return(newRC)
 }

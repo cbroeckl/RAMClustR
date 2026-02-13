@@ -3,6 +3,7 @@
 #' Cluster annotation function: inference of 'M' - molecular weight of the compound giving rise to each spectrum - using the InterpretMSSpectrum::findMain function
 #'
 #' @param ramclustObj ramclustR object to annotate. 
+#' @param out.dir valid directory path describing output directory/file location.
 #' @param one.file logical, should all msp spectra be written to one file? If false, each spectrum is an individual file.
 #' @details exports files to a directory called 'spectra'.  If one.file = FALSE, a new directory 'spectra/msp' is created to hold the individual msp files. if do.findman has been run, spectra are written as ms2 spectra, else as ms1. 
 #' @return nothing, just exports files to the working directory
@@ -20,8 +21,13 @@
 
 write.msp <- function(
     ramclustObj = NULL,
+    out.dir = NULL,
     one.file = FALSE
 ) {
+  
+  if(is.null(out.dir)) {
+    stop("please provide a valid output directory")
+  }
   
   if(!is(ramclustObj, "hclus") & 
      ramclustObj$dist.method != "RAMClustR") {
@@ -34,13 +40,13 @@ write.msp <- function(
     ms2 <- TRUE
   }
   
-  if(!dir.exists('spectra')) {
-    dir.create('spectra')
+  if(!dir.exists(paste0(out.dir, '/spectra'))) {
+    dir.create(paste0(out.dir, '/spectra'))
   }
   
   if(!one.file) {
-    if(!dir.exists('spectra/msp')) {
-      dir.create('spectra/msp')
+    if(!dir.exists(paste0(out.dir, '/spectra/msp'))) {
+      dir.create(paste0(out.dir, '/spectra/msp'))
     }
   }
   ion.mode <- as.character(ramclustObj$ExpDes[[2]][which(row.names(ramclustObj$ExpDes[[2]]) == "msmode"),1])
@@ -114,12 +120,12 @@ write.msp <- function(
     if(nchar(exp.name) == 0) {
       exp.name <- "spectra"
     }
-    sink(paste0("spectra/", exp.name, ".msp"))
+    sink(paste0(out.dir, '/spectra/', exp.name, ".msp"))
     cat(out)
     sink()
   } else {
     for(i in 1:length(out.list)) {
-      sink(paste0("spectra/msp/", ramclustObj$cmpd[[i]], ".msp"))
+      sink(paste0(out.dir, "/spectra/msp/", ramclustObj$cmpd[[i]], ".msp"))
       cat(out.list[[i]], '\n')
       sink()
     }

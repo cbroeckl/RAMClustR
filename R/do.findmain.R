@@ -4,6 +4,7 @@
 #'
 #' @param ramclustObj ramclustR object to annotate.
 #' @param cmpd integer: vector defining compound numbers to annotated.  if NULL (default), all compounds
+#' @param out.dir valid directory path describing output directory/file location.
 #' @param mode character: "positive" or "negative"
 #' @param mzabs.error numeric: absolute mass deviation allowd, default = 0.01
 #' @param ppm.error numeric: ppm mass error _added_ to mzabs.error, default = 10
@@ -47,6 +48,7 @@
 
 do.findmain <- function(
     ramclustObj = NULL,
+    out.dir = NULL,
     cmpd = NULL,
     mode = "positive",
     mzabs.error = 0.005,
@@ -66,6 +68,10 @@ do.findmain <- function(
     stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", "\n")
   }
 
+  if(is.null(out.dir)) {
+    stop("please provide a valid output directory")
+  }
+  
   score.options <- c("auto", "imss", "ramclustr")
   if (!any(scoring == score.options)) {
     stop("scoring must be set to one of 'auto', 'imss', or 'ramclustr' ")
@@ -335,6 +341,8 @@ do.findmain <- function(
       dir.create("spectra")
     }
     pdf("spectra/findmainPlots.pdf", width = 15, height = 7)
+    oldpar <- par(no.readonly = TRUE) # code line i
+    on.exit(par(oldpar)) # code line i + 1
     par(mfrow = c(1, 2))
     par(xpd = TRUE)
     for (cl in cmpd) {
@@ -393,10 +401,10 @@ do.findmain <- function(
   }
 
   if (writeMat) {
-    if (!dir.exists("spectra")) {
-      dir.create("spectra")
+    if (!dir.exists(paste0(out.dir, "/spectra/"))) {
+      dir.create(paste0(out.dir, "/spectra/"))
     }
-    dir.create("spectra/mat")
+    dir.create(paste0(out.dir, "/spectra/mat/"))
     for (cl in cmpd) {
       ms <- ramclustObj$M.ann[[cl]]
       prcr <- which(ms[, "adduct"] %in% ads)
@@ -472,8 +480,8 @@ do.findmain <- function(
           }
         }
       }
-      write(out, file = paste0(
-        "spectra/mat/", ramclustObj$cmpd[cl],
+      write(out, file = paste0(out.dir,
+        "/spectra/mat/", ramclustObj$cmpd[cl],
         ".mat"
       ))
     }
@@ -554,8 +562,8 @@ do.findmain <- function(
           }
         }
       }
-      write(out, file = paste0(
-        "spectra/ms/", ramclustObj$cmpd[cl],
+      write(out, file = paste0(out.dir,
+        "/spectra/ms/", ramclustObj$cmpd[cl],
         ".ms"
       ))
     }

@@ -102,7 +102,7 @@ rc.feature.replace.na.mai <- function(ramclustObj = NULL,
       }
     )
   }
-  cat(history, '\n')
+  message(history, '\n')
   
   ramclustObj$history$replace.na <- {
     history

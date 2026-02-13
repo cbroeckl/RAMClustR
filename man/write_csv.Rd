@@ -4,10 +4,12 @@
 \alias{write_csv}
 \title{write_csv}
 \usage{
-write_csv(data)
+write_csv(data, out.dir)
 }
 \arguments{
 \item{data}{csv template to write}
+
+\item{out.dir}{valid path name to write output file to}
 }
 \value{
 read ExpDes.csv file

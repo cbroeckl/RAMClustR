@@ -9,7 +9,6 @@ rc.feature.normalize.qc(
   order = NULL,
   batch = NULL,
   qc = NULL,
-  output.plot = FALSE,
   p.cut = 0.05,
   rsq.cut = 0.1,
   p.adjust = "none"
@@ -24,8 +23,6 @@ rc.feature.normalize.qc(
 
 \item{qc}{logical vector with length equal to number of injections in xset or csv file or dataframe}
 
-\item{output.plot}{logical: if TRUE (default), plots are output to PDF.}
-
 \item{p.cut}{numeric when run order correction is applied, only features showing a run order vs signal with a linear p-value (after FDR correction) < p.cut will be adjusted.  also requires r-squared < rsq.cut.}
 
 \item{rsq.cut}{numeric when run order correction is applied, only features showing a run order vs signal with a linear r-squared > rsq.cut will be adjusted. also requires p values < p.cut.}
@@ -36,7 +33,7 @@ rc.feature.normalize.qc(
 ramclustR object with normalized data.
 }
 \description{
-extractor for xcms objects in preparation for clustering
+drift correction for all data based on pooled QC samples. performed at feature level, ideally used prior to RAMClustR clustering.
 }
 \details{
 This function offers normalization by run order, batch number, and QC sample signal intensity.

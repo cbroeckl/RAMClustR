@@ -4,10 +4,17 @@
 \alias{rc.export.msp.rc}
 \title{rc.export.msp.rc}
 \usage{
-rc.export.msp.rc(ramclustObj = NULL, one.file = TRUE, mzdec = 1)
+rc.export.msp.rc(
+  ramclustObj = NULL,
+  out.dir = NULL,
+  one.file = TRUE,
+  mzdec = 1
+)
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to annotate.}
+
+\item{out.dir}{valid directory path describing output directory/file location.}
 
 \item{one.file}{logical, should all msp spectra be written to one file? If false, each spectrum is an individual file.}
 

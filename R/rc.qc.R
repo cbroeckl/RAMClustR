@@ -3,6 +3,7 @@
 #' summarize quality control for clustering and for quality control sample variation based on compound ($SpecAbund) and feature ($MSdata and $MSMSdata, if present)
 #'
 #' @param ramclustObj ramclustR object to analyze
+#' @param out.dir valid directory path describing output directory/file location.
 #' @param qc.tag qc.tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.
 #' @param remove.qc logical - if TRUE (default) QC injections will be removed from the returned ramclustObj (applies to $MSdata, $MSMSdata, $SpecAbund, $phenoData, as appropriate). If FALSE, QC samples remain.
 #' @param npc number of Principle components to calcuate and plot
@@ -26,6 +27,7 @@
 #' @export
 
 rc.qc <- function(ramclustObj = NULL,
+                  out.dir = NULL, 
                   qc.tag = "QC",
                   remove.qc = FALSE,
                   npc = 4,
@@ -33,6 +35,7 @@ rc.qc <- function(ramclustObj = NULL,
                   outfile.basename = "ramclustQC",
                   view.hist = TRUE,
                   do.plot = TRUE) {
+  
   if (is.null(ramclustObj)) {
     stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", "\n")
   }
@@ -45,6 +48,10 @@ rc.qc <- function(ramclustObj = NULL,
     outfile.basename <- "ramclustQC"
   }
 
+  if(is.null(out.dir)) {
+    stop("please provide a valid output directory")
+  }
+  
   do.sets <- c("MSdata", "SpecAbund")
 
   if (is.null(ramclustObj$SpecAbund)) {
@@ -70,7 +77,7 @@ rc.qc <- function(ramclustObj = NULL,
   qc <- define_samples(ramclustObj = ramclustObj, tag = qc.tag)
 
   ## create directory
-  dir.create("QC")
+  dir.create(paste0(out.dir, "/QC/"))
 
   ## if cv threshold for compounds has been applied, use it, else create 'all cmpds' vector
   if (!is.null(ramclustObj$SpecAbund)) {
@@ -89,7 +96,7 @@ rc.qc <- function(ramclustObj = NULL,
   if (!is.null(ramclustObj$clrt) && do.plot) {
     ## create file to collect figures.
     pdf(
-      file = paste("QC/", "ramclust_clustering_diagnostic.pdf", sep = ""),
+      file = paste(out.dir, "/QC/", "ramclust_clustering_diagnostic.pdf", sep = ""),
       useDingbats = FALSE, width = 8, height = 8
     )
     o <- order(ramclustObj$clrt[cmpd.use])
@@ -138,9 +145,9 @@ rc.qc <- function(ramclustObj = NULL,
     }
     PCA <- pcaMethods::pca(td, scale = scale, nPcs = npc, center = TRUE)
     sc <- PCA@scores
-    write.csv(sc, file = paste0("QC/", outfile.basename, "_", x, "_pcascores.csv"))
+    write.csv(sc, file = paste0(out.dir, "/QC/", outfile.basename, "_", x, "_pcascores.csv"))
     if (do.plot) {
-      pdf(file = paste0("QC/", outfile.basename, "_", x, "_qc_diagnostic.pdf"), useDingbats = FALSE, width = 8, height = 8)
+      pdf(file = paste0(out.dir, "/QC/", outfile.basename, "_", x, "_qc_diagnostic.pdf"), useDingbats = FALSE, width = 8, height = 8)
 
       ld <- PCA@loadings
       for (i in 1:(ncol(sc) - 1)) {
@@ -228,7 +235,7 @@ rc.qc <- function(ramclustObj = NULL,
         )
       }
     }
-    write.csv(out, file = paste0("QC/", outfile.basename, "_", x, "_cv_summary.csv"))
+    write.csv(out, file = paste0(out.dir, "/QC/", outfile.basename, "_", x, "_cv_summary.csv"))
   }
 
   if (remove.qc) {

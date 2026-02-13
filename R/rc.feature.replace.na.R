@@ -162,7 +162,7 @@ rc.feature.replace.na <- function(ramclustObj = NULL,
     "replaced", n.feat.replaced, "of", n.feat.total, "total feature values (",
     round((100 * n.feat.replaced / n.feat.total)), "% )", "\n"
   )
-  cat(result)
+  message(result)
 
   ramclustObj$history$replace.na <- {
     paste0(

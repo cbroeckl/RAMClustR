@@ -6,6 +6,7 @@
 \usage{
 rc.qc(
   ramclustObj = NULL,
+  out.dir = NULL,
   qc.tag = "QC",
   remove.qc = FALSE,
   npc = 4,
@@ -17,6 +18,8 @@ rc.qc(
 }
 \arguments{
 \item{ramclustObj}{ramclustR object to analyze}
+
+\item{out.dir}{valid directory path describing output directory/file location.}
 
 \item{qc.tag}{qc.tag character vector of length one or two.  If length is two, enter search string and factor name in $phenoData slot (i.e. c("QC", "sample.type"). If length one (i.e. "QC"), will search for this string in the 'sample.names' slot by default.}
 

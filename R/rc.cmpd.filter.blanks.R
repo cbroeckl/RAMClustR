@@ -104,7 +104,7 @@ rc.cmpd.filter.blanks  <- function(ramclustObj=NULL,
   keep <- union(keep.ms1.a, keep.ms1.b)
   
   length(keep)/ncol(d1)
-  cat(round(100*length(keep)/ncol(d1), digits = 1), "% of compounds move forward", '\n', sep = "")
+  message(round(100*length(keep)/ncol(d1), digits = 1), "% of compounds move forward", '\n', sep = "")
   
   ## define variables that we need to subset
   do <- rep(FALSE, length(ramclustObj))
@@ -128,7 +128,7 @@ rc.cmpd.filter.blanks  <- function(ramclustObj=NULL,
     }
     
     if(is.data.frame(ramclustObj[[i]])) {
-      cat("df", names(ramclustObj)[i], '\n')
+
       if(dim(ramclustObj[[i]])[2] == ncol(d1)) {
         ramclustObj[[i]] <- ramclustObj[[i]][,keep]
       }
@@ -138,7 +138,7 @@ rc.cmpd.filter.blanks  <- function(ramclustObj=NULL,
     }
     
     if(is.matrix(ramclustObj[[i]])) {
-      cat("ma", names(ramclustObj)[i], '\n')
+
       if(dim(ramclustObj[[i]])[2] == ncol(d1)) {
         ramclustObj[[i]] <- ramclustObj[[i]][,keep]
       }
@@ -168,7 +168,7 @@ rc.cmpd.filter.blanks  <- function(ramclustObj=NULL,
     )
   }  
   
-  cat(ramclustObj$history$cmpd.filter.blanks)
+  message(ramclustObj$history$cmpd.filter.blanks)
   
   return(ramclustObj)
 }

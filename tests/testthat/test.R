@@ -28,7 +28,7 @@ test_that("RAMClustR with csv works", {
     out.dir = tmp
   )
   
-  expected <- readRDS(file = file.path("testdata", "test_csv.Rds"))
+  expected <- readRDS(file = file.path("testdata", "test_csv.rds"))
   
   actual$history <- NA
   expected$history <- NA

@@ -164,7 +164,6 @@ ramclustobj <- ramclustR(ms = filename, st = 5, maxt = 1, blocksize = 1000, out.
 
 ## Investigate the deconvoluted features in the `spectra` folder in MSP format
 ## or inspect the `ramclustobj` for feature retention times, annotations etc.
-cat("tmp spectra directory:", paste0(tmp, "/spectra"))
 print(ramclustobj$ann)
 print(ramclustobj$nfeat)
 print(ramclustobj$SpecAbund[, 1:6])

@@ -12,8 +12,9 @@ rc.qc(
   npc = 4,
   scale = "pareto",
   outfile.basename = "ramclustQC",
-  view.hist = TRUE,
-  do.plot = TRUE
+  view.hist = FALSE,
+  show.plots = FALSE,
+  export.csv = FALSE
 )
 }
 \arguments{
@@ -33,7 +34,9 @@ rc.qc(
 
 \item{view.hist}{logical.  should histograms be plotted?}
 
-\item{do.plot}{logical should plots be shown/plotted?}
+\item{show.plots}{logical should plots be shown/plotted?}
+
+\item{export.csv}{logical. should summary .csv file be exported?}
 }
 \value{
 new RC object. Saves output summary plots to pdf and .csv summary tables to new 'QC' directory. If remove.qc = TRUE, moves QC samples to new $QC slot from original position.

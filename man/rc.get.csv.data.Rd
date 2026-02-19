@@ -5,7 +5,7 @@
 \title{rc.get.csv.data}
 \usage{
 rc.get.csv.data(
-  csv = NULL,
+  csv.file = NULL,
   phenoData = NULL,
   idmsms = NULL,
   ExpDes = NULL,
@@ -17,7 +17,7 @@ rc.get.csv.data(
 )
 }
 \arguments{
-\item{csv}{filepath: csv input. Features as columns, rows as samples. Column header mz_rt}
+\item{csv.file}{filepath: csv input. Features as columns, rows as samples. Column header mz_rt}
 
 \item{phenoData}{character: character string in 'taglocation' to designate files as either MS / DIA(MSe, MSall, AIF, etc) e.g. "01.mzML"}
 
@@ -66,7 +66,7 @@ This function creates a ramclustObj which will be used as input for clustering.
 filename <- system.file("extdata", "peaks.csv", package = "RAMClustR", mustWork = TRUE)
 phenoData <- system.file("extdata", "phenoData.csv", package = "RAMClustR", mustWork = TRUE)
 
-ramclustobj <- rc.get.csv.data(csv = filename, phenoData = phenoData, st = 5)
+ramclustobj <- rc.get.csv.data(csv.file = filename, phenoData = phenoData, st = 5)
 
 }
 \references{

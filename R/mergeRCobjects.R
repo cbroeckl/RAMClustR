@@ -11,6 +11,7 @@
 #' @param mzwt numeric: when mapping features, weighting value used for similarities between feature mass values (see rtwt, intwt)
 #' @param rtwt numeric: when mapping features, weighting value used for similarities between feature retention time values (see mzwt, intwt)
 #' @param intwt numeric: when mapping features, weighting value used for similarities between ranked signal intensity values (see rtwt, mzwt)
+#' @param show.plots logical: if TRUE, a series of plots will be presented in the default graphics device.  if FALSE, plots are suppressed.
 #' @return returns a ramclustR object.  All values from ramclustObj.1 are retained.  SpecAbund dataset from ramclustObj.1 is moved to RC$SpecAbund.1, where RC is the new ramclustObj.
 #' @concept ramclustR
 #' @concept RAMClustR
@@ -30,7 +31,8 @@ mergeRCobjects <- function(
     course.rt.adj = NULL,
     mzwt = 2,
     rtwt = 1,
-    intwt = 3
+    intwt = 3,
+    show.plots = FALSE
 ) {
   
   if(is.null(ramclustObj.1)) {
@@ -123,33 +125,35 @@ mergeRCobjects <- function(
   }
   keep<-which(!is.na(map))
   if(length(keep) < 500) {
-    warning(cat('only',  length(keep) ,'matching features: use output with caution', '\n'))
+    warning(paste('only',  length(keep) ,'matching features: use output with caution', '\n'))
   }
-  oldpar <- par(no.readonly = TRUE) # code line i
-  on.exit(par(oldpar)) # code line i + 1
-  par(mfrow = c(2,2))
-  plot(newRC$frt[keep], (newRC$frt[keep] - ramclustObj.2$frt[map[keep]]), xlab = "rt", ylab = "correction", 
-       col = "gray", pch = 19, main = "anchor map", lwd = 3)
-  # points(smooth.spline((newRC$frt[keep] - ramclustObj.2$frt[map[keep]]) ~ newRC$frt[keep], spar = 1.5), type = "l", col = 2)
-  # fit<-lm((newRC$frt[keep] - ramclustObj.2$frt[map[keep]]) ~ 
-  #           newRC$frt[keep] + I(newRC$frt[keep]^2), 
-  #         weights =  log10(newRC$msin[keep]))
   
+  if(show.plots) {
+    oldpar <- par(no.readonly = TRUE) # code line i
+    on.exit(par(oldpar)) # code line i + 1
+    par(mfrow = c(2,2))
+    plot(newRC$frt[keep], (newRC$frt[keep] - ramclustObj.2$frt[map[keep]]), xlab = "rt", ylab = "correction", 
+         col = "gray", pch = 19, main = "anchor map", lwd = 3)
+  }
   
   fit<- loess((newRC$frt[keep] - ramclustObj.2$frt[map[keep]]) ~ 
                 newRC$frt[keep] + I(newRC$frt[keep]^2), 
               span = rttol/2, degree = 2, surface = "direct")
   pred<-fitted(fit)
   se<-predict(fit, se = TRUE)
-  points(newRC$frt[keep], pred, type = "l", col = 2, lwd = 3)
-  plot(log10(newRC$msint[keep]) ,  log10(ramclustObj.2$msint[map[keep]]), 
-       xlab = "log10(intensity.1)", ylab = "log10(intensity.2", 
-       main = paste("anchor int r^2 = ", 
-                    round(cor(
-                      log10(ramclustObj.2$msint[map[keep]]), 
-                      log10(newRC$msint[keep])), digits = 2), sep = ""),
-       col = "gray", pch = 19)
-  abline(lm(log10(ramclustObj.2$msint[map[keep]]) ~ log10(newRC$msint[keep])), col = 2, lwd = 3)
+  
+  if(show.plots) {
+    points(newRC$frt[keep], pred, type = "l", col = 2, lwd = 3)
+    plot(log10(newRC$msint[keep]) ,  log10(ramclustObj.2$msint[map[keep]]), 
+         xlab = "log10(intensity.1)", ylab = "log10(intensity.2", 
+         main = paste("anchor int r^2 = ", 
+                      round(cor(
+                        log10(ramclustObj.2$msint[map[keep]]), 
+                        log10(newRC$msint[keep])), digits = 2), sep = ""),
+         col = "gray", pch = 19)
+    abline(lm(log10(ramclustObj.2$msint[map[keep]]) ~ log10(newRC$msint[keep])), col = 2, lwd = 3)
+  }
+  
   sp<-(range(ramclustObj.2$frt)[2] - range(ramclustObj.2$frt)[1])/100
   new.rt <- newRC$frt[keep] - pred
   pred.frt <- sapply(1:length(ramclustObj.2$frt), FUN = function(x) {
@@ -189,31 +193,33 @@ mergeRCobjects <- function(
     }
   }
   keep<-which(!is.na(map))
-
-  # par(mfrow = c(1,2))
-  plot(newRC$frt[keep], (newRC$frt[keep] - pred.frt[map[keep]]), xlab = "rt", ylab = "correction", 
-       col = "gray", pch = 19, main = "all rt vs pred rt")
-  # points(smooth.spline((newRC$frt[keep] - ramclustObj.2$frt[map[keep]]) ~ newRC$frt[keep], spar = 1.5), type = "l", col = 2)
-  # fit<-lm((newRC$frt[keep] - ramclustObj.2$frt[map[keep]]) ~ 
-  #           newRC$frt[keep] + I(newRC$frt[keep]^2), 
-  #         weights =  log10(newRC$msin[keep]))
   
+  # par(mfrow = c(1,2))
+  if(show.plots) {
+    plot(newRC$frt[keep], (newRC$frt[keep] - pred.frt[map[keep]]), xlab = "rt", ylab = "correction", 
+         col = "gray", pch = 19, main = "all rt vs pred rt")
+    # points(smooth.spline((newRC$frt[keep] - ramclustObj.2$frt[map[keep]]) ~ newRC$frt[keep], spar = 1.5), type = "l", col = 2)
+    # fit<-lm((newRC$frt[keep] - ramclustObj.2$frt[map[keep]]) ~ 
+    #           newRC$frt[keep] + I(newRC$frt[keep]^2), 
+    #         weights =  log10(newRC$msin[keep]))
+  }
   
   fit<- loess((newRC$frt[keep] - pred.frt[map[keep]]) ~ 
                 newRC$frt[keep] + I(newRC$frt[keep]^2), 
               span = rttol/2, degree = 2, surface = "direct")
   pred<-fitted(fit)
   se<-predict(fit, se = TRUE)
-  points(newRC$frt[keep], pred, type = "l", col = 2, lwd = 3)
-  plot(log10(newRC$msint[keep]) ,  log10(ramclustObj.2$msint[map[keep]]), 
-       xlab = "log10(intensity.1)", ylab = "log10(intensity.2", 
-       main = paste("all r^2 = ", 
-                    round(cor(
-                      log10(ramclustObj.2$msint[map[keep]]), 
-                      log10(newRC$msint[keep])), digits = 2), sep = ""),
-       col = "gray", pch = 19)
-  abline(lm(log10(ramclustObj.2$msint[map[keep]]) ~ log10(newRC$msint[keep])), col = 2, lwd = 3)
-  
+  if(show.plots) {
+    points(newRC$frt[keep], pred, type = "l", col = 2, lwd = 3)
+    plot(log10(newRC$msint[keep]) ,  log10(ramclustObj.2$msint[map[keep]]), 
+         xlab = "log10(intensity.1)", ylab = "log10(intensity.2", 
+         main = paste("all r^2 = ", 
+                      round(cor(
+                        log10(ramclustObj.2$msint[map[keep]]), 
+                        log10(newRC$msint[keep])), digits = 2), sep = ""),
+         col = "gray", pch = 19)
+    abline(lm(log10(ramclustObj.2$msint[map[keep]]) ~ log10(newRC$msint[keep])), col = 2, lwd = 3)
+  }
   
   newRC$MSdata <- matrix(nrow = (nrow(ramclustObj.1$MSdata) + nrow(ramclustObj.2$MSdata)), ncol = ncol(ramclustObj.1$MSdata))
   newRC$MSMSdata <- matrix(nrow = (nrow(ramclustObj.1$MSdata) + nrow(ramclustObj.2$MSdata)), ncol = ncol(ramclustObj.1$MSdata))

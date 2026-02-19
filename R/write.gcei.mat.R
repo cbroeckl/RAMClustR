@@ -116,9 +116,7 @@ write.gcei.mat <- function(
   }
   
   for(i in 1:length(out.list)) {
-    sink(paste0(out.dir, "/spectra/mat/", ramclustObj$cmpd[[i]], ".mat"))
-    cat(out.list[[i]], '\n')
-    sink()
+    writeLines(out.list[[i]], '\n', con = paste0(out.dir, "/spectra/mat/", ramclustObj$cmpd[[i]], ".mat"))
   }
 
 }

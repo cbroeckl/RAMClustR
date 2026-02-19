@@ -8,7 +8,7 @@ rc.expand.sample.names(
   ramclustObj = NULL,
   delim = "-",
   factor.names = TRUE,
-  quiet = FALSE
+  verbose = TRUE
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ rc.expand.sample.names(
 
 \item{factor.names}{logical or character vector.  if TRUE, user will enter names one by on in console.  If character vector (i.e. c("trt", "time")) names are assigned to table}
 
-\item{quiet}{logical .  if TRUE, user will not be prompted to enter names one by on in console.}
+\item{verbose}{logical.  if TRUE, user will be prompted to enter names one by on in console for input, if needed.}
 }
 \value{
 ramclustR object with normalized data.

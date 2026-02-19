@@ -12,7 +12,8 @@ mergeRCobjects(
   course.rt.adj = NULL,
   mzwt = 2,
   rtwt = 1,
-  intwt = 3
+  intwt = 3,
+  show.plots = FALSE
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ mergeRCobjects(
 \item{rtwt}{numeric: when mapping features, weighting value used for similarities between feature retention time values (see mzwt, intwt)}
 
 \item{intwt}{numeric: when mapping features, weighting value used for similarities between ranked signal intensity values (see rtwt, mzwt)}
+
+\item{show.plots}{logical: if TRUE, a series of plots will be presented in the default graphics device.  if FALSE, plots are suppressed.}
 }
 \value{
 returns a ramclustR object.  All values from ramclustObj.1 are retained.  SpecAbund dataset from ramclustObj.1 is moved to RC$SpecAbund.1, where RC is the new ramclustObj.

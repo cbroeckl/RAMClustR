@@ -14,14 +14,7 @@ write_csv <- function(data, out.dir) {
   }
   
   write.csv(data, file = paste(out.dir, "/ExpDes.csv", sep = ""), row.names = FALSE)
-  readline(prompt = cat(
-    "A file called ExpDes.csv has been written to your working directorty:",
-    "\n", "\n",
-    out.dir,
-    "\n", "\n",
-    "please replace platform appropriate 'fill' cells with instrument and experiment",
-    "\n", "data and save file.  When complete, press [enter] to continue"
-  ))
+  readline(prompt = "A file called ExpDes.csv has been written to your 'out.dir' directory. Please edit, and when complete, press [enter] to continue.")
   csv.in <- read.csv(file = paste(out.dir, "/ExpDes.csv", sep = ""), header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
   return(csv.in)
 }

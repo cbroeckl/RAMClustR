@@ -129,14 +129,12 @@ rc.export.msp.rc <- function(
     if(nchar(exp.name) == 0) {
       exp.name <- "spectra"
     }
-    sink(paste0(out.dir, "/spectra/", exp.name, ".rc.msp"))
-    cat(out)
-    sink()
+    # sink(paste0(out.dir, "/spectra/", exp.name, ".rc.msp"))
+    writeLines(out, con = paste0(out.dir, "/spectra/", exp.name, ".rc.msp"))
+    # sink()
   } else {
     for(i in 1:length(out.list)) {
-      sink(paste0(out.dir, "/spectra/msp/", ramclustObj$cmpd[[i]], ".rc.msp"))
-      cat(out.list[[i]], '\n')
-      sink()
+      writeLines(out.list[[i]], '\n', con = paste0(out.dir, "/spectra/msp/", ramclustObj$cmpd[[i]], ".rc.msp"))
     }
   }
   

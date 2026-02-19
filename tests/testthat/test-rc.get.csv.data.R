@@ -3,7 +3,7 @@ test_that("RAMClustR rc.get.csv.data", {
   phenoData <- file.path("testdata", "phenoData.csv")
   expected <- readRDS(file.path("testdata", "rc.get.csv.data.rds"))
   
-  actual <- rc.get.csv.data(csv = filename, phenoData = phenoData, st = 5)
+  actual <- rc.get.csv.data(csv.file = filename, phenoData = phenoData, st = 5)
   
   expect_equal(actual, expected)
 })

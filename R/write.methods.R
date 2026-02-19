@@ -82,8 +82,7 @@ write.methods <- function (
     " (", citation()$year, ")")
   
   # paste0("(", citation()$author, " ",  citation()$year, ")") = paste0(citation()$author)
-  sink(filename)
-  
+
   history <- paste(ramclustObj$history, collapse = " " )
   message(history)
   
@@ -93,25 +92,26 @@ write.methods <- function (
   )
   
   if(any(cites)) {
-    cat('\n', '\n')
+    out <- paste('\n', '\n')
+
     cit.list <- cit.list[cites]
     cit.list <- sort(cit.list)
     for(i in 1:length(cit.list)) {
-      cat(names(cit.list[i]), ":  ", cit.list[i], '\n', '\n', sep = "")
+      out <- paste(out, names(cit.list[i]), ":  ", cit.list[i], '\n', '\n', sep = "")
     }
   }
   
   if(grepl("R Core Team", history)) {
-    cat(paste0(
+    out <- paste0(out, 
       citation()$author, 
       " (", citation()$year, "). ",
       citation()$title, ". ",
       citation()$organization, ", ", 
       citation()$address, ", ",
       citation()$url, "."
-    ))
+    )
   }
-  sink()
+  writeLines(out, con = filename)
 
 }
 

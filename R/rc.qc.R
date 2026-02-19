@@ -10,7 +10,8 @@
 #' @param scale "pareto" by default: PCA scaling method used
 #' @param outfile.basename base name of output files. Extensions added internally. default = "ramclustQC"
 #' @param view.hist logical.  should histograms be plotted?
-#' @param do.plot logical should plots be shown/plotted?
+#' @param show.plots logical should plots be shown/plotted?
+#' @param export.csv logical. should summary .csv file be exported? 
 #' @details plots a ramclustR summary plot.  first page represents the correlation of each cluster to all other clusters, sorted by retention time.  large blocks of yellow along the diaganol indicate either poor clustering or a group of coregulated metabolites with similar retention time.  It is an imperfect diagnostic, particularly with lipids on reverse phase LC or sugars on HILIC LC systems.  Page 2: histogram of r values from page 1 - only r values one position from the diagonal are used.  Pages 3:5 - PCA results, with QC samples colored red.  relative standard deviation calculated as sd(QC PC scores) / sd(all PC scores).  Page 6: histogram of CV values for each compound int he dataset, QC samples only.
 #' @return   new RC object. Saves output summary plots to pdf and .csv summary tables to new 'QC' directory. If remove.qc = TRUE, moves QC samples to new $QC slot from original position.
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
@@ -33,8 +34,9 @@ rc.qc <- function(ramclustObj = NULL,
                   npc = 4,
                   scale = "pareto",
                   outfile.basename = "ramclustQC",
-                  view.hist = TRUE,
-                  do.plot = TRUE) {
+                  view.hist = FALSE,
+                  show.plots = FALSE,
+                  export.csv = FALSE) {
   
   if (is.null(ramclustObj)) {
     stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", "\n")
@@ -93,7 +95,7 @@ rc.qc <- function(ramclustObj = NULL,
   ## correlational r values 1 step from the diagonal
   ## imperfect clustering introduces right skew
   ## load("datasets/RCobject.Rdata")
-  if (!is.null(ramclustObj$clrt) && do.plot) {
+  if (!is.null(ramclustObj$clrt) && show.plots) {
     ## create file to collect figures.
     pdf(
       file = paste(out.dir, "/QC/", "ramclust_clustering_diagnostic.pdf", sep = ""),
@@ -145,8 +147,11 @@ rc.qc <- function(ramclustObj = NULL,
     }
     PCA <- pcaMethods::pca(td, scale = scale, nPcs = npc, center = TRUE)
     sc <- PCA@scores
-    write.csv(sc, file = paste0(out.dir, "/QC/", outfile.basename, "_", x, "_pcascores.csv"))
-    if (do.plot) {
+    if(export.csv) {
+      write.csv(sc, file = paste0(out.dir, "/QC/", outfile.basename, "_", x, "_pcascores.csv"))
+    }
+    
+    if (show.plots) {
       pdf(file = paste0(out.dir, "/QC/", outfile.basename, "_", x, "_qc_diagnostic.pdf"), useDingbats = FALSE, width = 8, height = 8)
 
       ld <- PCA@loadings
@@ -195,7 +200,7 @@ rc.qc <- function(ramclustObj = NULL,
     }
     qs <- quantile(cvs, probs = seq(0, 1, 0.2), na.rm = TRUE)
 
-    if (do.plot) {
+    if (show.plots) {
       hist(cvs, breaks = 50, main = "")
       title(paste("histogram of", x, "CVs from QC samples"), line = 2.7)
       title("20% quantiles in red on top axis", col.main = 2, cex.main = 0.7, line = 2)
@@ -235,7 +240,10 @@ rc.qc <- function(ramclustObj = NULL,
         )
       }
     }
-    write.csv(out, file = paste0(out.dir, "/QC/", outfile.basename, "_", x, "_cv_summary.csv"))
+    if(export.csv) {
+      write.csv(out, file = paste0(out.dir, "/QC/", outfile.basename, "_", x, "_cv_summary.csv"))
+    }
+    
   }
 
   if (remove.qc) {

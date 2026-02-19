@@ -17,7 +17,7 @@ write.msp(ramclustObj = NULL, out.dir = NULL, one.file = FALSE)
 nothing, just exports files to the working directory
 }
 \description{
-Cluster annotation function: inference of 'M' - molecular weight of the compound giving rise to each spectrum - using the InterpretMSSpectrum::findMain function
+export spectra to .msp formatted files for use in other programs.
 }
 \details{
 exports files to a directory called 'spectra'.  If one.file = FALSE, a new directory 'spectra/msp' is created to hold the individual msp files. if do.findman has been run, spectra are written as ms2 spectra, else as ms1.

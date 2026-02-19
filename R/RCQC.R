@@ -1,6 +1,6 @@
-#' RCQC
+#' RCQC.plots
 #'
-#' filter RC object and summarize quality control sample variation  
+#' generate a ramclustR quality control summary plot set in .pdf format, with supporting CSV files.   
 #'
 #' @param ramclustObj ramclustR object to analyze
 #' @param qctag "QC" by default - rowname tag to identify QC samples
@@ -9,6 +9,7 @@
 #' @param which.data which dataset to use.  "SpecAbund" by default
 #' @param out.dir valid directory path describing output directory/file location.
 #' @param outfile name of output pdf file. 
+#' @param export.csv logical. should summary .csv file be exported? 
 #'
 #' @details plots a ramclustR summary plot.  first page represents the correlation of each cluster to all other clusters, sorted by retention time.  large blocks of yellow along the diaganol indicate either poor clustering or a group of coregulated metabolites with similar retention time.  It is an imperfect diagnostic, particularly with lipids on reverse phase LC or sugars on HILIC LC systems.  Page 2: histogram of r values from page 1 - only r values one position from the diagonal are used.  Pages 3:5 - PCA results, with QC samples colored red.  relative standard deviation calculated as sd(QC PC scores) / sd(all PC scores).  Page 6: histogram of CV values for each compound int he dataset, QC samples only.  
 #' @return   new RC object, with QC samples moved to new slot.  prints output summary plots to pdf.
@@ -24,14 +25,15 @@
 #' @concept xcms
 #' @author Corey Broeckling
 #' @export
-
-RCQC<-function(ramclustObj=NULL,
+#' 
+RCQC.plots <- function(ramclustObj=NULL,
                qctag="QC",
                npc=4,
                scale="pareto",
                which.data="SpecAbund",
                out.dir = NULL, 
-               outfile="ramclustQC.pdf"
+               outfile="ramclustQC.pdf",
+               export.csv = FALSE
                
 ){
   
@@ -73,7 +75,10 @@ RCQC<-function(ramclustObj=NULL,
     cols[qc]<-2
     PCA<-pca(td, scale=scale, nPcs=npc, center=TRUE)
     sc<-PCA@scores
-    write.csv(sc, file="QC/RCpcascores.csv")
+    if(export.csv) {
+      write.csv(sc, file="QC/RCpcascores.csv")
+    }
+    
     ld<-PCA@loadings
     for(i in 1:(ncol(sc)-1)) {
       plot(sc[,i], sc[,i+1], col=cols, pch=19, main="PCA analysis, QC samples vs full set",
@@ -112,7 +117,10 @@ RCQC<-function(ramclustObj=NULL,
     }
     cvs<-apply(sds/mean1, 2, FUN="median", na.rm=TRUE)
     means<-apply(mean1, 2,  FUN="median", na.rm=TRUE)
-    write.csv(data.frame(means, cvs), file="QC/cvs.csv")
+    if(export.csv) {
+      write.csv(data.frame(means, cvs), file="QC/cvs.csv")
+    }
+    
     #ordmeans<-sort(means, decreasing=TRUE)
     #fivecut<-ordmeans[round(length(means)*0.05)] 
     #up25<-which(means>quantile(means)[4])

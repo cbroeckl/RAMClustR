@@ -6,7 +6,7 @@
 #' @param order integer vector with length equal to number of injections in xset or csv file or dataframe
 #' @param qc logical vector with length equal to number of injections in xset or csv file or dataframe
 #' @param qc.inj.range integer: how many injections around each injection are to be scanned for presence of QC samples when using batch.qc normalization?  A good rule of thumb is between 1 and 3 times the typical injection span between QC injections.  i.e. if you inject QC ever 7 samples, set this to between 7 and 21.  smaller values provide more local precision but make normalization sensitive to individual poor outliers (though these are first removed using the boxplot function outlier detection), while wider values provide less local precision in normalization but better stability to individual peak areas.
-#' @param output.plot logical set to TRUE to store plots
+#' @param show.plots logical set to TRUE to store plots
 #' @return normalized data.
 
 normalized_data_batch_qc <- function(data = NULL,
@@ -14,7 +14,7 @@ normalized_data_batch_qc <- function(data = NULL,
                                      order = NULL,
                                      qc = NULL,
                                      qc.inj.range = 20,
-                                     output.plot = FALSE) {
+                                     show.plots = FALSE) {
   max.ratio <- 4
   for (z in 1:ncol(data)) {
     tmp <- data[, z]
@@ -88,7 +88,7 @@ normalized_data_batch_qc <- function(data = NULL,
     }
 
     data[, z] <- tmpn
-    if (output.plot) {
+    if (show.plots) {
       oldpar <- par(no.readonly = TRUE) # code line i
       on.exit(par(oldpar)) # code line i + 1
       par(mfrow = c(1, 2))
@@ -162,7 +162,7 @@ order_datasets <- function(order = NULL,
 #' @param qc logical vector with length equal to number of injections in xset or csv file or dataframe
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
 #' @param qc.inj.range integer: how many injections around each injection are to be scanned for presence of QC samples when using batch.qc normalization?  A good rule of thumb is between 1 and 3 times the typical injection span between QC injections.  i.e. if you inject QC ever 7 samples, set this to between 7 and 21.  smaller values provide more local precision but make normalization sensitive to individual poor outliers (though these are first removed using the boxplot function outlier detection), while wider values provide less local precision in normalization but better stability to individual peak areas.
-#' @param output.plot logical set to TRUE to store plots
+#' @param show.plots logical set to TRUE to store plots. 'out.dir' must be a valid directory to which plot file will be written.
 #' @return  ramclustR object with normalized data.
 #' @export
 
@@ -171,7 +171,7 @@ rc.feature.normalize.batch.qc <- function(out.dir = NULL, order = NULL,
                                           qc = NULL,
                                           ramclustObj = NULL,
                                           qc.inj.range = 20,
-                                          output.plot = FALSE) {
+                                          show.plots = FALSE) {
   if (!all.equal(length(batch), length(qc), length(order), nrow(ramclustObj$MSdata))) {
     stop(
       "all lengths must be identical and are not: ", "\n",
@@ -227,7 +227,7 @@ rc.feature.normalize.batch.qc <- function(out.dir = NULL, order = NULL,
     sep = ""
   )
 
-  if (output.plot) {
+  if (show.plots) {
     pdf(file = paste0(out.dir, "/norm.plots.pdf"), height = 4, width = 9)
   }
 
@@ -237,7 +237,7 @@ rc.feature.normalize.batch.qc <- function(out.dir = NULL, order = NULL,
     order = order,
     qc = qc,
     qc.inj.range = qc.inj.range,
-    output.plot = output.plot
+    show.plots = show.plots
   )
 
   if (!is.null(ramclustObj$MSMSdata)) {
@@ -250,7 +250,7 @@ rc.feature.normalize.batch.qc <- function(out.dir = NULL, order = NULL,
     )
   }
 
-  if (output.plot) {
+  if (show.plots) {
     dev.off()
   }
   ## update msint and optionally msmsint

@@ -8,7 +8,7 @@ test_that("RAMClustR workflow with xcms works", {
   metadata <- read_metadata(file.path("testdata", "testMetadata.csv"))
 
   ramclustObj <- rc.get.xcms.data(xcmsObj = xdata)
-  ramclustObj <- rc.expand.sample.names(ramclustObj = ramclustObj, quiet = TRUE)
+  ramclustObj <- rc.expand.sample.names(ramclustObj = ramclustObj, verbose = FALSE)
   ramclustObj <- rc.feature.replace.na(ramclustObj = ramclustObj)
   ramclustObj <- rc.feature.filter.blanks(ramclustObj = ramclustObj, qc.tag = c("QC", "sample.names.sample_name"), blank.tag = c("Blanc", "sample.names.sample_name"))
   ramclustObj <- rc.feature.normalize.qc(

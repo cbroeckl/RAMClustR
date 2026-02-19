@@ -26,7 +26,7 @@ compute_wt_mean <- function(data, global.min, fmz, ensure.no.na) {
 #'
 #' extractor for csv objects in preparation for normalization and clustering
 #'
-#' @param csv filepath: csv input. Features as columns, rows as samples. Column header mz_rt
+#' @param csv.file filepath: csv input. Features as columns, rows as samples. Column header mz_rt
 #' @param phenoData character: character string in 'taglocation' to designate files as either MS / DIA(MSe, MSall, AIF, etc) e.g. "01.mzML"
 #' @param idmsms filepath: optional idMSMS / MSe csv data.  same dim and names as ms required
 #' @param ExpDes an R object created by RAMClustR::designExperiment. data used for record keeping and labeling msp spectral output
@@ -64,10 +64,10 @@ compute_wt_mean <- function(data, global.min, fmz, ensure.no.na) {
 #' filename <- system.file("extdata", "peaks.csv", package = "RAMClustR", mustWork = TRUE)
 #' phenoData <- system.file("extdata", "phenoData.csv", package = "RAMClustR", mustWork = TRUE)
 #'
-#' ramclustobj <- rc.get.csv.data(csv = filename, phenoData = phenoData, st = 5)
+#' ramclustobj <- rc.get.csv.data(csv.file = filename, phenoData = phenoData, st = 5)
 #'
 
-rc.get.csv.data <- function(csv = NULL,
+rc.get.csv.data <- function(csv.file = NULL,
                             phenoData = NULL,
                             idmsms = NULL,
                             ExpDes = NULL,
@@ -76,7 +76,7 @@ rc.get.csv.data <- function(csv = NULL,
                             timepos = 2,
                             featdelim = "_",
                             ensure.no.na = TRUE) {
-    if (is.null(csv)) {
+    if (is.null(csv.file)) {
         stop("Please provide an MS dataset with features as columns
              (__)one column may contain sample names, defined by sampNameCol)")
     }
@@ -103,7 +103,7 @@ rc.get.csv.data <- function(csv = NULL,
         " Feature data was input as .csv files"
     )
 
-    MSdata <- read.csv(file = csv, header = TRUE, check.names = FALSE)
+    MSdata <- read.csv(file = csv.file, header = TRUE, check.names = FALSE)
     data2 <- NULL
 
     if (!is.null(phenoData)) {

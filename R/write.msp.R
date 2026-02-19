@@ -1,6 +1,6 @@
 #' write.msp
 #'
-#' Cluster annotation function: inference of 'M' - molecular weight of the compound giving rise to each spectrum - using the InterpretMSSpectrum::findMain function
+#' export spectra to .msp formatted files for use in other programs. 
 #'
 #' @param ramclustObj ramclustR object to annotate. 
 #' @param out.dir valid directory path describing output directory/file location.
@@ -120,14 +120,10 @@ write.msp <- function(
     if(nchar(exp.name) == 0) {
       exp.name <- "spectra"
     }
-    sink(paste0(out.dir, '/spectra/', exp.name, ".msp"))
-    cat(out)
-    sink()
+    writeLines(out, con = paste0(out.dir, '/spectra/', exp.name, ".msp"))
   } else {
     for(i in 1:length(out.list)) {
-      sink(paste0(out.dir, "/spectra/msp/", ramclustObj$cmpd[[i]], ".msp"))
-      cat(out.list[[i]], '\n')
-      sink()
+      writeLines(out.list[[i]], '\n', con = paste0(out.dir, "/spectra/msp/", ramclustObj$cmpd[[i]], ".msp"))
     }
   }
   

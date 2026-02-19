@@ -116,7 +116,6 @@ compute_SpecAbundAve <- function(ramclustObj = NULL) {
 #'
 #' ## Investigate the deconvoluted features in the `spectra` folder in MSP format
 #' ## or inspect the `ramclustobj` for feature retention times, annotations etc.
-#' cat("tmp spectra directory:", paste0(tmp, "/spectra"))
 #' print(ramclustobj$ann)
 #' print(ramclustobj$nfeat)
 #' print(ramclustobj$SpecAbund[, 1:6])
@@ -209,12 +208,10 @@ ramclustR <- function(xcmsObj = NULL,
     hmax <- 0.3
   }
 
-  cat(paste("organizing dataset", "\n"))
-
   # read csv through rc.get.csv.data
   if (!is.null(ms)) {
     ramclustObj <- rc.get.csv.data(
-      csv = ms,
+      csv.file = ms,
       phenoData = pheno_csv,
       idmsms = idmsms,
       ExpDes = ExpDes,
@@ -274,10 +271,6 @@ ramclustR <- function(xcmsObj = NULL,
 
   ########
   # Optional normalization of data, either Total ion signal or quantile
-
-  if (normalize != "none") {
-    cat(paste("  normalizing dataset", "\n"))
-  }
 
   if (normalize == "TIC") {
     ramclustObj <- rc.feature.normalize.tic(ramclustObj = ramclustObj)
@@ -347,9 +340,7 @@ ramclustR <- function(xcmsObj = NULL,
   ########
   # write msp formatted spectra
   if (mspout == TRUE) {
-    cat(paste("writing msp formatted spectra", "\n"))
     write.msp(ramclustObj, one.file = TRUE, out.dir = out.dir)
-    cat(paste("msp file complete", "\n"))
   }
 
   ramclustObj$history <- history

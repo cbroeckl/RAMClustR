@@ -267,9 +267,6 @@ do.findmain <- function(
     M.rank.ramclustr[cl] <- best
     M.ann.ramclustr[[cl]] <- out[[best]]
     M.nann.ramclustr[cl] <- summarytable[best, "adducts_explained"]
-    if (10 * round(cl / 10, digits = 0) == cl) {
-      cat(cl, "of", max(ramclustObj$featclus), "\n")
-    }
   }
   ramclustObj$M.ramclustr <- M.ramclustr
   ramclustObj$M.ppm.ramclustr <- M.ppm.ramclustr
@@ -336,7 +333,6 @@ do.findmain <- function(
   }
 
   if (plot.findmain) {
-    cat("plotting findmain annotation results", "\n")
     if (!dir.exists("spectra")) {
       dir.create("spectra")
     }
@@ -578,6 +574,5 @@ do.findmain <- function(
     ", and use.z = ", use.z, ".",
     sep = ""
   )
-  cat("finished", "\n")
   return(ramclustObj)
 }

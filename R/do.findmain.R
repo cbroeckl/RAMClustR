@@ -68,7 +68,7 @@ do.findmain <- function(
     stop("must supply ramclustObj as input.  i.e. ramclustObj = RC", "\n")
   }
 
-  if(is.null(out.dir)) {
+  if(is.null(out.dir) && (writeMat || writeMS)) {
     stop("please provide a valid output directory")
   }
   

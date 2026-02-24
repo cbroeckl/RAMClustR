@@ -69,7 +69,8 @@ do.findmain <- function(
   }
 
   if(is.null(out.dir) && (writeMat || writeMS)) {
-    stop("please provide a valid output directory")
+      warning("output files will be written to temp directory:", tempdir(), '\n')
+      out.dir <- tempdir()
   }
   
   score.options <- c("auto", "imss", "ramclustr")

@@ -166,7 +166,8 @@ order_datasets <- function(order = NULL,
 #' @return  ramclustR object with normalized data.
 #' @export
 
-rc.feature.normalize.batch.qc <- function(out.dir = NULL, order = NULL,
+rc.feature.normalize.batch.qc <- function(out.dir = NULL, 
+                                          order = NULL,
                                           batch = NULL,
                                           qc = NULL,
                                           ramclustObj = NULL,
@@ -183,7 +184,8 @@ rc.feature.normalize.batch.qc <- function(out.dir = NULL, order = NULL,
   }
 
   if(is.null(out.dir)) {
-    stop("please provide a valid output directory")
+    warning("output files will be written to temp directory:", tempdir(), '\n')
+    out.dir <- tempdir()
   }
   
   order2 <- order

@@ -17,7 +17,7 @@
 #' @concept xcms
 #' @export
 getSampleMetadata <- function(xcmsObj) {
-  if (inherits(xcmsObj@phenoData, "AnnotatedDataFrame")) {
+  if (inherits(xcmsObj@phenoData, "AnnotatedDataFrame") | inherits(xcmsObj@phenoData, "NAnnotatedDataFrame")) {
     return(xcmsObj@phenoData@data)
   } else {
     stop("Unsupported phenoData class")

@@ -10,7 +10,8 @@
 write_csv <- function(data, out.dir) {
   
   if(is.null(out.dir)) {
-    stop("please provide a valid output directory")
+    warning("output files will be written to temp directory:", tempdir(), '\n')
+    out.dir <- tempdir()
   }
   
   write.csv(data, file = paste(out.dir, "/ExpDes.csv", sep = ""), row.names = FALSE)

@@ -26,7 +26,8 @@ write.msp <- function(
 ) {
   
   if(is.null(out.dir)) {
-    stop("please provide a valid output directory")
+    warning("output files will be written to temp directory:", tempdir(), '\n')
+    out.dir <- tempdir()
   }
   
   if(!is(ramclustObj, "hclus") & 

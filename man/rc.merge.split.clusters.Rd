@@ -7,9 +7,9 @@
 rc.merge.split.clusters(
   ramclustObj = NULL,
   merge.threshold = 0.7,
-  cor.method = "spearman",
+  cor.method = "pearson",
   rt.sd.factor = 3,
-  cor.use = "everything",
+  cor.use = "pairwise.complete.obs",
   sample.name.column = "sample.ID"
 )
 }

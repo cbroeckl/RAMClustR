@@ -39,7 +39,7 @@ do.findmain(
 
 \item{scoring}{character: one of 'imss' , 'ramclustr', or 'auto'. default = 'auto'. see details.}
 
-\item{plot.findmain}{logical: should pdf polts be generated for evaluation? detfault = TRUE. PDF saved to working.directory/spectra}
+\item{plot.findmain}{logical: should pdf polts be generated for evaluation? default = TRUE. PDF saved to out.dir/spectra}
 
 \item{writeMat}{logical: should individual .mat files (for MSFinder) be generated in a 'mat' subdirectory in the 'spectra' folder? default = TRUE.}
 

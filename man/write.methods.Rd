@@ -4,10 +4,12 @@
 \alias{write.methods}
 \title{write.methods}
 \usage{
-write.methods(ramclustObj = NULL, filename = NULL)
+write.methods(ramclustObj = NULL, out.dir = NULL, filename = NULL)
 }
 \arguments{
 \item{ramclustObj}{R object - the ramclustR object which was used to write the .mat or .msp files}
+
+\item{out.dir}{valid directory path describing output directory/file location.}
 
 \item{filename}{define filename/path to write.  uses 'ramclustr_methods.txt' and the working directory by default.}
 }

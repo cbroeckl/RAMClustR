@@ -11,7 +11,7 @@
 #' @param ads character: vector of allowed adducts, i.e. c("[M+H]+"). if NULL, default positive mode values of H+, Na+, K+, and NH4+, as monomer, dimer, and trimer, are assigned. Negative mode include "[M-H]-", "[M+Na-2H]-", "[M+K-2H]-", "[M+CH2O2-H]-" as monomer, dimer, and trimer.
 #' @param nls  character: vector of allowed neutral losses, i.e. c("[M+H-H2O]+").  if NULL, an extensive list derived from CAMERA's will be used.
 #' @param scoring character: one of 'imss' , 'ramclustr', or 'auto'. default = 'auto'. see details.
-#' @param plot.findmain logical: should pdf polts be generated for evaluation? detfault = TRUE. PDF saved to working.directory/spectra
+#' @param plot.findmain logical: should pdf polts be generated for evaluation? default = TRUE. PDF saved to out.dir/spectra
 #' @param writeMat logical: should individual .mat files (for MSFinder) be generated in a 'mat' subdirectory in the 'spectra' folder? default = TRUE.
 #' @param writeMS logical: should individual .ms files (for Sirius) be generated in a 'ms' subdirectory in the 'spectra' folder? default = TRUE.  Note that no import functions are yet written for Sirius output.
 #' @param use.z logical: if you have previously run the 'assign.z' function from ramclustR, there will be a slot reflecting the feature mass after accounting for charge (fm) - if TRUE this is used instead of feature m/z (fmz) in interpreting MS data and exporting spectra for annotation.
@@ -335,9 +335,9 @@ do.findmain <- function(
 
   if (plot.findmain) {
     if (!dir.exists("spectra")) {
-      dir.create("spectra")
+      dir.create(paste0(out.dir, "/spectra/"))
     }
-    pdf("spectra/findmainPlots.pdf", width = 15, height = 7)
+    pdf(paste0(out.dir, "/spectra/findmainPlots.pdf"), width = 15, height = 7)
     oldpar <- par(no.readonly = TRUE) # code line i
     on.exit(par(oldpar)) # code line i + 1
     par(mfrow = c(1, 2))

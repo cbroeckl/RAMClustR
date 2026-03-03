@@ -4,7 +4,7 @@
 \alias{find_good_features}
 \title{find_good_features}
 \usage{
-find_good_features(ramclustObj, do.sets, max.cv, qc)
+find_good_features(ramclustObj, do.sets, max.cv, qc, show.plots = FALSE)
 }
 \arguments{
 \item{ramclustObj}{ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)}
@@ -14,6 +14,8 @@ find_good_features(ramclustObj, do.sets, max.cv, qc)
 \item{max.cv}{numeric maximum allowable cv for any feature.  default = 0.5}
 
 \item{qc}{QC samples found by define_samples}
+
+\item{show.plots}{logical, default = FALSE}
 }
 \value{
 ramclustR object

@@ -165,6 +165,11 @@ ramclustR <- function(xcmsObj = NULL,
     }
   }
 
+  if(is.null(out.dir)) {
+    warning("any output files will be written to temp directory:", tempdir(), '\n')
+    out.dir <- tempdir()
+  }
+  
   if (normalize == "batch.qc") {
     if (is.null(order) | is.null(batch) | is.null(qc)) {
       stop("to use batch.qc normalization you must provide vectors for batch, order (run order) and qc information as vectors.  see help ?ramclustR")

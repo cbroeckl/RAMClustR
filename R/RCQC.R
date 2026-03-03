@@ -119,7 +119,7 @@ RCQC.plots <- function(ramclustObj=NULL,
     cvs<-apply(sds/mean1, 2, FUN="median", na.rm=TRUE)
     means<-apply(mean1, 2,  FUN="median", na.rm=TRUE)
     if(export.csv) {
-      write.csv(data.frame(means, cvs), file="QC/cvs.csv")
+      write.csv(data.frame(means, cvs), file=paste0(out.dir, "/QC/cvs.csv"))
     }
     
     #ordmeans<-sort(means, decreasing=TRUE)

@@ -50,12 +50,12 @@ rc.export.msp.rc <- function(
   }
   
   if(!dir.exists('spectra')) {
-    dir.create('spectra')
+    dir.create(paste0(out.dir, '/spectra/'))
   }
   
   if(!one.file) {
     if(!dir.exists('spectra/msp')) {
-      dir.create('spectra/msp')
+      dir.create(paste0(out.dir, '/spectra/msp'))
     }
   }
   ion.mode <- as.character(ramclustObj$ExpDes[[2]][which(row.names(ramclustObj$ExpDes[[2]]) == "msmode"),1])

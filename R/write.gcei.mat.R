@@ -38,11 +38,11 @@ write.gcei.mat <- function(
     dir.create(paste0(out.dir, '/spectra'))
   }
   
-
-    if(!dir.exists(paste0(out.dir, '/spectra/mat'))) {
-      dir.create(paste0(out.dir, '/spectra/mat'))
-    }
-
+  
+  if(!dir.exists(paste0(out.dir, '/spectra/mat'))) {
+    dir.create(paste0(out.dir, '/spectra/mat'))
+  }
+  
   ion.mode <- "Positive"
   
   out.list <- as.list(rep(NA, length(ramclustObj$cmpd)))
@@ -119,5 +119,5 @@ write.gcei.mat <- function(
   for(i in 1:length(out.list)) {
     writeLines(out.list[[i]], '\n', con = paste0(out.dir, "/spectra/mat/", ramclustObj$cmpd[[i]], ".mat"))
   }
-
+  
 }

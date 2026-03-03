@@ -206,7 +206,7 @@ rc.qc <- function(ramclustObj = NULL,
       title(paste("histogram of", x, "CVs from QC samples"), line = 2.7)
       title("20% quantiles in red on top axis", col.main = 2, cex.main = 0.7, line = 2)
       axis(side = 3, col = 2, col.ticks = 2, col.axis = 2, round(qs, digits = 3), labels = TRUE, las = 2, cex.axis = 0.4)
-      dev.off()
+
 
       if (view.hist) {
         hist(cvs, breaks = 50, main = "")
@@ -214,6 +214,7 @@ rc.qc <- function(ramclustObj = NULL,
         title("20% quantiles in red on top axis", col.main = 2, cex.main = 0.7, line = 2)
         axis(side = 3, col = 2, col.ticks = 2, col.axis = 2, round(qs, digits = 3), labels = TRUE, las = 2, cex.axis = 0.4)
       }
+      dev.off()
     }
 
 

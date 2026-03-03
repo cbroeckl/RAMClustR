@@ -3,6 +3,7 @@
 #' write RAMClustR processing methods and citations to text file 
 #' @param ramclustObj R object - the ramclustR object which was used to write the .mat or .msp files
 #' @param filename define filename/path to write.  uses 'ramclustr_methods.txt' and the working directory by default.
+#' @param out.dir valid directory path describing output directory/file location.
 #' @details this function exports a file called ramclustr_methods.txt which contains the processing history, parameters used, and relevant citations.
 #' @return an annotated ramclustR object
 #' @references Broeckling CD, Afsar FA, Neumann S, Ben-Hur A, Prenni JE. RAMClust: a novel feature clustering method enables spectral-matching-based annotation for metabolomics data. Anal Chem. 2014 Jul 15;86(14):6812-7. doi: 10.1021/ac501530d.  Epub 2014 Jun 26. PubMed PMID: 24927477.
@@ -19,6 +20,7 @@
 
 write.methods <- function (
   ramclustObj = NULL,
+  out.dir = NULL,
   filename = NULL
 ) {
   
@@ -30,9 +32,16 @@ write.methods <- function (
     stop("no processing history present for this ramclustR object")
   }
   
+  if(is.null(out.dir)) {
+    warning("output files will be written to temp directory:", tempdir(), '\n')
+    out.dir <- tempdir()
+  }
+  
   if(is.null(filename)) {
     filename <- 'ramclustr_methods.txt' 
   }
+  
+  filename <- paste0(out.dir, "/", filename)
   
   cit.list <- c(
     'R Core Team' = paste0(

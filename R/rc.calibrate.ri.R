@@ -5,6 +5,7 @@
 #' @param ramclustObj ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)
 #' @param calibrant.data character vector defining the file path/name to a csv file containing columns including 'rt', and 'ri'.  Alternatively, a data.frame with those columnn names (case sensitive)
 #' @param poly.order integer default = 3.  polynomical order used to fit rt vs ri data, and calculate ri for all feature and metabolite rt values. poly.order should be apprciably smaller than the number of calibrant points. 
+#' @param show.plots logical. default = FALSE.  should a plot of the calibration be sent to the active graphics device? 
 #' @details This function generates a new slot in the ramclustR object for retention index.  Calibration is performed using a polynomial fit of order poly.order.  It is the user's responsibility to ensure that the number and span of calibrant points is sufficient to calibrate the full range of feature and compound retention times.  i.e. if the last calibration point is at 1000 seconds, but the last eluting peak is at 1300 seconds, the calibration will be very poor for the late eluting compound. 
 #' @return  ramclustR object with retention index assigned for features ($fri) and compounds ($clri).   
 #'  
@@ -23,7 +24,8 @@
 rc.calibrate.ri  <- function(
   ramclustObj=NULL,
   calibrant.data = "",
-  poly.order = 3
+  poly.order = 3,
+  show.plots = FALSE
 ) { 
   
   if(is.null(ramclustObj)) {
@@ -79,7 +81,11 @@ rc.calibrate.ri  <- function(
                                label=paste("Mean RI error: ", mean.error, "%")) +
                      ggplot2::theme_bw()
   )
-  suppressWarnings( print(p) )
+  
+  if(show.plots) {
+    suppressWarnings( print(p) )
+  }
+
   if(max(ramclustObj$clrt) > (max(calibrant.data$rt)* 1.1) | 
      min(ramclustObj$clrt) < (min(calibrant.data$rt)* 0.9)
   ) {

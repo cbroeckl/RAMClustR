@@ -4,7 +4,12 @@
 \alias{rc.calibrate.ri}
 \title{rc.calibrate.ri}
 \usage{
-rc.calibrate.ri(ramclustObj = NULL, calibrant.data = "", poly.order = 3)
+rc.calibrate.ri(
+  ramclustObj = NULL,
+  calibrant.data = "",
+  poly.order = 3,
+  show.plots = FALSE
+)
 }
 \arguments{
 \item{ramclustObj}{ramclustObj containing MSdata with optional MSMSdata (MSe, DIA, idMSMS)}
@@ -12,6 +17,8 @@ rc.calibrate.ri(ramclustObj = NULL, calibrant.data = "", poly.order = 3)
 \item{calibrant.data}{character vector defining the file path/name to a csv file containing columns including 'rt', and 'ri'.  Alternatively, a data.frame with those columnn names (case sensitive)}
 
 \item{poly.order}{integer default = 3.  polynomical order used to fit rt vs ri data, and calculate ri for all feature and metabolite rt values. poly.order should be apprciably smaller than the number of calibrant points.}
+
+\item{show.plots}{logical. default = FALSE.  should a plot of the calibration be sent to the active graphics device?}
 }
 \value{
 ramclustR object with retention index assigned for features ($fri) and compounds ($clri).

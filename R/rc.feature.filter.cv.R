@@ -71,6 +71,7 @@ define_samples <- function(ramclustObj, tag, return.logical = FALSE) {
 #' @param do.sets select data frame to use.
 #' @param max.cv numeric maximum allowable cv for any feature.  default = 0.5
 #' @param qc QC samples found by define_samples
+#' @param show.plots logical, default = FALSE
 #' @return ramclustR object
 #' @return features to keep
 #' @export
@@ -78,13 +79,14 @@ define_samples <- function(ramclustObj, tag, return.logical = FALSE) {
 find_good_features <- function(ramclustObj,
                                do.sets,
                                max.cv,
-                               qc) {
+                               qc, 
+                               show.plots = FALSE) {
   ## find 'good' features, acceptable CV at either
   ## MS or MSMS level results in keeping
   keep <- rep(FALSE, ncol(ramclustObj$MSdata))
   oldpar <- par(no.readonly = TRUE) # code line i
   on.exit(par(oldpar)) # code line i + 1
-  par(mfrow = c(1, length(do.sets)))
+  if(show.plots) {par(mfrow = c(1, length(do.sets)))}
   for (x in do.sets) {
     td <- ramclustObj[[x]]
     sds <- apply(td[qc, ], 2, FUN = "sd", na.rm = TRUE)
@@ -99,10 +101,10 @@ find_good_features <- function(ramclustObj,
         ramclustObj$qc.cv.feature.msmsdata
       )
     }
-    hist(cvs, main = x, xlab = "CV")
+    if(show.plots) {hist(cvs, main = x, xlab = "CV")}
     keep[which(cvs <= max.cv)] <- TRUE
     message(x, ": ", length(which(cvs <= max.cv)), "passed the CV filter", "\n")
-    hist(cvs[which(cvs <= max.cv)], add = TRUE, col = "gray")
+    if(show.plots) {hist(cvs[which(cvs <= max.cv)], add = TRUE, col = "gray")}
   }
 
   return(list(ramclustObj = ramclustObj, keep = keep))

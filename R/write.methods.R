@@ -93,7 +93,7 @@ write.methods <- function (
   # paste0("(", citation()$author, " ",  citation()$year, ")") = paste0(citation()$author)
 
   history <- paste(ramclustObj$history, collapse = " " )
-  message(history)
+  # message(history)
   
   cites <- sapply(1:length(cit.list), FUN = function(x) {
     grepl(names(cit.list[x]), history)
@@ -101,7 +101,7 @@ write.methods <- function (
   )
   
   if(any(cites)) {
-    out <- paste('\n', '\n')
+    out <- paste(history, '\n', '\n')
 
     cit.list <- cit.list[cites]
     cit.list <- sort(cit.list)
@@ -120,7 +120,7 @@ write.methods <- function (
       citation()$url, "."
     )
   }
-  writeLines(out, con = filename)
+  writeChar(out, con = filename)
 
 }
 
